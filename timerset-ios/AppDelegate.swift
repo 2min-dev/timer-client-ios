@@ -13,8 +13,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // init SwiftBeaver
+        Logger.initialize()
+        
+        // create new window
+        window = UIWindow(frame: UIScreen.main.bounds)
+        
+        // present intro view
+        let appCoordinator: AppCoordinator = AppCoordinator(provider: ServiceProvider(), window: self.window!)
+        appCoordinator.present(for: .intro)
         return true
     }
-
 }
-

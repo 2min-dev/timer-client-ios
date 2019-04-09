@@ -8,20 +8,58 @@
 
 /* Begin PBXBuildFile section */
 		7984FE92D890893C34B52BBB /* Pods_timerset_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */; };
+		F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */; };
+		F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */; };
+		F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */; };
+		F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
 		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
+		F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */; };
+		F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */; };
+		F3D1F7AC225CC21A006DC162 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7AB225CC21A006DC162 /* IntroViewController.swift */; };
+		F3D1F7AE225CC22E006DC162 /* IntroCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7AD225CC22E006DC162 /* IntroCoordinator.swift */; };
+		F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7AF225CC267006DC162 /* IntroViewReactor.swift */; };
+		F3D1F7B2225CC2A9006DC162 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B1225CC2A9006DC162 /* BaseViewController.swift */; };
+		F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B3225CC2CC006DC162 /* IntroView.swift */; };
+		F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */; };
+		F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B7225CC357006DC162 /* String+regex.swift */; };
+		F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B8225CC357006DC162 /* UIViewController+child.swift */; };
+		F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */; };
+		F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */; };
+		F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
+		F3D1F7C5225CC3D7006DC162 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
+		F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C3225CC3D7006DC162 /* Functions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_timerset_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.release.xcconfig"; sourceTree = "<group>"; };
+		F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundEB.ttf; sourceTree = "<group>"; };
+		F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundL.ttf; sourceTree = "<group>"; };
+		F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundR.ttf; sourceTree = "<group>"; };
+		F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundB.ttf; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timerset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "timerset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F3D1F795225CB6C2006DC162 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F3D1F797225CB6C2006DC162 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
+		F3D1F7AB225CC21A006DC162 /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
+		F3D1F7AD225CC22E006DC162 /* IntroCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroCoordinator.swift; sourceTree = "<group>"; };
+		F3D1F7AF225CC267006DC162 /* IntroViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewReactor.swift; sourceTree = "<group>"; };
+		F3D1F7B1225CC2A9006DC162 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		F3D1F7B3225CC2CC006DC162 /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
+		F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Primitive+adjust.swift"; sourceTree = "<group>"; };
+		F3D1F7B7225CC357006DC162 /* String+regex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+regex.swift"; sourceTree = "<group>"; };
+		F3D1F7B8225CC357006DC162 /* UIViewController+child.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+child.swift"; sourceTree = "<group>"; };
+		F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+autolayout.swift"; sourceTree = "<group>"; };
+		F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+hex.swift"; sourceTree = "<group>"; };
+		F3D1F7C1225CC3D7006DC162 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		F3D1F7C2225CC3D7006DC162 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F3D1F7C3225CC3D7006DC162 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +91,25 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		F303F259225CC56800A11FAF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F303F25A225CC57B00A11FAF /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F303F25A225CC57B00A11FAF /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */,
+				F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */,
+				F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */,
+				F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		F3D1F77F225CB6C1006DC162 = {
 			isa = PBXGroup;
 			children = (
@@ -74,6 +131,8 @@
 		F3D1F78A225CB6C1006DC162 /* timerset-ios */ = {
 			isa = PBXGroup;
 			children = (
+				F3D1F7C0225CC3BE006DC162 /* Common */,
+				F3D1F7B5225CC322006DC162 /* Extension */,
 				F3D1F79D225CBC1D006DC162 /* Model */,
 				F3D1F79E225CBC24006DC162 /* View */,
 				F3D1F79F225CBC2B006DC162 /* ViewReactor */,
@@ -82,6 +141,7 @@
 				F3D1F792225CB6C2006DC162 /* Assets.xcassets */,
 				F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */,
 				F3D1F797225CB6C2006DC162 /* Info.plist */,
+				F303F259225CC56800A11FAF /* Resources */,
 			);
 			path = "timerset-ios";
 			sourceTree = "<group>";
@@ -98,6 +158,9 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7A1225CBCCE006DC162 /* Cell */,
+				F3D1F7B1225CC2A9006DC162 /* BaseViewController.swift */,
+				F3D1F7AB225CC21A006DC162 /* IntroViewController.swift */,
+				F3D1F7B3225CC2CC006DC162 /* IntroView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -105,6 +168,7 @@
 		F3D1F79F225CBC2B006DC162 /* ViewReactor */ = {
 			isa = PBXGroup;
 			children = (
+				F3D1F7AF225CC267006DC162 /* IntroViewReactor.swift */,
 			);
 			path = ViewReactor;
 			sourceTree = "<group>";
@@ -113,6 +177,8 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7A3225CBCE1006DC162 /* Animator */,
+				F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */,
+				F3D1F7AD225CC22E006DC162 /* IntroCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -127,6 +193,7 @@
 		F3D1F7A2225CBCDC006DC162 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -136,6 +203,28 @@
 			children = (
 			);
 			path = Animator;
+			sourceTree = "<group>";
+		};
+		F3D1F7B5225CC322006DC162 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */,
+				F3D1F7B7225CC357006DC162 /* String+regex.swift */,
+				F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */,
+				F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */,
+				F3D1F7B8225CC357006DC162 /* UIViewController+child.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		F3D1F7C0225CC3BE006DC162 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F7C2225CC3D7006DC162 /* Constants.swift */,
+				F3D1F7C3225CC3D7006DC162 /* Functions.swift */,
+				F3D1F7C1225CC3D7006DC162 /* Logger.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,7 +289,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */,
+				F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */,
+				F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */,
+				F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
+				F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +382,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */,
+				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
+				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
+				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
+				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
+				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
+				F3D1F7C5225CC3D7006DC162 /* Constants.swift in Sources */,
+				F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
+				F3D1F7AE225CC22E006DC162 /* IntroCoordinator.swift in Sources */,
+				F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */,
+				F3D1F7B2225CC2A9006DC162 /* BaseViewController.swift in Sources */,
+				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,
+				F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */,
+				F3D1F7AC225CC21A006DC162 /* IntroViewController.swift in Sources */,
+				F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
