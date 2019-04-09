@@ -27,9 +27,15 @@ class AppCoordinator {
     func present(for route: AppRoute) {
         switch route {
         case .intro:
+            let coordinator: RootViewCoordinator = RootViewCoordinator(provider: provider)
+            let viewController: RootViewController = coordinator.rootViewController
+            
             // initialize view
-            let coordinator: IntroViewCoordinator = IntroViewCoordinator(provider: self.provider)
-            let viewController: IntroViewController = coordinator.rootViewController
+            let introViewCoordinator: IntroViewCoordinator = IntroViewCoordinator(provider: provider)
+            let introViewController: IntroViewController = introViewCoordinator.rootViewController
+            
+            // initialize root view
+            viewController.viewControllers = [introViewController]
             
             // present view
             self.window.rootViewController = viewController

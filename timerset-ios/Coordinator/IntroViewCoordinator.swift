@@ -31,11 +31,14 @@ class IntroViewCoordinator: NSObject {
     func present(for route: IntroRoute) {
         switch route {
         case .timerSet:
-            let coordinator = RootViewCoordinator(provider: provider)
-            coordinator.rootViewController.selectedIndex = 1
+            let coordinator = MainViewCoordinator(provider: provider)
+            let viewController = coordinator.rootViewController
+            
+            // set tab bar view controller initial index
+            viewController.selectedIndex = 1
             
             // present view
-            rootViewController.present(coordinator.rootViewController, animated: true, completion: nil)
+            rootViewController.navigationController?.viewControllers = [viewController]
         }
     }
 }
