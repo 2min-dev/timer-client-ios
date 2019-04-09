@@ -12,6 +12,7 @@
 		F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */; };
 		F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */; };
 		F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */; };
+		F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F303F264225CC71700A11FAF /* laboratory.storyboard */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
 		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
@@ -40,6 +41,7 @@
 		F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundL.ttf; sourceTree = "<group>"; };
 		F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundR.ttf; sourceTree = "<group>"; };
 		F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundB.ttf; sourceTree = "<group>"; };
+		F303F264225CC71700A11FAF /* laboratory.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = laboratory.storyboard; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timerset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "timerset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -110,6 +112,14 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		F303F263225CC6EE00A11FAF /* Laboratory */ = {
+			isa = PBXGroup;
+			children = (
+				F303F264225CC71700A11FAF /* laboratory.storyboard */,
+			);
+			path = Laboratory;
+			sourceTree = "<group>";
+		};
 		F3D1F77F225CB6C1006DC162 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +141,7 @@
 		F3D1F78A225CB6C1006DC162 /* timerset-ios */ = {
 			isa = PBXGroup;
 			children = (
+				F303F263225CC6EE00A11FAF /* Laboratory */,
 				F3D1F7C0225CC3BE006DC162 /* Common */,
 				F3D1F7B5225CC322006DC162 /* Extension */,
 				F3D1F79D225CBC1D006DC162 /* Model */,
@@ -292,6 +303,7 @@
 				F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */,
 				F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */,
 				F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */,
+				F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 				F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */,
 			);
