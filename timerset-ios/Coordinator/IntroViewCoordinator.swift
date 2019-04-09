@@ -9,7 +9,7 @@
 import UIKit
 
 enum IntroRoute {
-    case main
+    case timerSet
 }
 
 /// Route from Intro view
@@ -30,8 +30,12 @@ class IntroViewCoordinator: NSObject {
     
     func present(for route: IntroRoute) {
         switch route {
-        case .main:
-            Logger.verbose("implement route")
+        case .timerSet:
+            let coordinator = RootViewCoordinator(provider: provider)
+            coordinator.rootViewController.selectedIndex = 1
+            
+            // present view
+            rootViewController.present(coordinator.rootViewController, animated: true, completion: nil)
         }
     }
 }
