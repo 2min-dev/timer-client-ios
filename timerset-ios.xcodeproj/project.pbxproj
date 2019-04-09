@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7984FE92D890893C34B52BBB /* Pods_timerset_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
-		F3D1F78E225CB6C1006DC162 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78D225CB6C1006DC162 /* ViewController.swift */; };
-		F3D1F791225CB6C1006DC162 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F78F225CB6C1006DC162 /* Main.storyboard */; };
 		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.debug.xcconfig"; sourceTree = "<group>"; };
+		8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_timerset_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.release.xcconfig"; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timerset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "timerset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F3D1F78D225CB6C1006DC162 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		F3D1F790225CB6C1006DC162 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F3D1F795225CB6C2006DC162 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F3D1F797225CB6C2006DC162 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -29,17 +29,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7984FE92D890893C34B52BBB /* Pods_timerset_ios.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		148CF5699B4175487BC4AAAF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A8111254192D76522D893027 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */,
+				C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		F3D1F77F225CB6C1006DC162 = {
 			isa = PBXGroup;
 			children = (
 				F3D1F78A225CB6C1006DC162 /* timerset-ios */,
 				F3D1F789225CB6C1006DC162 /* Products */,
+				A8111254192D76522D893027 /* Pods */,
+				148CF5699B4175487BC4AAAF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +74,68 @@
 		F3D1F78A225CB6C1006DC162 /* timerset-ios */ = {
 			isa = PBXGroup;
 			children = (
+				F3D1F79D225CBC1D006DC162 /* Model */,
+				F3D1F79E225CBC24006DC162 /* View */,
+				F3D1F79F225CBC2B006DC162 /* ViewReactor */,
+				F3D1F7A0225CBCAB006DC162 /* Coordinator */,
 				F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */,
-				F3D1F78D225CB6C1006DC162 /* ViewController.swift */,
-				F3D1F78F225CB6C1006DC162 /* Main.storyboard */,
 				F3D1F792225CB6C2006DC162 /* Assets.xcassets */,
 				F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */,
 				F3D1F797225CB6C2006DC162 /* Info.plist */,
 			);
 			path = "timerset-ios";
+			sourceTree = "<group>";
+		};
+		F3D1F79D225CBC1D006DC162 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F7A2225CBCDC006DC162 /* Service */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		F3D1F79E225CBC24006DC162 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F7A1225CBCCE006DC162 /* Cell */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		F3D1F79F225CBC2B006DC162 /* ViewReactor */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewReactor;
+			sourceTree = "<group>";
+		};
+		F3D1F7A0225CBCAB006DC162 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F7A3225CBCE1006DC162 /* Animator */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		F3D1F7A1225CBCCE006DC162 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		F3D1F7A2225CBCDC006DC162 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		F3D1F7A3225CBCE1006DC162 /* Animator */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Animator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +145,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F3D1F79A225CB6C2006DC162 /* Build configuration list for PBXNativeTarget "timerset-ios" */;
 			buildPhases = (
+				D4FD301E82ADFD1ECF93D47D /* [CP] Check Pods Manifest.lock */,
 				F3D1F784225CB6C1006DC162 /* Sources */,
 				F3D1F785225CB6C1006DC162 /* Frameworks */,
 				F3D1F786225CB6C1006DC162 /* Resources */,
+				F3D1F7A6225CBEA8006DC162 /* ShellScript */,
+				6E8442ABD5C58FF2B3FF8039 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -124,18 +201,94 @@
 			files = (
 				F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
-				F3D1F791225CB6C1006DC162 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6E8442ABD5C58FF2B3FF8039 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactorKit/ReactorKit.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyBeaver/SwiftyBeaver.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactorKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyBeaver.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D4FD301E82ADFD1ECF93D47D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-timerset-ios-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F3D1F7A6225CBEA8006DC162 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n${PODS_ROOT}/SwiftLint/swiftlint\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F3D1F784225CB6C1006DC162 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3D1F78E225CB6C1006DC162 /* ViewController.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,14 +296,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		F3D1F78F225CB6C1006DC162 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F3D1F790225CB6C1006DC162 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -213,13 +358,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -268,29 +414,32 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		F3D1F79B225CB6C2006DC162 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
 				INFOPLIST_FILE = "timerset-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.timerset-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.project.timerset-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "jsilver.project.timerset-ios";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -298,17 +447,19 @@
 		};
 		F3D1F79C225CB6C2006DC162 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
 				INFOPLIST_FILE = "timerset-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.timerset-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.project.timerset-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "jsilver.project.timerset-ios";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

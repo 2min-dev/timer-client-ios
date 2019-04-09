@@ -1,0 +1,12 @@
+disabled_rules:
+- line_length
+- trailing_whitespace
+- identifier_name
+- for_where
+- unused_closure_parameter
+
+- force_cast
+
+included:
+excluded:
+- Pods
