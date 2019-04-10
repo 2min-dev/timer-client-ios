@@ -6,8 +6,6 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-import UIKit
-
 class RootViewCoordinator {
     let rootViewController: RootViewController
     let provider: ServiceProviderProtocol

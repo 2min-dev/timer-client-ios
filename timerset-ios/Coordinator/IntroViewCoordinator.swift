@@ -6,14 +6,12 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-import UIKit
-
 enum IntroRoute {
     case timerSet
 }
 
 /// Route from Intro view
-class IntroViewCoordinator: NSObject {
+class IntroViewCoordinator {
     // MARK: properties
     let rootViewController: IntroViewController
     let provider: ServiceProviderProtocol
@@ -21,7 +19,6 @@ class IntroViewCoordinator: NSObject {
     init(provider: ServiceProviderProtocol) {
         self.rootViewController = IntroViewController()
         self.provider = provider
-        super.init()
         
         // DI
         self.rootViewController.coordinator = self
