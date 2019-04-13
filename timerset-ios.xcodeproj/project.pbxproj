@@ -33,6 +33,13 @@
 		F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */; };
 		F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */; };
 		F3B120B6225CE69F00CC2E26 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B120B5225CE69F00CC2E26 /* PageViewController.swift */; };
+		F3C187482261E04300B2C644 /* LaboratoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C187472261E04300B2C644 /* LaboratoryViewController.swift */; };
+		F3C1874A2261E66F00B2C644 /* BaseTableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C187492261E66F00B2C644 /* BaseTableItem.swift */; };
+		F3C1874C2261FB0900B2C644 /* BaseTableSeciton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874B2261FB0900B2C644 /* BaseTableSeciton.swift */; };
+		F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874D226204DF00B2C644 /* AppInfoViewController.swift */; };
+		F3C18750226204EB00B2C644 /* AppInfoViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874F226204EB00B2C644 /* AppInfoViewReactor.swift */; };
+		F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */; };
+		F3C187542262052300B2C644 /* AppInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C187532262052300B2C644 /* AppInfoView.swift */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
 		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
@@ -82,6 +89,13 @@
 		F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPageViewController.swift; sourceTree = "<group>"; };
 		F3B120B5225CE69F00CC2E26 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		F3C187472261E04300B2C644 /* LaboratoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaboratoryViewController.swift; sourceTree = "<group>"; };
+		F3C187492261E66F00B2C644 /* BaseTableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableItem.swift; sourceTree = "<group>"; };
+		F3C1874B2261FB0900B2C644 /* BaseTableSeciton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableSeciton.swift; sourceTree = "<group>"; };
+		F3C1874D226204DF00B2C644 /* AppInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoViewController.swift; sourceTree = "<group>"; };
+		F3C1874F226204EB00B2C644 /* AppInfoViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoViewReactor.swift; sourceTree = "<group>"; };
+		F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoCoordinator.swift; sourceTree = "<group>"; };
+		F3C187532262052300B2C644 /* AppInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoView.swift; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timerset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "timerset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -156,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				F3A2A87C225E2486001D579A /* PageViewController */,
+				F3C187472261E04300B2C644 /* LaboratoryViewController.swift */,
 				F303F264225CC71700A11FAF /* laboratory.storyboard */,
 			);
 			path = Laboratory;
@@ -213,6 +228,8 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7A2225CBCDC006DC162 /* Service */,
+				F3C187492261E66F00B2C644 /* BaseTableItem.swift */,
+				F3C1874B2261FB0900B2C644 /* BaseTableSeciton.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -232,6 +249,8 @@
 				F303F27C225CCE2400A11FAF /* OneTouchTimerView.swift */,
 				F303F274225CCBA100A11FAF /* SettingViewController.swift */,
 				F303F276225CCBA600A11FAF /* SettingView.swift */,
+				F3C1874D226204DF00B2C644 /* AppInfoViewController.swift */,
+				F3C187532262052300B2C644 /* AppInfoView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -243,6 +262,7 @@
 				F303F26C225CCAE400A11FAF /* TimerSetViewReactor.swift */,
 				F303F27E225CCE7100A11FAF /* OneTouchTimerViewReactor.swift */,
 				F303F278225CCCE300A11FAF /* SettingViewReactor.swift */,
+				F3C1874F226204EB00B2C644 /* AppInfoViewReactor.swift */,
 			);
 			path = ViewReactor;
 			sourceTree = "<group>";
@@ -258,6 +278,7 @@
 				F303F270225CCB6A00A11FAF /* TimerSetViewCoordinator.swift */,
 				F303F280225CCE9D00A11FAF /* OneTouchTimerViewCoordinator.swift */,
 				F303F272225CCB7500A11FAF /* SettingViewCoordinator.swift */,
+				F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -464,6 +485,8 @@
 			files = (
 				F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */,
 				F303F273225CCB7500A11FAF /* SettingViewCoordinator.swift in Sources */,
+				F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */,
+				F3C1874C2261FB0900B2C644 /* BaseTableSeciton.swift in Sources */,
 				F303F279225CCCE300A11FAF /* SettingViewReactor.swift in Sources */,
 				F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */,
 				F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */,
@@ -471,9 +494,11 @@
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
+				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
 				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* TimerSetViewController.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* TimerSetViewCoordinator.swift in Sources */,
+				F3C18750226204EB00B2C644 /* AppInfoViewReactor.swift in Sources */,
 				F303F27D225CCE2400A11FAF /* OneTouchTimerView.swift in Sources */,
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
 				F3D1F7C5225CC3D7006DC162 /* Constants.swift in Sources */,
@@ -483,6 +508,7 @@
 				F303F283225CD51400A11FAF /* MainViewController.swift in Sources */,
 				F303F27F225CCE7100A11FAF /* OneTouchTimerViewReactor.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
+				F3C1874A2261E66F00B2C644 /* BaseTableItem.swift in Sources */,
 				F303F26F225CCAF500A11FAF /* TimerSetView.swift in Sources */,
 				F3D1F7AE225CC22E006DC162 /* IntroViewCoordinator.swift in Sources */,
 				F303F26D225CCAE400A11FAF /* TimerSetViewReactor.swift in Sources */,
@@ -494,7 +520,9 @@
 				F303F27B225CCE1600A11FAF /* OneTouchTimerViewController.swift in Sources */,
 				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,
 				F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */,
+				F3C187542262052300B2C644 /* AppInfoView.swift in Sources */,
 				F3D1F7AC225CC21A006DC162 /* IntroViewController.swift in Sources */,
+				F3C187482261E04300B2C644 /* LaboratoryViewController.swift in Sources */,
 				F303F269225CCA0500A11FAF /* RootViewCoordinator.swift in Sources */,
 				F3A2A87E225E24A0001D579A /* FirstPageViewController.swift in Sources */,
 				F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */,
