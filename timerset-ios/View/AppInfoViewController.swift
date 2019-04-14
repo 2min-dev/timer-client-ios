@@ -14,7 +14,7 @@ class AppInfoViewController: BaseViewController, View {
 	private var appInfoView: AppInfoView { return self.view as! AppInfoView }
 	
 	// MARK: properties
-	weak var coordinator: AppInfoCoordinator!
+	var coordinator: AppInfoCoordinator!
 
 	// MARK: lifecycle
 	override func loadView() {

@@ -6,15 +6,22 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-class RootViewCoordinator {
-    let rootViewController: RootViewController
+/// Route from root view (navigation)
+class RootViewCoordinator: CoordinatorProtocl {
+    // MARK: route enumeration
+    enum RootRoute {
+        
+    }
+    
+    weak var rootViewController: RootViewController!
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol) {
-        self.rootViewController = RootViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: RootViewController) {
         self.provider = provider
+        self.rootViewController = rootViewController
+    }
+    
+    func present(for route: RootRoute) {
         
-        // DI
-        self.rootViewController.coordinator = self
     }
 }

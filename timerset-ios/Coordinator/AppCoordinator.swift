@@ -8,17 +8,18 @@
 
 import UIKit
 
-enum AppRoute {
-    case intro
-}
-
 /// Route from app initialze
 class AppCoordinator {
+    // MARK: route enumeration
+    enum AppRoute {
+        case intro
+    }
+
     // MARK: properties
     let window: UIWindow
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol, window: UIWindow) {
+    required init(provider: ServiceProviderProtocol, window: UIWindow) {
         self.provider = provider
         self.window = window
     }
@@ -26,12 +27,19 @@ class AppCoordinator {
     func present(for route: AppRoute) {
         switch route {
         case .intro:
-            let coordinator: RootViewCoordinator = RootViewCoordinator(provider: provider)
-            let viewController: RootViewController = coordinator.rootViewController
+            let viewController: RootViewController = RootViewController()
+            let coordinator: RootViewCoordinator = RootViewCoordinator(provider: provider, rootViewController: viewController)
             
-            // initialize view
-            let introViewCoordinator: IntroViewCoordinator = IntroViewCoordinator(provider: provider)
-            let introViewController: IntroViewController = introViewCoordinator.rootViewController
+            // initial view
+            let introViewController = IntroViewController()
+            let introViewCoordinator = IntroViewCoordinator(provider: provider, rootViewController: introViewController)
+            let introViewReactor = IntroViewReactor()
+            
+            // DI
+            viewController.coordinator = coordinator
+            
+            introViewController.coordinator = introViewCoordinator
+            introViewController.reactor = introViewReactor
             
             // initialize root view
             viewController.viewControllers = [introViewController]

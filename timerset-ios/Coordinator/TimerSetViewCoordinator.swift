@@ -6,22 +6,20 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-enum TimerSetRoute {
+/// Route from timer set view
+class TimerSetViewCoordinator: CoordinatorProtocl {
+     // MARK: route enumeration
+    enum TimerSetRoute {
+        
+    }
     
-}
-
-class TimerSetViewCoordinator {
     // MARK: properties
-    let rootViewController: TimerSetViewController
+    weak var rootViewController: TimerSetViewController!
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol) {
-        self.rootViewController = TimerSetViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: TimerSetViewController) {
         self.provider = provider
-        
-        // DI
-        self.rootViewController.coordinator = self
-        self.rootViewController.reactor = TimerSetViewReactor()
+        self.rootViewController = rootViewController
     }
     
     func present(for route: TimerSetRoute) {

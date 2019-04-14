@@ -6,22 +6,20 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-enum AppInfoRoute {
-
-}
-
-class AppInfoCoordinator {
+/// Route from app info view
+class AppInfoCoordinator: CoordinatorProtocl {
+     // MARK: route enumeration
+    enum AppInfoRoute {
+        
+    }
+    
 	// MARK: properties
-	var rootViewController: AppInfoViewController
+	weak var rootViewController: AppInfoViewController!
 	let provider: ServiceProviderProtocol
 
-	init(provider: ServiceProviderProtocol) {
-		self.rootViewController = AppInfoViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: AppInfoViewController) {
 		self.provider = provider
-
-		// DI
-		self.rootViewController.coordinator = self
-		self.rootViewController.reactor = AppInfoViewReactor()
+        self.rootViewController = rootViewController
 	}
 
 	func present(for route: AppInfoRoute) {

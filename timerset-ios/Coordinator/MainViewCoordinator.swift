@@ -8,25 +8,42 @@
 
 import UIKit
 
-class MainViewCoordinator {
-    let rootViewController: MainViewController
+/// Route from main view (tab bar)
+class MainViewCoordinator: CoordinatorProtocl {
+     // MARK: route enumeration
+    enum MainRoute {
+        
+    }
+    
+    weak var rootViewController: MainViewController!
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol) {
-        self.rootViewController = MainViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: MainViewController) {
         self.provider = provider
-        
-        // DI
-        self.rootViewController.coordinator = self
+        self.rootViewController = rootViewController
         
         // tab bar controller initialize
-        let oneTouchTimerViewCoordinator = OneTouchTimerViewCoordinator(provider: provider)
-        let timerSetViewCoordinator = TimerSetViewCoordinator(provider: provider)
-        let settingCoordinator = SettingViewCoordinator(provider: provider)
+        let oneTouchTimerViewController = OneTouchTimerViewController()
+        let oneTouchTimerViewCoordinator = OneTouchTimerViewCoordinator(provider: provider, rootViewController: oneTouchTimerViewController)
+        let oneTouchTimerReactor = OneTouchTimerViewReactor()
         
-        let oneTouchTimerViewController = oneTouchTimerViewCoordinator.rootViewController
-        let timerSetViewController = timerSetViewCoordinator.rootViewController
-        let settingViewController = settingCoordinator.rootViewController
+        let timerSetViewController = TimerSetViewController()
+        let timerSetViewCoordinator = TimerSetViewCoordinator(provider: provider, rootViewController: timerSetViewController)
+        let timerSetViewReactor = TimerSetViewReactor()
+        
+        let settingViewController = SettingViewController()
+        let settingViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: settingViewController)
+        let settingViewReactor = SettingViewReactor()
+        
+        // DI
+        oneTouchTimerViewController.coordinator = oneTouchTimerViewCoordinator
+        oneTouchTimerViewController.reactor = oneTouchTimerReactor
+        
+        timerSetViewController.coordinator = timerSetViewCoordinator
+        timerSetViewController.reactor = timerSetViewReactor
+        
+        settingViewController.coordinator = settingViewCoordinator
+        settingViewController.reactor = settingViewReactor
         
         let oneTouchTimerTabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks, tag: 0)
         oneTouchTimerViewController.tabBarItem = oneTouchTimerTabBarItem
@@ -38,5 +55,9 @@ class MainViewCoordinator {
         settingViewController.tabBarItem = settingTabBarItem
         
         self.rootViewController.viewControllers = [oneTouchTimerViewController, timerSetViewController, settingViewController]
+    }
+    
+    func present(for route: MainRoute) {
+        
     }
 }

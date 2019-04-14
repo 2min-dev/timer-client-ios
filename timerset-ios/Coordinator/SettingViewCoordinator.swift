@@ -8,24 +8,22 @@
 
 import UIKit
 
-enum SettingRoute {
-    case appInfo
+/// Route from setting view
+class SettingViewCoordinator: CoordinatorProtocl {
+     // MARK: route enumeration
+    enum SettingRoute {
+        case appInfo
+        
+        case laboratory
+    }
     
-    case laboratory
-}
-
-class SettingViewCoordinator {
     // MARK: properties
-    let rootViewController: SettingViewController
+    weak var rootViewController: SettingViewController!
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol) {
-        self.rootViewController = SettingViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: SettingViewController) {
         self.provider = provider
-        
-        // DI
-        self.rootViewController.coordinator = self
-        self.rootViewController.reactor = SettingViewReactor()
+        self.rootViewController = rootViewController
     }
     
     func present(for route: SettingRoute) {
@@ -33,8 +31,12 @@ class SettingViewCoordinator {
         case .appInfo:
             Logger.verbose("presenting app info view controller.")
             
-            let coordinator = AppInfoCoordinator(provider: provider)
-            let viewController = coordinator.rootViewController
+            let viewController = AppInfoViewController()
+            let coordinator = AppInfoCoordinator(provider: provider, rootViewController: viewController)
+            
+            // DI
+            viewController.coordinator = coordinator
+            viewController.reactor = AppInfoViewReactor()
             
             // push view controller
             rootViewController.navigationController?.pushViewController(viewController, animated: true)

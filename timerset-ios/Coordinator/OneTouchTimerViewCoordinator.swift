@@ -6,22 +6,20 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-enum OneTouchTimerRoute {
+/// Route from one touch timer view
+class OneTouchTimerViewCoordinator: CoordinatorProtocl {
+     // MARK: route enumeration
+    enum OneTouchTimerRoute {
+        
+    }
 
-}
-
-class OneTouchTimerViewCoordinator {
     // MARK: properties
-    let rootViewController: OneTouchTimerViewController
+    weak var rootViewController: OneTouchTimerViewController!
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol) {
-        self.rootViewController = OneTouchTimerViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: OneTouchTimerViewController) {
         self.provider = provider
-        
-        // DI
-        self.rootViewController.coordinator = self
-        self.rootViewController.reactor = OneTouchTimerViewReactor()
+        self.rootViewController = rootViewController
     }
     
     func present(for route: OneTouchTimerRoute) {

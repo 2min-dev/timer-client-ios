@@ -6,30 +6,30 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-enum IntroRoute {
-    case timerSet
-}
-
-/// Route from Intro view
-class IntroViewCoordinator {
+/// Route from intro view
+class IntroViewCoordinator: CoordinatorProtocl {
+     // MARK: route enumeration
+    enum IntroRoute {
+        case timerSet
+    }
+    
     // MARK: properties
-    let rootViewController: IntroViewController
+    weak var rootViewController: IntroViewController!
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol) {
-        self.rootViewController = IntroViewController()
+    required init(provider: ServiceProviderProtocol, rootViewController: IntroViewController) {
         self.provider = provider
-        
-        // DI
-        self.rootViewController.coordinator = self
-        self.rootViewController.reactor = IntroViewReactor()
+        self.rootViewController = rootViewController
     }
     
     func present(for route: IntroRoute) {
         switch route {
         case .timerSet:
-            let coordinator = MainViewCoordinator(provider: provider)
-            let viewController = coordinator.rootViewController
+            let viewController = MainViewController()
+            let coordinator = MainViewCoordinator(provider: provider, rootViewController: viewController)
+            
+            // DI
+            viewController.coordinator = coordinator
             
             // set tab bar view controller initial index
             viewController.selectedIndex = 1
