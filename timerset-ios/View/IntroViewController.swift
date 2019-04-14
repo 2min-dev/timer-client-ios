@@ -6,15 +6,12 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-import UIKit
 import RxSwift
-import RxCocoa
 import ReactorKit
-import SnapKit
 
 class IntroViewController: BaseViewController, View {
     // MARK: view properties
-    private unowned var loginView: IntroView { return self.view as! IntroView }
+    private var introView: IntroView { return self.view as! IntroView }
     
     // MARK: properties
     var coordinator: IntroViewCoordinator!
@@ -37,9 +34,13 @@ class IntroViewController: BaseViewController, View {
             .map { $0.isDone }
             .filter { $0 }
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] _ in
-                self?.coordinator.present(for: .main)
+            .subscribe({ [weak self] _ in
+                self?.coordinator.present(for: .timerSet)
             })
             .disposed(by: disposeBag)
+    }
+    
+    deinit {
+        Logger.verbose("")
     }
 }

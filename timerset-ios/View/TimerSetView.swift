@@ -1,5 +1,5 @@
 //
-//  BaseViewController.swift
+//  TimerSetView.swift
 //  timerset-ios
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -7,8 +7,7 @@
 //
 
 import UIKit
-import RxSwift
 
-class BaseViewController: UIViewController {
-    var disposeBag: DisposeBag = DisposeBag()
+class TimerSetView: UIView {
+
 }

@@ -6,20 +6,20 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-import RxSwift
-import ReactorKit
-
-enum AppRoute {
-    case intro
-}
+import UIKit
 
 /// Route from app initialze
 class AppCoordinator {
+    // MARK: route enumeration
+    enum AppRoute {
+        case intro
+    }
+
     // MARK: properties
     let window: UIWindow
     let provider: ServiceProviderProtocol
     
-    init(provider: ServiceProviderProtocol, window: UIWindow) {
+    required init(provider: ServiceProviderProtocol, window: UIWindow) {
         self.provider = provider
         self.window = window
     }
@@ -27,9 +27,22 @@ class AppCoordinator {
     func present(for route: AppRoute) {
         switch route {
         case .intro:
-            // initialize view
-            let coordinator: IntroViewCoordinator = IntroViewCoordinator(provider: self.provider)
-            let viewController: IntroViewController = coordinator.rootViewController
+            let viewController: RootViewController = RootViewController()
+            let coordinator: RootViewCoordinator = RootViewCoordinator(provider: provider, rootViewController: viewController)
+            
+            // initial view
+            let introViewController = IntroViewController()
+            let introViewCoordinator = IntroViewCoordinator(provider: provider, rootViewController: introViewController)
+            let introViewReactor = IntroViewReactor()
+            
+            // DI
+            viewController.coordinator = coordinator
+            
+            introViewController.coordinator = introViewCoordinator
+            introViewController.reactor = introViewReactor
+            
+            // initialize root view
+            viewController.viewControllers = [introViewController]
             
             // present view
             self.window.rootViewController = viewController
