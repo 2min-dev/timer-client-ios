@@ -23,8 +23,6 @@ class SettingViewController: BaseViewController, View {
     // MARK: properties
     var coordinator: SettingViewCoordinator!
     
-    private var sections: [BaseTableSection] = []
-    
     // MARK: lifecycle
     override func loadView() {
         self.view = SettingView()
@@ -32,9 +30,6 @@ class SettingViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // initialize menu list
-        initMenus()
         
         settingTableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
         initSettingTableView()
@@ -47,47 +42,23 @@ class SettingViewController: BaseViewController, View {
     // MARK: reactor bind
     func bind(reactor: SettingViewReactor) {
         // MARK: action
+        reactor.action.onNext(.viewDidLoad)
         
         // MARK: state
-        
-    }
-    
-    // MARK: initalize methods
-    
-    /**
-     * initialize menu items
-     */
-    private func initMenus() {
-        var setting: [BaseTableItem] = []
-        setting.append(BaseTableItem(title: "앱 정보"))
-        
-        var develop: [BaseTableItem] = []
-        develop.append(BaseTableItem(title: "실험실"))
-        
-        sections.append(BaseTableSection(title: "설정", items: setting))
-        sections.append(BaseTableSection(title: "개발자 옵션", items: develop))
+        reactor.state
+            .map { $0.sections }
+            .bind(to: settingTableView.rx.items(dataSource: RxTableViewSectionedReloadDataSource<BaseTableSection>(configureCell: { (datasource, tableview, indexPath, item) in
+                let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+                cell.textLabel?.text = item.title
+                return cell
+            })))
+            .disposed(by: disposeBag)
     }
     
     /**
      * initizlize setting table view datasource & delegate
      */
     private func initSettingTableView() {
-        // set setting menu table view datasource
-        let dataSource = RxTableViewSectionedReloadDataSource<BaseTableSection>(configureCell: { (datasource, tableview, indexPath, item) in
-            let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
-            cell.textLabel?.text = item.title
-            return cell
-        })
-        
-        //        set section header
-        //        dataSource.titleForHeaderInSection = { dataSource, index in
-        //            return dataSource.sectionModels[index].title
-        //        }
-        
-        Observable.just(sections)
-            .bind(to: settingTableView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-        
         // set setting menu select action
         settingTableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in

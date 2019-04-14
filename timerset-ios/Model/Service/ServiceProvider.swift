@@ -7,9 +7,9 @@
 //
 
 protocol ServiceProviderProtocol: class {
-    
+    var appService: AppServicePorotocol { get }
 }
 
 class ServiceProvider: ServiceProviderProtocol {
-    
+    lazy var appService: AppServicePorotocol = AppService()
 }

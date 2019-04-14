@@ -33,7 +33,7 @@ class MainViewCoordinator: CoordinatorProtocl {
         
         let settingViewController = SettingViewController()
         let settingViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: settingViewController)
-        let settingViewReactor = SettingViewReactor()
+        let settingViewReactor = SettingViewReactor(appService: provider.appService)
         
         // DI
         oneTouchTimerViewController.coordinator = oneTouchTimerViewCoordinator

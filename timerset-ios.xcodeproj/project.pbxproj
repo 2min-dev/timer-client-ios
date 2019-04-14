@@ -41,6 +41,7 @@
 		F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */; };
 		F3C187542262052300B2C644 /* AppInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C187532262052300B2C644 /* AppInfoView.swift */; };
 		F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C18755226306EC00B2C644 /* CoordinatorProtocol.swift */; };
+		F3C18758226318DB00B2C644 /* AppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C18757226318DB00B2C644 /* AppService.swift */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
 		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
@@ -98,6 +99,7 @@
 		F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoCoordinator.swift; sourceTree = "<group>"; };
 		F3C187532262052300B2C644 /* AppInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoView.swift; sourceTree = "<group>"; };
 		F3C18755226306EC00B2C644 /* CoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorProtocol.swift; sourceTree = "<group>"; };
+		F3C18757226318DB00B2C644 /* AppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppService.swift; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timerset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "timerset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
+				F3C18757226318DB00B2C644 /* AppService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -496,6 +499,7 @@
 				F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
+				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
@@ -551,6 +555,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -613,6 +618,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

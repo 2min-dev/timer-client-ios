@@ -34,7 +34,6 @@ class OneTouchTimerViewReactor: Reactor {
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        let state = state
         return state
     }
 }

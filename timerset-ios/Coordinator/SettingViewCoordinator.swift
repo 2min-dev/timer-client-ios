@@ -36,7 +36,7 @@ class SettingViewCoordinator: CoordinatorProtocl {
             
             // DI
             viewController.coordinator = coordinator
-            viewController.reactor = AppInfoViewReactor()
+            viewController.reactor = AppInfoViewReactor(appService: provider.appService)
             
             // push view controller
             rootViewController.navigationController?.pushViewController(viewController, animated: true)
