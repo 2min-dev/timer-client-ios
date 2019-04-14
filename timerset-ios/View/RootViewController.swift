@@ -20,6 +20,10 @@ class RootViewController: UINavigationController {
         // set default swipe back gesture because if isNavigationBarHidden property is true, interactive gesture isn't work
         interactivePopGestureRecognizer?.delegate = self
     }
+    
+    deinit {
+        Logger.verbose("")
+    }
 }
 
 extension RootViewController: UIGestureRecognizerDelegate {

@@ -16,4 +16,8 @@ class MainViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .white
     }
+    
+    deinit {
+        Logger.verbose("")
+    }
 }

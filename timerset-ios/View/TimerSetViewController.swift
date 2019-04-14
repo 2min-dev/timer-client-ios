@@ -11,7 +11,7 @@ import ReactorKit
 
 class TimerSetViewController: BaseViewController, View {
     // MARK: view properties
-    private unowned var timerSetView: TimerSetView { return self.view as! TimerSetView }
+    private var timerSetView: TimerSetView { return self.view as! TimerSetView }
     
     // MARK: properties
     var coordinator: TimerSetViewCoordinator!
@@ -30,5 +30,9 @@ class TimerSetViewController: BaseViewController, View {
         // MARK: action
         
         // MARK: state
+    }
+    
+    deinit {
+        Logger.verbose("")
     }
 }

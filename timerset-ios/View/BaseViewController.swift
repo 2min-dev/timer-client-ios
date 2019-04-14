@@ -11,8 +11,4 @@ import RxSwift
 
 class BaseViewController: UIViewController {
     var disposeBag: DisposeBag = DisposeBag()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
 }

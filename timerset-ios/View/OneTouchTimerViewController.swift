@@ -11,7 +11,7 @@ import ReactorKit
 
 class OneTouchTimerViewController: BaseViewController, View {
     // MARK: view properties
-    private unowned var timerSetView: OneTouchTimerView { return self.view as! OneTouchTimerView }
+    private var timerSetView: OneTouchTimerView { return self.view as! OneTouchTimerView }
     
     // MARK: properties
     var coordinator: OneTouchTimerViewCoordinator!
@@ -30,5 +30,9 @@ class OneTouchTimerViewController: BaseViewController, View {
         // MARK: action
         
         // MARK: state
+    }
+    
+    deinit {
+        Logger.verbose("")
     }
 }

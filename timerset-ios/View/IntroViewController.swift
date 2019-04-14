@@ -11,7 +11,7 @@ import ReactorKit
 
 class IntroViewController: BaseViewController, View {
     // MARK: view properties
-    private unowned var introView: IntroView { return self.view as! IntroView }
+    private var introView: IntroView { return self.view as! IntroView }
     
     // MARK: properties
     var coordinator: IntroViewCoordinator!
@@ -38,5 +38,9 @@ class IntroViewController: BaseViewController, View {
                 self?.coordinator.present(for: .timerSet)
             })
             .disposed(by: disposeBag)
+    }
+    
+    deinit {
+        Logger.verbose("")
     }
 }
