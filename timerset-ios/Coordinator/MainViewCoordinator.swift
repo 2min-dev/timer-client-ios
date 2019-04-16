@@ -25,7 +25,7 @@ class MainViewCoordinator: CoordinatorProtocl {
         // tab bar controller initialize
         let oneTouchTimerViewController = OneTouchTimerViewController()
         let oneTouchTimerViewCoordinator = OneTouchTimerViewCoordinator(provider: provider, rootViewController: oneTouchTimerViewController)
-        let oneTouchTimerReactor = OneTouchTimerViewReactor()
+        let oneTouchTimerReactor = OneTouchTimerViewReactor(timerService: provider.timerService)
         
         let timerSetViewController = TimerSetViewController()
         let timerSetViewCoordinator = TimerSetViewCoordinator(provider: provider, rootViewController: timerSetViewController)

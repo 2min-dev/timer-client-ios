@@ -8,8 +8,10 @@
 
 protocol ServiceProviderProtocol: class {
     var appService: AppServicePorotocol { get }
+    var timerService: TimerServicePorotocol { get }
 }
 
 class ServiceProvider: ServiceProviderProtocol {
     lazy var appService: AppServicePorotocol = AppService()
+    lazy var timerService: TimerServicePorotocol = TimerService()
 }

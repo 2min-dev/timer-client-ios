@@ -24,9 +24,11 @@ class OneTouchTimerViewReactor: Reactor {
     
     // MARK: properties
     var initialState: State
+    private let timerService: TimerServicePorotocol
     
-    init() {
+    init(timerService: TimerServicePorotocol) {
         self.initialState = State()
+        self.timerService = timerService
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
