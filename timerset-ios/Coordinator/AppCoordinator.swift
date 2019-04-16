@@ -45,8 +45,8 @@ class AppCoordinator {
             viewController.viewControllers = [introViewController]
             
             // present view
-            self.window.rootViewController = viewController
-            self.window.makeKeyAndVisible()
+            window.rootViewController = viewController
+            window.makeKeyAndVisible()
         }
     }
 }

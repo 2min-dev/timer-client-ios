@@ -48,7 +48,8 @@ class SettingViewCoordinator: CoordinatorProtocl {
             let vc = storyboard.instantiateViewController(withIdentifier: "LaboratoryViewController")
             
             // push view controller
-            rootViewController.navigationController?.pushViewController(vc, animated: true)
+//            rootViewController.navigationController?.pushViewController(vc, animated: true)
+            rootViewController.navigationController?.present(vc, animated: true, completion: nil)
         }
     }
 }

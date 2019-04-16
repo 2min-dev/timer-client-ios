@@ -12,7 +12,7 @@ class PageViewController: UIPageViewController {
     private let storyboardIdenfier = "laboratory"
     
     private var pages: [String] = ["FirstPageViewController", "SecondPageViewController", "ThirdPageViewController"]
-    private var page: Int = 1
+    private var page: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,22 +35,32 @@ extension PageViewController: UIPageViewControllerDelegate, UIPageViewController
      *  So when you end swipe gesture, the pages state is A B(current) C D(deinit)
      */
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        if page == 0 {
+        let prev = page - 1
+        
+        guard prev >= 0 else {
             return nil
-        } else {
-            page -= 1
-            Logger.debug(page)
-            return loadViewController(identifier: pages[page])
         }
+        
+        guard pages.count > prev else {
+            return nil
+        }
+        
+        page -= 1
+        return loadViewController(identifier: pages[prev])
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if page == pages.count - 1 {
+        let next = page + 1
+    
+        guard pages.count != next else {
             return nil
-        } else {
-            page += 1
-            Logger.debug(page)
-            return loadViewController(identifier: pages[page])
         }
+        
+        guard pages.count > next else {
+            return nil
+        }
+        
+        page += 1
+        return loadViewController(identifier: pages[next])
     }
 }
