@@ -18,7 +18,7 @@ class AppInfoViewReactor: Reactor {
 	}
 
 	enum Mutation {
-        case isLaboratoryOpend(Bool)
+        case isLaboratoryOpened(Bool)
 	}
 
 	struct State {
@@ -37,7 +37,7 @@ class AppInfoViewReactor: Reactor {
 		self.initialState = State(isLaboratoryOpened: false)
         self.appService = appService
         
-        appService.getIsLaboratoryOpened()
+        appService.isLaboratoryOpened()
             .subscribe(onNext: {
                 self.initialState.isLaboratoryOpened = $0
             })
@@ -54,8 +54,8 @@ class AppInfoViewReactor: Reactor {
             Logger.debug("developer mode : \(tapCount) / \(MAX_TAP_COUNT)")
             // if tap count equal `MAX_TAP_COUNT`, open laboratory menu
             if tapCount == MAX_TAP_COUNT {
-                appService.setIsLaboratoryOpened(isOpened: true)
-                return Observable.just(Mutation.isLaboratoryOpend(true))
+                appService.setLaboratoryOpened(true)
+                return Observable.just(Mutation.isLaboratoryOpened(true))
             }
             return Observable.empty()
         }
@@ -64,8 +64,8 @@ class AppInfoViewReactor: Reactor {
 	func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
-        case let .isLaboratoryOpend(isOpened):
-            state.isLaboratoryOpened = isOpened
+        case let .isLaboratoryOpened(isLaboratoryOpened):
+            state.isLaboratoryOpened = isLaboratoryOpened
             return state
         }
 	}

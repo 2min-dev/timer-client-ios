@@ -15,8 +15,8 @@ enum AppEvent {
 protocol AppServicePorotocol {
     var event: PublishSubject<AppEvent> { get }
     
-    func getIsLaboratoryOpened() -> Observable<Bool>
-    func setIsLaboratoryOpened(isOpened: Bool)
+    func isLaboratoryOpened() -> Observable<Bool>
+    func setLaboratoryOpened(_ isLaboratoryOpened: Bool)
 }
 
 class AppService: AppServicePorotocol {
@@ -24,19 +24,19 @@ class AppService: AppServicePorotocol {
     var event: PublishSubject<AppEvent> = PublishSubject()
     
     // MARK: properties
-    private var isLaboratoryOpened: Bool
+    private var laboratoryOpened: Bool
     
     init() {
-        isLaboratoryOpened = UserDefaults.standard.bool(forKey: "isLaboratoryOpened")
+        laboratoryOpened = UserDefaults.standard.bool(forKey: "laboratoryOpened")
     }
     
-    func getIsLaboratoryOpened() -> Observable<Bool> {
-        return Observable.just(isLaboratoryOpened)
+    func isLaboratoryOpened() -> Observable<Bool> {
+        return Observable.just(laboratoryOpened)
     }
     
-    func setIsLaboratoryOpened(isOpened: Bool) {
-        isLaboratoryOpened = isOpened
-        UserDefaults.standard.set(isOpened, forKey: "isLaboratoryOpened")
+    func setLaboratoryOpened(_ isLaboratoryOpened: Bool) {
+        laboratoryOpened = isLaboratoryOpened
+        UserDefaults.standard.set(isLaboratoryOpened, forKey: "laboratoryOpened")
         
         event.onNext(.isLaboratoryOpened)
     }
