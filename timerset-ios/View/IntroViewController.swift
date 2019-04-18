@@ -6,6 +6,8 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import UserNotifications
+import UIKit
 import RxSwift
 import ReactorKit
 
@@ -23,6 +25,10 @@ class IntroViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (didAllow, error) in
+            Logger.debug("allowed")
+        }
     }
     
     // MARK: ### reactor bind ###

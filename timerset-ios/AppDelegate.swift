@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import UserNotifications
+import AudioToolbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,5 +25,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let appCoordinator: AppCoordinator = AppCoordinator(provider: ServiceProvider(), window: window!)
         appCoordinator.present(for: .intro)
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        let content = UNMutableNotificationContent()
+        content.title = "Timer done."
+        content.subtitle = "done done"
+        content.body = "don don don"
+        content.sound = UNNotificationSound(named: UNNotificationSoundName.init("default"))
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: "timer", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if error == nil {
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            }
+        }
     }
 }

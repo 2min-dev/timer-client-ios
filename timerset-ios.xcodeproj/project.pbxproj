@@ -62,7 +62,35 @@
 		F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
 		F3D1F7C5225CC3D7006DC162 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
 		F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C3225CC3D7006DC162 /* Functions.swift */; };
+		F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F342AD226751A300A226C0 /* NotificationCenter.framework */; };
+		F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342B0226751A300A226C0 /* TodayViewController.swift */; };
+		F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F3F342AC226751A300A226C0 /* widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F3F342C02267552100A226C0 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342BF2267552100A226C0 /* TodayView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F3F342B6226751A300A226C0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3D1F780225CB6C1006DC162 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F3F342AB226751A300A226C0;
+			remoteInfo = widget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F3F342BC226751A300A226C0 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -124,6 +152,13 @@
 		F3D1F7C1225CC3D7006DC162 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		F3D1F7C2225CC3D7006DC162 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F3D1F7C3225CC3D7006DC162 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		F3F342AC226751A300A226C0 /* widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3F342AD226751A300A226C0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		F3F342B0226751A300A226C0 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		F3F342B5226751A300A226C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3F342BD2267535500A226C0 /* widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widget.entitlements; sourceTree = "<group>"; };
+		F3F342BE2267537100A226C0 /* timerset-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "timerset-ios.entitlements"; sourceTree = "<group>"; };
+		F3F342BF2267552100A226C0 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +170,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F3F342A9226751A300A226C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -142,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */,
+				F3F342AD226751A300A226C0 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -199,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F78A225CB6C1006DC162 /* timerset-ios */,
+				F3F342AF226751A300A226C0 /* widget */,
 				F3D1F789225CB6C1006DC162 /* Products */,
 				A8111254192D76522D893027 /* Pods */,
 				148CF5699B4175487BC4AAAF /* Frameworks */,
@@ -209,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F788225CB6C1006DC162 /* timerset-ios.app */,
+				F3F342AC226751A300A226C0 /* widget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -216,6 +262,7 @@
 		F3D1F78A225CB6C1006DC162 /* timerset-ios */ = {
 			isa = PBXGroup;
 			children = (
+				F3F342BE2267537100A226C0 /* timerset-ios.entitlements */,
 				F303F263225CC6EE00A11FAF /* Laboratory */,
 				F3D1F7C0225CC3BE006DC162 /* Common */,
 				F3D1F7B5225CC322006DC162 /* Extension */,
@@ -339,6 +386,17 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		F3F342AF226751A300A226C0 /* widget */ = {
+			isa = PBXGroup;
+			children = (
+				F3F342BD2267535500A226C0 /* widget.entitlements */,
+				F3F342B0226751A300A226C0 /* TodayViewController.swift */,
+				F3F342BF2267552100A226C0 /* TodayView.swift */,
+				F3F342B5226751A300A226C0 /* Info.plist */,
+			);
+			path = widget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -352,15 +410,34 @@
 				F3D1F786225CB6C1006DC162 /* Resources */,
 				F3D1F7A6225CBEA8006DC162 /* ShellScript */,
 				6E8442ABD5C58FF2B3FF8039 /* [CP] Embed Pods Frameworks */,
+				F3F342BC226751A300A226C0 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F3F342B7226751A300A226C0 /* PBXTargetDependency */,
 			);
 			name = "timerset-ios";
 			productName = "timerset-ios";
 			productReference = F3D1F788225CB6C1006DC162 /* timerset-ios.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F3F342AB226751A300A226C0 /* widget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3F342BB226751A300A226C0 /* Build configuration list for PBXNativeTarget "widget" */;
+			buildPhases = (
+				F3F342A8226751A300A226C0 /* Sources */,
+				F3F342A9226751A300A226C0 /* Frameworks */,
+				F3F342AA226751A300A226C0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = widget;
+			productName = widget;
+			productReference = F3F342AC226751A300A226C0 /* widget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -374,6 +451,19 @@
 				TargetAttributes = {
 					F3D1F787225CB6C1006DC162 = {
 						CreatedOnToolsVersion = 10.2;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					F3F342AB226751A300A226C0 = {
+						CreatedOnToolsVersion = 10.2;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -391,6 +481,7 @@
 			projectRoot = "";
 			targets = (
 				F3D1F787225CB6C1006DC162 /* timerset-ios */,
+				F3F342AB226751A300A226C0 /* widget */,
 			);
 		};
 /* End PBXProject section */
@@ -407,6 +498,13 @@
 				F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 				F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F342AA226751A300A226C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,7 +643,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F3F342A8226751A300A226C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3F342C02267552100A226C0 /* TodayView.swift in Sources */,
+				F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F3F342B7226751A300A226C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F3F342AB226751A300A226C0 /* widget */;
+			targetProxy = F3F342B6226751A300A226C0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */ = {
@@ -683,7 +798,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "timerset-ios/timerset-ios.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
 				INFOPLIST_FILE = "timerset-ios/Info.plist";
@@ -703,7 +820,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "timerset-ios/timerset-ios.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
 				INFOPLIST_FILE = "timerset-ios/Info.plist";
@@ -714,6 +833,50 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.project.timerset-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "jsilver.project.timerset-ios";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F3F342B9226751A300A226C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = widget/widget.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6VSLC69397;
+				INFOPLIST_FILE = widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.project.timerset-ios.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "jsilver.project.timerset-ios.widget";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F3F342BA226751A300A226C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = widget/widget.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6VSLC69397;
+				INFOPLIST_FILE = widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jsilver.project.timerset-ios.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "jsilver.project.timerset-ios.widget";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -736,6 +899,15 @@
 			buildConfigurations = (
 				F3D1F79B225CB6C2006DC162 /* Debug */,
 				F3D1F79C225CB6C2006DC162 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3F342BB226751A300A226C0 /* Build configuration list for PBXNativeTarget "widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3F342B9226751A300A226C0 /* Debug */,
+				F3F342BA226751A300A226C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
