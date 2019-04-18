@@ -412,7 +412,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/ReactorKit/ReactorKit.framework",
@@ -437,7 +437,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D4FD301E82ADFD1ECF93D47D /* [CP] Check Pods Manifest.lock */ = {
