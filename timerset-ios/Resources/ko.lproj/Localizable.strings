@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  timerset-ios
+
+  Created by JSilver on 19/04/2019.
+  Copyright © 2019 Jeong Jin Eun. All rights reserved.
+*/
+
+// Widget String
+"widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";

@@ -7,18 +7,30 @@
 //
 
 import UIKit
+import SnapKit
 
 class TodayView: UIView {
     let label: UILabel = {
         let view = UILabel()
-        view.text = "Hello World~"
+        view.textAlignment = .center
+        view.numberOfLines = 0
+        view.font = Constants.Font.NanumSquareRoundR.withSize(18.adjust())
+        view.textColor = Constants.Color.gray
+        view.text = "widget_preparing_title".localized
         return view
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setSubviewForAutoLayout(label)
         
-        addSubview(label)
+        label.snp.makeConstraints({ make in
+            if #available(iOS 11.0, *) {
+                make.edges.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.edges.equalToSuperview()
+            }
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {

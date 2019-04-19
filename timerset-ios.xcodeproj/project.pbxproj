@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		77FF1E739EAF53BDFC80A16B /* Pods_widget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFFCCDDD766608307FFC71EA /* Pods_widget.framework */; };
 		7984FE92D890893C34B52BBB /* Pods_timerset_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */; };
 		F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */; };
 		F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */; };
@@ -60,12 +61,25 @@
 		F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */; };
 		F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */; };
 		F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
-		F3D1F7C5225CC3D7006DC162 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
 		F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C3225CC3D7006DC162 /* Functions.swift */; };
 		F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F342AD226751A300A226C0 /* NotificationCenter.framework */; };
 		F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342B0226751A300A226C0 /* TodayViewController.swift */; };
 		F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F3F342AC226751A300A226C0 /* widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F3F342C02267552100A226C0 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342BF2267552100A226C0 /* TodayView.swift */; };
+		F3F800A7226A0981003D1D88 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
+		F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F3F800B3226A0C15003D1D88 /* Localizable.strings */; };
+		F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F800B5226A0D0F003D1D88 /* String+localized.swift */; };
+		F3F800B7226A0D68003D1D88 /* String+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F800B5226A0D0F003D1D88 /* String+localized.swift */; };
+		F3F800B8226A0D79003D1D88 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
+		F3F800B9226A107B003D1D88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F3F800B3226A0C15003D1D88 /* Localizable.strings */; };
+		F3F800BA226A1109003D1D88 /* Primitive+adjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */; };
+		F3F800BB226A2CFE003D1D88 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
+		F3F800BC226A2D19003D1D88 /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */; };
+		F3F800BD226A2D1B003D1D88 /* UIView+autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */; };
+		F3F800BF226A2E28003D1D88 /* NanumSquareRoundB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */; };
+		F3F800C0226A2E28003D1D88 /* NanumSquareRoundEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */; };
+		F3F800C1226A2E28003D1D88 /* NanumSquareRoundL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */; };
+		F3F800C2226A2E28003D1D88 /* NanumSquareRoundR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,8 +108,11 @@
 
 /* Begin PBXFileReference section */
 		7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.debug.xcconfig"; sourceTree = "<group>"; };
+		841CC7D268D6156FF0C89DF3 /* Pods-widget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-widget/Pods-widget.debug.xcconfig"; sourceTree = "<group>"; };
 		8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_timerset_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerset-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-timerset-ios/Pods-timerset-ios.release.xcconfig"; sourceTree = "<group>"; };
+		CBBE65E0FB7A423285337073 /* Pods-widget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widget.release.xcconfig"; path = "Pods/Target Support Files/Pods-widget/Pods-widget.release.xcconfig"; sourceTree = "<group>"; };
+		CFFCCDDD766608307FFC71EA /* Pods_widget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_widget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundEB.ttf; sourceTree = "<group>"; };
 		F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundL.ttf; sourceTree = "<group>"; };
 		F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundR.ttf; sourceTree = "<group>"; };
@@ -159,6 +176,9 @@
 		F3F342BD2267535500A226C0 /* widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widget.entitlements; sourceTree = "<group>"; };
 		F3F342BE2267537100A226C0 /* timerset-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "timerset-ios.entitlements"; sourceTree = "<group>"; };
 		F3F342BF2267552100A226C0 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		F3F800B2226A0C15003D1D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F3F800B4226A0C3F003D1D88 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F3F800B5226A0D0F003D1D88 /* String+localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+localized.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */,
+				77FF1E739EAF53BDFC80A16B /* Pods_widget.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +207,7 @@
 			children = (
 				8BC0D17B96CD0ADB0586538A /* Pods_timerset_ios.framework */,
 				F3F342AD226751A300A226C0 /* NotificationCenter.framework */,
+				CFFCCDDD766608307FFC71EA /* Pods_widget.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -195,6 +217,8 @@
 			children = (
 				7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */,
 				C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */,
+				841CC7D268D6156FF0C89DF3 /* Pods-widget.debug.xcconfig */,
+				CBBE65E0FB7A423285337073 /* Pods-widget.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -203,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				F303F25A225CC57B00A11FAF /* Fonts */,
+				F3F800B3226A0C15003D1D88 /* Localizable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -369,6 +394,7 @@
 			children = (
 				F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */,
 				F3D1F7B7225CC357006DC162 /* String+regex.swift */,
+				F3F800B5226A0D0F003D1D88 /* String+localized.swift */,
 				F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */,
 				F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */,
 				F3D1F7B8225CC357006DC162 /* UIViewController+child.swift */,
@@ -426,6 +452,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F3F342BB226751A300A226C0 /* Build configuration list for PBXNativeTarget "widget" */;
 			buildPhases = (
+				A0DF03B44A658173E769EADC /* [CP] Check Pods Manifest.lock */,
 				F3F342A8226751A300A226C0 /* Sources */,
 				F3F342A9226751A300A226C0 /* Frameworks */,
 				F3F342AA226751A300A226C0 /* Resources */,
@@ -474,6 +501,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = F3D1F77F225CB6C1006DC162;
 			productRefGroup = F3D1F789225CB6C1006DC162 /* Products */;
@@ -495,9 +523,10 @@
 				F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */,
 				F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */,
 				F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */,
-				F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */,
-				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 				F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */,
+				F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */,
+				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
+				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +534,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3F800BF226A2E28003D1D88 /* NanumSquareRoundB.ttf in Resources */,
+				F3F800C0226A2E28003D1D88 /* NanumSquareRoundEB.ttf in Resources */,
+				F3F800C1226A2E28003D1D88 /* NanumSquareRoundL.ttf in Resources */,
+				F3F800C2226A2E28003D1D88 /* NanumSquareRoundR.ttf in Resources */,
+				F3F800B9226A107B003D1D88 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,6 +579,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timerset-ios/Pods-timerset-ios-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A0DF03B44A658173E769EADC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-widget-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D4FD301E82ADFD1ECF93D47D /* [CP] Check Pods Manifest.lock */ = {
@@ -603,6 +659,7 @@
 				F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */,
 				F373CCD42265F995007ECCA0 /* TimerService.swift in Sources */,
 				F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */,
+				F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
@@ -615,9 +672,9 @@
 				F3C18750226204EB00B2C644 /* AppInfoViewReactor.swift in Sources */,
 				F303F27D225CCE2400A11FAF /* OneTouchTimerView.swift in Sources */,
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
-				F3D1F7C5225CC3D7006DC162 /* Constants.swift in Sources */,
 				F303F281225CCE9D00A11FAF /* OneTouchTimerViewCoordinator.swift in Sources */,
 				F303F275225CCBA100A11FAF /* SettingViewController.swift in Sources */,
+				F3F800A7226A0981003D1D88 /* Constants.swift in Sources */,
 				F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */,
 				F303F283225CD51400A11FAF /* MainViewController.swift in Sources */,
 				F303F27F225CCE7100A11FAF /* OneTouchTimerViewReactor.swift in Sources */,
@@ -647,8 +704,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3F800BC226A2D19003D1D88 /* UIColor+hex.swift in Sources */,
 				F3F342C02267552100A226C0 /* TodayView.swift in Sources */,
+				F3F800BB226A2CFE003D1D88 /* Logger.swift in Sources */,
+				F3F800BA226A1109003D1D88 /* Primitive+adjust.swift in Sources */,
+				F3F800B7226A0D68003D1D88 /* String+localized.swift in Sources */,
+				F3F800BD226A2D1B003D1D88 /* UIView+autolayout.swift in Sources */,
 				F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */,
+				F3F800B8226A0D79003D1D88 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +732,15 @@
 				F3D1F795225CB6C2006DC162 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		F3F800B3226A0C15003D1D88 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F3F800B2226A0C15003D1D88 /* en */,
+				F3F800B4226A0C3F003D1D88 /* ko */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -798,7 +870,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7ED738B39E56568EAEA53824 /* Pods-timerset-ios.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "timerset-ios/timerset-ios.entitlements";
 				CODE_SIGN_STYLE = Manual;
@@ -820,7 +891,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C0071636E1989783A43F91BA /* Pods-timerset-ios.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "timerset-ios/timerset-ios.entitlements";
 				CODE_SIGN_STYLE = Manual;
@@ -840,8 +910,10 @@
 		};
 		F3F342B9226751A300A226C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 841CC7D268D6156FF0C89DF3 /* Pods-widget.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = widget/widget.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
 				INFOPLIST_FILE = widget/Info.plist;
@@ -862,8 +934,10 @@
 		};
 		F3F342BA226751A300A226C0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CBBE65E0FB7A423285337073 /* Pods-widget.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = widget/widget.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
 				INFOPLIST_FILE = widget/Info.plist;

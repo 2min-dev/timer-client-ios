@@ -26,4 +26,7 @@ target 'timerset-ios' do
   # Log
   pod 'SwiftyBeaver'
   
+  target 'widget' do
+    inherit! :search_paths
+  end
 end

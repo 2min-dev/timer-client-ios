@@ -13,12 +13,16 @@ import NotificationCenter
 class TodayViewController: UIViewController, NCWidgetProviding {
     
     override func loadView() {
-        view = TodayView(frame: CGRect(x: 0, y: 0, width: 320, height: 100))
+        view = TodayView()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        // set widget display mode `expaned` that can be expand height
+        // the `compact` mode can't set custom height (fixed default height)
+        extensionContext?.widgetLargestAvailableDisplayMode = .expanded
     }
         
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
@@ -31,4 +35,15 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         completionHandler(NCUpdateResult.newData)
     }
     
+    // call when user toggle widget display mode `compact` or `expand`
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+        switch activeDisplayMode {
+        case .compact:
+            preferredContentSize = maxSize
+        case .expanded:
+            preferredContentSize = CGSize(width: 0, height: 200)
+        @unknown default:
+            fatalError()
+        }
+    }
 }
