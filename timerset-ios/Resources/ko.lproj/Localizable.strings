@@ -6,5 +6,8 @@
   Copyright © 2019 Jeong Jin Eun. All rights reserved.
 */
 
+// Default App String
+"CFBundleDisplayName" = "타이머셋";
+
 // Widget String
 "widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";

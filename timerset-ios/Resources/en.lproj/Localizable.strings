@@ -6,5 +6,8 @@
   Copyright © 2019 Jeong Jin Eun. All rights reserved.
 */
 
+// Default App String
+"CFBundleDisplayName" = "TimerSet";
+
 // Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";
