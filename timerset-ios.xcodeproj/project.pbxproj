@@ -30,8 +30,10 @@
 		F303F281225CCE9D00A11FAF /* OneTouchTimerViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F280225CCE9D00A11FAF /* OneTouchTimerViewCoordinator.swift */; };
 		F303F283225CD51400A11FAF /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F282225CD51400A11FAF /* MainViewController.swift */; };
 		F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */; };
+		F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerInfo.swift */; };
+		F37041CB226B81B00012EA16 /* TimerSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimerSet.swift */; };
 		F373CCD42265F995007ECCA0 /* TimerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD32265F995007ECCA0 /* TimerService.swift */; };
-		F373CCD62265FA33007ECCA0 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD52265FA33007ECCA0 /* Timer.swift */; };
+		F373CCD62265FA33007ECCA0 /* JSTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD52265FA33007ECCA0 /* JSTimer.swift */; };
 		F3A2A87E225E24A0001D579A /* FirstPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87D225E24A0001D579A /* FirstPageViewController.swift */; };
 		F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */; };
 		F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */; };
@@ -134,8 +136,10 @@
 		F303F280225CCE9D00A11FAF /* OneTouchTimerViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTouchTimerViewCoordinator.swift; sourceTree = "<group>"; };
 		F303F282225CD51400A11FAF /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCoordinator.swift; sourceTree = "<group>"; };
+		F37041C8226B65550012EA16 /* TimerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
+		F37041CA226B81B00012EA16 /* TimerSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSet.swift; sourceTree = "<group>"; };
 		F373CCD32265F995007ECCA0 /* TimerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerService.swift; sourceTree = "<group>"; };
-		F373CCD52265FA33007ECCA0 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		F373CCD52265FA33007ECCA0 /* JSTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTimer.swift; sourceTree = "<group>"; };
 		F3A2A87D225E24A0001D579A /* FirstPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPageViewController.swift; sourceTree = "<group>"; };
@@ -310,7 +314,9 @@
 				F3D1F7A2225CBCDC006DC162 /* Service */,
 				F3C187492261E66F00B2C644 /* BaseTableItem.swift */,
 				F3C1874B2261FB0900B2C644 /* BaseTableSeciton.swift */,
-				F373CCD52265FA33007ECCA0 /* Timer.swift */,
+				F37041C8226B65550012EA16 /* TimerInfo.swift */,
+				F373CCD52265FA33007ECCA0 /* JSTimer.swift */,
+				F37041CA226B81B00012EA16 /* TimerSet.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -651,7 +657,7 @@
 			files = (
 				F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */,
 				F303F273225CCB7500A11FAF /* SettingViewCoordinator.swift in Sources */,
-				F373CCD62265FA33007ECCA0 /* Timer.swift in Sources */,
+				F373CCD62265FA33007ECCA0 /* JSTimer.swift in Sources */,
 				F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */,
 				F3C1874C2261FB0900B2C644 /* BaseTableSeciton.swift in Sources */,
 				F303F279225CCCE300A11FAF /* SettingViewReactor.swift in Sources */,
@@ -689,6 +695,8 @@
 				F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */,
 				F3D1F7B2225CC2A9006DC162 /* BaseViewController.swift in Sources */,
 				F303F27B225CCE1600A11FAF /* OneTouchTimerViewController.swift in Sources */,
+				F37041CB226B81B00012EA16 /* TimerSet.swift in Sources */,
+				F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */,
 				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,
 				F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */,
 				F3C187542262052300B2C644 /* AppInfoView.swift in Sources */,

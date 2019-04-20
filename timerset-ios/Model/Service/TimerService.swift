@@ -14,23 +14,36 @@ enum TimerEvent {
 
 protocol TimerServicePorotocol {
     var event: PublishSubject<TimerEvent> { get }
+    
+    func fetchTimerSet() -> Observable<TimerSet>
 }
 
+/// A service class that manage the application's timers
 class TimerService: TimerServicePorotocol {
     // MARK: global state event
     var event: PublishSubject<TimerEvent> = PublishSubject()
     
     // MARK: properties
-    var timers: [TimerModel]
     
     init() {
-        timers = [
-            TimerModel(title: "a", endTime: 10),
-            TimerModel(title: "b", endTime: 20),
-            TimerModel(title: "c", endTime: 30),
-        ]
-        timers[0].startTimer()
-        timers[1].startTimer()
-        timers[2].startTimer()
+        
+    }
+    
+    func fetchTimerSet() -> Observable<TimerSet> {
+        let timerSet = TimerSet(timers: [
+            JSTimer(info: TimerInfo(title: #"First Test - "Korean""#, endTime: 80 * 60 * 60)),
+            JSTimer(info: TimerInfo(title: #"Break Time"#, endTime: 20 * 60)),
+            JSTimer(info: TimerInfo(title: #"Second Test - "Math""#, endTime: 100 * 60 * 60)),
+            JSTimer(info: TimerInfo(title: #"Lunch Time"#, endTime: 50 * 60)),
+            JSTimer(info: TimerInfo(title: #"Third Test - "English""#, endTime: 70 * 60 * 60)),
+            JSTimer(info: TimerInfo(title: #"Break Time"#, endTime: 20 * 60)),
+            JSTimer(info: TimerInfo(title: #"Forth Test - "History""#, endTime: 30 * 60 * 60)),
+            JSTimer(info: TimerInfo(title: #"Test Paper Change"#, endTime: 10 * 60)),
+            JSTimer(info: TimerInfo(title: #"Forth Test - "Science #1""#, endTime: 30 * 60 * 60)),
+            JSTimer(info: TimerInfo(title: #"Test Paper Change"#, endTime: 2 * 60)),
+            JSTimer(info: TimerInfo(title: #"Forth Test - "Science #2""#, endTime: 30 * 60 * 60))
+        ])
+        
+        return Observable.just(timerSet)
     }
 }
