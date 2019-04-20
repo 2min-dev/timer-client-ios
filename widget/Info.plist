@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>widget</string>
+	<string>TimerSet</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,13 +20,6 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>NanumSquareRoundB.ttf</string>
-		<string>NanumSquareRoundR.ttf</string>
-		<string>NanumSquareRoundL.ttf</string>
-		<string>NanumSquareRoundEB.ttf</string>
-	</array>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
@@ -34,5 +27,12 @@
 		<key>NSExtensionPrincipalClass</key>
 		<string>TodayViewController</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>NanumSquareRoundB.ttf</string>
+		<string>NanumSquareRoundR.ttf</string>
+		<string>NanumSquareRoundL.ttf</string>
+		<string>NanumSquareRoundEB.ttf</string>
+	</array>
 </dict>
 </plist>
