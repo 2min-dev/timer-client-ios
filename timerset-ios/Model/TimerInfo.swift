@@ -9,10 +9,10 @@
 import Foundation
 
 /// The timer data present object
-class TimerInfo {
+class TimerInfo: Codable {
     /// The state of timer
-    enum State {
-        case stop
+    enum State: Int, Codable {
+        case stop = 0
         case start
         case pause
         case end

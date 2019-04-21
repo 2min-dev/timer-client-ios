@@ -11,29 +11,39 @@ import ReactorKit
 
 class TimerSetViewReactor: Reactor {
     enum Action {
-        
+        case viewDidLoad
     }
     
     enum Mutation {
-        
+        case setTimerSet(TimerSet)
     }
     
     struct State {
-        
+        var timerSet: TimerSet?
     }
     
     // MARK: properties
     var initialState: State
+    private let timerService: TimerServicePorotocol
     
-    init() {
+    init(timerService: TimerServicePorotocol) {
         self.initialState = State()
+        self.timerService = timerService
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
-        return Observable.empty()
+        switch action {
+        case .viewDidLoad:
+            return timerService.fetchTimerSet().map { Mutation.setTimerSet($0) }
+        }
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        return state
+        var state = state
+        switch mutation {
+        case let .setTimerSet(timerSet):
+            state.timerSet = timerSet
+            return state
+        }
     }
 }

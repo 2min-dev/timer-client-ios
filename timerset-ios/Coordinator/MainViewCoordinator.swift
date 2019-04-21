@@ -29,7 +29,7 @@ class MainViewCoordinator: CoordinatorProtocl {
         
         let timerSetViewController = TimerSetViewController()
         let timerSetViewCoordinator = TimerSetViewCoordinator(provider: provider, rootViewController: timerSetViewController)
-        let timerSetViewReactor = TimerSetViewReactor()
+        let timerSetViewReactor = TimerSetViewReactor(timerService: provider.timerService)
         
         let settingViewController = SettingViewController()
         let settingViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: settingViewController)

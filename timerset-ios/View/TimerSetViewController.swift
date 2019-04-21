@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxCocoa
 import ReactorKit
 
 class TimerSetViewController: BaseViewController, View {
@@ -28,6 +29,7 @@ class TimerSetViewController: BaseViewController, View {
     // MARK: ### reactor bind ###
     func bind(reactor: TimerSetViewReactor) {
         // MARK: action
+        reactor.action.onNext(.viewDidLoad)
         
         // MARK: state
     }

@@ -25,7 +25,7 @@ class AppInfoView: UIView {
     
     let version: UILabel = {
         let view = UILabel()
-        view.text = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
+        view.text = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         view.font = Constants.Font.NanumSquareRoundR.withSize(17.adjust())
         return view
     }()

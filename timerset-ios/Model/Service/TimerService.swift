@@ -30,7 +30,7 @@ class TimerService: TimerServicePorotocol {
     }
     
     func fetchTimerSet() -> Observable<TimerSet> {
-        let timerSet = TimerSet(timers: [
+        let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam"), timers: [
             JSTimer(info: TimerInfo(title: #"First Test - "Korean""#, endTime: 80 * 60 * 60)),
             JSTimer(info: TimerInfo(title: #"Break Time"#, endTime: 20 * 60)),
             JSTimer(info: TimerInfo(title: #"Second Test - "Math""#, endTime: 100 * 60 * 60)),

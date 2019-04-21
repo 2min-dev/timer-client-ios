@@ -8,24 +8,19 @@
 
 /// A class that manage a group of timers
 class TimerSet {
-    /// A state of timer set
-    enum State {
-        case stop
-        case start
-        case pause
-        case end
-    }
-    
     // MARK: properties
+    var info: TimerSetInfo
     var timers: [JSTimer] // Timer list
-    var state: State // Current state of timer set
     
     private var currentTimer: JSTimer?
     
-    // MARK: constructor
-    init(timers: [JSTimer]) {
+    init(info: TimerSetInfo, timers: [JSTimer]) {
+        self.info = info
         self.timers = timers
-        self.state = .stop
+    }
+    
+    convenience init(info: TimerSetInfo) {
+        self.init(info: info, timers: [])
     }
     
     // MARK: public method
