@@ -7,16 +7,20 @@
 //
 
 import Foundation
+import RxSwift
 
 /// the timer process object
 class JSTimer {
     // MARK: properties
-    var info: TimerInfo // The model data of the timer
+    private var info: TimerInfo // The model data of the timer
     private var timer: Timer? // A object of the timer
+    
+    let stateSubject: BehaviorSubject<TimerInfo.State>
     
     // MARK: constructor
     init(info: TimerInfo) {
         self.info = info
+        self.stateSubject = BehaviorSubject(value: info.state)
     }
     
     // MARK: selector
@@ -83,6 +87,8 @@ class JSTimer {
         
             info.currentTime = info.endTime
             info.state = .end
+            
+            stateSubject.onNext(info.state)
         } else {
             Logger.error("Can't end the timer because the timer object is nil.")
         }

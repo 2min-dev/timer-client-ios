@@ -6,22 +6,22 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import RxSwift
+
 /// A class that manage a group of the timers
 class TimerSet {
     // MARK: properties
     var info: TimerSetInfo // The model data of the timer set
-    var timers: [JSTimer] // Timer list
     
-    private var currentTimer: JSTimer? // Current executing timer in the timer set
+    private var timers: [JSTimer] // Timer list
+    private var currentTimerIndex: Int? // Current executing timer index in the timer set
+    
+    private var disposeBag = DisposeBag()
     
     // MARK: constructor
-    init(info: TimerSetInfo, timers: [JSTimer]) {
+    init(info: TimerSetInfo) {
         self.info = info
-        self.timers = timers
-    }
-    
-    convenience init(info: TimerSetInfo) {
-        self.init(info: info, timers: [])
+        self.timers = info.timers.map { JSTimer(info: $0) }
     }
     
     // MARK: public method
@@ -31,8 +31,9 @@ class TimerSet {
      - parameters:
        - timer: the timer object that want to include in the timer set
      */
-    func addTimer(_ timer: JSTimer) {
-        timers.append(timer)
+    func addTimer(info: TimerInfo) {
+        self.info.timers.append(info)
+        timers.append(JSTimer(info: info))
     }
     
     /**
@@ -42,6 +43,7 @@ class TimerSet {
        - at: index that want to remove the timer in the timer set
      */
     func removeTimer(at: Int) {
+        info.timers.remove(at: at)
         timers.remove(at: at)
     }
     
@@ -53,6 +55,31 @@ class TimerSet {
        - at: index that want to update the data model of timer in the timer set
      */
     func updateTimer(info: TimerInfo, at: Int) {
-        timers[at].info = info
+        self.info.timers[at] = info
+    }
+    
+    func startTimerSet(at: Int = 0) {
+        guard info.timers.count > at else {
+            Logger.debug("The timer set is empty.")
+            return
+        }
+        
+        currentTimerIndex = at
+        
+        let currentTimer = timers[at]
+        currentTimer.startTimer()
+        
+        currentTimer.stateSubject
+            .subscribe(onNext: { [weak self] in
+                guard let `self` = self else { return }
+                
+                switch $0 {
+                case .end:
+                    self.startTimerSet(at: at + 1)
+                default:
+                    Logger.debug("Timer state is \($0)")
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }

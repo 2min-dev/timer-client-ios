@@ -20,14 +20,17 @@ class TimerSetInfo: Codable {
     var description: String // Description of the timer set
     var state: State // Current state of the timer set
     
+    var timers: [TimerInfo] // Timer info list of the timer set
+    
     // MARK: constructor
-    init(name: String, description: String, state: State) {
+    init(name: String, description: String, state: State, timers: [TimerInfo]) {
         self.name = name
         self.description = description
         self.state = state
+        self.timers = timers
     }
     
-    convenience init(name: String, description: String) {
-        self.init(name: name, description: description, state: .stop)
+    convenience init(name: String, description: String, timers: [TimerInfo]) {
+        self.init(name: name, description: description, state: .stop, timers: timers)
     }
 }

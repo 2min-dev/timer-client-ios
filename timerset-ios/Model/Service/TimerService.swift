@@ -35,19 +35,30 @@ class TimerService: TimerServicePorotocol {
      - returns: the observable type of TimerSet
      */
     func fetchTimerSet() -> Observable<TimerSet> {
-        let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam"), timers: [
-            JSTimer(info: TimerInfo(title: #"First Test - "Korean""#, endTime: 80 * 60 * 60)),
-            JSTimer(info: TimerInfo(title: #"Break Time"#, endTime: 20 * 60)),
-            JSTimer(info: TimerInfo(title: #"Second Test - "Math""#, endTime: 100 * 60 * 60)),
-            JSTimer(info: TimerInfo(title: #"Lunch Time"#, endTime: 50 * 60)),
-            JSTimer(info: TimerInfo(title: #"Third Test - "English""#, endTime: 70 * 60 * 60)),
-            JSTimer(info: TimerInfo(title: #"Break Time"#, endTime: 20 * 60)),
-            JSTimer(info: TimerInfo(title: #"Forth Test - "History""#, endTime: 30 * 60 * 60)),
-            JSTimer(info: TimerInfo(title: #"Test Paper Change"#, endTime: 10 * 60)),
-            JSTimer(info: TimerInfo(title: #"Forth Test - "Science #1""#, endTime: 30 * 60 * 60)),
-            JSTimer(info: TimerInfo(title: #"Test Paper Change"#, endTime: 2 * 60)),
-            JSTimer(info: TimerInfo(title: #"Forth Test - "Science #2""#, endTime: 30 * 60 * 60))
-        ])
+//        let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam", timers: [
+//            TimerInfo(title: #"First Test - "Korean""#, endTime: 80 * 60 * 60),
+//            TimerInfo(title: #"Break Time"#, endTime: 20 * 60),
+//            TimerInfo(title: #"Second Test - "Math""#, endTime: 100 * 60 * 60),
+//            TimerInfo(title: #"Lunch Time"#, endTime: 50 * 60),
+//            TimerInfo(title: #"Third Test - "English""#, endTime: 70 * 60 * 60),
+//            TimerInfo(title: #"Break Time"#, endTime: 20 * 60),
+//            TimerInfo(title: #"Forth Test - "History""#, endTime: 30 * 60 * 60),
+//            TimerInfo(title: #"Test Paper Change"#, endTime: 10 * 60),
+//            TimerInfo(title: #"Forth Test - "Science #1""#, endTime: 30 * 60 * 60),
+//            TimerInfo(title: #"Test Paper Change"#, endTime: 2 * 60),
+//            TimerInfo(title: #"Forth Test - "Science #2""#, endTime: 30 * 60 * 60)
+//        ]))
+        
+        let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam", timers: [
+            TimerInfo(title: #"First Test - "Korean""#, endTime: 10),
+            TimerInfo(title: #"Break Time"#, endTime: 5),
+            TimerInfo(title: #"Second Test - "Math""#, endTime: 10),
+            TimerInfo(title: #"Lunch Time"#, endTime: 5),
+            TimerInfo(title: #"Third Test - "English""#, endTime: 10),
+            TimerInfo(title: #"Break Time"#, endTime: 5)
+        ]))
+        
+        timerSet.startTimerSet()
         
         return Observable.just(timerSet)
     }
