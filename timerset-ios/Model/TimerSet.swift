@@ -6,14 +6,15 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-/// A class that manage a group of timers
+/// A class that manage a group of the timers
 class TimerSet {
     // MARK: properties
-    var info: TimerSetInfo
+    var info: TimerSetInfo // The model data of the timer set
     var timers: [JSTimer] // Timer list
     
-    private var currentTimer: JSTimer?
+    private var currentTimer: JSTimer? // Current executing timer in the timer set
     
+    // MARK: constructor
     init(info: TimerSetInfo, timers: [JSTimer]) {
         self.info = info
         self.timers = timers

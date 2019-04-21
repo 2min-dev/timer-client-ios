@@ -19,10 +19,10 @@ class TimerInfo: Codable {
     }
     
     // MARK: properties
-    var title: String // A title of timer
-    var currentTime: TimeInterval // Current time interval of timer
-    var endTime: TimeInterval // Target end time interval of timer
-    var state: State // Current state of timer
+    var title: String // The title of the timer
+    var currentTime: TimeInterval // Current time interval of the timer
+    var endTime: TimeInterval // Target end time interval of the timer
+    var state: State // Current state of the timer
     
     // MARK: constructor
     init(title: String, currentTime: TimeInterval, endTime: TimeInterval, state: State) {

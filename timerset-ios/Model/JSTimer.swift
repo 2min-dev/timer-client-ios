@@ -11,8 +11,8 @@ import Foundation
 /// the timer process object
 class JSTimer {
     // MARK: properties
-    var info: TimerInfo // A model data of timer
-    private var timer: Timer? // A object of timer
+    var info: TimerInfo // The model data of the timer
+    private var timer: Timer? // A object of the timer
     
     // MARK: constructor
     init(info: TimerInfo) {

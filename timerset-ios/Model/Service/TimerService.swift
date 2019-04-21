@@ -29,6 +29,11 @@ class TimerService: TimerServicePorotocol {
         
     }
     
+    /**
+     Fetch the timer set
+     
+     - returns: the observable type of TimerSet
+     */
     func fetchTimerSet() -> Observable<TimerSet> {
         let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam"), timers: [
             JSTimer(info: TimerInfo(title: #"First Test - "Korean""#, endTime: 80 * 60 * 60)),

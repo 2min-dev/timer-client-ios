@@ -7,7 +7,7 @@
 //
 
 class TimerSetInfo: Codable {
-    /// A state of timer set
+    /// A state of the timer set
     enum State: Int, Codable {
         case stop = 0
         case start
@@ -16,9 +16,9 @@ class TimerSetInfo: Codable {
     }
     
     // MARK: properties
-    var name: String // Name of timer set
-    var description: String // Description of timer set
-    var state: State // Current state of timer set
+    var name: String // Name of the timer set
+    var description: String // Description of the timer set
+    var state: State // Current state of the timer set
     
     // MARK: constructor
     init(name: String, description: String, state: State) {
