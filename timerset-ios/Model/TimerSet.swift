@@ -59,27 +59,33 @@ class TimerSet {
     }
     
     func startTimerSet(at: Int = 0) {
+        // Guard unexpected exception about out of range
         guard info.timers.count > at else {
-            Logger.debug("The timer set is empty.")
+            Logger.error("The timer not exist at \(at) in the timer set.")
             return
         }
         
+        // Store timer index to start
         currentTimerIndex = at
         
         let currentTimer = timers[at]
-        currentTimer.startTimer()
-        
-        currentTimer.stateSubject
+        // Subscribe timer event
+        currentTimer.event
+            .take(1) // Take just one event that timer state changed. But need to think other way for more complex sequence building
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 
                 switch $0 {
-                case .end:
-                    self.startTimerSet(at: at + 1)
-                default:
-                    Logger.debug("Timer state is \($0)")
+                case let .changeState(state):
+                    if state == .end {
+                        // Start next timer when current timer state be `end`
+                        self.startTimerSet(at: self.currentTimerIndex! + 1)
+                    }
                 }
             })
             .disposed(by: disposeBag)
+        
+        // Start current timer
+        currentTimer.startTimer()
     }
 }

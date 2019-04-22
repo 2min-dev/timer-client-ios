@@ -10,17 +10,18 @@ import Foundation
 import RxSwift
 
 /// the timer process object
-class JSTimer {
+class JSTimer: EventStreamProtocol {
+    enum Event {
+        case changeState(TimerInfo.State)
+    }
+    
     // MARK: properties
     private var info: TimerInfo // The model data of the timer
     private var timer: Timer? // A object of the timer
     
-    let stateSubject: BehaviorSubject<TimerInfo.State>
-    
     // MARK: constructor
     init(info: TimerInfo) {
         self.info = info
-        self.stateSubject = BehaviorSubject(value: info.state)
     }
     
     // MARK: selector
@@ -28,12 +29,13 @@ class JSTimer {
     /// Update timer info when received timer tick
     @objc private func updateTimer() {
         info.currentTime += 1
+        
+        Logger.debug(#"the timer updated. "\#(info.title)" - \#(info.currentTime) / \#(info.endTime)"#)
         // End timer when current time interval of timer is equal end time interval
         if info.currentTime == info.endTime {
             endTimer()
         }
         
-        Logger.debug(#"the timer updated. "\#(info.title)" - \#(info.currentTime) / \#(info.endTime)"#)
     }
     
     // MARK: public method
@@ -88,7 +90,8 @@ class JSTimer {
             info.currentTime = info.endTime
             info.state = .end
             
-            stateSubject.onNext(info.state)
+            // Send state changed event
+            event.onNext(.changeState(info.state))
         } else {
             Logger.error("Can't end the timer because the timer object is nil.")
         }
