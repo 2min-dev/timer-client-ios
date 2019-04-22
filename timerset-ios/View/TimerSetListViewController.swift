@@ -10,12 +10,12 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TimerSetViewController: BaseViewController, View {
+class TimerSetListViewController: BaseViewController, View {
     // MARK: view properties
     private var timerSetView: TimerSetView { return self.view as! TimerSetView }
     
     // MARK: properties
-    var coordinator: TimerSetViewCoordinator!
+    var coordinator: TimerSetListViewCoordinator!
     
     // MARK: ### lifecycle ###
     override func loadView() {
@@ -27,7 +27,7 @@ class TimerSetViewController: BaseViewController, View {
     }
     
     // MARK: ### reactor bind ###
-    func bind(reactor: TimerSetViewReactor) {
+    func bind(reactor: TimerSetListViewReactor) {
         // MARK: action
         reactor.action.onNext(.viewDidLoad)
         
