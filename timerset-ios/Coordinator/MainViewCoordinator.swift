@@ -27,9 +27,9 @@ class MainViewCoordinator: CoordinatorProtocl {
         let oneTouchTimerViewCoordinator = OneTouchTimerViewCoordinator(provider: provider, rootViewController: oneTouchTimerViewController)
         let oneTouchTimerReactor = OneTouchTimerViewReactor(timerService: provider.timerService)
         
-        let timerSetViewController = TimerSetViewController()
-        let timerSetViewCoordinator = TimerSetViewCoordinator(provider: provider, rootViewController: timerSetViewController)
-        let timerSetViewReactor = TimerSetViewReactor(timerService: provider.timerService)
+        let timerSetViewController = TimerSetListViewController()
+        let timerSetViewCoordinator = TimerSetListViewCoordinator(provider: provider, rootViewController: timerSetViewController)
+        let timerSetViewReactor = TimerSetListViewReactor(timerService: provider.timerService)
         
         let settingViewController = SettingViewController()
         let settingViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: settingViewController)

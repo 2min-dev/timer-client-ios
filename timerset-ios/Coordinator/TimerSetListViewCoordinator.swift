@@ -7,17 +7,17 @@
 //
 
 /// Route from timer set view
-class TimerSetViewCoordinator: CoordinatorProtocl {
+class TimerSetListViewCoordinator: CoordinatorProtocl {
      // MARK: route enumeration
     enum TimerSetRoute {
         
     }
     
     // MARK: properties
-    weak var rootViewController: TimerSetViewController!
+    weak var rootViewController: TimerSetListViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: TimerSetViewController) {
+    required init(provider: ServiceProviderProtocol, rootViewController: TimerSetListViewController) {
         self.provider = provider
         self.rootViewController = rootViewController
     }
