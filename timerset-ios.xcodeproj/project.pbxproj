@@ -318,11 +318,11 @@
 				F3D1F7A2225CBCDC006DC162 /* Service */,
 				F3C187492261E66F00B2C644 /* BaseTableItem.swift */,
 				F3C1874B2261FB0900B2C644 /* BaseTableSeciton.swift */,
+				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
 				F37041C8226B65550012EA16 /* TimerInfo.swift */,
 				F373CCD52265FA33007ECCA0 /* JSTimer.swift */,
 				F37041CC226C35B80012EA16 /* TimerSetInfo.swift */,
 				F37041CA226B81B00012EA16 /* TimerSet.swift */,
-				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

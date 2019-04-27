@@ -15,43 +15,44 @@ class JSTimer: EventStreamProtocol {
         case changeState(TimerInfo.State)
     }
     
-    // MARK: properties
-    private var info: TimerInfo // The model data of the timer
+    // Event stream of the timer
+    var event: PublishSubject<Event> = PublishSubject()
+    
+    // MARK: - properties
+    var info: TimerInfo // The model data of the timer
     private var timer: Timer? // A object of the timer
     
-    // MARK: constructor
+    // MARK: - constructor
     init(info: TimerInfo) {
         self.info = info
     }
     
-    // MARK: selector
-    
+    // MARK: - selector
     /// Update timer info when received timer tick
     @objc private func updateTimer() {
         info.currentTime += 1
         
         Logger.debug(#"the timer updated. "\#(info.title)" - \#(info.currentTime) / \#(info.endTime)"#)
-        // End timer when current time interval of timer is equal end time interval
+        // End timer when current time interval of the timer is equal end time interval
         if info.currentTime == info.endTime {
             endTimer()
         }
         
     }
     
-    // MARK: public method
+    // MARK: - public method
     /// Fire the timer
     func startTimer() {
         if timer == nil {
             // Create timer
             timer = Timer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
             timer?.tolerance = 0.1
-            
             // Add timer in run loop
             RunLoop.current.add(timer!, forMode: .common)
         }
         
-        info.state = .start
         timer?.fire()
+        info.state = .start
     }
     
     /// Pause the timer
@@ -63,6 +64,9 @@ class JSTimer: EventStreamProtocol {
             self.timer = nil
             
             info.state = .pause
+            
+            // Send state changed event
+            event.onNext(.changeState(info.state))
         } else {
             Logger.error("Can't pause the timer because the timer object is nil.")
         }
@@ -76,6 +80,9 @@ class JSTimer: EventStreamProtocol {
             
             info.currentTime = 0
             info.state = .stop
+            
+            // Send state changed event
+            event.onNext(.changeState(info.state))
         } else {
             Logger.error("Can't stop the timer because the timer object is nil.")
         }
