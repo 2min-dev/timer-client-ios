@@ -34,12 +34,7 @@ class TimerSet: EventStreamProtocol {
     
     // MARK: - public method
     // MARK: manipulate timer
-    /**
-     Create a timer and add in the timer set
-     
-     - parameters:
-        - info: The timer info to create JSTimer
-     */
+    /// Create a timer
     func createTimer(info: TimerInfo) -> Observable<JSTimer> {
         let timer = JSTimer(info: info)
         
@@ -50,36 +45,21 @@ class TimerSet: EventStreamProtocol {
         
         return Observable.just(timer)
     }
-    
-    /**
-     Delete the timer in the timer set
-     
-     - parameters:
-        - at: Index that want to remove the timer in the timer set
-     */
-    func deleteTimer(at: Int) {
+
+    /// Delete the timer
+    func deleteTimer(at: Int) -> Observable<JSTimer> {
         info.timers.remove(at: at)
-        timers.remove(at: at)
+        return Observable.just(timers.remove(at: at))
     }
     
-    /**
-     Update timer info in the timer set
-     
-     - parameters:
-         - info: The data model of timer
-         - at: Index that want to update the data model of timer in the timer set
-     */
-    func updateTimer(info: TimerInfo, at: Int) {
+    /// Update the timer
+    func updateTimer(info: TimerInfo, at: Int) -> Observable<JSTimer> {
         self.info.timers[at] = info
+        return Observable.just(timers[at])
     }
     
     // MARK: operate timer set
-    /**
-     Start the first timer or paused timer
-     
-     - parameters:
-         - at: Index of the timer to start
-     */
+    /// Start the first timer or paused timer
     func startTimerSet() {
         if let index = currentTimerIndex {
             timers[index].startTimer()
@@ -103,12 +83,7 @@ class TimerSet: EventStreamProtocol {
     }
     
     // MARK: - private method
-    /**
-     Bind timer event
-     
-     - parameters:
-         - timer: The timer to bind event
-     */
+    /// Bind to timer's event stream
     private func bind(timer: JSTimer) {
         timer.event
             .debug()

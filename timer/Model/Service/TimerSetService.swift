@@ -8,58 +8,63 @@
 
 import RxSwift
 
-enum TimerEvent {
+enum TimerSetEvent {
     
 }
 
 protocol TimerSetServicePorotocol {
-    var event: PublishSubject<TimerEvent> { get }
+    var event: PublishSubject<TimerSetEvent> { get }
     
-    func fetchTimerSet() -> Observable<TimerSet>
+    func fetchTimerSets() -> Observable<[TimerSet]>
+    func createTimerSet(info: TimerSetInfo) -> Observable<TimerSet>
+    func deleteTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet>
+    func updateTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet>
 }
 
 /// A service class that manage the application's timers
 class TimerSetService: TimerSetServicePorotocol {
     // MARK: global state event
-    var event: PublishSubject<TimerEvent> = PublishSubject()
+    var event: PublishSubject<TimerSetEvent> = PublishSubject()
     
-    // MARK: properties
+    // MARK: - properties
+    private var timerSets: [TimerSet]
     
+    // MARK: - constructor
     init() {
-        
+        // Create timer set mock
+        timerSets = [
+            TimerSet(info: TimerSetInfo(name: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end", timers: [
+                TimerInfo(title: "First timer (5 sec)", endTime: 5),
+                TimerInfo(title: "Second timer (3 sec)", endTime: 3),
+                TimerInfo(title: "Third timer (5 sec)", endTime: 5)
+                ])),
+            TimerSet(info: TimerSetInfo(name: "Empty timer set", description: "", timers: []))
+        ]
     }
     
-    /**
-     Fetch the timer set
-     
-     - returns: the observable type of TimerSet
-     */
-    func fetchTimerSet() -> Observable<TimerSet> {
-//        let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam", timers: [
-//            TimerInfo(title: #"First Test - "Korean""#, endTime: 80 * 60 * 60),
-//            TimerInfo(title: #"Break Time"#, endTime: 20 * 60),
-//            TimerInfo(title: #"Second Test - "Math""#, endTime: 100 * 60 * 60),
-//            TimerInfo(title: #"Lunch Time"#, endTime: 50 * 60),
-//            TimerInfo(title: #"Third Test - "English""#, endTime: 70 * 60 * 60),
-//            TimerInfo(title: #"Break Time"#, endTime: 20 * 60),
-//            TimerInfo(title: #"Forth Test - "History""#, endTime: 30 * 60 * 60),
-//            TimerInfo(title: #"Test Paper Change"#, endTime: 10 * 60),
-//            TimerInfo(title: #"Forth Test - "Science #1""#, endTime: 30 * 60 * 60),
-//            TimerInfo(title: #"Test Paper Change"#, endTime: 2 * 60),
-//            TimerInfo(title: #"Forth Test - "Science #2""#, endTime: 30 * 60 * 60)
-//        ]))
-        
-        let timerSet = TimerSet(info: TimerSetInfo(name: "College entrance exam", description: "a timetable of colleage entrance exam", timers: [
-            TimerInfo(title: #"First Test - "Korean""#, endTime: 10),
-            TimerInfo(title: #"Break Time"#, endTime: 5),
-            TimerInfo(title: #"Second Test - "Math""#, endTime: 10),
-            TimerInfo(title: #"Lunch Time"#, endTime: 5),
-            TimerInfo(title: #"Third Test - "English""#, endTime: 10),
-            TimerInfo(title: #"Break Time"#, endTime: 5)
-        ]))
-        
-        timerSet.startTimerSet()
-        
+    // MARK: - public method
+    /// Fetch timer set list
+    func fetchTimerSets() -> Observable<[TimerSet]> {
+        return Observable.just(timerSets)
+    }
+    
+    /// Create a timer set
+    func createTimerSet(info: TimerSetInfo) -> Observable<TimerSet> {
+        let timerSet = TimerSet(info: info)
+        timerSets.append(timerSet)
         return Observable.just(timerSet)
+    }
+    
+    /// Delete the timer set
+    func deleteTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet> {
+        guard let index = timerSets.firstIndex(where: { $0 === timerSet }) else { return Observable.empty() }
+        return Observable.just(timerSets.remove(at: index))
+    }
+    
+    /// Update the timer set
+    func updateTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet> {
+        guard let index = timerSets.firstIndex(where: { $0 === timerSet }) else { return Observable.empty() }
+        timerSets[index].info = timerSet.info
+        return Observable.just(timerSets[index])
     }
 }
