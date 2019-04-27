@@ -130,7 +130,8 @@ class TimerSet: EventStreamProtocol {
                             self.info.state = .end
                         } else {
                             // Start next timer when current timer state be `end`
-                            guard let index = self.currentTimerIndex, index < self.timers.count else { return }
+                            guard let index = self.currentTimerIndex, index + 1 < self.timers.count else { return }
+                            self.currentTimerIndex = index + 1
                             self.timers[index + 1].startTimer()
                         }
                     }

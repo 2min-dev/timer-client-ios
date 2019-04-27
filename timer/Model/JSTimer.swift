@@ -53,6 +53,8 @@ class JSTimer: EventStreamProtocol {
         
         timer?.fire()
         info.state = .start
+        // Send state changed event
+        event.onNext(.changeState(info.state))
     }
     
     /// Pause the timer
