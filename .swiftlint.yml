@@ -1,12 +1,18 @@
+# Rule identifier to exclude
 disabled_rules:
 - line_length
 - trailing_whitespace
 - identifier_name
 - for_where
 - unused_closure_parameter
-
 - force_cast
 
+# Optional rule
+opt_in_rules:
+
+# Path to include in Lint
 included:
+
+# Path to ignore in Lint
 excluded:
 - Pods
