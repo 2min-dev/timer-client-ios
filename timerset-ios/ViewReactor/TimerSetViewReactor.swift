@@ -24,9 +24,9 @@ class TimerSetViewReactor: Reactor {
     
     // MARK: properties
     var initialState: State
-    private let timerService: TimerServicePorotocol
+    private let timerService: TimerSetServicePorotocol
     
-    init(timerService: TimerServicePorotocol) {
+    init(timerService: TimerSetServicePorotocol) {
         self.initialState = State()
         self.timerService = timerService
     }

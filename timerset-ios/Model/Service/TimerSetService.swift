@@ -12,14 +12,14 @@ enum TimerEvent {
     
 }
 
-protocol TimerServicePorotocol {
+protocol TimerSetServicePorotocol {
     var event: PublishSubject<TimerEvent> { get }
     
     func fetchTimerSet() -> Observable<TimerSet>
 }
 
 /// A service class that manage the application's timers
-class TimerService: TimerServicePorotocol {
+class TimerSetService: TimerSetServicePorotocol {
     // MARK: global state event
     var event: PublishSubject<TimerEvent> = PublishSubject()
     
