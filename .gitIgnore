@@ -113,3 +113,4 @@ iOSInjectionProject/
 # End of https://www.gitignore.io/api/xcode,swift,cocoapods
 }
 .DS_Store
+*.entitlements

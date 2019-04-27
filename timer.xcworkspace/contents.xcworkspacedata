@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:timerset-ios.xcodeproj">
+      location = "group:/Users/JSilver/Documents/XCode/timer_client_ios/timer.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

@@ -7,7 +7,7 @@
 */
 
 // Default App String
-"CFBundleDisplayName" = "TimerSet";
+"CFBundleDisplayName" = "타이머";
 
 // Widget String
-"widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";
+"widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";
