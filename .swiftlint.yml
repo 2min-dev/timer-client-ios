@@ -6,6 +6,7 @@ disabled_rules:
 - for_where
 - unused_closure_parameter
 - force_cast
+- no_fallthrough_only
 
 # Optional rule
 opt_in_rules:
