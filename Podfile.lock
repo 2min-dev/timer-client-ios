@@ -10,6 +10,8 @@ PODS:
     - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
   - RxSwift (4.5.0)
+  - RxTest (4.5.0):
+    - RxSwift (>= 4.4.2, ~> 4.4)
   - SnapKit (4.0.1)
   - SwiftLint (0.31.0)
   - SwiftyBeaver (1.7.0)
@@ -20,6 +22,7 @@ DEPENDENCIES:
   - RxCocoa (~> 4.0)
   - RxDataSources (~> 3.0)
   - RxSwift (~> 4.0)
+  - RxTest (~> 4.0)
   - SnapKit (~> 4.0.0)
   - SwiftLint
   - SwiftyBeaver
@@ -32,6 +35,7 @@ SPEC REPOS:
     - RxCocoa
     - RxDataSources
     - RxSwift
+    - RxTest
     - SnapKit
     - SwiftLint
     - SwiftyBeaver
@@ -43,10 +47,11 @@ SPEC CHECKSUMS:
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
+  RxTest: 3ccb66bfbace0bf7df1c43a7c75d046f8ce60372
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
   SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
   SwiftyBeaver: 4cc0080d2e23f980652e28978db11a5c9da39165
 
-PODFILE CHECKSUM: 2ba7f0f5992e77b3f18c4492b19a0158b55f6928
+PODFILE CHECKSUM: efc477f1890201792cfc382d1afcb87a6b45f851
 
 COCOAPODS: 1.6.1
