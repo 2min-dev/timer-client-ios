@@ -37,7 +37,6 @@ class JSTimer: EventStreamProtocol {
         if info.currentTime == info.endTime {
             endTimer()
         }
-        
     }
     
     // MARK: - public method

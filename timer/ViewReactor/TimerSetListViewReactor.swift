@@ -15,11 +15,11 @@ class TimerSetListViewReactor: Reactor {
     }
     
     enum Mutation {
-        case setTimerSet(TimerSet)
+        case setTimerSets([TimerSet])
     }
     
     struct State {
-        var timerSet: TimerSet?
+        var timerSets: [TimerSet]
     }
     
     // MARK: properties
@@ -27,22 +27,22 @@ class TimerSetListViewReactor: Reactor {
     private let timerService: TimerSetServicePorotocol
     
     init(timerService: TimerSetServicePorotocol) {
-        self.initialState = State()
+        self.initialState = State(timerSets: [])
         self.timerService = timerService
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return timerService.fetchTimerSet().map { Mutation.setTimerSet($0) }
+            return timerService.fetchTimerSets().map { Mutation.setTimerSets($0) }
         }
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
-        case let .setTimerSet(timerSet):
-            state.timerSet = timerSet
+        case let .setTimerSets(timerSets):
+            state.timerSets = timerSets
             return state
         }
     }
