@@ -29,4 +29,10 @@ target 'timer' do
   target 'widget' do
     inherit! :search_paths
   end
+  
+  target 'test' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'RxTest', '~> 4.0'
+  end
 end
