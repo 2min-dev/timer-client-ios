@@ -86,7 +86,6 @@ class TimerSet: EventStreamProtocol {
     /// Bind to timer's event stream
     private func bind(timer: JSTimer) {
         timer.event
-            .debug()
             .subscribe(onNext: {
                 switch $0 {
                 case let .changeState(state):
