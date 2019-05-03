@@ -17,6 +17,19 @@ class TimerSetTableViewCell: UITableViewCell, View {
         return view
     }()
     
+    private let countLabel: UILabel = {
+        let view = UILabel()
+        return view
+    }()
+    
+    private lazy var titleStackView: UIStackView = { [unowned self] in
+        let view = UIStackView(arrangedSubviews: [self.nameLabel, self.countLabel])
+        view.axis = .horizontal
+        view.alignment = UIStackView.Alignment.leading
+        view.spacing = 10.adjust()
+        return view
+    }()
+    
     private let timerLabel: UILabel = {
         let view = UILabel()
         view.text = "99:99:99"
@@ -24,8 +37,9 @@ class TimerSetTableViewCell: UITableViewCell, View {
     }()
     
     private lazy var contentStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.nameLabel, self.timerLabel])
+        let view = UIStackView(arrangedSubviews: [self.titleStackView, self.timerLabel])
         view.axis = .vertical
+        view.alignment = .leading
         return view
     }()
     
@@ -66,11 +80,20 @@ class TimerSetTableViewCell: UITableViewCell, View {
     // MARK: - reactor bind
     func bind(reactor: TimerSetTableViewCellReactor) {
         // MARK: action
+        stateButton.rx.tap
+            .map { Reactor.Action.touchStateButton }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
             .map { $0.name }
             .bind(to: nameLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { String($0.count) }
+            .bind(to: countLabel.rx.text)
             .disposed(by: disposeBag)
         
         reactor.state
@@ -81,6 +104,12 @@ class TimerSetTableViewCell: UITableViewCell, View {
                     ]), for: .normal)
                 self.stateButton.setTitle($0, for: .normal)
             })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { !$0.stateChanging }
+            .distinctUntilChanged()
+            .bind(to: stateButton.rx.isEnabled)
             .disposed(by: disposeBag)
     }
 }

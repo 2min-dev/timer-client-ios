@@ -32,16 +32,20 @@ class TimerSetService: TimerSetServicePorotocol {
     // MARK: - constructor
     init() {
         // Create timer set mock
-        var timerSet = TimerSet(info: TimerSetInfo(name: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end"))
+        let timerSet = TimerSet(info: TimerSetInfo(name: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end"))
         timerSet.createTimer(info: TimerInfo(title: "First timer (5 sec)", endTime: 5))
         timerSet.createTimer(info: TimerInfo(title: "Second timer (3 sec)", endTime: 3))
         timerSet.createTimer(info: TimerInfo(title: "Third timer (5 sec)", endTime: 5))
+    
+        let timerSet2 = TimerSet(info: TimerSetInfo(name: "Second Sample Timer set", description: "3 sec -> 5 sec -> end"))
+        timerSet2.createTimer(info: TimerInfo(title: "First timer (3 sec)", endTime: 3))
+        timerSet2.createTimer(info: TimerInfo(title: "Second timer (5 sec)", endTime: 5))
         
         timerSets = [
             timerSet,
+            timerSet2,
             TimerSet(info: TimerSetInfo(name: "Empty timer set 1", description: "")),
-            TimerSet(info: TimerSetInfo(name: "Empty timer set 2", description: "")),
-            TimerSet(info: TimerSetInfo(name: "Empty timer set 3", description: ""))
+            TimerSet(info: TimerSetInfo(name: "Empty timer set 2", description: ""))
         ]
     }
     
