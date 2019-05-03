@@ -22,7 +22,7 @@ class TimerSetInfo: Codable {
         self.timers = timers
     }
     
-    convenience init(name: String, description: String, timers: [TimerInfo]) {
-        self.init(name: name, description: description, state: .stop, timers: timers)
+    convenience init(name: String, description: String) {
+        self.init(name: name, description: description, state: .stop, timers: [])
     }
 }

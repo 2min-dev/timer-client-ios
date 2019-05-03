@@ -30,7 +30,7 @@ class JSTimer: EventStreamProtocol {
     
     // MARK: - selector
     /// Update timer info when received timer tick
-    @objc private func updateTimer() {
+    private func updateTimer(_ timer: Timer) {
         info.currentTime += 1
         
         Logger.debug(#"the timer updated. "\#(info.title)" - \#(info.currentTime) / \#(info.endTime)"#)
@@ -43,15 +43,12 @@ class JSTimer: EventStreamProtocol {
     // MARK: - public method
     /// Fire the timer
     func startTimer() {
-        if timer == nil {
-            // Create timer
-            timer = Timer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
-            timer?.tolerance = 0.1
-            // Add timer in run loop
-            RunLoop.current.add(timer!, forMode: .common)
-        }
+        // Invalidate timer
+        timer?.invalidate()
+        // Scheduled timer
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: updateTimer(_ :))
+        timer?.tolerance = 0.1
         
-        timer?.fire()
         info.state = .start
         // Send state changed event
         event.onNext(.changeState(info.state))
@@ -79,15 +76,13 @@ class JSTimer: EventStreamProtocol {
         if let timer = timer {
             timer.invalidate()
             self.timer = nil
-            
-            info.currentTime = 0
-            info.state = .stop
-            
-            // Send state changed event
-            event.onNext(.changeState(info.state))
-        } else {
-            Logger.error("Can't stop the timer because the timer object is nil.")
         }
+    
+        info.currentTime = 0
+        info.state = .stop
+        
+        // Send state changed event
+        event.onNext(.changeState(info.state))
     }
     
     /// End the timer

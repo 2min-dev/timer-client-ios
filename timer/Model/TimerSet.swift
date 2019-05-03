@@ -73,17 +73,16 @@ class TimerSet: EventStreamProtocol {
         timers[index].pauseTimer()
     }
     
-    /// Stop current executing timer
+    /// Stop timer set (initialize)
     func stopTimerSet() {
-        guard let index = currentTimerIndex else { return }
-        timers[index].stopTimer()
+        timers.forEach { $0.stopTimer() }
+        currentTimerIndex = nil
     }
     
     // MARK: - private method
     /// Bind to timer's event stream
     private func bind(timer: JSTimer) {
         timer.event
-            .debug()
             .subscribe(onNext: { [weak timer] event in
                 switch event {
                 case let .changeState(state):
@@ -95,11 +94,13 @@ class TimerSet: EventStreamProtocol {
                         fallthrough
                     case .stop:
                         self.info.state = state
+                        self.event.onNext(.changeState(self.info.state))
                     case .end:
                         // Stop timer set when the last timer ended
                         if timer === self.timers.last {
                             Logger.debug("the timer set was ended.")
                             self.info.state = .end
+                            self.event.onNext(.changeState(self.info.state))
                         } else {
                             // Start next timer when current timer state be `end`
                             guard let index = self.currentTimerIndex, index + 1 < self.timers.count else { return }
@@ -113,6 +114,7 @@ class TimerSet: EventStreamProtocol {
     }
     
     deinit {
+        // dispose event stream when timer deinited
         event.on(.completed)
     }
 }
