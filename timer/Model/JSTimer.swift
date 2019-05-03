@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 /// the timer process object
 class JSTimer: EventStreamProtocol {
@@ -103,5 +104,10 @@ class JSTimer: EventStreamProtocol {
         } else {
             Logger.error("Can't end the timer because the timer object is nil.")
         }
+    }
+    
+    deinit {
+        // dispose event stream when timer deinited
+        event.on(.completed)
     }
 }
