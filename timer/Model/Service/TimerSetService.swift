@@ -18,7 +18,6 @@ protocol TimerSetServicePorotocol {
     func fetchTimerSets() -> Observable<[TimerSet]>
     func createTimerSet(info: TimerSetInfo) -> Observable<TimerSet>
     func deleteTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet>
-    func updateTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet>
 }
 
 /// A service class that manage the application's timers
@@ -65,13 +64,7 @@ class TimerSetService: TimerSetServicePorotocol {
     /// Delete the timer set
     func deleteTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet> {
         guard let index = timerSets.firstIndex(where: { $0 === timerSet }) else { return Observable.empty() }
-        return Observable.just(timerSets.remove(at: index))
-    }
-    
-    /// Update the timer set
-    func updateTimerSet(_ timerSet: TimerSet) -> Observable<TimerSet> {
-        guard let index = timerSets.firstIndex(where: { $0 === timerSet }) else { return Observable.empty() }
-        timerSets[index].info = timerSet.info
-        return Observable.just(timerSets[index])
+        let timerSet = timerSets.remove(at: index)
+        return Observable.just(timerSet)
     }
 }

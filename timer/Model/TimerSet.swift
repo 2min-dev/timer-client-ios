@@ -28,6 +28,7 @@ class TimerSet: EventStreamProtocol {
     init(info: TimerSetInfo) {
         self.info = info
         self.timers = info.timers.map { JSTimer(info: $0) }
+
         // bind timers event
         self.timers.forEach(bind(timer:))
     }
@@ -48,14 +49,10 @@ class TimerSet: EventStreamProtocol {
 
     /// Delete the timer
     func deleteTimer(at: Int) -> Observable<JSTimer> {
-        info.timers.remove(at: at)
-        return Observable.just(timers.remove(at: at))
-    }
-    
-    /// Update the timer
-    func updateTimer(info: TimerInfo, at: Int) -> Observable<JSTimer> {
-        self.info.timers[at] = info
-        return Observable.just(timers[at])
+        self.info.timers.remove(at: at)
+        let timer = self.timers.remove(at: at)
+        
+        return Observable.just(timer)
     }
     
     // MARK: operate timer set
@@ -86,8 +83,8 @@ class TimerSet: EventStreamProtocol {
     /// Bind to timer's event stream
     private func bind(timer: JSTimer) {
         timer.event
-            .subscribe(onNext: {
-                switch $0 {
+            .subscribe(onNext: { [weak timer] event in
+                switch event {
                 case let .changeState(state):
                     // Set timer set state from timer's state
                     switch state {
@@ -112,8 +109,6 @@ class TimerSet: EventStreamProtocol {
                         }
                     }
                 }
-            }, onDisposed: {
-                Logger.debug("a timer disposed.")
             })
             .disposed(by: disposeBag)
     }
