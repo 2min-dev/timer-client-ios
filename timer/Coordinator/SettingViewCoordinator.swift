@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from setting view
-class SettingViewCoordinator: CoordinatorProtocl {
+class SettingViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum SettingRoute {
         case appInfo

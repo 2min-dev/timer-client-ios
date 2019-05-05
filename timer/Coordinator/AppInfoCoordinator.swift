@@ -7,7 +7,7 @@
 //
 
 /// Route from app info view
-class AppInfoCoordinator: CoordinatorProtocl {
+class AppInfoCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum AppInfoRoute {
         

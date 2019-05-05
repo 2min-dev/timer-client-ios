@@ -19,7 +19,7 @@ class AppCoordinator {
     let window: UIWindow
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, window: UIWindow) {
+    init(provider: ServiceProviderProtocol, window: UIWindow) {
         self.provider = provider
         self.window = window
     }

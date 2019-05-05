@@ -1,5 +1,5 @@
 //
-//  OneTouchTimerViewReactor.swift
+//  ProductivityViewReactor.swift
 //  timerset-ios
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class OneTouchTimerViewReactor: Reactor {
+class ProductivityViewReactor: Reactor {
     enum Action {
         
     }

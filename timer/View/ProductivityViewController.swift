@@ -1,5 +1,5 @@
 //
-//  OneTouchTimerViewController.swift
+//  ProductivityViewController.swift
 //  timerset-ios
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -9,16 +9,16 @@
 import RxSwift
 import ReactorKit
 
-class OneTouchTimerViewController: BaseViewController, View {
+class ProductivityViewController: BaseViewController, View {
     // MARK: view properties
-    private var timerSetView: OneTouchTimerView { return self.view as! OneTouchTimerView }
+    private var timerSetView: ProductivityView { return self.view as! ProductivityView }
     
     // MARK: properties
-    var coordinator: OneTouchTimerViewCoordinator!
+    var coordinator: ProductivityViewCoordinator!
     
     // MARK: ### lifecycle ###
     override func loadView() {
-        self.view = OneTouchTimerView()
+        self.view = ProductivityView()
     }
     
     override func viewDidLoad() {
@@ -26,7 +26,7 @@ class OneTouchTimerViewController: BaseViewController, View {
     }
     
     // MARK: ### reactor bind ###
-    func bind(reactor: OneTouchTimerViewReactor) {
+    func bind(reactor: ProductivityViewReactor) {
         // MARK: action
         
         // MARK: state

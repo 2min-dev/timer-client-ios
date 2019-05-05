@@ -7,7 +7,7 @@
 //
 
 /// Route from timer set view
-class TimerSetListViewCoordinator: CoordinatorProtocl {
+class TimerSetListViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum TimerSetRoute {
         

@@ -1,5 +1,5 @@
 //
-//  OneTouchTimerView.swift
+//  ProductivityView.swift
 //  timerset-ios
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -8,6 +8,6 @@
 
 import UIKit
 
-class OneTouchTimerView: UIView {
+class ProductivityView: UIView {
 
 }

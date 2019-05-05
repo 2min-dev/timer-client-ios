@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CoordinatorProtocl: class {
+protocol CoordinatorProtocol: class {
     associatedtype Route
     associatedtype ViewController
     
