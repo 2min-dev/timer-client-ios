@@ -166,8 +166,14 @@ class CheckBox: UIView {
 
 // MARK: - extension
 extension Reactive where Base: CheckBox {
-    var isChecked: ControlEvent<Bool> {
-        let source = self.methodInvoked(#selector(base.tapGesture(_:))).map { _ in self.base.isChecked }
+    var tap: ControlEvent<Void> {
+        let source = self.methodInvoked(#selector(base.tapGesture(_:))).map { _ in }
         return ControlEvent(events: source)
+    }
+    
+    var isChecked: Binder<Bool> {
+        return Binder(self.base) { checkBox, isChecked in
+            checkBox.isChecked = isChecked
+        }
     }
 }
