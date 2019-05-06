@@ -94,9 +94,7 @@ class CheckBox: UIView {
             make.width.equalTo(size.width)
             make.height.equalTo(size.height)
         }
-    }
-    
-    override func draw(_ rect: CGRect) {
+        
         var path = UIBezierPath(arcCenter: CGPoint(x: checkBoxView.bounds.midX, y: checkBoxView.bounds.midY),
                                 radius: checkBoxView.bounds.width / 2,
                                 startAngle: -CGFloat.pi / 2,
@@ -112,6 +110,10 @@ class CheckBox: UIView {
                             clockwise: true)
         
         checkedBoxLayer.path = path.cgPath
+    }
+    
+    override func draw(_ rect: CGRect) {
+        
     }
     
     // MARK: - private method
