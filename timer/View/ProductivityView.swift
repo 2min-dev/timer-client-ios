@@ -63,7 +63,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let vibrationAlertButton: CheckBox = {
+    let vibrationAlertCheckBox: CheckBox = {
         let view = CheckBox()
         let string = "app_check_box_vibration_alert_title".localized
         view.setAttributedTitle(NSAttributedString(string: string, attributes: [
@@ -74,7 +74,7 @@ class ProductivityView: UIView {
     }()
     
     private lazy var optionStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.loopCheckBox, self.vibrationAlertButton])
+        let view = UIStackView(arrangedSubviews: [self.loopCheckBox, self.vibrationAlertCheckBox])
         view.axis = .horizontal
         view.distribution = .fillProportionally
         return view
