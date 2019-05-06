@@ -17,9 +17,9 @@ class ProductivityView: UIView {
         case second
     }
     
-    enum TimerKey {
+    enum TimerButtonType {
         case save
-        case append
+        case add
         case start
     }
     
@@ -32,7 +32,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    private let dividerView: UIView = {
+    private let timerDividerView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
         return view
@@ -47,7 +47,7 @@ class ProductivityView: UIView {
     }()
     
     private lazy var timerStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.timerLabel, self.dividerView, self.timerInputLabel])
+        let view = UIStackView(arrangedSubviews: [self.timerLabel, self.timerDividerView, self.timerInputLabel])
         view.axis = .vertical
         view.spacing = 10.adjust()
         return view
@@ -73,7 +73,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    private lazy var optionStackView: UIStackView = { [unowned self] in
+    lazy var optionStackView: UIStackView = { [unowned self] in
         let view = UIStackView(arrangedSubviews: [self.loopCheckBox, self.vibrationAlertCheckBox])
         view.axis = .horizontal
         view.distribution = .fillProportionally
@@ -133,24 +133,111 @@ class ProductivityView: UIView {
         view.axis = .horizontal
         view.distribution = .fillEqually
         return view
-        }()
+    }()
     
-    private lazy var contentStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.timerStackView, self.optionStackView, self.keyPadView, self.timeStackView])
-        view.axis = .vertical
-        view.alignment = .center
-        view.spacing = 10.adjust()
+    private let alertLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.NanumSquareRoundEB.withSize(15.adjust())
+        view.text = "app_button_alert_default".localized
         return view
-        }()
+    }()
+    
+    let changeButton: UIButton = {
+        let view = UIButton()
+        let string = "app_button_alert_change_title".localized
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: Constants.Color.black,
+            .font: Constants.Font.NanumSquareRoundEB.withSize(15.adjust())
+        ]
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        return view
+    }()
+    
+    private lazy var alertStackView: UIStackView = { [unowned self] in
+        let view = UIStackView(arrangedSubviews: [self.alertLabel, self.changeButton])
+        view.axis = .horizontal
+        view.distribution = .equalCentering
+        return view
+    }()
+    
+    let saveButton: UIButton = {
+        let view = UIButton()
+        let string = "app_button_timer_save_title".localized
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: Constants.Color.black,
+            .font: Constants.Font.NanumSquareRoundEB.withSize(30.adjust())
+        ]
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        return view
+    }()
+    
+    let addButton: UIButton = {
+        let view = UIButton()
+        let string = "app_button_timer_add_title".localized
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: Constants.Color.black,
+            .font: Constants.Font.NanumSquareRoundEB.withSize(30.adjust())
+        ]
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        return view
+    }()
+    
+    let startButton: UIButton = {
+        let view = UIButton()
+        let string = "app_button_timer_start_title".localized
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: Constants.Color.black,
+            .font: Constants.Font.NanumSquareRoundEB.withSize(30.adjust())
+        ]
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        return view
+    }()
+    
+    private lazy var timerButtonStackView: UIStackView = { [unowned self] in
+        let view = UIStackView(arrangedSubviews: [self.saveButton, self.addButton, self.startButton])
+        view.axis = .horizontal
+        view.distribution = .fillEqually
+        return view
+    }()
+    
+    private let footerDividerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        return view
+    }()
+    
+    private lazy var footerView: UIView = { [unowned self] in
+        let view = UIView()
+        view.setSubviewsForAutoLayout([self.alertStackView, self.footerDividerView, self.timerButtonStackView])
+        return view
+    }()
+    
+    private lazy var contentView: UIView = { [unowned self] in
+        let view = UIView()
+        view.setSubviewsForAutoLayout([self.timerStackView, self.optionStackView, self.keyPadView, self.timeStackView])
+        return view
+    }()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
         
-        setSubviewForAutoLayout(contentStackView)
+        setSubviewsForAutoLayout([contentView, footerView])
         
-        contentStackView.snp.makeConstraints { make in
+        contentView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.center.equalTo(safeAreaLayoutGuide)
             } else {
@@ -160,6 +247,8 @@ class ProductivityView: UIView {
         }
         
         timerStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.8)
         }
         
@@ -167,25 +256,62 @@ class ProductivityView: UIView {
             make.height.equalTo(30.adjust())
         }
         
+        timerDividerView.snp.makeConstraints { make in
+            make.height.equalTo(2.adjust())
+        }
+        
         timerInputLabel.snp.makeConstraints { make in
             make.height.equalTo(20.adjust())
         }
         
-        dividerView.snp.makeConstraints { make in
-            make.height.equalTo(2.adjust())
-        }
-        
         optionStackView.snp.makeConstraints { make in
-            make.width.equalToSuperview()
+            make.top.equalTo(timerStackView.snp.bottom).offset(5.adjust())
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(30.adjust())
         }
         
         keyPadView.snp.makeConstraints { make in
-            make.width.equalToSuperview()
+            make.top.equalTo(optionStackView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.height.equalTo(320.adjust())
         }
         
         timeStackView.snp.makeConstraints { make in
-            make.width.equalToSuperview()
+            make.top.equalTo(keyPadView.snp.bottom).offset(10.adjust())
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(30.adjust())
+        }
+
+        footerView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.width.equalTo(contentView.snp.width)
+            make.height.equalTo(100.adjust())
+        }
+
+        alertStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.width.equalTo(timerDividerView.snp.width).multipliedBy(0.9)
+            make.height.equalTo(30.adjust())
+        }
+
+        footerDividerView.snp.makeConstraints { make in
+            make.top.equalTo(alertStackView.snp.bottom)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(timerDividerView.snp.width)
+            make.height.equalTo(2.adjust())
+        }
+
+        timerButtonStackView.snp.makeConstraints { make in
+            make.top.equalTo(footerDividerView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     

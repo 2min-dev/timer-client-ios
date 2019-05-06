@@ -16,5 +16,12 @@
 "app_button_minute_title" = "분";
 "app_button_second_title" = "초";
 
+"app_button_alert_default" = "기본음";
+"app_button_alert_change_title" = "변경";
+
+"app_button_timer_save_title" = "저장";
+"app_button_timer_add_title" = "+";
+"app_button_timer_start_title" = "시작";
+
 // MARK: - Widget String
 "widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";

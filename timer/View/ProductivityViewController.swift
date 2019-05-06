@@ -14,9 +14,10 @@ class ProductivityViewController: BaseViewController, View {
     private var productivityView: ProductivityView { return self.view as! ProductivityView }
     private var timerLabel: UILabel { return productivityView.timerLabel }
     private var timerInputLabel: UILabel { return productivityView.timerInputLabel }
-    private var keyPadView: KeyPadView { return productivityView.keyPadView }
+    private var optionView: UIView { return productivityView.optionStackView }
     private var loopCheckBox: CheckBox { return productivityView.loopCheckBox }
     private var vibrationAlertCheckBox: CheckBox { return productivityView.vibrationAlertCheckBox }
+    private var keyPadView: KeyPadView { return productivityView.keyPadView }
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
@@ -97,7 +98,7 @@ class ProductivityViewController: BaseViewController, View {
             .map { $0.timer }
             .distinctUntilChanged()
             .map {
-                guard $0 > 0 else { return "" }
+                guard $0 > 0 else { return "0" }
                 
                 let formatter = DateComponentsFormatter()
                 formatter.unitsStyle = .full
@@ -105,6 +106,11 @@ class ProductivityViewController: BaseViewController, View {
                 return formatter.string(from: $0) ?? ""
             }
             .bind(to: timerLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { !($0.timer > 0) }
+            .bind(to: optionView.rx.isHidden)
             .disposed(by: disposeBag)
         
         reactor.state
