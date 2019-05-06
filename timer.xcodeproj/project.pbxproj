@@ -31,6 +31,7 @@
 		F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */; };
 		F303F283225CD51400A11FAF /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F282225CD51400A11FAF /* MainViewController.swift */; };
 		F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */; };
+		F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034D227FCD0E00E05E2E /* CheckBox.swift */; };
 		F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerInfo.swift */; };
 		F37041CB226B81B00012EA16 /* TimerSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimerSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimerSetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimerSetInfo.swift */; };
@@ -69,6 +70,7 @@
 		F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */; };
 		F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
 		F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C3225CC3D7006DC162 /* Functions.swift */; };
+		F3D49924227F273E00AC4B2B /* KeyPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D49923227F273E00AC4B2B /* KeyPadView.swift */; };
 		F3DA689D227AD78D00288AEE /* TimerSetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DA689C227AD78D00288AEE /* TimerSetTableViewCell.swift */; };
 		F3DA689F227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DA689E227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift */; };
 		F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */; };
@@ -154,6 +156,7 @@
 		F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductivityViewCoordinator.swift; sourceTree = "<group>"; };
 		F303F282225CD51400A11FAF /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCoordinator.swift; sourceTree = "<group>"; };
+		F352034D227FCD0E00E05E2E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		F37041C8226B65550012EA16 /* TimerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimerSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimerSetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetInfo.swift; sourceTree = "<group>"; };
@@ -197,6 +200,7 @@
 		F3D1F7C1225CC3D7006DC162 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		F3D1F7C2225CC3D7006DC162 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F3D1F7C3225CC3D7006DC162 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		F3D49923227F273E00AC4B2B /* KeyPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyPadView.swift; sourceTree = "<group>"; };
 		F3DA689C227AD78D00288AEE /* TimerSetTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetTableViewCell.swift; sourceTree = "<group>"; };
 		F3DA689E227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetTableViewCellReactor.swift; sourceTree = "<group>"; };
 		F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModelProtocol.swift; sourceTree = "<group>"; };
@@ -383,6 +387,7 @@
 		F3D1F79E225CBC24006DC162 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				F3D49922227F272600AC4B2B /* Common */,
 				F3DA6899227AD74100288AEE /* Cell */,
 				F3D1F7B1225CC2A9006DC162 /* BaseViewController.swift */,
 				F303F266225CC9E900A11FAF /* RootViewController.swift */,
@@ -469,6 +474,15 @@
 				F3D1F7C2225CC3D7006DC162 /* Constants.swift */,
 				F3D1F7C3225CC3D7006DC162 /* Functions.swift */,
 				F3D1F7C1225CC3D7006DC162 /* Logger.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		F3D49922227F272600AC4B2B /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				F3D49923227F273E00AC4B2B /* KeyPadView.swift */,
+				F352034D227FCD0E00E05E2E /* CheckBox.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -824,6 +838,7 @@
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
+				F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */,
 				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* TimerSetListViewController.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* TimerSetListViewCoordinator.swift in Sources */,
@@ -849,6 +864,7 @@
 				F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */,
 				F3D1F7B2225CC2A9006DC162 /* BaseViewController.swift in Sources */,
 				F303F27B225CCE1600A11FAF /* ProductivityViewController.swift in Sources */,
+				F3D49924227F273E00AC4B2B /* KeyPadView.swift in Sources */,
 				F37041CB226B81B00012EA16 /* TimerSet.swift in Sources */,
 				F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */,
 				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,
