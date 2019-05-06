@@ -48,6 +48,8 @@ class CheckBox: UIView {
     var space: CGFloat = 10
     var isChecked: Bool = false {
         didSet {
+            guard oldValue != isChecked else { return }
+            
             isChecked ? addOnAnimation() : addOffAnimation()
             // Reload check box layer
             setNeedsDisplay()

@@ -10,8 +10,8 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class KeyPadView: UIView {
-    enum KeyPad: Int {
+class KeyPad: UIView {
+    enum Key: Int {
         case zero = 0
         case one
         case two
@@ -29,84 +29,84 @@ class KeyPadView: UIView {
     // MARK: - view properties
     let oneButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.one.rawValue
+        view.tag = Key.one.rawValue
         view.setAttributedTitle(NSAttributedString(string: "1", attributes: nil), for: .normal)
         return view
     }()
     
     let twoButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.two.rawValue
+        view.tag = Key.two.rawValue
         view.setAttributedTitle(NSAttributedString(string: "2", attributes: nil), for: .normal)
         return view
     }()
     
     let threeButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.three.rawValue
+        view.tag = Key.three.rawValue
         view.setAttributedTitle(NSAttributedString(string: "3", attributes: nil), for: .normal)
         return view
     }()
     
     let fourButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.four.rawValue
+        view.tag = Key.four.rawValue
         view.setAttributedTitle(NSAttributedString(string: "4", attributes: nil), for: .normal)
         return view
     }()
     
     let fiveButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.five.rawValue
+        view.tag = Key.five.rawValue
         view.setAttributedTitle(NSAttributedString(string: "5", attributes: nil), for: .normal)
         return view
     }()
     
     let sixButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.six.rawValue
+        view.tag = Key.six.rawValue
         view.setAttributedTitle(NSAttributedString(string: "6", attributes: nil), for: .normal)
         return view
     }()
     
     let sevenButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.seven.rawValue
+        view.tag = Key.seven.rawValue
         view.setAttributedTitle(NSAttributedString(string: "7", attributes: nil), for: .normal)
         return view
     }()
     
     let eightButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.eight.rawValue
+        view.tag = Key.eight.rawValue
         view.setAttributedTitle(NSAttributedString(string: "8", attributes: nil), for: .normal)
         return view
     }()
     
     let nineButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.nine.rawValue
+        view.tag = Key.nine.rawValue
         view.setAttributedTitle(NSAttributedString(string: "9", attributes: nil), for: .normal)
         return view
     }()
     
     let zeroButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.zero.rawValue
+        view.tag = Key.zero.rawValue
         view.setAttributedTitle(NSAttributedString(string: "0", attributes: nil), for: .normal)
         return view
     }()
     
     let cancelButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.cancel.rawValue
+        view.tag = Key.cancel.rawValue
         view.setAttributedTitle(NSAttributedString(string: "X", attributes: nil), for: .normal)
         return view
     }()
     
     let backButton: UIButton = {
         let view = UIButton()
-        view.tag = KeyPad.back.rawValue
+        view.tag = Key.back.rawValue
         view.setAttributedTitle(NSAttributedString(string: "<", attributes: nil), for: .normal)
         return view
     }()
@@ -243,12 +243,12 @@ class KeyPadView: UIView {
 }
 
 // MARK: - Extension
-extension Reactive where Base: KeyPadView {
-    var keyPadTap: ControlEvent<Base.KeyPad> {
+extension Reactive where Base: KeyPad {
+    var keyPadTap: ControlEvent<Base.Key> {
         let source = Observable.merge(base.keyPads.map { keyPad in
             keyPad.rx.tap
-                .flatMap { () -> Observable<Base.KeyPad> in
-                    guard let key = Base.KeyPad(rawValue: keyPad.tag) else { return Observable.empty() }
+                .flatMap { () -> Observable<Base.Key> in
+                    guard let key = Base.Key(rawValue: keyPad.tag) else { return Observable.empty() }
                     return Observable.just(key)
                 }
         })
