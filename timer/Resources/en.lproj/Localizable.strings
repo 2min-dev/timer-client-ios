@@ -6,8 +6,15 @@
   Copyright © 2019 Jeong Jin Eun. All rights reserved.
 */
 
-// Default App String
+// MARK: - Default App String
 "CFBundleDisplayName" = "Timer";
 
-// Widget String
+// MARK: - App String
+"app_check_box_loop_title" = "LOOP";
+"app_check_box_vibration_alert_title" = "VIBRATION ALERT";
+"app_button_hour_title" = "Hour";
+"app_button_minute_title" = "Minute";
+"app_button_second_title" = "Second";
+
+// MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";

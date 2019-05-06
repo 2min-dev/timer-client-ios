@@ -46,7 +46,8 @@ class MainViewCoordinator: CoordinatorProtocol {
         settingViewController.reactor = settingViewReactor
         
         let productivityTabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks, tag: 0)
-        productivityViewController.tabBarItem = productivityTabBarItem
+        let rootProductivityViewController = RootViewController(rootViewController: productivityViewController)
+        rootProductivityViewController.tabBarItem = productivityTabBarItem
         
         let timerSetTabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
         timerSetViewController.tabBarItem = timerSetTabBarItem
@@ -54,7 +55,7 @@ class MainViewCoordinator: CoordinatorProtocol {
         let settingTabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 2)
         settingViewController.tabBarItem = settingTabBarItem
         
-        self.rootViewController.viewControllers = [productivityViewController, timerSetViewController, settingViewController]
+        self.rootViewController.viewControllers = [rootProductivityViewController, timerSetViewController, settingViewController]
     }
     
     func present(for route: MainRoute) {
