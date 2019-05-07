@@ -80,8 +80,8 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let keyPadView: KeyPadView = {
-        let view = KeyPadView()
+    let keyPadView: KeyPad = {
+        let view = KeyPad()
         view.fontSize = 30.adjust()
         return view
     }()
@@ -168,7 +168,7 @@ class ProductivityView: UIView {
         let string = "app_button_timer_save_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.NanumSquareRoundEB.withSize(30.adjust())
+            .font: Constants.Font.NanumSquareRoundEB.withSize(25.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -182,7 +182,7 @@ class ProductivityView: UIView {
         let string = "app_button_timer_add_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.NanumSquareRoundEB.withSize(30.adjust())
+            .font: Constants.Font.NanumSquareRoundEB.withSize(40.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -196,7 +196,7 @@ class ProductivityView: UIView {
         let string = "app_button_timer_start_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.NanumSquareRoundEB.withSize(30.adjust())
+            .font: Constants.Font.NanumSquareRoundEB.withSize(25.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -218,13 +218,13 @@ class ProductivityView: UIView {
         return view
     }()
     
-    private lazy var footerView: UIView = { [unowned self] in
+    lazy var footerView: UIView = { [unowned self] in
         let view = UIView()
         view.setSubviewsForAutoLayout([self.alertStackView, self.footerDividerView, self.timerButtonStackView])
         return view
     }()
     
-    private lazy var contentView: UIView = { [unowned self] in
+    lazy var contentView: UIView = { [unowned self] in
         let view = UIView()
         view.setSubviewsForAutoLayout([self.timerStackView, self.optionStackView, self.keyPadView, self.timeStackView])
         return view
@@ -237,6 +237,7 @@ class ProductivityView: UIView {
         
         setSubviewsForAutoLayout([contentView, footerView])
         
+        // Content view
         contentView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.center.equalTo(safeAreaLayoutGuide)
@@ -246,6 +247,7 @@ class ProductivityView: UIView {
             make.width.equalToSuperview().multipliedBy(0.7)
         }
         
+        // Timer view
         timerStackView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -264,6 +266,7 @@ class ProductivityView: UIView {
             make.height.equalTo(20.adjust())
         }
         
+        // Option button view (전체반복, 진동알림)
         optionStackView.snp.makeConstraints { make in
             make.top.equalTo(timerStackView.snp.bottom).offset(5.adjust())
             make.leading.equalToSuperview()
@@ -271,6 +274,7 @@ class ProductivityView: UIView {
             make.height.equalTo(30.adjust())
         }
         
+        // Key pad view
         keyPadView.snp.makeConstraints { make in
             make.top.equalTo(optionStackView.snp.bottom)
             make.leading.equalToSuperview()
@@ -278,6 +282,7 @@ class ProductivityView: UIView {
             make.height.equalTo(320.adjust())
         }
         
+        // Time button view (시, 분, 초)
         timeStackView.snp.makeConstraints { make in
             make.top.equalTo(keyPadView.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
@@ -286,13 +291,14 @@ class ProductivityView: UIView {
             make.height.equalTo(30.adjust())
         }
 
+        // Footer view
         footerView.snp.makeConstraints { make in
+            make.top.equalTo(contentView.snp.bottom).offset(30.adjust())
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview()
             make.width.equalTo(contentView.snp.width)
-            make.height.equalTo(100.adjust())
         }
 
+        // Alert view
         alertStackView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -307,8 +313,9 @@ class ProductivityView: UIView {
             make.height.equalTo(2.adjust())
         }
 
+        // Timer button view (저장, 추가, 시작)
         timerButtonStackView.snp.makeConstraints { make in
-            make.top.equalTo(footerDividerView.snp.bottom)
+            make.top.equalTo(footerDividerView.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()

@@ -12,18 +12,21 @@ import ReactorKit
 class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return self.view as! ProductivityView }
+    
     private var timerLabel: UILabel { return productivityView.timerLabel }
     private var timerInputLabel: UILabel { return productivityView.timerInputLabel }
+    
     private var optionView: UIView { return productivityView.optionStackView }
     private var loopCheckBox: CheckBox { return productivityView.loopCheckBox }
     private var vibrationAlertCheckBox: CheckBox { return productivityView.vibrationAlertCheckBox }
-    private var keyPadView: KeyPadView { return productivityView.keyPadView }
+    
+    private var keyPadView: KeyPad { return productivityView.keyPadView }
+    
+    private var contentView: UIView { return productivityView.contentView }
+    private var footerView: UIView { return productivityView.footerView }
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
-    
-    // temp
-    var timeInterval: Int = 0
     
     // MARK: - lifecycle
     override func loadView() {
@@ -38,29 +41,8 @@ class ProductivityViewController: BaseViewController, View {
     func bind(reactor: ProductivityViewReactor) {
         // MARK: action
         keyPadView.rx.keyPadTap
-            .filter { key in
-                guard key != .cancel else { return false }
-                guard let text = self.timerInputLabel.text else { return false }
-                
-                switch key {
-                case .back:
-                    return !text.isEmpty
-                default:
-                    return text.count < 3
-                }
-            }
-            .map { key in
-                var text = self.timerInputLabel.text!
-                
-                switch key {
-                case .back:
-                    text.removeLast()
-                default:
-                    text.append(String(key.rawValue))
-                }
-                
-                return Int(text) ?? 0
-            }
+            .filter(isValidKey)
+            .map(makeTimeWithKey)
             .map { Reactor.Action.updateTimeInput($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -114,6 +96,14 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .map { $0.timer > 0 }
+            .subscribe(onNext: { isHidden in
+                self.tabBarController?.setTabBarHidden(isHidden, animate: true)
+                self.setFooterViewHidden(isHidden, animate: true)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
             .map { $0.loop }
             .distinctUntilChanged()
             .debug()
@@ -128,6 +118,60 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
     }
     
+    // MARK: - private method
+    private func isValidKey(_ key: KeyPad.Key) -> Bool {
+        guard key != .cancel else { return false }
+        guard let text = self.timerInputLabel.text else { return false }
+        
+        switch key {
+        case .back:
+            return !text.isEmpty
+        default:
+            return text.count < 3
+        }
+    }
+    
+    private func makeTimeWithKey(_ key: KeyPad.Key) -> Int {
+        guard var text = self.timerInputLabel.text else { return 0 }
+        
+        switch key {
+        case .back:
+            text.removeLast()
+        default:
+            text.append(String(key.rawValue))
+        }
+        
+        return Int(text) ?? 0
+    }
+    
+    private func setFooterViewHidden(_ isHidden: Bool, animate: Bool) {
+        let remakeConstraints = {
+            self.footerView.snp.remakeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.width.equalTo(self.contentView.snp.width)
+                
+                if isHidden {
+                    make.top.equalTo(self.contentView.snp.bottom).offset(30.adjust())
+                } else {
+                    if #available(iOS 11.0, *) {
+                        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+                    } else {
+                        make.top.equalTo(self.view.superview!.snp.bottom)
+                    }
+                }
+            }
+            
+            self.view.layoutIfNeeded()
+        }
+        
+        if animate {
+            UIView.animate(withDuration: 0.3, animations: remakeConstraints)
+        } else {
+            remakeConstraints()
+        }
+    }
+    
+    // MARK: -
     deinit {
         Logger.verbose("")
     }
