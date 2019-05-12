@@ -9,6 +9,9 @@
 import Foundation
 import RxSwift
 import ReactorKit
+import RxDataSources
+
+typealias SideTimerListSection = SectionModel<Void, SideTimerTableViewCellReactor>
 
 class ProductivityViewReactor: Reactor {
     enum Action {
@@ -17,6 +20,8 @@ class ProductivityViewReactor: Reactor {
         case clearTimer
         case toggleLoop
         case toggleVibrationAlert
+        case addTimer
+        case timerSelected(IndexPath)
     }
     
     enum Mutation {
@@ -24,6 +29,9 @@ class ProductivityViewReactor: Reactor {
         case setTimer(TimeInterval)
         case setLoop(Bool)
         case setVibrationAlert(Bool)
+        
+        case appendSectionItem(SideTimerListSection.Item)
+        case setSelectedIndexPath(IndexPath)
     }
     
     struct State {
@@ -31,6 +39,9 @@ class ProductivityViewReactor: Reactor {
         var timer: TimeInterval
         var loop: Bool
         var vibationAlert: Bool
+        
+        var sections: [SideTimerListSection]
+        var selectedIndexPath: IndexPath?
     }
     
     // MARK: properties
@@ -38,7 +49,12 @@ class ProductivityViewReactor: Reactor {
     private let timerService: TimerSetServicePorotocol
     
     init(timerService: TimerSetServicePorotocol) {
-        self.initialState = State(time: 0, timer: 0, loop: false, vibationAlert: false)
+        self.initialState = State(time: 0,
+                                  timer: 0,
+                                  loop: false,
+                                  vibationAlert: false,
+                                  sections: [SideTimerListSection(model: Void(), items: [])],
+                                  selectedIndexPath: nil)
         self.timerService = timerService
     }
     
@@ -63,6 +79,17 @@ class ProductivityViewReactor: Reactor {
             return Observable.just(Mutation.setLoop(!currentState.loop))
         case .toggleVibrationAlert:
             return Observable.just(Mutation.setVibrationAlert(!currentState.vibationAlert))
+        case .addTimer:
+            let items = currentState.sections[0].items
+            let reactor = SideTimerTableViewCellReactor(info: TimerInfo(title: "\(items.count + 1)번 째 타이머", endTime: currentState.timer))
+            return Observable.concat(Observable.just(Mutation.appendSectionItem(reactor)),
+                                     Observable.just(Mutation.setSelectedIndexPath(IndexPath(row: items.count + 1, section: 0))),
+                                     mutate(action: .clearTimer))
+        case let .timerSelected(indexPath):
+//            let item = currentState.sections[0].items[indexPath.row]
+//            return Observable.concat(Observable.just(Mutation.setSelectedIndexPath(indexPath)),
+//                                     Observable.just(Mutation.setTimer(item.currentState.time)))
+            return Observable.empty()
         }
     }
     
@@ -80,6 +107,12 @@ class ProductivityViewReactor: Reactor {
             return state
         case let .setVibrationAlert(vibrationAlert):
             state.vibationAlert = vibrationAlert
+            return state
+        case let .appendSectionItem(reactor):
+            state.sections[0].items.append(reactor)
+            return state
+        case let .setSelectedIndexPath(indexPath):
+            state.selectedIndexPath = indexPath
             return state
         }
     }

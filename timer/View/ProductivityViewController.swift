@@ -7,11 +7,15 @@
 //
 
 import RxSwift
+import RxCocoa
 import ReactorKit
+import RxDataSources
 
 class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return self.view as! ProductivityView }
+    private var contentView: UIView { return productivityView.contentView }
+    private var footerView: UIView { return productivityView.footerView }
     
     private var timerLabel: UILabel { return productivityView.timerLabel }
     private var timerInputLabel: UILabel { return productivityView.timerInputLabel }
@@ -24,11 +28,18 @@ class ProductivityViewController: BaseViewController, View {
     
     private var sideTimerTableView: UITableView { return productivityView.sideTimerTableView }
     
-    private var footerView: UIView { return productivityView.footerView }
-    private var contentView: UIView { return productivityView.contentView }
+    private var addButton: UIButton { return productivityView.addButton }
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
+
+    private let datasource = RxTableViewSectionedReloadDataSource<SideTimerListSection>(configureCell: { datasource, tableView, indexPath, item in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SideTimerTableViewCell", for: indexPath) as? SideTimerTableViewCell else {
+            fatalError("Table view cell isn't SideTimerTableViewCell")
+        }
+        cell.reactor = item
+        return cell
+    })
     
     // MARK: - lifecycle
     override func loadView() {
@@ -69,6 +80,16 @@ class ProductivityViewController: BaseViewController, View {
         
         vibrationAlertCheckBox.rx.tap
             .map { Reactor.Action.toggleVibrationAlert }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        addButton.rx.tap
+            .map { Reactor.Action.addTimer }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        sideTimerTableView.rx.itemSelected
+            .map { Reactor.Action.timerSelected($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -121,14 +142,9 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: vibrationAlertCheckBox.rx.isChecked)
             .disposed(by: disposeBag)
         
-        // temp
-        Observable.just([#"59""#, #"57'30""#, #"12'08'17""#])
-            .bind(to: sideTimerTableView.rx.items(cellIdentifier: "SideTimerTableViewCell")) { (index, timer, cell) in
-                guard let cell = cell as? SideTimerTableViewCell else { return }
-                cell.timeLabel.text = timer
-                
-                cell.setNeedsLayout()
-            }
+        reactor.state
+            .map { $0.sections }
+            .bind(to: sideTimerTableView.rx.items(dataSource: datasource))
             .disposed(by: disposeBag)
     }
     
