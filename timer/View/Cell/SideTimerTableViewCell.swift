@@ -22,11 +22,6 @@ class SideTimerTableViewCell: UITableViewCell, View {
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
         view.backgroundColor = Constants.Color.black
-        if #available(iOS 11.0, *) {
-            view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        } else {
-            // Fallback on earlier versions
-        }
         view.setSubviewForAutoLayout(self.timeLabel)
         return view
     }()
@@ -61,7 +56,7 @@ class SideTimerTableViewCell: UITableViewCell, View {
     // MARK: - lifecycle
     override func layoutSubviews() {
         super.layoutSubviews()
-        containerView.layer.cornerRadius = containerView.bounds.height / 2
+        roundCorners(view: containerView, byRoundingCorners: [.bottomLeft, .topLeft], cornerRadius: containerView.bounds.height / 2)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -78,7 +73,12 @@ class SideTimerTableViewCell: UITableViewCell, View {
         // MARK: state
         reactor.state
             .map { $0.time }
-            .map { getDateString(format: "HH MM ss", date: Date(timeIntervalSince1970: $0)) }
+            .map {
+                let formatter = DateComponentsFormatter()
+                formatter.unitsStyle = .positional
+                formatter.allowedUnits = [.hour, .minute, .second]
+                return formatter.string(from: $0) ?? ""
+            }
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
     }

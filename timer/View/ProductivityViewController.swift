@@ -116,7 +116,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.timer == 0 }
+            .map { $0.sections[0].items.count == 0 && $0.timer == 0 }
             .distinctUntilChanged()
             .bind(to: optionView.rx.isHidden)
             .disposed(by: disposeBag)
@@ -143,6 +143,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .filter { $0.shouldReloadSection }
             .map { $0.sections }
             .bind(to: sideTimerTableView.rx.items(dataSource: datasource))
             .disposed(by: disposeBag)
@@ -199,6 +200,6 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: -
     deinit {
-        Logger.verbose("")
+        Logger.verbose()
     }
 }

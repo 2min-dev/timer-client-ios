@@ -42,6 +42,8 @@ class ProductivityViewReactor: Reactor {
         
         var sections: [SideTimerListSection]
         var selectedIndexPath: IndexPath?
+        
+        var shouldReloadSection: Bool
     }
     
     // MARK: properties
@@ -54,7 +56,8 @@ class ProductivityViewReactor: Reactor {
                                   loop: false,
                                   vibationAlert: false,
                                   sections: [SideTimerListSection(model: Void(), items: [])],
-                                  selectedIndexPath: nil)
+                                  selectedIndexPath: nil,
+                                  shouldReloadSection: true)
         self.timerService = timerService
     }
     
@@ -95,6 +98,7 @@ class ProductivityViewReactor: Reactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
+        state.shouldReloadSection = false
         switch mutation {
         case let .setTime(time):
             state.time = time
@@ -109,6 +113,7 @@ class ProductivityViewReactor: Reactor {
             state.vibationAlert = vibrationAlert
             return state
         case let .appendSectionItem(reactor):
+            state.shouldReloadSection = true
             state.sections[0].items.append(reactor)
             return state
         case let .setSelectedIndexPath(indexPath):
