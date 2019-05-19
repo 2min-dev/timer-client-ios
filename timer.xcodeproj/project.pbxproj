@@ -31,6 +31,10 @@
 		F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */; };
 		F303F283225CD51400A11FAF /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F282225CD51400A11FAF /* MainViewController.swift */; };
 		F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */; };
+		F33C6AAC2291434900FC461A /* CreateTimerSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AAB2291434900FC461A /* CreateTimerSetView.swift */; };
+		F33C6AAE2291435600FC461A /* CreateTimerSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AAD2291435600FC461A /* CreateTimerSetViewController.swift */; };
+		F33C6AB02291436B00FC461A /* CreateTimerSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AAF2291436B00FC461A /* CreateTimerSetViewReactor.swift */; };
+		F33C6AB22291437B00FC461A /* CreateTimerSetViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB12291437B00FC461A /* CreateTimerSetViewCoordinator.swift */; };
 		F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034D227FCD0E00E05E2E /* CheckBox.swift */; };
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
 		F352035222808BBC00E05E2E /* UITabBarController+tabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */; };
@@ -160,6 +164,10 @@
 		F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductivityViewCoordinator.swift; sourceTree = "<group>"; };
 		F303F282225CD51400A11FAF /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCoordinator.swift; sourceTree = "<group>"; };
+		F33C6AAB2291434900FC461A /* CreateTimerSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetView.swift; sourceTree = "<group>"; };
+		F33C6AAD2291435600FC461A /* CreateTimerSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetViewController.swift; sourceTree = "<group>"; };
+		F33C6AAF2291436B00FC461A /* CreateTimerSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetViewReactor.swift; sourceTree = "<group>"; };
+		F33C6AB12291437B00FC461A /* CreateTimerSetViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetViewCoordinator.swift; sourceTree = "<group>"; };
 		F352034D227FCD0E00E05E2E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
 		F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+tabBar.swift"; sourceTree = "<group>"; };
@@ -410,6 +418,8 @@
 				F303F276225CCBA600A11FAF /* SettingView.swift */,
 				F3C1874D226204DF00B2C644 /* AppInfoViewController.swift */,
 				F3C187532262052300B2C644 /* AppInfoView.swift */,
+				F33C6AAB2291434900FC461A /* CreateTimerSetView.swift */,
+				F33C6AAD2291435600FC461A /* CreateTimerSetViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -424,6 +434,7 @@
 				F3DA689E227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift */,
 				F303F278225CCCE300A11FAF /* SettingViewReactor.swift */,
 				F3C1874F226204EB00B2C644 /* AppInfoViewReactor.swift */,
+				F33C6AAF2291436B00FC461A /* CreateTimerSetViewReactor.swift */,
 			);
 			path = ViewReactor;
 			sourceTree = "<group>";
@@ -442,6 +453,7 @@
 				F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */,
 				F303F272225CCB7500A11FAF /* SettingViewCoordinator.swift */,
 				F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */,
+				F33C6AB12291437B00FC461A /* CreateTimerSetViewCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -846,9 +858,11 @@
 				F373CCD42265F995007ECCA0 /* TimerSetService.swift in Sources */,
 				F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */,
 				F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */,
+				F33C6AB02291436B00FC461A /* CreateTimerSetViewReactor.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
+				F33C6AB22291437B00FC461A /* CreateTimerSetViewCoordinator.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
@@ -879,6 +893,8 @@
 				F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */,
 				F3D1F7B2225CC2A9006DC162 /* BaseViewController.swift in Sources */,
 				F303F27B225CCE1600A11FAF /* ProductivityViewController.swift in Sources */,
+				F33C6AAE2291435600FC461A /* CreateTimerSetViewController.swift in Sources */,
+				F33C6AAC2291434900FC461A /* CreateTimerSetView.swift in Sources */,
 				F3D49924227F273E00AC4B2B /* KeyPad.swift in Sources */,
 				F37041CB226B81B00012EA16 /* TimerSet.swift in Sources */,
 				F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */,

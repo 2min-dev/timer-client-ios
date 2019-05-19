@@ -9,7 +9,7 @@
 /// Route from one touch timer view
 class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
-    enum ProductivityTimerRoute {
+    enum ProductivityRoute {
         
     }
 
@@ -22,7 +22,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: ProductivityTimerRoute) {
+    func present(for route: ProductivityRoute) {
         
     }
 }
