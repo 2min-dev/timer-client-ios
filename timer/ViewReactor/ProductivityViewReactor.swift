@@ -49,6 +49,9 @@ class ProductivityViewReactor: Reactor {
     // MARK: properties
     var initialState: State
     private let timerService: TimerSetServicePorotocol
+    private let timerSet: TimerSet // Default timer set
+    
+    private var disposeBag = DisposeBag()
     
     init(timerService: TimerSetServicePorotocol) {
         self.initialState = State(time: 0,
@@ -59,6 +62,7 @@ class ProductivityViewReactor: Reactor {
                                   selectedIndexPath: nil,
                                   shouldReloadSection: true)
         self.timerService = timerService
+        self.timerSet = TimerSet(info: TimerSetInfo(name: "", description: ""))
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -84,9 +88,15 @@ class ProductivityViewReactor: Reactor {
             return Observable.just(Mutation.setVibrationAlert(!currentState.vibationAlert))
         case .addTimer:
             let items = currentState.sections[0].items
-            let reactor = SideTimerTableViewCellReactor(info: TimerInfo(title: "\(items.count + 1)번 째 타이머", endTime: currentState.timer))
-            return Observable.concat(Observable.just(Mutation.appendSectionItem(reactor)),
-                                     Observable.just(Mutation.setSelectedIndexPath(IndexPath(row: items.count + 1, section: 0))),
+            let info = TimerInfo(title: "\(items.count + 1)번 째 타이머", endTime: currentState.timer)
+            
+            let appendSectionItem = timerSet.createTimer(info: info)
+                .map { Mutation.appendSectionItem(SideTimerTableViewCellReactor(info: $0.info)) }
+            
+            let setSeclectedIndexPath = Observable.just(Mutation.setSelectedIndexPath(IndexPath(row: items.count + 1, section: 0)))
+            
+            return Observable.concat(appendSectionItem,
+                                     setSeclectedIndexPath,
                                      mutate(action: .clearTimer))
         case let .timerSelected(indexPath):
 //            let item = currentState.sections[0].items[indexPath.row]
