@@ -7,7 +7,7 @@
 //
 
 /// Route from root view (navigation)
-class RootViewCoordinator: CoordinatorProtocl {
+class RootViewCoordinator: CoordinatorProtocol {
     // MARK: route enumeration
     enum RootRoute {
         

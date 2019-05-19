@@ -23,9 +23,9 @@ func getDate(format: String, date: String) -> Date? {
     return formatter.date(from: date)
 }
 
-func roundCorners(view: UIView, cornerRadius: CGFloat) {
+func roundCorners(view: UIView, byRoundingCorners: UIRectCorner, cornerRadius: CGFloat) {
     let maskLayer = CAShapeLayer()
     maskLayer.frame = view.bounds
-    maskLayer.path = UIBezierPath(roundedRect: view.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
+    maskLayer.path = UIBezierPath(roundedRect: view.bounds, byRoundingCorners: byRoundingCorners, cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
     view.layer.mask = maskLayer
 }

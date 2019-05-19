@@ -7,7 +7,7 @@
 //
 
 /// Route from intro view
-class IntroViewCoordinator: CoordinatorProtocl {
+class IntroViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum IntroRoute {
         case timerSet

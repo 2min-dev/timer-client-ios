@@ -1,15 +1,15 @@
 //
-//  OneTouchTimerViewReactor.swift
-//  timerset-ios
+//  SideTimerTableViewCellReactor.swift
+//  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 08/05/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import RxSwift
 import ReactorKit
 
-class OneTouchTimerViewReactor: Reactor {
+class SideTimerTableViewCellReactor: Reactor {
     enum Action {
         
     }
@@ -19,16 +19,16 @@ class OneTouchTimerViewReactor: Reactor {
     }
     
     struct State {
-        
+        let time: TimeInterval
     }
     
-    // MARK: properties
+    // MARK: - properties
     var initialState: State
-    private let timerService: TimerSetServicePorotocol
+    private var info: TimerInfo
     
-    init(timerService: TimerSetServicePorotocol) {
-        self.initialState = State()
-        self.timerService = timerService
+    init(info: TimerInfo) {
+        self.info = info
+        self.initialState = State(time: info.endTime)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {

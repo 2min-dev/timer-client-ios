@@ -1,5 +1,5 @@
 //
-//  OneTouchTimerViewCoordinator.swift
+//  ProductivityViewCoordinator.swift
 //  timerset-ios
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -7,22 +7,22 @@
 //
 
 /// Route from one touch timer view
-class OneTouchTimerViewCoordinator: CoordinatorProtocl {
+class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
-    enum OneTouchTimerRoute {
+    enum ProductivityTimerRoute {
         
     }
 
     // MARK: properties
-    weak var rootViewController: OneTouchTimerViewController!
+    weak var rootViewController: ProductivityViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: OneTouchTimerViewController) {
+    required init(provider: ServiceProviderProtocol, rootViewController: ProductivityViewController) {
         self.provider = provider
         self.rootViewController = rootViewController
     }
     
-    func present(for route: OneTouchTimerRoute) {
+    func present(for route: ProductivityTimerRoute) {
         
     }
 }

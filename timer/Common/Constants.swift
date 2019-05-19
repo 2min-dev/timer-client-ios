@@ -42,6 +42,10 @@ struct Constants {
     struct Color {
         static let appColor: UIColor = #colorLiteral(red: 0.5333333333, green: 0.8666666667, blue: 0.5333333333, alpha: 1)
         
-        static let gray: UIColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        static let clear: UIColor = .clear
+        static let white: UIColor = .white
+        static let black: UIColor = .black
+        static let gray: UIColor = .gray
+        static let lightGray: UIColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
     }
 }
