@@ -35,6 +35,7 @@
 		F33C6AAE2291435600FC461A /* CreateTimerSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AAD2291435600FC461A /* CreateTimerSetViewController.swift */; };
 		F33C6AB02291436B00FC461A /* CreateTimerSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AAF2291436B00FC461A /* CreateTimerSetViewReactor.swift */; };
 		F33C6AB22291437B00FC461A /* CreateTimerSetViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB12291437B00FC461A /* CreateTimerSetViewCoordinator.swift */; };
+		F33C6AB42291612E00FC461A /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB32291612E00FC461A /* Header.swift */; };
 		F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034D227FCD0E00E05E2E /* CheckBox.swift */; };
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
 		F352035222808BBC00E05E2E /* UITabBarController+tabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */; };
@@ -168,6 +169,7 @@
 		F33C6AAD2291435600FC461A /* CreateTimerSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetViewController.swift; sourceTree = "<group>"; };
 		F33C6AAF2291436B00FC461A /* CreateTimerSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetViewReactor.swift; sourceTree = "<group>"; };
 		F33C6AB12291437B00FC461A /* CreateTimerSetViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTimerSetViewCoordinator.swift; sourceTree = "<group>"; };
+		F33C6AB32291612E00FC461A /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		F352034D227FCD0E00E05E2E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
 		F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+tabBar.swift"; sourceTree = "<group>"; };
@@ -506,6 +508,7 @@
 			children = (
 				F3D49923227F273E00AC4B2B /* KeyPad.swift */,
 				F352034D227FCD0E00E05E2E /* CheckBox.swift */,
+				F33C6AB32291612E00FC461A /* Header.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -851,6 +854,7 @@
 				F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */,
 				F3DA689D227AD78D00288AEE /* TimerSetTableViewCell.swift in Sources */,
 				F3C1874C2261FB0900B2C644 /* BaseTableSeciton.swift in Sources */,
+				F33C6AB42291612E00FC461A /* Header.swift in Sources */,
 				F303F279225CCCE300A11FAF /* SettingViewReactor.swift in Sources */,
 				F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */,
 				F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */,
