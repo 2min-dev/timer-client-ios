@@ -18,7 +18,7 @@ class IntroView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = Constants.Color.white
         
         setSubviewForAutoLayout(view)
         

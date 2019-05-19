@@ -16,7 +16,7 @@ class MainViewController: UITabBarController {
     // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Color.white
         
         // Set tab bar view controller delegate for swipable
         delegate = self
@@ -31,7 +31,7 @@ class MainViewController: UITabBarController {
         Logger.verbose("")
     }
     
-    // MARK: -selector
+    // MARK: - selector
     @objc private func gestureHandler(recognizer: UIPanGestureRecognizer) {
         // Do not attempt to begin an interactive transition if one is already
         guard transitionCoordinator == nil else {

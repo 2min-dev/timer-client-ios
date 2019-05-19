@@ -17,7 +17,7 @@ class CreateTimerSetView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+        backgroundColor = Constants.Color.white
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -241,7 +241,7 @@ class ProductivityView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = Constants.Color.white
         
         setSubviewsForAutoLayout([contentView, sideTimerTableView, footerView])
         
