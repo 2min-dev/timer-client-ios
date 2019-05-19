@@ -20,7 +20,10 @@ class MainViewController: UITabBarController {
         
         // Set tab bar view controller delegate for swipable
         delegate = self
+        
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(gestureHandler(recognizer:)))
+        panGestureRecognizer.delegate = self
+        
         view.addGestureRecognizer(panGestureRecognizer)
     }
     
@@ -57,6 +60,20 @@ extension MainViewController: UITabBarControllerDelegate {
     
     // Return interactor of transitioning animator when tab changed
     func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return TabBarInteractor(gestureRecognizer: panGestureRecognizer)
+        // Return interactor only change selected tab by pan gesture
+        if panGestureRecognizer.state == .began || panGestureRecognizer.state == .changed {
+            return TabBarInteractor(gestureRecognizer: panGestureRecognizer)
+        } else {
+            return nil
+        }
+    }
+}
+
+extension MainViewController: UIGestureRecognizerDelegate {
+    // Return gesture recognizer interpert touch event only tab view controller is single
+    // * non single view like navigation controller or etc *
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let currentViewController = selectedViewController as? UINavigationController else { return true }
+        return currentViewController.viewControllers.count > 1 ? false : true
     }
 }
