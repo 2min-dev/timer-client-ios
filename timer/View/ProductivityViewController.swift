@@ -22,8 +22,10 @@ class ProductivityViewController: BaseViewController, View {
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
     
-    private var contentView: UIView { return productivityView.contentView }
+    private var sideTimerTableView: UITableView { return productivityView.sideTimerTableView }
+    
     private var footerView: UIView { return productivityView.footerView }
+    private var contentView: UIView { return productivityView.contentView }
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
@@ -35,6 +37,8 @@ class ProductivityViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sideTimerTableView.register(SideTimerTableViewCell.self, forCellReuseIdentifier: "SideTimerTableViewCell")
     }
     
     // MARK: - reactor bind
@@ -91,14 +95,16 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { !($0.timer > 0) }
+            .map { $0.timer == 0 }
+            .distinctUntilChanged()
             .bind(to: optionView.rx.isHidden)
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.timer > 0 }
+            .map { $0.timer == 0 }
+            .distinctUntilChanged()
             .subscribe(onNext: { isHidden in
-                self.tabBarController?.setTabBarHidden(isHidden, animate: true)
+                self.tabBarController?.setTabBarHidden(!isHidden, animate: true)
                 self.setFooterViewHidden(isHidden, animate: true)
             })
             .disposed(by: disposeBag)
@@ -106,15 +112,23 @@ class ProductivityViewController: BaseViewController, View {
         reactor.state
             .map { $0.loop }
             .distinctUntilChanged()
-            .debug()
             .bind(to: loopCheckBox.rx.isChecked)
             .disposed(by: disposeBag)
         
         reactor.state
             .map { $0.vibationAlert }
             .distinctUntilChanged()
-            .debug()
             .bind(to: vibrationAlertCheckBox.rx.isChecked)
+            .disposed(by: disposeBag)
+        
+        // temp
+        Observable.just([#"59""#, #"57'30""#, #"12'08'17""#])
+            .bind(to: sideTimerTableView.rx.items(cellIdentifier: "SideTimerTableViewCell")) { (index, timer, cell) in
+                guard let cell = cell as? SideTimerTableViewCell else { return }
+                cell.timeLabel.text = timer
+                
+                cell.setNeedsLayout()
+            }
             .disposed(by: disposeBag)
     }
     
@@ -147,18 +161,14 @@ class ProductivityViewController: BaseViewController, View {
     private func setFooterViewHidden(_ isHidden: Bool, animate: Bool) {
         let remakeConstraints = {
             self.footerView.snp.remakeConstraints { make in
+                if isHidden {
+                    make.top.equalTo(self.view.snp.bottom)
+                } else {
+                    make.top.equalTo(self.contentView.snp.bottom).offset(30.adjust())
+                }
+                
                 make.centerX.equalToSuperview()
                 make.width.equalTo(self.contentView.snp.width)
-                
-                if isHidden {
-                    make.top.equalTo(self.contentView.snp.bottom).offset(30.adjust())
-                } else {
-                    if #available(iOS 11.0, *) {
-                        make.top.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
-                    } else {
-                        make.top.equalTo(self.view.superview!.snp.bottom)
-                    }
-                }
             }
             
             self.view.layoutIfNeeded()

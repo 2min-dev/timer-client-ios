@@ -40,6 +40,7 @@
 		F373CCD42265F995007ECCA0 /* TimerSetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD32265F995007ECCA0 /* TimerSetService.swift */; };
 		F373CCD62265FA33007ECCA0 /* JSTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD52265FA33007ECCA0 /* JSTimer.swift */; };
 		F389657722759BAA0043E177 /* TimerSetServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F389657622759BAA0043E177 /* TimerSetServiceTest.swift */; };
+		F3925ACC2281CA96005CE9DD /* SideTimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* SideTimerTableViewCell.swift */; };
 		F3A2A87E225E24A0001D579A /* FirstPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87D225E24A0001D579A /* FirstPageViewController.swift */; };
 		F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */; };
 		F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */; };
@@ -169,6 +170,7 @@
 		F389657422759BAA0043E177 /* test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F389657622759BAA0043E177 /* TimerSetServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetServiceTest.swift; sourceTree = "<group>"; };
 		F389657822759BAA0043E177 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3925ACB2281CA96005CE9DD /* SideTimerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideTimerTableViewCell.swift; sourceTree = "<group>"; };
 		F3A2A87D225E24A0001D579A /* FirstPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPageViewController.swift; sourceTree = "<group>"; };
@@ -497,6 +499,7 @@
 			isa = PBXGroup;
 			children = (
 				F3DA689C227AD78D00288AEE /* TimerSetTableViewCell.swift */,
+				F3925ACB2281CA96005CE9DD /* SideTimerTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -824,6 +827,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3925ACC2281CA96005CE9DD /* SideTimerTableViewCell.swift in Sources */,
 				F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */,
 				F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */,
 				F303F273225CCB7500A11FAF /* SettingViewCoordinator.swift in Sources */,

@@ -10,11 +10,9 @@ import UIKit
 
 extension UITabBarController {
     func setTabBarHidden(_ isHidden: Bool, animate: Bool) {
-        let keyWindow = UIApplication.shared.keyWindow!
-        
         // Calc tab bar frame
         var origin = tabBar.frame.origin
-        origin = CGPoint(x: 0, y: isHidden ? keyWindow.frame.height : keyWindow.frame.height - tabBar.frame.height)
+        origin = CGPoint(x: 0, y: isHidden ? view.frame.height : view.frame.height - tabBar.frame.height)
         
         if animate {
             UIView.animate(withDuration: 0.3) {

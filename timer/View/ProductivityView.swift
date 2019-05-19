@@ -224,6 +224,14 @@ class ProductivityView: UIView {
         return view
     }()
     
+    let sideTimerTableView: UITableView = {
+        let view = UITableView()
+        view.separatorStyle = .none
+        view.backgroundColor = Constants.Color.clear
+        view.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
+        return view
+    }()
+    
     lazy var contentView: UIView = { [unowned self] in
         let view = UIView()
         view.setSubviewsForAutoLayout([self.timerStackView, self.optionStackView, self.keyPadView, self.timeStackView])
@@ -235,7 +243,7 @@ class ProductivityView: UIView {
         super.init(frame: frame)
         backgroundColor = .white
         
-        setSubviewsForAutoLayout([contentView, footerView])
+        setSubviewsForAutoLayout([contentView, sideTimerTableView, footerView])
         
         // Content view
         contentView.snp.makeConstraints { make in
@@ -317,6 +325,14 @@ class ProductivityView: UIView {
         timerButtonStackView.snp.makeConstraints { make in
             make.top.equalTo(footerDividerView.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        // Side timer table view
+        sideTimerTableView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalTo(contentView.snp.trailing).inset(10.adjust())
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
