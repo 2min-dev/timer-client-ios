@@ -45,17 +45,17 @@ class MainViewCoordinator: CoordinatorProtocol {
         settingViewController.coordinator = settingViewCoordinator
         settingViewController.reactor = settingViewReactor
         
-        let productivityTabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks, tag: 0)
+        let productivityTabBarItem = UITabBarItem(title: "tab_button_home".localized, image: nil, tag: 0)
         let rootProductivityViewController = RootViewController(rootViewController: productivityViewController)
         rootProductivityViewController.tabBarItem = productivityTabBarItem
         
-        let timerSetTabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
+        let timerSetTabBarItem = UITabBarItem(title: "tab_button_local_time_set".localized, image: nil, tag: 0)
         timerSetViewController.tabBarItem = timerSetTabBarItem
         
-        let settingTabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 2)
+        let settingTabBarItem = UITabBarItem(title: "tab_button_shared_time_set".localized, image: nil, tag: 0)
         settingViewController.tabBarItem = settingTabBarItem
         
-        self.rootViewController.viewControllers = [rootProductivityViewController, timerSetViewController, settingViewController]
+        self.rootViewController.viewControllers = [timerSetViewController, rootProductivityViewController, settingViewController]
     }
     
     func present(for route: MainRoute) {

@@ -10,18 +10,22 @@
 "CFBundleDisplayName" = "Timer";
 
 // MARK: - App String
-"app_check_box_loop_title" = "LOOP";
-"app_check_box_vibration_alert_title" = "VIBRATION ALERT";
-"app_button_hour_title" = "Hour";
-"app_button_minute_title" = "Minute";
-"app_button_second_title" = "Second";
+// MARK: - Tab
+"tab_button_home" = "HOME";
+"tab_button_local_time_set" = "LOCAL";
+"tab_button_shared_time_set" = "SHARED";
 
-"app_button_alert_default" = "Default";
-"app_button_alert_change_title" = "Change";
+// MARK: - Productivity
+"productivity_button_hour_title" = "Hour";
+"productivity_button_minute_title" = "Minute";
+"productivity_button_second_title" = "Second";
 
-"app_button_timer_save_title" = "Save";
-"app_button_timer_add_title" = "+";
-"app_button_timer_start_title" = "Start";
+"productivity_button_alert_default" = "Default";
+"productivity_button_alert_change_title" = "Change";
+
+"productivity_button_timer_save_title" = "Save";
+"productivity_button_timer_add_title" = "+";
+"productivity_button_timer_start_title" = "Start";
 
 // MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";

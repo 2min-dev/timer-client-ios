@@ -12,21 +12,21 @@ class AppInfoView: UIView {
     let developer: UILabel = {
         let view = UILabel()
         view.text = "Jeong Jin Eun"
-        view.font = Constants.Font.NanumSquareRoundEB.withSize(26.adjust())
+        view.font = Constants.Font.ExtraBold.withSize(26.adjust())
         return view
     }()
     
     let email: UILabel = {
         let view = UILabel()
         view.text = "email : jsilver.dev@gmail.com"
-        view.font = Constants.Font.NanumSquareRoundR.withSize(17.adjust())
+        view.font = Constants.Font.Regular.withSize(17.adjust())
         return view
     }()
     
     let version: UILabel = {
         let view = UILabel()
         view.text = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        view.font = Constants.Font.NanumSquareRoundR.withSize(17.adjust())
+        view.font = Constants.Font.Regular.withSize(17.adjust())
         return view
     }()
     

@@ -18,8 +18,6 @@ class ProductivityViewReactor: Reactor {
         case updateTimeInput(Int)
         case tapTimeKey(ProductivityView.TimeKey)
         case clearTimer
-        case toggleLoop
-        case toggleVibrationAlert
         case addTimer
         case timerSelected(IndexPath)
     }
@@ -27,8 +25,6 @@ class ProductivityViewReactor: Reactor {
     enum Mutation {
         case setTime(Int)
         case setTimer(TimeInterval)
-        case setLoop(Bool)
-        case setVibrationAlert(Bool)
         
         case appendSectionItem(SideTimerListSection.Item)
         case setSelectedIndexPath(IndexPath)
@@ -37,29 +33,27 @@ class ProductivityViewReactor: Reactor {
     struct State {
         var time: Int
         var timer: TimeInterval
-        var loop: Bool
-        var vibationAlert: Bool
         
         var sections: [SideTimerListSection]
         var selectedIndexPath: IndexPath?
         
+        var shouldStartTimer: Bool
         var shouldReloadSection: Bool
     }
     
     // MARK: properties
     var initialState: State
     private let timerService: TimerSetServicePorotocol
-    private let timerSet: TimerSet // Default timer set
+    let timerSet: TimerSet // Default timer set
     
     private var disposeBag = DisposeBag()
     
     init(timerService: TimerSetServicePorotocol) {
         self.initialState = State(time: 0,
                                   timer: 0,
-                                  loop: false,
-                                  vibationAlert: false,
                                   sections: [SideTimerListSection(model: Void(), items: [])],
                                   selectedIndexPath: nil,
+                                  shouldStartTimer: false,
                                   shouldReloadSection: true)
         self.timerService = timerService
         self.timerSet = TimerSet(info: TimerSetInfo(name: "", description: ""))
@@ -82,10 +76,6 @@ class ProductivityViewReactor: Reactor {
             return Observable.concat(Observable.just(Mutation.setTimer(timeInterval)), Observable.just(Mutation.setTime(0)))
         case .clearTimer:
             return Observable.concat(Observable.just(Mutation.setTimer(0)), Observable.just(Mutation.setTime(0)))
-        case .toggleLoop:
-            return Observable.just(Mutation.setLoop(!currentState.loop))
-        case .toggleVibrationAlert:
-            return Observable.just(Mutation.setVibrationAlert(!currentState.vibationAlert))
         case .addTimer:
             let items = currentState.sections[0].items
             let info = TimerInfo(title: "\(items.count + 1)번 째 타이머", endTime: currentState.timer)
@@ -109,22 +99,21 @@ class ProductivityViewReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         state.shouldReloadSection = false
+        
         switch mutation {
         case let .setTime(time):
             state.time = time
             return state
         case let .setTimer(timeInterval):
             state.timer = timeInterval
-            return state
-        case let .setLoop(loop):
-            state.loop = loop
-            return state
-        case let .setVibrationAlert(vibrationAlert):
-            state.vibationAlert = vibrationAlert
+            
+            state.shouldStartTimer = state.timer > 0
             return state
         case let .appendSectionItem(reactor):
-            state.shouldReloadSection = true
             state.sections[0].items.append(reactor)
+            
+            state.shouldStartTimer = true
+            state.shouldReloadSection = true
             return state
         case let .setSelectedIndexPath(indexPath):
             state.selectedIndexPath = indexPath

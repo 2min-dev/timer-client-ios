@@ -14,7 +14,7 @@ class TodayView: UIView {
         let view = UILabel()
         view.textAlignment = .center
         view.numberOfLines = 0
-        view.font = Constants.Font.NanumSquareRoundR.withSize(18.adjust())
+        view.font = Constants.Font.Regular.withSize(18.adjust())
         view.textColor = Constants.Color.gray
         view.text = "widget_preparing_title".localized
         return view

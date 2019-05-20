@@ -199,7 +199,7 @@ class KeyPad: UIView {
         }
     }
     
-    var font: UIFont = Constants.Font.NanumSquareRoundEB {
+    var font: UIFont = Constants.Font.ExtraBold {
         didSet {
             normalAttributes[.font] = font.withSize(fontSize)
             highlightAttributes[.font] = font.withSize(fontSize)

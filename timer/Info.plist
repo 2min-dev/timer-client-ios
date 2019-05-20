@@ -24,10 +24,10 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>NanumSquareRoundB.ttf</string>
-		<string>NanumSquareRoundR.ttf</string>
-		<string>NanumSquareRoundL.ttf</string>
-		<string>NanumSquareRoundEB.ttf</string>
+		<string>NanumSquareB.ttf</string>
+		<string>NanumSquareR.ttf</string>
+		<string>NanumSquareL.ttf</string>
+		<string>NanumSquareEB.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

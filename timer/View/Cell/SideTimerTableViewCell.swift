@@ -15,7 +15,7 @@ class SideTimerTableViewCell: UITableViewCell, View {
     let timeLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.white
-        view.font = Constants.Font.NanumSquareRoundR.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         return view
     }()
     

@@ -10,10 +10,6 @@
 		1236FB8BB1172A8260339148 /* Pods_test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */; };
 		62F447025DA9571328264AAF /* Pods_widget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08C6E86474A099E3080F5433 /* Pods_widget.framework */; };
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
-		F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */; };
-		F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */; };
-		F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */; };
-		F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */; };
 		F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F303F264225CC71700A11FAF /* laboratory.storyboard */; };
 		F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F266225CC9E900A11FAF /* RootViewController.swift */; };
 		F303F269225CCA0500A11FAF /* RootViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F268225CCA0500A11FAF /* RootViewCoordinator.swift */; };
@@ -47,6 +43,10 @@
 		F373CCD62265FA33007ECCA0 /* JSTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD52265FA33007ECCA0 /* JSTimer.swift */; };
 		F389657722759BAA0043E177 /* TimerSetServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F389657622759BAA0043E177 /* TimerSetServiceTest.swift */; };
 		F3925ACC2281CA96005CE9DD /* SideTimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* SideTimerTableViewCell.swift */; };
+		F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */; };
+		F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */; };
+		F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */; };
+		F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */; };
 		F3A2A87E225E24A0001D579A /* FirstPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87D225E24A0001D579A /* FirstPageViewController.swift */; };
 		F3A2A880225E24A8001D579A /* SecondPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */; };
 		F3A2A882225E29C4001D579A /* ThirdPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */; };
@@ -98,10 +98,6 @@
 		F3F800BB226A2CFE003D1D88 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
 		F3F800BC226A2D19003D1D88 /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */; };
 		F3F800BD226A2D1B003D1D88 /* UIView+autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */; };
-		F3F800BF226A2E28003D1D88 /* NanumSquareRoundB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */; };
-		F3F800C0226A2E28003D1D88 /* NanumSquareRoundEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */; };
-		F3F800C1226A2E28003D1D88 /* NanumSquareRoundL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */; };
-		F3F800C2226A2E28003D1D88 /* NanumSquareRoundR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -145,10 +141,6 @@
 		8DAA476B776A79A887A8BAB2 /* Pods-timer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.debug.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.debug.xcconfig"; sourceTree = "<group>"; };
 		CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-test.release.xcconfig"; path = "Target Support Files/Pods-test/Pods-test.release.xcconfig"; sourceTree = "<group>"; };
 		E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.release.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.release.xcconfig"; sourceTree = "<group>"; };
-		F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundEB.ttf; sourceTree = "<group>"; };
-		F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundL.ttf; sourceTree = "<group>"; };
-		F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundR.ttf; sourceTree = "<group>"; };
-		F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareRoundB.ttf; sourceTree = "<group>"; };
 		F303F264225CC71700A11FAF /* laboratory.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = laboratory.storyboard; sourceTree = "<group>"; };
 		F303F266225CC9E900A11FAF /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F303F268225CCA0500A11FAF /* RootViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewCoordinator.swift; sourceTree = "<group>"; };
@@ -184,6 +176,10 @@
 		F389657622759BAA0043E177 /* TimerSetServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetServiceTest.swift; sourceTree = "<group>"; };
 		F389657822759BAA0043E177 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F3925ACB2281CA96005CE9DD /* SideTimerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideTimerTableViewCell.swift; sourceTree = "<group>"; };
+		F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.ttf; sourceTree = "<group>"; };
+		F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
+		F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
+		F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
 		F3A2A87D225E24A0001D579A /* FirstPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A87F225E24A8001D579A /* SecondPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondPageViewController.swift; sourceTree = "<group>"; };
 		F3A2A881225E29C4001D579A /* ThirdPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPageViewController.swift; sourceTree = "<group>"; };
@@ -301,10 +297,10 @@
 		F303F25A225CC57B00A11FAF /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				F303F25E225CC5A100A11FAF /* NanumSquareRoundB.ttf */,
-				F303F25B225CC5A100A11FAF /* NanumSquareRoundEB.ttf */,
-				F303F25C225CC5A100A11FAF /* NanumSquareRoundL.ttf */,
-				F303F25D225CC5A100A11FAF /* NanumSquareRoundR.ttf */,
+				F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */,
+				F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */,
+				F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */,
+				F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -665,12 +661,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */,
-				F303F260225CC5A100A11FAF /* NanumSquareRoundL.ttf in Resources */,
-				F303F261225CC5A100A11FAF /* NanumSquareRoundR.ttf in Resources */,
-				F303F25F225CC5A100A11FAF /* NanumSquareRoundEB.ttf in Resources */,
-				F303F262225CC5A100A11FAF /* NanumSquareRoundB.ttf in Resources */,
 				F303F265225CC71700A11FAF /* laboratory.storyboard in Resources */,
+				F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */,
+				F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */,
+				F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */,
 				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
+				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -679,10 +675,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3F800BF226A2E28003D1D88 /* NanumSquareRoundB.ttf in Resources */,
-				F3F800C0226A2E28003D1D88 /* NanumSquareRoundEB.ttf in Resources */,
-				F3F800C1226A2E28003D1D88 /* NanumSquareRoundL.ttf in Resources */,
-				F3F800C2226A2E28003D1D88 /* NanumSquareRoundR.ttf in Resources */,
 				F3F800B9226A107B003D1D88 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

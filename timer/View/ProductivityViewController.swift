@@ -15,19 +15,18 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return self.view as! ProductivityView }
     private var contentView: UIView { return productivityView.contentView }
+    
+    private var footerStackView: UIStackView { return productivityView.footerStackView }
     private var footerView: UIView { return productivityView.footerView }
     
     private var timerLabel: UILabel { return productivityView.timerLabel }
     private var timerInputLabel: UILabel { return productivityView.timerInputLabel }
     
-    private var optionView: UIView { return productivityView.optionStackView }
-    private var loopCheckBox: CheckBox { return productivityView.loopCheckBox }
-    private var vibrationAlertCheckBox: CheckBox { return productivityView.vibrationAlertCheckBox }
-    
     private var keyPadView: KeyPad { return productivityView.keyPadView }
     
     private var sideTimerTableView: UITableView { return productivityView.sideTimerTableView }
     
+    private var saveButton: UIButton { return productivityView.saveButton }
     private var addButton: UIButton { return productivityView.addButton }
     
     // MARK: - properties
@@ -73,14 +72,11 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        loopCheckBox.rx.tap
-            .map { Reactor.Action.toggleLoop }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        vibrationAlertCheckBox.rx.tap
-            .map { Reactor.Action.toggleVibrationAlert }
-            .bind(to: reactor.action)
+        saveButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let `self` = self else { return }
+                self.coordinator.present(for: .createTimerSet(reactor.timerSet))
+            })
             .disposed(by: disposeBag)
         
         addButton.rx.tap
@@ -116,33 +112,6 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.sections[0].items.count == 0 && $0.timer == 0 }
-            .distinctUntilChanged()
-            .bind(to: optionView.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.timer == 0 }
-            .distinctUntilChanged()
-            .subscribe(onNext: { isHidden in
-                self.tabBarController?.setTabBarHidden(!isHidden, animate: true)
-                self.setFooterViewHidden(isHidden, animate: true)
-            })
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.loop }
-            .distinctUntilChanged()
-            .bind(to: loopCheckBox.rx.isChecked)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.vibationAlert }
-            .distinctUntilChanged()
-            .bind(to: vibrationAlertCheckBox.rx.isChecked)
-            .disposed(by: disposeBag)
-        
-        reactor.state
             .filter { $0.shouldReloadSection }
             .map { $0.sections }
             .bind(to: sideTimerTableView.rx.items(dataSource: datasource))
@@ -175,30 +144,6 @@ class ProductivityViewController: BaseViewController, View {
         return Int(text) ?? 0
     }
     
-    private func setFooterViewHidden(_ isHidden: Bool, animate: Bool) {
-        let remakeConstraints = {
-            self.footerView.snp.remakeConstraints { make in
-                if isHidden {
-                    make.top.equalTo(self.view.snp.bottom)
-                } else {
-                    make.top.equalTo(self.contentView.snp.bottom).offset(30.adjust())
-                }
-                
-                make.centerX.equalToSuperview()
-                make.width.equalTo(self.contentView.snp.width)
-            }
-            
-            self.view.layoutIfNeeded()
-        }
-        
-        if animate {
-            UIView.animate(withDuration: 0.3, animations: remakeConstraints)
-        } else {
-            remakeConstraints()
-        }
-    }
-    
-    // MARK: -
     deinit {
         Logger.verbose()
     }

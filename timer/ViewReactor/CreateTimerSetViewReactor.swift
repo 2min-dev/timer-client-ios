@@ -24,9 +24,13 @@ class CreateTimerSetViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let timerService: TimerSetServicePorotocol
+    private let timerSet: TimerSet
     
-    init() {
+    init(timerService: TimerSetServicePorotocol, timerSet: TimerSet) {
         self.initialState = State()
+        self.timerService = timerService
+        self.timerSet = timerSet
     }
     
     func mutate(action: Action) -> Observable<Mutation> {

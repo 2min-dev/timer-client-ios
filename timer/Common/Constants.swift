@@ -16,7 +16,7 @@ struct Constants {
     static let weight: CGFloat = {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
-            return UIScreen.main.bounds.width / 414.0
+            return UIScreen.main.bounds.width / 375.0
         case .pad:
             return UIScreen.main.bounds.width / 768.0
         default:
@@ -33,10 +33,10 @@ struct Constants {
     
     // project font define
     struct Font {
-        static let NanumSquareRoundL: UIFont! = UIFont.init(name: "NanumSquareRoundL", size: 17.0)
-        static let NanumSquareRoundR: UIFont! = UIFont.init(name: "NanumSquareRoundR", size: 17.0)
-        static let NanumSquareRoundB: UIFont! = UIFont.init(name: "NanumSquareRoundB", size: 17.0)
-        static let NanumSquareRoundEB: UIFont! = UIFont.init(name: "NanumSquareRoundEB", size: 17.0)
+        static let Light: UIFont! = UIFont.init(name: "NanumSquareL", size: 17.0)
+        static let Regular: UIFont! = UIFont.init(name: "NanumSquareR", size: 17.0)
+        static let Bold: UIFont! = UIFont.init(name: "NanumSquareB", size: 17.0)
+        static let ExtraBold: UIFont! = UIFont.init(name: "NanumSquareEB", size: 17.0)
     }
     
     struct Color {
