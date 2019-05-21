@@ -35,7 +35,6 @@
 		F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB52291678300FC461A /* CALayer+border.swift */; };
 		F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034D227FCD0E00E05E2E /* CheckBox.swift */; };
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
-		F352035222808BBC00E05E2E /* UITabBarController+tabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */; };
 		F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerInfo.swift */; };
 		F37041CB226B81B00012EA16 /* TimerSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimerSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimerSetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimerSetInfo.swift */; };
@@ -166,7 +165,6 @@
 		F33C6AB52291678300FC461A /* CALayer+border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+border.swift"; sourceTree = "<group>"; };
 		F352034D227FCD0E00E05E2E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
-		F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+tabBar.swift"; sourceTree = "<group>"; };
 		F37041C8226B65550012EA16 /* TimerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimerSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimerSetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetInfo.swift; sourceTree = "<group>"; };
@@ -486,7 +484,6 @@
 				F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */,
 				F3D1F7B8225CC357006DC162 /* UIViewController+child.swift */,
 				F352034F2280524300E05E2E /* UIViewController+rx.swift */,
-				F352035122808BBC00E05E2E /* UITabBarController+tabBar.swift */,
 				F33C6AB52291678300FC461A /* CALayer+border.swift */,
 			);
 			path = Extension;
@@ -868,7 +865,6 @@
 				F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */,
 				F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */,
 				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
-				F352035222808BBC00E05E2E /* UITabBarController+tabBar.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* TimerSetListViewController.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* TimerSetListViewCoordinator.swift in Sources */,
 				F3C18750226204EB00B2C644 /* AppInfoViewReactor.swift in Sources */,

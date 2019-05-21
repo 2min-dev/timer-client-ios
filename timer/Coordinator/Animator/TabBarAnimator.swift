@@ -17,7 +17,6 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         self.tabBarController = tabBarController
     }
     
-    // MARK: - implement `UIViewControllerAnimatedTransitioning`
     // Duration of transition
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
@@ -70,6 +69,11 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         let animator = interruptibleAnimator(using: transitionContext)
         // Start transition animation
         animator.startAnimation()
+    }
+    
+    // Send delegate message when transition animation ended
+    func animationEnded(_ transitionCompleted: Bool) {
+        tabBarController.delegate?.tabBarController?(tabBarController, didSelect: tabBarController.selectedViewController!)
     }
     
     /**

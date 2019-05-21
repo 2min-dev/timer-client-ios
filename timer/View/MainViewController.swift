@@ -27,10 +27,6 @@ class MainViewController: UITabBarController {
         view.addGestureRecognizer(panGestureRecognizer)
     }
     
-    deinit {
-        Logger.verbose("")
-    }
-    
     // MARK: - selector
     @objc private func gestureHandler(recognizer: UIPanGestureRecognizer) {
         // Do not attempt to begin an interactive transition if one is already
@@ -50,8 +46,13 @@ class MainViewController: UITabBarController {
             }
         }
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }
 
+// MARK: - extension
 extension MainViewController: UITabBarControllerDelegate {
     // Return animator of transitioning when tab changed
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {

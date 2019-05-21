@@ -7,22 +7,35 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class RootViewController: UINavigationController {
-    // MARK: properties
+    // MARK: - properties
     var coordinator: RootViewCoordinator!
     
+    // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // hide top navigtaion bar
+        // Hide top navigtaion bar
         isNavigationBarHidden = true
-        // set default swipe back gesture because if isNavigationBarHidden property is true, interactive gesture isn't work
+        // Set default swipe back gesture because if isNavigationBarHidden property is true, interactive gesture isn't work
         interactivePopGestureRecognizer?.delegate = self
+        // Set delegate about `UINavigationControllerDelegate`
+        delegate = self
     }
     
     deinit {
-        Logger.verbose("")
+        Logger.verbose()
+    }
+}
+
+// MARK: - extension
+extension RootViewController: UINavigationControllerDelegate {
+    // Called when view controller did show by navigation transition
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // Not implements
     }
 }
 
