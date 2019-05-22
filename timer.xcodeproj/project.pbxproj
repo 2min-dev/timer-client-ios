@@ -83,6 +83,7 @@
 		F3DA689D227AD78D00288AEE /* TimerSetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DA689C227AD78D00288AEE /* TimerSetTableViewCell.swift */; };
 		F3DA689F227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DA689E227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift */; };
 		F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */; };
+		F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E5C3512296E52000148139 /* UITabBar+height.swift */; };
 		F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F342AD226751A300A226C0 /* NotificationCenter.framework */; };
 		F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342B0226751A300A226C0 /* TodayViewController.swift */; };
 		F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F3F342AC226751A300A226C0 /* widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -220,6 +221,7 @@
 		F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModelProtocol.swift; sourceTree = "<group>"; };
 		F3E4383F227421FF00FA1246 /* timer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = timer.entitlements; path = timer/timer.entitlements; sourceTree = "<group>"; };
 		F3E438402274220500FA1246 /* widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widget.entitlements; sourceTree = "<group>"; };
+		F3E5C3512296E52000148139 /* UITabBar+height.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+height.swift"; sourceTree = "<group>"; };
 		F3F342AC226751A300A226C0 /* widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3F342AD226751A300A226C0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		F3F342B0226751A300A226C0 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				F3D1F7B8225CC357006DC162 /* UIViewController+child.swift */,
 				F352034F2280524300E05E2E /* UIViewController+rx.swift */,
 				F33C6AB52291678300FC461A /* CALayer+border.swift */,
+				F3E5C3512296E52000148139 /* UITabBar+height.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -876,6 +879,7 @@
 				F3DA689F227ADF3A00288AEE /* TimerSetTableViewCellReactor.swift in Sources */,
 				F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */,
 				F303F283225CD51400A11FAF /* MainViewController.swift in Sources */,
+				F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */,
 				F303F27F225CCE7100A11FAF /* ProductivityViewReactor.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
 				F3C1874A2261E66F00B2C644 /* BaseTableItem.swift in Sources */,

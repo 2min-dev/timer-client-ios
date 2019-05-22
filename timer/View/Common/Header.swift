@@ -10,11 +10,13 @@ import UIKit
 
 class Header: UIView {
     // MARK: - view properties
-    let view: UIView = {
-        let view = UIView()
-        return view
-    }()
     
+    // MARK: - properties
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: superview?.bounds.width ?? 0, height: 56.adjust())
+    }
+    
+    // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
@@ -22,5 +24,10 @@ class Header: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - lifecycle
+    override func layoutSubviews() {
+        layer.border(edges: [.bottom], width: 1.adjust(), color: Constants.Color.gray)
     }
 }

@@ -42,7 +42,7 @@ class AppInfoView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        setSubviewForAutoLayout(stackView)
+        addAutolayoutSubview(stackView)
         
         stackView.snp.makeConstraints({ make in
             make.center.equalToSuperview()

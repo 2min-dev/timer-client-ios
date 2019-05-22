@@ -27,35 +27,40 @@ class MainViewCoordinator: CoordinatorProtocol {
         let productivityViewCoordinator = ProductivityViewCoordinator(provider: provider, rootViewController: productivityViewController)
         let productivityViewReactor = ProductivityViewReactor(timerService: provider.timerService)
         
-        let timerSetViewController = TimerSetListViewController()
-        let timerSetViewCoordinator = TimerSetListViewCoordinator(provider: provider, rootViewController: timerSetViewController)
-        let timerSetViewReactor = TimerSetListViewReactor(timerService: provider.timerService)
+        let localViewController = TimerSetListViewController()
+        let localViewCoordinator = TimerSetListViewCoordinator(provider: provider, rootViewController: localViewController)
+        let localViewReactor = TimerSetListViewReactor(timerService: provider.timerService)
         
-        let settingViewController = SettingViewController()
-        let settingViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: settingViewController)
-        let settingViewReactor = SettingViewReactor(appService: provider.appService)
+        let shareViewController = SettingViewController()
+        let shareViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: shareViewController)
+        let shareViewReactor = SettingViewReactor(appService: provider.appService)
         
         // DI
         productivityViewController.coordinator = productivityViewCoordinator
         productivityViewController.reactor = productivityViewReactor
         
-        timerSetViewController.coordinator = timerSetViewCoordinator
-        timerSetViewController.reactor = timerSetViewReactor
+        localViewController.coordinator = localViewCoordinator
+        localViewController.reactor = localViewReactor
         
-        settingViewController.coordinator = settingViewCoordinator
-        settingViewController.reactor = settingViewReactor
+        shareViewController.coordinator = shareViewCoordinator
+        shareViewController.reactor = shareViewReactor
         
-        let productivityTabBarItem = UITabBarItem(title: "tab_button_home".localized, image: nil, tag: 0)
-        let rootProductivityViewController = RootViewController(rootViewController: productivityViewController)
-        rootProductivityViewController.tabBarItem = productivityTabBarItem
+        let productivityTabBarItem = UITabBarItem(title: "tab_button_home".localized, image: UIImage(named: "home"), tag: 0)
+        productivityTabBarItem.imageInsets = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
+        productivityTabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -10.adjust())
+        productivityViewController.tabBarItem = productivityTabBarItem
         
-        let timerSetTabBarItem = UITabBarItem(title: "tab_button_local_time_set".localized, image: nil, tag: 0)
-        timerSetViewController.tabBarItem = timerSetTabBarItem
+        let localTabBarItem = UITabBarItem(title: "tab_button_local_time_set".localized, image: UIImage(named: "local"), tag: 0)
+        localTabBarItem.imageInsets = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
+        localTabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -10.adjust())
+        localViewController.tabBarItem = localTabBarItem
         
-        let settingTabBarItem = UITabBarItem(title: "tab_button_shared_time_set".localized, image: nil, tag: 0)
-        settingViewController.tabBarItem = settingTabBarItem
+        let shareTabBarItem = UITabBarItem(title: "tab_button_shared_time_set".localized, image: UIImage(named: "share"), tag: 0)
+        shareTabBarItem.imageInsets = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
+        shareTabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -10.adjust())
+        shareViewController.tabBarItem = shareTabBarItem
         
-        self.rootViewController.viewControllers = [timerSetViewController, rootProductivityViewController, settingViewController]
+        self.rootViewController.viewControllers = [localViewController, productivityViewController, shareViewController]
     }
     
     func present(for route: MainRoute) {

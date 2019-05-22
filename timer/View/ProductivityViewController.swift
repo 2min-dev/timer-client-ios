@@ -31,7 +31,7 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
-
+    
     private let datasource = RxTableViewSectionedReloadDataSource<SideTimerListSection>(configureCell: { datasource, tableView, indexPath, item in
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "SideTimerTableViewCell", for: indexPath) as? SideTimerTableViewCell else {
             fatalError("Table view cell isn't SideTimerTableViewCell")
@@ -51,12 +51,63 @@ class ProductivityViewController: BaseViewController, View {
         sideTimerTableView.register(SideTimerTableViewCell.self, forCellReuseIdentifier: "SideTimerTableViewCell")
     }
     
-    // MARK: - reactor bind
+    // Add footer view when view did appear because footer view should remove after will appear due to animation (add view)
+    override func viewDidAppear(_ animated: Bool) {
+        guard let tabBarController = tabBarController else { return }
+        tabBarController.view.addAutolayoutSubview(footerView)
+
+        footerView.snp.makeConstraints { make in
+            make.top.equalTo(tabBarController.view.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(tabBarController.tabBar.snp.height).offset(10.adjust())
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        // Remove footer view when view controller disappeared
+        showFooterView(isShow: false) {
+            self.footerView.removeFromSuperview()
+        }
+    }
+    
+    // MARK: - bind
+    override func bind() {
+        rx.viewDidAppear // For get super view controller (view
+            .take(1)
+            .subscribe(onNext: { [unowned self] in
+                // Bind navigation controller event & tab bar controller event
+                self.navigationController?.rx.didShow
+                    .skip(1) // Skip until did finished drawing of tab bar controller
+                    .filter { [unowned self] in
+                        ($0.viewController as? UITabBarController)?.selectedViewController == self
+                    }
+                    .subscribe(onNext: { [unowned self] viewController, animated in
+                        self.showFooterView(isShow: self.reactor?.currentState.shouldStartTimer ?? false)
+                    })
+                    .disposed(by: self.disposeBag)
+                
+                self.tabBarController?.rx.didSelect
+                    .filter { [unowned self] in
+                        $0 == self
+                    }
+                    .subscribe(onNext: { [unowned self] viewController in
+                        self.showFooterView(isShow: self.reactor?.currentState.shouldStartTimer ?? false)
+                    })
+                    .disposed(by: self.disposeBag)
+            })
+            .disposed(by: disposeBag)
+    }
+    
     func bind(reactor: ProductivityViewReactor) {
         // MARK: action
         keyPadView.rx.keyPadTap
-            .filter(isValidKey)
-            .map(makeTimeWithKey)
+            .filter { [unowned self] in
+                self.isValidKey($0)
+            }
+            .map { [unowned self] in
+                self.makeTimeWithKey($0)
+            }
             .map { Reactor.Action.updateTimeInput($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -73,8 +124,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let `self` = self else { return }
+            .subscribe(onNext: { [unowned self] in
                 self.coordinator.present(for: .createTimerSet(reactor.timerSet))
             })
             .disposed(by: disposeBag)
@@ -112,6 +162,15 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .map { $0.shouldStartTimer }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in
+                guard let `self` = self else { return }
+                self.showFooterView(isShow: $0)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
             .filter { $0.shouldReloadSection }
             .map { $0.sections }
             .bind(to: sideTimerTableView.rx.items(dataSource: datasource))
@@ -121,7 +180,7 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - private method
     private func isValidKey(_ key: KeyPad.Key) -> Bool {
         guard key != .cancel else { return false }
-        guard let text = self.timerInputLabel.text else { return false }
+        guard let text = timerInputLabel.text else { return false }
         
         switch key {
         case .back:
@@ -132,7 +191,7 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     private func makeTimeWithKey(_ key: KeyPad.Key) -> Int {
-        guard var text = self.timerInputLabel.text else { return 0 }
+        guard var text = timerInputLabel.text else { return 0 }
         
         switch key {
         case .back:
@@ -142,6 +201,35 @@ class ProductivityViewController: BaseViewController, View {
         }
         
         return Int(text) ?? 0
+    }
+    
+    /// Show footer view (save & add & start)
+    private func showFooterView(isShow: Bool, completion: (() -> Void)? = nil) {
+        guard let superview = footerView.superview, let tabBar = tabBarController?.tabBar else { return }
+        
+        let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeIn, animations: {
+            self.footerView.snp.remakeConstraints { make in
+                make.leading.equalToSuperview()
+                make.trailing.equalToSuperview()
+                make.height.equalTo(tabBar.snp.height).offset(10.adjust())
+                
+                if isShow {
+                    make.bottom.equalToSuperview()
+                } else {
+                    make.top.equalTo(superview.snp.bottom)
+                }
+            }
+            
+            superview.layoutIfNeeded()
+        })
+        
+        animator.addCompletion({ position in
+            if position == .end {
+                completion?()
+            }
+        })
+        
+        animator.startAnimation()
     }
     
     deinit {

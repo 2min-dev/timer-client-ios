@@ -25,6 +25,8 @@ class MainViewController: UITabBarController {
         panGestureRecognizer.delegate = self
         
         view.addGestureRecognizer(panGestureRecognizer)
+        
+        tabBar.tintColor = Constants.Color.black
     }
     
     // MARK: - selector

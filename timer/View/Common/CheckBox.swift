@@ -66,7 +66,7 @@ class CheckBox: UIView {
         super.init(frame: frame)
         initGesture()
         
-        setSubviewForAutoLayout(containerView)
+        addAutolayoutSubview(containerView)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalTo(checkBoxView.snp.trailing).offset(space)

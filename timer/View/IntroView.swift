@@ -20,7 +20,7 @@ class IntroView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        setSubviewForAutoLayout(view)
+        addAutolayoutSubview(view)
         
         view.snp.makeConstraints({ make in
             if #available(iOS 11.0, *) {

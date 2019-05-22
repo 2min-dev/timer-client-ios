@@ -22,7 +22,7 @@ class SideTimerTableViewCell: UITableViewCell, View {
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
         view.backgroundColor = Constants.Color.black
-        view.setSubviewForAutoLayout(self.timeLabel)
+        view.addAutolayoutSubview(self.timeLabel)
         return view
     }()
     
@@ -35,7 +35,7 @@ class SideTimerTableViewCell: UITableViewCell, View {
         selectionStyle = .none
         backgroundColor = Constants.Color.clear
         
-        setSubviewForAutoLayout(containerView)
+        addAutolayoutSubview(containerView)
         
         containerView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(5.adjust())
@@ -63,7 +63,7 @@ class SideTimerTableViewCell: UITableViewCell, View {
         super.setSelected(selected, animated: animated)
         
         timeLabel.textColor = selected ? Constants.Color.white : Constants.Color.black
-        containerView.backgroundColor = selected ? Constants.Color.black : Constants.Color.lightGray
+        containerView.backgroundColor = selected ? Constants.Color.black : Constants.Color.gray
     }
     
     // MARK: - reactor bind

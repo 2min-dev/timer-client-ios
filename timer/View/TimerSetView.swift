@@ -18,7 +18,7 @@ class TimerSetView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setSubviewForAutoLayout(tableView)
+        addAutolayoutSubview(tableView)
         
         tableView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {

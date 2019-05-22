@@ -10,14 +10,27 @@ import UIKit
 
 class CreateTimerSetView: UIView {
     // MARK: - view properties
-    let view: UIView = {
-        let view = UIView()
+    let view: Header = {
+        let view = Header()
         return view
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
+        
+        addAutolayoutSubview(view)
+        
+        view.snp.makeConstraints { make in
+            if #available(iOS 11.0, *) {
+                make.top.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.top.equalToSuperview()
+            }
+            
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

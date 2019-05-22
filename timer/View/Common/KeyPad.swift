@@ -104,10 +104,32 @@ class KeyPad: UIView {
         return view
     }()
     
+    lazy var cancelWrapView: UIView = { [unowned self] in
+        let view = UIView()
+        // Set constraint of subviews
+        view.addAutolayoutSubview(self.cancelButton)
+        cancelButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        return view
+    }()
+    
     let backButton: UIButton = {
         let view = UIButton()
         view.tag = Key.back.rawValue
         view.setAttributedTitle(NSAttributedString(string: "<", attributes: nil), for: .normal)
+        return view
+    }()
+    
+    lazy var baackWrapView: UIView = { [unowned self] in
+        let view = UIView()
+        // Set constraint of subviews
+        view.addAutolayoutSubview(self.backButton)
+        backButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         return view
     }()
     
@@ -133,7 +155,7 @@ class KeyPad: UIView {
     }()
     
     private lazy var keyPadFourStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.cancelButton, self.zeroButton, self.backButton])
+        let view = UIStackView(arrangedSubviews: [self.cancelWrapView, self.zeroButton, self.baackWrapView])
         view.axis = .horizontal
         view.distribution = .fillEqually
         return view
@@ -199,7 +221,7 @@ class KeyPad: UIView {
         }
     }
     
-    var font: UIFont = Constants.Font.ExtraBold {
+    var font: UIFont = UIFont.systemFont(ofSize: 17) {
         didSet {
             normalAttributes[.font] = font.withSize(fontSize)
             highlightAttributes[.font] = font.withSize(fontSize)
@@ -211,8 +233,7 @@ class KeyPad: UIView {
         super.init(frame: frame)
         initProperty()
         
-        setSubviewForAutoLayout(keyPadStackView)
-        
+        addAutolayoutSubview(keyPadStackView)
         keyPadStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

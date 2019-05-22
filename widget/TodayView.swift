@@ -22,7 +22,7 @@ class TodayView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setSubviewForAutoLayout(label)
+        addAutolayoutSubview(label)
         
         label.snp.makeConstraints({ make in
             if #available(iOS 11.0, *) {

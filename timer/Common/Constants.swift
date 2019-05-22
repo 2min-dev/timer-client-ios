@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct Constants {
+enum Constants {
     static let appTitle: String = "timerset-ios"
     
     // base screen display weight
@@ -26,26 +26,26 @@ struct Constants {
     }()
     
     // second time
-    struct Time {
+    enum Time {
         static let hour: Int = 3600
         static let minute: Int = 60
     }
     
     // project font define
-    struct Font {
+    enum Font {
         static let Light: UIFont! = UIFont.init(name: "NanumSquareL", size: 17.0)
         static let Regular: UIFont! = UIFont.init(name: "NanumSquareR", size: 17.0)
         static let Bold: UIFont! = UIFont.init(name: "NanumSquareB", size: 17.0)
         static let ExtraBold: UIFont! = UIFont.init(name: "NanumSquareEB", size: 17.0)
     }
     
-    struct Color {
+    enum Color {
         static let appColor: UIColor = #colorLiteral(red: 0.5333333333, green: 0.8666666667, blue: 0.5333333333, alpha: 1)
         
         static let clear: UIColor = .clear
         static let white: UIColor = .white
-        static let black: UIColor = .black
-        static let gray: UIColor = .gray
-        static let lightGray: UIColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        static let black: UIColor = UIColor(hex: "#0A0A0A")
+        static let gray: UIColor = UIColor(hex: "#C8C8C8")
+        static let lightGray: UIColor = UIColor(hex: "#969696")
     }
 }

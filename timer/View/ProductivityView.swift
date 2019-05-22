@@ -24,38 +24,96 @@ class ProductivityView: UIView {
     }
     
     // MARK: - view properties
+    let headerView: Header = {
+        let view = Header()
+        return view
+    }()
+    
     let timerLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(25.adjust())
-        view.text = ""
+        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.text = "0"
         view.textAlignment = .center
         return view
     }()
     
-    private let timerDividerView: UIView = {
+    let timerClearButton: UIButton = {
+        let view = UIButton()
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: Constants.Color.black,
+            .font: Constants.Font.Regular.withSize(15.adjust())
+        ]
+        view.setAttributedTitle(NSAttributedString(string: "X", attributes: attributes), for: .normal)
+        view.isHidden = true
+        return view
+    }()
+    
+    lazy var timerInputView: UIView = { [unowned self] in
         let view = UIView()
-        view.backgroundColor = .black
+        view.layer.borderWidth = 1.adjust()
+        view.layer.borderColor = Constants.Color.gray.cgColor
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([self.timerLabel, self.timerClearButton])
+        self.timerLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(11.adjust())
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-11.adjust())
+            make.width.equalTo(140.adjust())
+        }
+        
+        self.timerClearButton.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalTo(timerLabel.snp.trailing)
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        return view
+    }()
+    
+    let sumOfTimersLabel: UILabel = {
+        let view = UILabel()
+        view.text = "전체 000:00:00"
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.lightGray
+        return view
+    }()
+    
+    let endOfTimerLabel: UILabel = {
+        let view = UILabel()
+        view.text = "종료 00:00 AM"
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.lightGray
         return view
     }()
     
     let timerInputLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(20.adjust())
-        view.text = ""
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.lightGray
         view.textAlignment = .center
         return view
     }()
     
-    private lazy var timerStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.timerLabel, self.timerDividerView, self.timerInputLabel])
+    private lazy var timerInfoStackView: UIStackView = { [unowned self] in
+        let view = UIStackView(arrangedSubviews: [self.sumOfTimersLabel, self.endOfTimerLabel, self.timerInputLabel])
         view.axis = .vertical
-        view.spacing = 10.adjust()
+        view.spacing = 5.adjust()
+        
+        // Set constarint of subviews
+        timerInputLabel.snp.makeConstraints { make in
+            make.height.greaterThanOrEqualTo(13.adjust())
+        }
         return view
     }()
     
     let keyPadView: KeyPad = {
         let view = KeyPad()
+        view.font = Constants.Font.ExtraBold
         view.fontSize = 30.adjust()
+        
+        view.cancelButton.isHidden = true
         return view
     }()
     
@@ -64,7 +122,7 @@ class ProductivityView: UIView {
         let string = "productivity_button_hour_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.ExtraBold.withSize(25.adjust())
+            .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -78,7 +136,7 @@ class ProductivityView: UIView {
         let string = "productivity_button_minute_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.ExtraBold.withSize(25.adjust())
+            .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -92,7 +150,7 @@ class ProductivityView: UIView {
         let string = "productivity_button_second_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.ExtraBold.withSize(25.adjust())
+            .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -101,7 +159,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    private lazy var timeStackView: UIStackView = { [unowned self] in
+    private lazy var timeButtonStackView: UIStackView = { [unowned self] in
         let view = UIStackView(arrangedSubviews: [self.hourButton, self.minuteButton, self.secondButton])
         view.axis = .horizontal
         view.distribution = .fillEqually
@@ -113,12 +171,14 @@ class ProductivityView: UIView {
         let string = "productivity_button_timer_save_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.ExtraBold.withSize(25.adjust())
+            .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
         attributes[.foregroundColor] = Constants.Color.gray
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        
+        view.contentHorizontalAlignment = .left
         return view
     }()
     
@@ -127,7 +187,7 @@ class ProductivityView: UIView {
         let string = "productivity_button_timer_add_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.ExtraBold.withSize(40.adjust())
+            .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
@@ -139,14 +199,17 @@ class ProductivityView: UIView {
     let startButton: UIButton = {
         let view = UIButton()
         let string = "productivity_button_timer_start_title".localized
+        
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
-            .font: Constants.Font.ExtraBold.withSize(25.adjust())
+            .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
         attributes[.foregroundColor] = Constants.Color.gray
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        
+        view.contentHorizontalAlignment = .right
         return view
     }()
     
@@ -161,7 +224,15 @@ class ProductivityView: UIView {
     lazy var footerView: UIView = { [unowned self] in
         let view = UIView()
         view.backgroundColor = Constants.Color.white
-        view.setSubviewForAutoLayout(self.footerStackView)
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubview(self.footerStackView)
+        footerStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview()
+            make.width.equalTo(208.adjust())
+        }
+        
         return view
     }()
     
@@ -175,7 +246,33 @@ class ProductivityView: UIView {
     
     lazy var contentView: UIView = { [unowned self] in
         let view = UIView()
-        view.setSubviewsForAutoLayout([self.timerStackView, self.keyPadView, self.timeStackView])
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([self.timerInputView, self.timerInfoStackView, self.keyPadView, self.timeButtonStackView])
+        timerInputView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(43.5.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(200.adjust())
+        }
+        
+        timerInfoStackView.snp.makeConstraints { make in
+            make.top.equalTo(timerInputView.snp.bottom).offset(20.adjust())
+            make.centerX.equalToSuperview()
+        }
+        
+        keyPadView.snp.makeConstraints { make in
+            make.top.equalTo(timerInputView.snp.bottom).offset(84.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(258.adjust())
+            make.height.equalTo(232.adjust())
+        }
+        
+        timeButtonStackView.snp.makeConstraints { make in
+            make.top.equalTo(keyPadView.snp.bottom).offset(10.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(258.adjust())
+        }
+        
         return view
     }()
     
@@ -184,55 +281,24 @@ class ProductivityView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        setSubviewsForAutoLayout([contentView, sideTimerTableView])
-        
-        // Content view
-        contentView.snp.makeConstraints { make in
+        addAutolayoutSubviews([headerView, contentView, sideTimerTableView])
+        headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
-                make.center.equalTo(safeAreaLayoutGuide)
+                make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.center.equalToSuperview()
+                make.top.equalToSuperview()
             }
-            make.width.equalToSuperview().multipliedBy(0.7)
-        }
-        
-        // Timer view
-        timerStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.8)
-        }
-        
-        timerLabel.snp.makeConstraints { make in
-            make.height.equalTo(30.adjust())
-        }
-        
-        timerDividerView.snp.makeConstraints { make in
-            make.height.equalTo(2.adjust())
-        }
-        
-        timerInputLabel.snp.makeConstraints { make in
-            make.height.equalTo(20.adjust())
-        }
-        
-        // Key pad view
-        keyPadView.snp.makeConstraints { make in
-            make.top.equalTo(timerStackView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.height.equalTo(320.adjust())
         }
         
-        // Time button view (시, 분, 초)
-        timeStackView.snp.makeConstraints { make in
-            make.top.equalTo(keyPadView.snp.bottom).offset(10.adjust())
+        contentView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.height.equalTo(30.adjust())
         }
         
-        // Side timer table view
         sideTimerTableView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalTo(contentView.snp.trailing).inset(10.adjust())

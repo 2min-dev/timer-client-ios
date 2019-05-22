@@ -61,7 +61,7 @@ class TimerSetTableViewCell: UITableViewCell, View {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setSubviewForAutoLayout(stackView)
+        addAutolayoutSubview(stackView)
         
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 0))

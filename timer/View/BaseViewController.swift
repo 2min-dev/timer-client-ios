@@ -11,4 +11,14 @@ import RxSwift
 
 class BaseViewController: UIViewController {
     var disposeBag: DisposeBag = DisposeBag()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bind()
+    }
+    
+    /// Bind common view contrller events
+    func bind() {
+        // Implement to bind any events
+    }
 }
