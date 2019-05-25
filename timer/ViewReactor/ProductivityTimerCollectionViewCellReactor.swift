@@ -1,5 +1,5 @@
 //
-//  SideTimerTableViewCellReactor.swift
+//  ProductivityTimerCollectionViewCellReactor.swift
 //  timer
 //
 //  Created by JSilver on 08/05/2019.
@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class SideTimerTableViewCellReactor: Reactor {
+class ProductivityTimerCollectionViewCellReactor: Reactor {
     enum Action {
         
     }

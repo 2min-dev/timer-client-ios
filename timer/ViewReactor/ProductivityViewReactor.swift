@@ -11,7 +11,7 @@ import RxSwift
 import ReactorKit
 import RxDataSources
 
-typealias SideTimerListSection = SectionModel<Void, SideTimerTableViewCellReactor>
+typealias SideTimerListSection = SectionModel<Void, ProductivityTimerCollectionViewCellReactor>
 
 class ProductivityViewReactor: Reactor {
     enum Action {
@@ -81,7 +81,7 @@ class ProductivityViewReactor: Reactor {
             let info = TimerInfo(title: "\(items.count + 1)번 째 타이머", endTime: currentState.timer)
             
             let appendSectionItem = timerSet.createTimer(info: info)
-                .map { Mutation.appendSectionItem(SideTimerTableViewCellReactor(info: $0.info)) }
+                .map { Mutation.appendSectionItem(ProductivityTimerCollectionViewCellReactor(info: $0.info)) }
             
             let setSeclectedIndexPath = Observable.just(Mutation.setSelectedIndexPath(IndexPath(row: items.count + 1, section: 0)))
             

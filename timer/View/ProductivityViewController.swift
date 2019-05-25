@@ -24,7 +24,7 @@ class ProductivityViewController: BaseViewController, View {
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
     
-    private var sideTimerTableView: UITableView { return productivityView.sideTimerTableView }
+//    private var sideTimerTableView: UITableView { return productivityView.sideTimerTableView }
     
     private var saveButton: UIButton { return productivityView.saveButton }
     private var addButton: UIButton { return productivityView.addButton }
@@ -32,13 +32,13 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
     
-    private let datasource = RxTableViewSectionedReloadDataSource<SideTimerListSection>(configureCell: { datasource, tableView, indexPath, item in
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SideTimerTableViewCell", for: indexPath) as? SideTimerTableViewCell else {
-            fatalError("Table view cell isn't SideTimerTableViewCell")
-        }
-        cell.reactor = item
-        return cell
-    })
+//    private let datasource = RxTableViewSectionedReloadDataSource<SideTimerListSection>(configureCell: { datasource, tableView, indexPath, item in
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ProductivityTimerCollectionViewCell", for: indexPath) as? ProductivityTimerCollectionViewCell else {
+//            fatalError("Table view cell isn't ProductivityTimerCollectionViewCell")
+//        }
+//        cell.reactor = item
+//        return cell
+//    })
     
     // MARK: - lifecycle
     override func loadView() {
@@ -48,7 +48,7 @@ class ProductivityViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sideTimerTableView.register(SideTimerTableViewCell.self, forCellReuseIdentifier: "SideTimerTableViewCell")
+//        sideTimerTableView.register(ProductivityTimerCollectionViewCell.self, forCellReuseIdentifier: "ProductivityTimerCollectionViewCell")
     }
     
     // Add footer view when view did appear because footer view should remove after will appear due to animation (add view)
@@ -134,10 +134,10 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        sideTimerTableView.rx.itemSelected
-            .map { Reactor.Action.timerSelected($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
+//        sideTimerTableView.rx.itemSelected
+//            .map { Reactor.Action.timerSelected($0) }
+//            .bind(to: reactor.action)
+//            .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
@@ -170,11 +170,11 @@ class ProductivityViewController: BaseViewController, View {
             })
             .disposed(by: disposeBag)
         
-        reactor.state
-            .filter { $0.shouldReloadSection }
-            .map { $0.sections }
-            .bind(to: sideTimerTableView.rx.items(dataSource: datasource))
-            .disposed(by: disposeBag)
+//        reactor.state
+//            .filter { $0.shouldReloadSection }
+//            .map { $0.sections }
+//            .bind(to: sideTimerTableView.rx.items(dataSource: datasource))
+//            .disposed(by: disposeBag)
     }
     
     // MARK: - private method

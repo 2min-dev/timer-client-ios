@@ -1,5 +1,5 @@
 //
-//  SideTimerTableViewCell.swift
+//  ProductivityTimerCollectionViewCell.swift
 //  timer
 //
 //  Created by JSilver on 07/05/2019.
@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class SideTimerTableViewCell: UITableViewCell, View {
+class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     let timeLabel: UILabel = {
         let view = UILabel()
@@ -30,20 +30,19 @@ class SideTimerTableViewCell: UITableViewCell, View {
     var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         backgroundColor = Constants.Color.clear
-        
+
         addAutolayoutSubview(containerView)
-        
+
         containerView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(5.adjust())
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview().inset(5.adjust())
             make.height.equalTo(28).priority(999) // To solve autolayout warning
         }
-        
+
         timeLabel.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 5))
         }
@@ -59,15 +58,8 @@ class SideTimerTableViewCell: UITableViewCell, View {
         roundCorners(view: containerView, byRoundingCorners: [.bottomLeft, .topLeft], cornerRadius: containerView.bounds.height / 2)
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        timeLabel.textColor = selected ? Constants.Color.white : Constants.Color.black
-        containerView.backgroundColor = selected ? Constants.Color.black : Constants.Color.gray
-    }
-    
     // MARK: - reactor bind
-    func bind(reactor: SideTimerTableViewCellReactor) {
+    func bind(reactor: ProductivityTimerCollectionViewCellReactor) {
         // MARK: action
         
         // MARK: state
