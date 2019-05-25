@@ -13,6 +13,8 @@ class MainViewController: UITabBarController {
     var coordinator: MainViewCoordinator!
     var panGestureRecognizer: UIPanGestureRecognizer!
     
+    var panGestureDirection: UIRectEdge?
+    
     // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +43,11 @@ class MainViewController: UITabBarController {
             
             if translation.x > 0.0 && selectedIndex > 0 {
                 // Panning right, transition to the left view controller.
+                panGestureDirection = .left
                 selectedIndex -= 1
             } else if translation.x < 0.0 && selectedIndex + 1 < viewControllers?.count ?? 0 {
                 // Panning left, transition to the right view controller.
+                panGestureDirection = .right
                 selectedIndex += 1
             }
         }
@@ -65,7 +69,7 @@ extension MainViewController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         // Return interactor only change selected tab by pan gesture
         if panGestureRecognizer.state == .began || panGestureRecognizer.state == .changed {
-            return TabBarInteractor(gestureRecognizer: panGestureRecognizer)
+            return TabBarInteractor(gestureRecognizer: panGestureRecognizer, direction: panGestureDirection ?? .top)
         } else {
             return nil
         }
