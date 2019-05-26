@@ -46,7 +46,7 @@ class TabBarInteractor: UIPercentDrivenInteractiveTransition {
             case .left:
                 shouldComplete = progress >= 0.5 || velocity.x > completeVelocity
             case .right:
-                shouldComplete = progress <= -0.5 || velocity.x < completeVelocity
+                shouldComplete = progress <= -0.5 || velocity.x < -completeVelocity
             default:
                 break
             }
