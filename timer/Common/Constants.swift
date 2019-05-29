@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 
 enum Constants {
+    static let device = {
+        return UIDevice.current.userInterfaceIdiom
+    }()
+    
     static let appTitle: String = "timerset-ios"
     
     // base screen display weight
@@ -47,5 +51,10 @@ enum Constants {
         static let black: UIColor = UIColor(hex: "#0A0A0A")
         static let gray: UIColor = UIColor(hex: "#C8C8C8")
         static let lightGray: UIColor = UIColor(hex: "#969696")
+    }
+    
+    enum Locale {
+        static let Korea: String = "ko_KR"
+        static let USA: String = "en_US"
     }
 }

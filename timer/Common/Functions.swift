@@ -11,8 +11,9 @@ func getCurrentDateString(format: String) -> String {
     return getDateString(format: format, date: Date())
 }
 
-func getDateString(format: String, date: Date) -> String {
+func getDateString(format: String, date: Date, locale: Locale = Locale(identifier: Constants.Locale.Korea)) -> String {
     let formatter: DateFormatter = DateFormatter()
+    formatter.locale = locale
     formatter.dateFormat = format
     return formatter.string(from: date)
 }
