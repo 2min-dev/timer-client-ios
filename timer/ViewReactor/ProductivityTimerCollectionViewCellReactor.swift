@@ -11,31 +11,41 @@ import ReactorKit
 
 class ProductivityTimerCollectionViewCellReactor: Reactor {
     enum Action {
-        
+        case select(Bool)
     }
     
     enum Mutation {
-        
+        case setSelected(Bool)
     }
     
     struct State {
         let time: TimeInterval
+        let index: Int
+        var selected: Bool
     }
     
     // MARK: - properties
     var initialState: State
     private var info: TimerInfo
     
-    init(info: TimerInfo) {
+    init(info: TimerInfo, index: Int) {
         self.info = info
-        self.initialState = State(time: info.endTime)
+        self.initialState = State(time: info.endTime, index: index, selected: false)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
-        return Observable.empty()
+        switch action {
+        case let .select(isSelected):
+            return Observable.just(Mutation.setSelected(isSelected))
+        }
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        return state
+        var state = state
+        switch mutation {
+        case let .setSelected(isSelected):
+            state.selected = isSelected
+            return state
+        }
     }
 }

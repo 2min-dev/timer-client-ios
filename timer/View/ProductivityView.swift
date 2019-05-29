@@ -236,11 +236,14 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let sideTimerTableView: UITableView = {
-        let view = UITableView()
-        view.separatorStyle = .none
+    let timerCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // self-sizing cell
+        
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
-        view.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
+        view.showsHorizontalScrollIndicator = false
         return view
     }()
     
@@ -248,7 +251,7 @@ class ProductivityView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([self.timerInputView, self.timerInfoStackView, self.keyPadView, self.timeButtonStackView])
+        view.addAutolayoutSubviews([self.timerInputView, self.timerInfoStackView, self.keyPadView, self.timeButtonStackView, self.timerCollectionView])
         timerInputView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(43.5.adjust())
             make.centerX.equalToSuperview()
@@ -273,6 +276,13 @@ class ProductivityView: UIView {
             make.width.equalTo(258.adjust())
         }
         
+        timerCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(timeButtonStackView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(60.adjust())
+        }
+        
         return view
     }()
     
@@ -281,7 +291,7 @@ class ProductivityView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        addAutolayoutSubviews([headerView, contentView, sideTimerTableView])
+        addAutolayoutSubviews([headerView, contentView])
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
@@ -295,13 +305,6 @@ class ProductivityView: UIView {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
-        sideTimerTableView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalTo(contentView.snp.trailing).inset(10.adjust())
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
