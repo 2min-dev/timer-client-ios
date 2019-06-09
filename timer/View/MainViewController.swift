@@ -11,9 +11,14 @@ import UIKit
 class MainViewController: UITabBarController {
     // MARK: - properties
     var coordinator: MainViewCoordinator!
-    var panGestureRecognizer: UIPanGestureRecognizer!
     
-    var panGestureDirection: UIRectEdge?
+    private var panGestureRecognizer: UIPanGestureRecognizer!
+    private var panGestureDirection: UIRectEdge?
+    
+    // Enable/Disable swipes on the tab bar controller
+    var swipeEnable = true {
+        didSet { panGestureRecognizer.isEnabled = swipeEnable }
+    }
     
     // MARK: - lifecycle
     override func viewDidLoad() {
