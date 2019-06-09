@@ -74,7 +74,6 @@ class ProductivityView: UIView {
     
     let sumOfTimersLabel: UILabel = {
         let view = UILabel()
-        view.text = "전체 000:00:00"
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
         return view
@@ -82,7 +81,6 @@ class ProductivityView: UIView {
     
     let endOfTimerLabel: UILabel = {
         let view = UILabel()
-        view.text = "종료 00:00 AM"
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
         return view
@@ -239,7 +237,9 @@ class ProductivityView: UIView {
     let timerCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // self-sizing cell
+//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // self-sizing cell
+        layout.itemSize = CGSize(width: 75.adjust(), height: 60.adjust())
+        layout.minimumInteritemSpacing = 10.adjust()
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear

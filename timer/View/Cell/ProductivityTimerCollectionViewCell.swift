@@ -30,7 +30,7 @@ class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
         // Set constarint of subviews
         view.addAutolayoutSubview(self.timeLabel)
         timeLabel.snp.makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 5.adjust(), left: 10.adjust(), bottom: 5.adjust(), right: 10.adjust()))
+            make.edges.equalTo(UIEdgeInsets(top: 5.adjust(), left: 6.adjust(), bottom: 5.adjust(), right: 6.adjust()))
         }
 
         return view

@@ -19,7 +19,12 @@ class ProductivityViewController: BaseViewController, View {
     private var footerStackView: UIStackView { return productivityView.footerStackView }
     private var footerView: UIView { return productivityView.footerView }
     
+    private var timerInputView: UIView { return productivityView.timerInputView }
     private var timerLabel: UILabel { return productivityView.timerLabel }
+    private var timerClearButton: UIButton { return productivityView.timerClearButton }
+    
+    private var sumOfTimersLabel: UILabel { return productivityView.sumOfTimersLabel }
+    private var endOfTimerLabel: UILabel { return productivityView.endOfTimerLabel }
     private var timerInputLabel: UILabel { return productivityView.timerInputLabel }
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
@@ -28,6 +33,10 @@ class ProductivityViewController: BaseViewController, View {
     
     private var saveButton: UIButton { return productivityView.saveButton }
     private var addButton: UIButton { return productivityView.addButton }
+    
+    // MARK: - constants
+    private let MAX_TIMER_COUNT: Int = 10
+    private let MAX_TIME_INPUT_COUNT: Int = 3
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
@@ -46,20 +55,13 @@ class ProductivityViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Regiser timer collection view cell
         timerCollectionView.register(ProductivityTimerCollectionViewCell.self, forCellWithReuseIdentifier: ProductivityTimerCollectionViewCell.ReuseableIdentifier)
     }
     
-    // Add footer view when view did appear because footer view should remove after will appear due to animation (add view)
     override func viewDidAppear(_ animated: Bool) {
-        guard let tabBarController = tabBarController else { return }
-        tabBarController.view.addAutolayoutSubview(footerView)
-
-        footerView.snp.makeConstraints { make in
-            make.top.equalTo(tabBarController.view.snp.bottom)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.height.equalTo(tabBarController.tabBar.snp.height).offset(10.adjust())
-        }
+        // Add footer view when view did appear because footer view should remove after will appear due to animation (add view)
+        addFooterView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -81,7 +83,7 @@ class ProductivityViewController: BaseViewController, View {
                         ($0.viewController as? UITabBarController)?.selectedViewController == self
                     }
                     .subscribe(onNext: { [unowned self] viewController, animated in
-                        self.showFooterView(isShow: self.reactor?.currentState.shouldStartTimer ?? false)
+                        self.showFooterView(isShow: self.reactor?.currentState.canStart ?? false)
                     })
                     .disposed(by: self.disposeBag)
                 
@@ -90,7 +92,7 @@ class ProductivityViewController: BaseViewController, View {
                         $0 == self
                     }
                     .subscribe(onNext: { [unowned self] viewController in
-                        self.showFooterView(isShow: self.reactor?.currentState.shouldStartTimer ?? false)
+                        self.showFooterView(isShow: self.reactor?.currentState.canStart ?? false)
                     })
                     .disposed(by: self.disposeBag)
             })
@@ -101,13 +103,14 @@ class ProductivityViewController: BaseViewController, View {
     
     func bind(reactor: ProductivityViewReactor) {
         // MARK: action
+        timerClearButton.rx.tap
+            .map { Reactor.Action.clearTimer }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         keyPadView.rx.keyPadTap
-            .filter { [unowned self] in
-                self.isValidKey($0)
-            }
-            .map { [unowned self] in
-                self.makeTimeWithKey($0)
-            }
+            .filter { [unowned self] in self.isValidKey($0) }
+            .map { [unowned self] in self.makeTimeWithKey($0) }
             .map { Reactor.Action.updateTimeInput($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -124,9 +127,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
-            .subscribe(onNext: { [unowned self] in
-                self.coordinator.present(for: .createTimerSet(reactor.timerSet))
-            })
+            .subscribe(onNext: { [unowned self] in self.coordinator.present(for: .createTimerSet(TimerSet(info: reactor.timerSetInfo))) })
             .disposed(by: disposeBag)
         
         addButton.rx.tap
@@ -162,25 +163,86 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.selectedIndexPath }
-            .filter { $0 != nil }
-            .map { $0! }
+            .map { $0.timer }
+            .map { $0 > 0 }
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] indexPath in
+            .subscribe(onNext: { [weak self] hasTime in
                 guard let `self` = self else { return }
-                guard let cell = self.timerCollectionView.cellForItem(at: indexPath) else { return }
                 
-                UIView.animate(withDuration: 0.3) {
-                    self.timerCollectionView.contentOffset.x = cell.frame.origin.x - self.timerCollectionView.bounds.width / 2 + cell.bounds.width / 2
-                    self.timerCollectionView.layoutIfNeeded()
-                }
+                // Show timer clear button
+                self.timerClearButton.isHidden = !hasTime
+                
+                let borderColor = hasTime ? Constants.Color.black.cgColor : Constants.Color.gray.cgColor
+                let animation = CABasicAnimation(keyPath: "borderColor")
+                animation.fromValue = self.timerInputView.layer.borderColor
+                animation.toValue = borderColor
+                animation.duration = 0.5
+                animation.isRemovedOnCompletion = false
+                animation.fillMode = .forwards
+                
+                self.timerInputView.layer.borderColor = borderColor
+                self.timerInputView.layer.add(animation, forKey: "borderColor")
             })
+            .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.shouldStartTimer }
+            .map { Int($0.sumOfTimers) }
             .distinctUntilChanged()
+            .map {
+                let seconds = $0 % 60
+                let minutes = ($0 / 60) % 60
+                let hours = $0 / 3600
+                
+                return String.init(format: "전체 %03d:%02d:%02d", hours, minutes, seconds)
+            }
+            .bind(to: sumOfTimersLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.sumOfTimers }
+            .map {
+                var current = Date()
+                current.addTimeInterval($0)
+                return getDateString(format: "종료 H:mm a", date: current, locale: Locale(identifier: Constants.Locale.USA))
+            }
+            .bind(to: endOfTimerLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedIndexPath }
+            .distinctUntilChanged()
+            .debounce(0.1, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let `self` = self else { return }
+                guard let layout = self.timerCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+
+                let index = CGFloat(indexPath.row)
+                let cellOffsetX = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
+                UIView.animate(withDuration: 1) {
+                    self.timerCollectionView.setContentOffset(CGPoint(x: cellOffsetX - self.timerCollectionView.bounds.width / 2 + layout.itemSize.width / 2, y: 0), animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.canStart }
+            .distinctUntilChanged()
+            .debug()
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
+                
+                // Prevent tab bar swipe gesture
+                if let tabBarController = self.tabBarController as? MainViewController {
+                    tabBarController.swipeEnable = !$0
+                }
+                
+                // Show timer info
+                self.sumOfTimersLabel.isHidden = !$0
+                self.endOfTimerLabel.isHidden = !$0
+                
+                // Show created timers
+                self.timerCollectionView.isHidden = !$0
+                // Show timer option footer view
                 self.showFooterView(isShow: $0)
             })
             .disposed(by: disposeBag)
@@ -189,6 +251,14 @@ class ProductivityViewController: BaseViewController, View {
             .filter { $0.shouldReloadSection }
             .map { $0.sections }
             .bind(to: timerCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { [weak self] in
+                guard let `self` = self else { return false }
+                return $0.sections[0].items.count < self.MAX_TIMER_COUNT
+            }
+            .bind(to: addButton.rx.isEnabled)
             .disposed(by: disposeBag)
     }
     
@@ -201,7 +271,7 @@ class ProductivityViewController: BaseViewController, View {
         case .back:
             return !text.isEmpty
         default:
-            return text.count < 3
+            return text.count < MAX_TIME_INPUT_COUNT
         }
     }
     
@@ -218,27 +288,33 @@ class ProductivityViewController: BaseViewController, View {
         return Int(text) ?? 0
     }
     
+    /// Add footer view into tab bar controller's view to show top of the tab bar hierarchy
+    private func addFooterView() {
+        guard let tabBarController = tabBarController else { return }
+        tabBarController.view.addSubview(footerView)
+        
+        let tabBar = tabBarController.tabBar
+        var frame = tabBar.frame
+        
+        frame.size.height = tabBar.bounds.height + 10.adjust()
+        // Positioning out of screen
+        frame.origin.y += frame.height
+        footerView.frame = frame
+    }
+    
     /// Show footer view (save & add & start)
     private func showFooterView(isShow: Bool, completion: (() -> Void)? = nil) {
-        guard let superview = footerView.superview, let tabBar = tabBarController?.tabBar else { return }
+        guard let tabBar = tabBarController?.tabBar, footerView.superview != nil else { return }
+        
+        var frame = footerView.frame
+        frame.origin.y = isShow ? tabBar.frame.maxY - frame.height : tabBar.frame.minY + tabBar.frame.height
         
         let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeIn, animations: {
-            self.footerView.snp.remakeConstraints { make in
-                make.leading.equalToSuperview()
-                make.trailing.equalToSuperview()
-                make.height.equalTo(tabBar.snp.height).offset(10.adjust())
-                
-                if isShow {
-                    make.bottom.equalToSuperview()
-                } else {
-                    make.top.equalTo(superview.snp.bottom)
-                }
-            }
-            
-            superview.layoutIfNeeded()
+            self.footerView.frame = frame
         })
         
         animator.addCompletion({ position in
+            Logger.debug()
             if position == .end {
                 completion?()
             }
