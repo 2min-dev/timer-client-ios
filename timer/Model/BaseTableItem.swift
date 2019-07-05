@@ -1,6 +1,6 @@
 //
 //  SettingMenu.swift
-//  timerset-ios
+//  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  UIViewController+child.swift
-//  TaskManager-Swift
+//  timer
 //
 //  Created by Jeong Jin Eun on 26/03/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
