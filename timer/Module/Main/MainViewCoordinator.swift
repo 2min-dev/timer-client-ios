@@ -27,9 +27,9 @@ class MainViewCoordinator: CoordinatorProtocol {
         let productivityViewCoordinator = ProductivityViewCoordinator(provider: provider, rootViewController: productivityViewController)
         let productivityViewReactor = ProductivityViewReactor(timerService: provider.timerService)
         
-        let localViewController = TimerSetListViewController()
-        let localViewCoordinator = TimerSetListViewCoordinator(provider: provider, rootViewController: localViewController)
-        let localViewReactor = TimerSetListViewReactor(timerService: provider.timerService)
+        let localViewController = LocalTimeSetViewController()
+        let localViewCoordinator = LocalTimeSetViewCoordinator(provider: provider, rootViewController: localViewController)
+        let localViewReactor = LocalTimeSetViewReactor(timerService: provider.timerService)
         
         let shareViewController = SettingViewController()
         let shareViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: shareViewController)

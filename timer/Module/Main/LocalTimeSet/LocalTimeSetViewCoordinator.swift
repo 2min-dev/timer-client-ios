@@ -1,5 +1,5 @@
 //
-//  TimerSetCoordinator.swift
+//  LocalTimeSetViewCoordinator.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -7,17 +7,17 @@
 //
 
 /// Route from timer set view
-class TimerSetListViewCoordinator: CoordinatorProtocol {
+class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum TimerSetListRoute {
         
     }
     
     // MARK: properties
-    weak var rootViewController: TimerSetListViewController!
+    weak var rootViewController: LocalTimeSetViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: TimerSetListViewController) {
+    required init(provider: ServiceProviderProtocol, rootViewController: LocalTimeSetViewController) {
         self.provider = provider
         self.rootViewController = rootViewController
     }

@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class TimerSetListViewReactor: Reactor {
+class LocalTimeSetViewReactor: Reactor {
     enum Action {
         case viewDidLoad
     }
