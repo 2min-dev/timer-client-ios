@@ -10,7 +10,7 @@
 class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum ProductivityRoute {
-        case createTimerSet(TimerSet)
+        case createTimerSet(TimeSet)
     }
 
     // MARK: properties
@@ -24,7 +24,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     
     func present(for route: ProductivityRoute) {
         switch route {
-        case let .createTimerSet(timerSet):
+        case let .createTimerSet(timeSet):
             Logger.verbose("presenting create timer set view controller.")
             
             let viewController = CreateTimerSetViewController()
@@ -32,7 +32,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             
             // DI
             viewController.coordinator = coordinator
-            viewController.reactor = CreateTimerSetViewReactor(timerService: provider.timerService, timerSet: timerSet)
+            viewController.reactor = CreateTimerSetViewReactor(timerService: provider.timerService, timeSet: timeSet)
             
             // Hide tab bar when enter view controller
             viewController.hidesBottomBarWhenPushed = true

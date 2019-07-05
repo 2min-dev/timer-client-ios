@@ -47,7 +47,7 @@ class ProductivityViewReactor: Reactor {
     var initialState: State
     private let timerService: TimerSetServicePorotocol
     
-    let timerSetInfo: TimerSetInfo // Default timer set info
+    let timeSetInfo: TimeSetInfo // Default timer set info
     
     private var disposeBag = DisposeBag()
     
@@ -56,8 +56,8 @@ class ProductivityViewReactor: Reactor {
         let info = TimerInfo(title: "1 번째 타이머", endTime: 0)
         
         // Create default timer set and add default a timer
-        self.timerSetInfo = TimerSetInfo(name: "", description: "")
-        self.timerSetInfo.timers.append(info)
+        self.timeSetInfo = TimeSetInfo(name: "", description: "")
+        self.timeSetInfo.timers.append(info)
  
         self.initialState = State(time: 0,
                                   timer: 0,
@@ -99,17 +99,17 @@ class ProductivityViewReactor: Reactor {
             return .concat(setTimer, setTime, setSumOfTimers)
         case .addTimer:
             // Create default a timer (set 0)
-            let info = TimerInfo(title: "\(timerSetInfo.timers.count + 1) 번째 타이머")
+            let info = TimerInfo(title: "\(timeSetInfo.timers.count + 1) 번째 타이머")
             // Add timer
-            timerSetInfo.timers.append(info)
+            timeSetInfo.timers.append(info)
             
-            let appendSectionItem = Observable.just(Mutation.appendSectionItem(ProductivityTimerCollectionViewCellReactor(info: info, index: timerSetInfo.timers.count)))
-            let setSelectIndexPath = mutate(action: .timerSelected(IndexPath(row: timerSetInfo.timers.count - 1, section: 0)))
+            let appendSectionItem = Observable.just(Mutation.appendSectionItem(ProductivityTimerCollectionViewCellReactor(info: info, index: timeSetInfo.timers.count)))
+            let setSelectIndexPath = mutate(action: .timerSelected(IndexPath(row: timeSetInfo.timers.count - 1, section: 0)))
             
             return .concat(appendSectionItem, setSelectIndexPath)
         case let .timerSelected(indexPath):
             let setSelectedIndexPath = Observable.just(Mutation.setSelectedIndexPath(indexPath))
-            let setTimer = Observable.just(Mutation.setTimer(timerSetInfo.timers[indexPath.row].endTime))
+            let setTimer = Observable.just(Mutation.setTimer(timeSetInfo.timers[indexPath.row].endTime))
             let setTime = Observable.just(Mutation.setTime(0))
             
             return .concat(setSelectedIndexPath, setTimer, setTime)

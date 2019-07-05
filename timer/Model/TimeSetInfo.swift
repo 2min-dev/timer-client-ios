@@ -1,12 +1,12 @@
 //
-//  TimerSetInfo.swift
+//  TimeSetInfo.swift
 //  timer
 //
 //  Created by JSilver on 21/04/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-class TimerSetInfo: Codable {
+class TimeSetInfo: Codable {
     // MARK: properties
     var name: String // Name of the timer set
     var description: String // Description of the timer set

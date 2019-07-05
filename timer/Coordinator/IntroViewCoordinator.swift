@@ -10,7 +10,7 @@
 class IntroViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum IntroRoute {
-        case timerSet
+        case timeSet
     }
     
     // MARK: properties
@@ -24,7 +24,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
     
     func present(for route: IntroRoute) {
         switch route {
-        case .timerSet:
+        case .timeSet:
             let viewController = MainViewController()
             let coordinator = MainViewCoordinator(provider: provider, rootViewController: viewController)
             

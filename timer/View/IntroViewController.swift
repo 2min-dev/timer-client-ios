@@ -41,7 +41,7 @@ class IntroViewController: BaseViewController, View {
             .filter { $0 }
             .distinctUntilChanged()
             .subscribe({ [weak self] _ in
-                self?.coordinator.present(for: .timerSet)
+                self?.coordinator.present(for: .timeSet)
             })
             .disposed(by: disposeBag)
     }

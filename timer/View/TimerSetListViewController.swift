@@ -13,8 +13,8 @@ import RxDataSources
 
 class TimerSetListViewController: BaseViewController, View {
     // MARK: - view properties
-    private var timerSetView: TimerSetView { return self.view as! TimerSetView }
-    private var timerSetTableView: UITableView { return timerSetView.tableView }
+    private var timeSetView: TimerSetView { return self.view as! TimerSetView }
+    private var timeSetTableView: UITableView { return timeSetView.tableView }
     
     // MARK: - properties
     var coordinator: TimerSetListViewCoordinator!
@@ -26,7 +26,7 @@ class TimerSetListViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        timerSetTableView.register(TimerSetTableViewCell.self, forCellReuseIdentifier: "TimerSetTableViewCell")
+        timeSetTableView.register(TimerSetTableViewCell.self, forCellReuseIdentifier: "TimerSetTableViewCell")
     }
     
     // MARK: - reactor bind
@@ -36,10 +36,10 @@ class TimerSetListViewController: BaseViewController, View {
         
         // MARK: state
         reactor.state
-            .map { $0.timerSets }
-            .bind(to: timerSetTableView.rx.items(cellIdentifier: "TimerSetTableViewCell")) { (index, timerSet, cell) in
+            .map { $0.timeSets }
+            .bind(to: timeSetTableView.rx.items(cellIdentifier: "TimerSetTableViewCell")) { (index, timeSet, cell) in
                 guard let cell = cell as? TimerSetTableViewCell else { return }
-                cell.reactor = TimerSetTableViewCellReactor(timerSet: timerSet)
+                cell.reactor = TimerSetTableViewCellReactor(timeSet: timeSet)
             }
             .disposed(by: disposeBag)
     }

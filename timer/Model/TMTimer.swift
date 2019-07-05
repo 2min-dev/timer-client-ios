@@ -1,5 +1,5 @@
 //
-//  Timer.swift
+//  TMTimer.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 16/04/2019.
@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 /// the timer process object
-class JSTimer: EventStreamProtocol {
+class TMTimer: EventStreamProtocol {
     enum Event {
         case changeState(TimerInfo.State)
     }

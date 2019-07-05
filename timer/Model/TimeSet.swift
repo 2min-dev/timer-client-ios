@@ -1,5 +1,5 @@
 //
-//  TimerSet.swift
+//  TimeSet.swift
 //  timer
 //
 //  Created by JSilver on 21/04/2019.
@@ -9,25 +9,25 @@
 import RxSwift
 
 /// A class that manage a group of the timers
-class TimerSet: EventStreamProtocol {
+class TimeSet: EventStreamProtocol {
     enum Event {
         case changeState(TimerInfo.State)
     }
     // Event stream of the timer set
-    var event: PublishSubject<TimerSet.Event> = PublishSubject()
+    var event: PublishSubject<TimeSet.Event> = PublishSubject()
     
     // MARK: - properties
-    var info: TimerSetInfo // The model data of the timer set
+    var info: TimeSetInfo // The model data of the timer set
     
-    private var timers: [JSTimer] // Timer list
+    private var timers: [TMTimer] // Timer list
     private var currentTimerIndex: Int? // Current executing timer index in the timer set
     
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(info: TimerSetInfo) {
+    init(info: TimeSetInfo) {
         self.info = info
-        self.timers = info.timers.map { JSTimer(info: $0) }
+        self.timers = info.timers.map { TMTimer(info: $0) }
 
         // bind timers event
         self.timers.forEach(bind(timer:))
@@ -36,8 +36,8 @@ class TimerSet: EventStreamProtocol {
     // MARK: - public method
     // MARK: manipulate timer
     /// Create a timer
-    func createTimer(info: TimerInfo) -> Observable<JSTimer> {
-        let timer = JSTimer(info: info)
+    func createTimer(info: TimerInfo) -> Observable<TMTimer> {
+        let timer = TMTimer(info: info)
         
         self.info.timers.append(info) // Add timer info data
         timers.append(timer) // Add timer object
@@ -48,7 +48,7 @@ class TimerSet: EventStreamProtocol {
     }
 
     /// Delete the timer
-    func deleteTimer(at: Int) -> Observable<JSTimer> {
+    func deleteTimer(at: Int) -> Observable<TMTimer> {
         self.info.timers.remove(at: at)
         let timer = self.timers.remove(at: at)
         
@@ -81,7 +81,7 @@ class TimerSet: EventStreamProtocol {
     
     // MARK: - private method
     /// Bind to timer's event stream
-    private func bind(timer: JSTimer) {
+    private func bind(timer: TMTimer) {
         timer.event
             .subscribe(onNext: { [weak timer] event in
                 switch event {

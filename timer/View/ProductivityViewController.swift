@@ -127,7 +127,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
-            .subscribe(onNext: { [unowned self] in self.coordinator.present(for: .createTimerSet(TimerSet(info: reactor.timerSetInfo))) })
+            .subscribe(onNext: { [unowned self] in self.coordinator.present(for: .createTimerSet(TimeSet(info: reactor.timeSetInfo))) })
             .disposed(by: disposeBag)
         
         addButton.rx.tap

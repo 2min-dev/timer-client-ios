@@ -30,35 +30,35 @@ class TimerSetTableViewCellReactor: Reactor {
     
     // MARK: properties
     var initialState: State
-    private let timerSet: TimerSet
+    private let timeSet: TimeSet
     
-    init(timerSet: TimerSet) {
-        self.timerSet = timerSet
-        initialState = State(name: timerSet.info.name, state: timerSet.info.state, count: timerSet.info.timers.count, stateChanging: false)
+    init(timeSet: TimeSet) {
+        self.timeSet = timeSet
+        initialState = State(name: timeSet.info.name, state: timeSet.info.state, count: timeSet.info.timers.count, stateChanging: false)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .touchStateButton:
-            let timerSetOperator = Observable<Mutation>.empty()
+            let timeSetOperator = Observable<Mutation>.empty()
                 .do(onCompleted: {
                     switch self.currentState.state {
                     case .stop:
                         fallthrough
                     case .pause:
-                        self.timerSet.startTimerSet()
+                        self.timeSet.startTimerSet()
                     case .start:
-                        self.timerSet.pauseTimerSet()
+                        self.timeSet.pauseTimerSet()
                     case .end:
-                        self.timerSet.stopTimerSet()
+                        self.timeSet.stopTimerSet()
                     }
                 })
             
-            return Observable.concat(Observable.just(Mutation.setStateChanging(true)), timerSetOperator)
+            return Observable.concat(Observable.just(Mutation.setStateChanging(true)), timeSetOperator)
         }
     }
     
-    func mutate(event: TimerSet.Event) -> Observable<Mutation> {
+    func mutate(event: TimeSet.Event) -> Observable<Mutation> {
         switch event {
         case let .changeState(state):
             return Observable.concat(Observable.just(Mutation.setState(state)), Observable.just(Mutation.setStateChanging(false)))
@@ -66,14 +66,14 @@ class TimerSetTableViewCellReactor: Reactor {
     }
     
     func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
-        return Observable.merge(mutation, timerSet.event.flatMap { self.mutate(event: $0) })
+        return Observable.merge(mutation, timeSet.event.flatMap { self.mutate(event: $0) })
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
-        case let .setState(timerSetState):
-            state.state = timerSetState
+        case let .setState(timeSetState):
+            state.state = timeSetState
             return state
         case let .setStateChanging(stateChanging):
             state.stateChanging = stateChanging
