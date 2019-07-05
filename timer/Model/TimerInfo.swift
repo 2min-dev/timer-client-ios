@@ -35,4 +35,8 @@ class TimerInfo: Codable {
     convenience init(title: String, endTime: TimeInterval) {
         self.init(title: title, currentTime: 0, endTime: endTime, state: .stop)
     }
+    
+    convenience init(title: String) {
+        self.init(title: title, currentTime: 0, endTime: 0, state: .stop)
+    }
 }

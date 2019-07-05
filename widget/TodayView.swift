@@ -14,7 +14,7 @@ class TodayView: UIView {
         let view = UILabel()
         view.textAlignment = .center
         view.numberOfLines = 0
-        view.font = Constants.Font.NanumSquareRoundR.withSize(18.adjust())
+        view.font = Constants.Font.Regular.withSize(18.adjust())
         view.textColor = Constants.Color.gray
         view.text = "widget_preparing_title".localized
         return view
@@ -22,7 +22,7 @@ class TodayView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setSubviewForAutoLayout(label)
+        addAutolayoutSubview(label)
         
         label.snp.makeConstraints({ make in
             if #available(iOS 11.0, *) {

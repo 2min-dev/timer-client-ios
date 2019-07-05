@@ -1,18 +1,17 @@
 //
-//  IntroView.swift
-//  timerset-ios
+//  CreateTimerSetView.swift
+//  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 19/05/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
-import SnapKit
 
-class IntroView: UIView {
-    // MARK: view propeties
-    let view: UIView = {
-        let view = UIView()
+class CreateTimerSetView: UIView {
+    // MARK: - view properties
+    let view: Header = {
+        let view = Header()
         return view
     }()
     
@@ -22,13 +21,16 @@ class IntroView: UIView {
         
         addAutolayoutSubview(view)
         
-        view.snp.makeConstraints({ make in
+        view.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
-                make.edges.equalTo(safeAreaLayoutGuide)
+                make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.edges.equalToSuperview()
+                make.top.equalToSuperview()
             }
-        })
+            
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

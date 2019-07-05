@@ -9,14 +9,18 @@
 import Foundation
 import UIKit
 
-struct Constants {
+enum Constants {
+    static let device = {
+        return UIDevice.current.userInterfaceIdiom
+    }()
+    
     static let appTitle: String = "timerset-ios"
     
     // base screen display weight
     static let weight: CGFloat = {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
-            return UIScreen.main.bounds.width / 414.0
+            return UIScreen.main.bounds.width / 375.0
         case .pad:
             return UIScreen.main.bounds.width / 768.0
         default:
@@ -26,26 +30,31 @@ struct Constants {
     }()
     
     // second time
-    struct Time {
+    enum Time {
         static let hour: Int = 3600
         static let minute: Int = 60
     }
     
     // project font define
-    struct Font {
-        static let NanumSquareRoundL: UIFont! = UIFont.init(name: "NanumSquareRoundL", size: 17.0)
-        static let NanumSquareRoundR: UIFont! = UIFont.init(name: "NanumSquareRoundR", size: 17.0)
-        static let NanumSquareRoundB: UIFont! = UIFont.init(name: "NanumSquareRoundB", size: 17.0)
-        static let NanumSquareRoundEB: UIFont! = UIFont.init(name: "NanumSquareRoundEB", size: 17.0)
+    enum Font {
+        static let Light: UIFont! = UIFont.init(name: "NanumSquareL", size: 17.0)
+        static let Regular: UIFont! = UIFont.init(name: "NanumSquareR", size: 17.0)
+        static let Bold: UIFont! = UIFont.init(name: "NanumSquareB", size: 17.0)
+        static let ExtraBold: UIFont! = UIFont.init(name: "NanumSquareEB", size: 17.0)
     }
     
-    struct Color {
+    enum Color {
         static let appColor: UIColor = #colorLiteral(red: 0.5333333333, green: 0.8666666667, blue: 0.5333333333, alpha: 1)
         
         static let clear: UIColor = .clear
         static let white: UIColor = .white
-        static let black: UIColor = .black
-        static let gray: UIColor = .gray
-        static let lightGray: UIColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        static let black: UIColor = UIColor(hex: "#0A0A0A")
+        static let gray: UIColor = UIColor(hex: "#C8C8C8")
+        static let lightGray: UIColor = UIColor(hex: "#969696")
+    }
+    
+    enum Locale {
+        static let Korea: String = "ko_KR"
+        static let USA: String = "en_US"
     }
 }

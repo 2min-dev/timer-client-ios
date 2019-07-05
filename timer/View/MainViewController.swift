@@ -11,24 +11,32 @@ import UIKit
 class MainViewController: UITabBarController {
     // MARK: - properties
     var coordinator: MainViewCoordinator!
-    var panGestureRecognizer: UIPanGestureRecognizer!
+    
+    private var panGestureRecognizer: UIPanGestureRecognizer!
+    private var panGestureDirection: UIRectEdge?
+    
+    // Enable/Disable swipes on the tab bar controller
+    var swipeEnable = true {
+        didSet { panGestureRecognizer.isEnabled = swipeEnable }
+    }
     
     // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Color.white
         
         // Set tab bar view controller delegate for swipable
         delegate = self
+        
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(gestureHandler(recognizer:)))
+        panGestureRecognizer.delegate = self
+        
         view.addGestureRecognizer(panGestureRecognizer)
+        
+        tabBar.tintColor = Constants.Color.black
     }
     
-    deinit {
-        Logger.verbose("")
-    }
-    
-    // MARK: -selector
+    // MARK: - selector
     @objc private func gestureHandler(recognizer: UIPanGestureRecognizer) {
         // Do not attempt to begin an interactive transition if one is already
         guard transitionCoordinator == nil else {
@@ -40,15 +48,22 @@ class MainViewController: UITabBarController {
             
             if translation.x > 0.0 && selectedIndex > 0 {
                 // Panning right, transition to the left view controller.
+                panGestureDirection = .left
                 selectedIndex -= 1
             } else if translation.x < 0.0 && selectedIndex + 1 < viewControllers?.count ?? 0 {
                 // Panning left, transition to the right view controller.
+                panGestureDirection = .right
                 selectedIndex += 1
             }
         }
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }
 
+// MARK: - extension
 extension MainViewController: UITabBarControllerDelegate {
     // Return animator of transitioning when tab changed
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -57,6 +72,20 @@ extension MainViewController: UITabBarControllerDelegate {
     
     // Return interactor of transitioning animator when tab changed
     func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return TabBarInteractor(gestureRecognizer: panGestureRecognizer)
+        // Return interactor only change selected tab by pan gesture
+        if panGestureRecognizer.state == .began || panGestureRecognizer.state == .changed {
+            return TabBarInteractor(gestureRecognizer: panGestureRecognizer, direction: panGestureDirection ?? .top)
+        } else {
+            return nil
+        }
+    }
+}
+
+extension MainViewController: UIGestureRecognizerDelegate {
+    // Return gesture recognizer interpert touch event only tab view controller is single
+    // * non single view like navigation controller or etc *
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let currentViewController = selectedViewController as? UINavigationController else { return true }
+        return currentViewController.viewControllers.count > 1 ? false : true
     }
 }

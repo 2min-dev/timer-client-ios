@@ -9,7 +9,7 @@
 /// Route from timer set view
 class TimerSetListViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
-    enum TimerSetRoute {
+    enum TimerSetListRoute {
         
     }
     
@@ -22,7 +22,7 @@ class TimerSetListViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: TimerSetRoute) {
+    func present(for route: TimerSetListRoute) {
         
     }
 }

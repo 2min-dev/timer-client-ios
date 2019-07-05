@@ -1,15 +1,15 @@
 //
-//  SideTimerTableViewCellReactor.swift
+//  CreateTimerSetViewReactor.swift
 //  timer
 //
-//  Created by JSilver on 08/05/2019.
+//  Created by JSilver on 19/05/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import RxSwift
 import ReactorKit
 
-class SideTimerTableViewCellReactor: Reactor {
+class CreateTimerSetViewReactor: Reactor {
     enum Action {
         
     }
@@ -19,16 +19,18 @@ class SideTimerTableViewCellReactor: Reactor {
     }
     
     struct State {
-        let time: TimeInterval
+        
     }
     
     // MARK: - properties
     var initialState: State
-    private var info: TimerInfo
+    private let timerService: TimerSetServicePorotocol
+    private let timerSet: TimerSet
     
-    init(info: TimerInfo) {
-        self.info = info
-        self.initialState = State(time: info.endTime)
+    init(timerService: TimerSetServicePorotocol, timerSet: TimerSet) {
+        self.initialState = State()
+        self.timerService = timerService
+        self.timerSet = timerSet
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
