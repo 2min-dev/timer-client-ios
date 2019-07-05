@@ -13,7 +13,6 @@ import ReactorKit
 class SettingViewController: BaseViewController, View {
     enum SettingSection: Int {
         case setting = 0
-        case develop
     }
     
     // MARK: view properties
@@ -36,7 +35,7 @@ class SettingViewController: BaseViewController, View {
     }
     
     deinit {
-        Logger.verbose("")
+        Logger.verbose()
     }
     
     // MARK: reactor bind
@@ -85,14 +84,6 @@ class SettingViewController: BaseViewController, View {
                     switch indexPath.row {
                     case 0:
                         self.coordinator.present(for: .appInfo)
-                    default:
-                        Logger.error("not valid index path.")
-                    }
-                // develop menu
-                case .develop:
-                    switch indexPath.row {
-                    case 0:
-                        self.coordinator.present(for: .laboratory)
                     default:
                         Logger.error("not valid index path.")
                     }

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-/// Route from timer set view
+/// Route from local time set view
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum TimerSetListRoute {

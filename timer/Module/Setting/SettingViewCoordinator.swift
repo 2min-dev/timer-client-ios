@@ -13,8 +13,6 @@ class SettingViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum SettingRoute {
         case appInfo
-        
-        case laboratory
     }
     
     // MARK: properties
@@ -36,19 +34,10 @@ class SettingViewCoordinator: CoordinatorProtocol {
             
             // DI
             viewController.coordinator = coordinator
-            viewController.reactor = AppInfoViewReactor(appService: provider.appService)
+            viewController.reactor = AppInfoViewReactor()
             
             // push view controller
             rootViewController.navigationController?.pushViewController(viewController, animated: true)
-        case .laboratory:
-            Logger.verbose("presenting laboratory view controller.")
-            
-            // load `laboratory` view controller
-            let storyboard = UIStoryboard(name: "laboratory", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "LaboratoryViewController")
-            
-            // push view controller
-            rootViewController.navigationController?.pushViewController(vc, animated: true)
         }
     }
 }

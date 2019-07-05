@@ -29,11 +29,11 @@ class MainViewCoordinator: CoordinatorProtocol {
         
         let localViewController = LocalTimeSetViewController()
         let localViewCoordinator = LocalTimeSetViewCoordinator(provider: provider, rootViewController: localViewController)
-        let localViewReactor = LocalTimeSetViewReactor(timerService: provider.timerService)
+        let localViewReactor = LocalTimeSetViewReactor()
         
-        let shareViewController = SettingViewController()
-        let shareViewCoordinator = SettingViewCoordinator(provider: provider, rootViewController: shareViewController)
-        let shareViewReactor = SettingViewReactor(appService: provider.appService)
+        let shareViewController = SharedTimeSetViewController()
+        let shareViewCoordinator = SharedTimeSetViewCoordinator(provider: provider, rootViewController: shareViewController)
+        let shareViewReactor = SharedTimeSetViewReactor()
         
         // DI
         productivityViewController.coordinator = productivityViewCoordinator

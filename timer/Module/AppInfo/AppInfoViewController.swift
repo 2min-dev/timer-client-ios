@@ -23,9 +23,6 @@ class AppInfoViewController: BaseViewController, View {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-        
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGesture(recognizer:)))
-        appInfoView.addGestureRecognizer(gesture)
 	}
 
 	// MARK: reactor bind
@@ -33,22 +30,9 @@ class AppInfoViewController: BaseViewController, View {
 		// MARK: action
 
 		// MARK: state
-        reactor.state
-            .map { $0.isLaboratoryOpened }
-            .skip(1) // skip initialState
-            .filter { $0 == true }
-            .subscribe(onNext: { _ in
-                Logger.debug("laboratory was opened.")
-            })
-            .disposed(by: disposeBag)
 	}
     
     deinit {
-        Logger.verbose("")
-    }
-    
-    // MARK: gesture methods
-    @objc private func tapGesture(recognizer: UITapGestureRecognizer) {
-        reactor?.action.onNext(.tap)
+        Logger.verbose()
     }
 } 

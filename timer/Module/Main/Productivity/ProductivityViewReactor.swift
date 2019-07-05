@@ -49,8 +49,6 @@ class ProductivityViewReactor: Reactor {
     
     let timeSetInfo: TimeSetInfo // Default timer set info
     
-    private var disposeBag = DisposeBag()
-    
     init(timerService: TimerSetServicePorotocol) {
         // Create default a timer
         let info = TimerInfo(title: "1 번째 타이머", endTime: 0)

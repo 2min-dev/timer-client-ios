@@ -9,6 +9,13 @@
 import UIKit
 
 class MainViewController: UITabBarController {
+    // MARK: - constants
+    enum TabType: Int {
+        case LocalTimeSet = 0
+        case Productivity
+        case SharedTimeSet
+    }
+    
     // MARK: - properties
     var coordinator: MainViewCoordinator!
     

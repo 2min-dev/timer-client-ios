@@ -40,17 +40,6 @@ class SettingViewReactor: Reactor {
         }
     }
     
-    func mutate(appEvent: AppEvent) -> Observable<Mutation> {
-        switch appEvent {
-        case .isLaboratoryOpened:
-            return initSettingMenus().map { Mutation.setSections($0) }
-        }
-    }
-    
-    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
-        return Observable.merge(mutation, appService.event.flatMap { self.mutate(appEvent: $0) })
-    }
-    
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
@@ -68,17 +57,7 @@ class SettingViewReactor: Reactor {
         // add default menu
         var sections: [BaseTableSection] = []
         sections.append(BaseTableSection(title: "설정", items: [BaseTableItem(title: "앱 정보")]))
-        
-        // get laboratory menu is opened
-        let laboratoryOpenedSections = appService.isLaboratoryOpened().map { isLaboratoryOpened -> [BaseTableSection] in
-                // add developer menu, when isLaboratoryOpend is `true`
-                if isLaboratoryOpened {
-                    sections.append(BaseTableSection(title: "개발자 옵션", items: [BaseTableItem(title: "실험실")]))
-                }
-                
-                return sections
-            }
-        
-        return laboratoryOpenedSections
+    
+        return .just(sections)
     }
 }

@@ -47,6 +47,6 @@ class IntroViewController: BaseViewController, View {
     }
     
     deinit {
-        Logger.verbose("")
+        Logger.verbose()
     }
 }

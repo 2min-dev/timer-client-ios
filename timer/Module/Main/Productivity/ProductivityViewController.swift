@@ -126,10 +126,6 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        saveButton.rx.tap
-            .subscribe(onNext: { [unowned self] in self.coordinator.present(for: .createTimerSet(TimeSet(info: reactor.timeSetInfo))) })
-            .disposed(by: disposeBag)
-        
         addButton.rx.tap
             .map { Reactor.Action.addTimer }
             .bind(to: reactor.action)
@@ -227,7 +223,6 @@ class ProductivityViewController: BaseViewController, View {
         reactor.state
             .map { $0.canStart }
             .distinctUntilChanged()
-            .debug()
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 
@@ -314,7 +309,6 @@ class ProductivityViewController: BaseViewController, View {
         })
         
         animator.addCompletion({ position in
-            Logger.debug()
             if position == .end {
                 completion?()
             }

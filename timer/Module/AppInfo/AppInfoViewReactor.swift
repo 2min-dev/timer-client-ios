@@ -10,63 +10,32 @@ import RxSwift
 import ReactorKit
 
 class AppInfoViewReactor: Reactor {
-    // MARK: constants
-    private let MAX_TAP_COUNT = 10
-    
 	enum Action {
-        case tap
+
 	}
 
 	enum Mutation {
-        case isLaboratoryOpened(Bool)
+        
 	}
 
 	struct State {
-        var isLaboratoryOpened: Bool
+        
 	}
 
 	// MARK: properties
 	var initialState: State
-    private let appService: AppServicePorotocol
     
     private var disposeBag = DisposeBag()
     
-    var tapCount: Int = 0
-    
-    init(appService: AppServicePorotocol) {
-		self.initialState = State(isLaboratoryOpened: false)
-        self.appService = appService
-        
-        appService.isLaboratoryOpened()
-            .subscribe(onNext: {
-                self.initialState.isLaboratoryOpened = $0
-            })
-            .disposed(by: disposeBag)
+    init() {
+		self.initialState = State()
 	}
 
 	func mutate(action: Action) -> Observable<Mutation> {
-        switch action {
-        case .tap:
-            // no action when laboratory menu was opened already
-            guard !currentState.isLaboratoryOpened else { return Observable.empty() }
-            tapCount += 1
-            
-            Logger.debug("developer mode : \(tapCount) / \(MAX_TAP_COUNT)")
-            // if tap count equal `MAX_TAP_COUNT`, open laboratory menu
-            if tapCount == MAX_TAP_COUNT {
-                appService.setLaboratoryOpened(true)
-                return Observable.just(Mutation.isLaboratoryOpened(true))
-            }
-            return Observable.empty()
-        }
+        return .empty()
 	}
 
 	func reduce(state: State, mutation: Mutation) -> State {
-        var state = state
-        switch mutation {
-        case let .isLaboratoryOpened(isLaboratoryOpened):
-            state.isLaboratoryOpened = isLaboratoryOpened
-            return state
-        }
+        return state
 	}
 } 

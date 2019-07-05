@@ -1,26 +1,26 @@
 //
-//  LocalTimeSetViewController.swift
+//  SharedTimeSetViewController.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 2019/07/06.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import UIKit
 import RxSwift
 import RxCocoa
 import ReactorKit
-import RxDataSources
 
-class LocalTimeSetViewController: BaseViewController, View {
+class SharedTimeSetViewController: BaseViewController, View {
     // MARK: - view properties
-    private var localTimeSetView: LocalTimeSetView { return self.view as! LocalTimeSetView }
+    private var sharedTimeSetView: SharedTimeSetView { return self.view as! SharedTimeSetView }
     
     // MARK: - properties
-    var coordinator: LocalTimeSetViewCoordinator!
+    var coordinator: SharedTimeSetViewCoordinator!
     
     // MARK: - lifecycle
     override func loadView() {
-        self.view = LocalTimeSetView()
+        self.view = SharedTimeSetView()
     }
     
     override func viewDidLoad() {
@@ -28,7 +28,7 @@ class LocalTimeSetViewController: BaseViewController, View {
     }
     
     // MARK: - reactor bind
-    func bind(reactor: LocalTimeSetViewReactor) {
+    func bind(reactor: SharedTimeSetViewReactor) {
         // MARK: action
         
         // MARK: state

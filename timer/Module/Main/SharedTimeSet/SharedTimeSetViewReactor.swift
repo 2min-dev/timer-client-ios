@@ -1,15 +1,15 @@
 //
-//  TimerSetViewReactor.swift
+//  SharedTimeSetViewReactor.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 2019/07/06.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import RxSwift
 import ReactorKit
 
-class LocalTimeSetViewReactor: Reactor {
+class SharedTimeSetViewReactor: Reactor {
     enum Action {
         
     }
@@ -22,7 +22,7 @@ class LocalTimeSetViewReactor: Reactor {
         
     }
     
-    // MARK: properties
+    // MARK: - properties
     var initialState: State
     
     init() {
