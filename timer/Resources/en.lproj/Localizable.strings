@@ -7,7 +7,7 @@
 */
 
 // MARK: - Default App String
-"CFBundleDisplayName" = "Timer";
+"CFBundleDisplayName" = "2min";
 
 // MARK: - App String
 // MARK: - Tab

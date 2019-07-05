@@ -7,7 +7,7 @@
 */
 
 // MARK: - Default App String
-"CFBundleDisplayName" = "타이머";
+"CFBundleDisplayName" = "2min";
 
 // MARK: - App String
 // MARK: - Tab
