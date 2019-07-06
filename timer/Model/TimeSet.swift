@@ -57,7 +57,7 @@ class TimeSet: EventStreamProtocol {
     
     // MARK: operate timer set
     /// Start the first timer or paused timer
-    func startTimerSet() {
+    func startTimeSet() {
         if let index = currentTimerIndex {
             timers[index].startTimer()
         } else {
@@ -68,13 +68,13 @@ class TimeSet: EventStreamProtocol {
     }
     
     /// Pause current executing timer
-    func pauseTimerSet() {
+    func pauseTimeSet() {
         guard let index = currentTimerIndex else { return }
         timers[index].pauseTimer()
     }
     
     /// Stop timer set (initialize)
-    func stopTimerSet() {
+    func stopTimeSet() {
         timers.forEach { $0.stopTimer() }
         currentTimerIndex = nil
     }

@@ -8,22 +8,22 @@
 
 import RxSwift
 
-enum TimerSetEvent {
+enum TimeSetEvent {
     
 }
 
-protocol TimerSetServicePorotocol {
-    var event: PublishSubject<TimerSetEvent> { get }
+protocol TimeSetServicePorotocol {
+    var event: PublishSubject<TimeSetEvent> { get }
     
-    func fetchTimerSets() -> Observable<[TimeSet]>
-    func createTimerSet(info: TimeSetInfo) -> Observable<TimeSet>
-    func deleteTimerSet(_ timeSet: TimeSet) -> Observable<TimeSet>
+    func fetchTimeSets() -> Observable<[TimeSet]>
+    func createTimeSet(info: TimeSetInfo) -> Observable<TimeSet>
+    func deleteTimeSet(_ timeSet: TimeSet) -> Observable<TimeSet>
 }
 
 /// A service class that manage the application's timers
-class TimerSetService: TimerSetServicePorotocol {
+class TimeSetService: TimeSetServicePorotocol {
     // MARK: global state event
-    var event: PublishSubject<TimerSetEvent> = PublishSubject()
+    var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
     private var timeSets: [TimeSet]
@@ -50,19 +50,19 @@ class TimerSetService: TimerSetServicePorotocol {
     
     // MARK: - public method
     /// Fetch timer set list
-    func fetchTimerSets() -> Observable<[TimeSet]> {
+    func fetchTimeSets() -> Observable<[TimeSet]> {
         return Observable.just(timeSets)
     }
     
     /// Create a timer set
-    func createTimerSet(info: TimeSetInfo) -> Observable<TimeSet> {
+    func createTimeSet(info: TimeSetInfo) -> Observable<TimeSet> {
         let timeSet = TimeSet(info: info)
         timeSets.append(timeSet)
         return Observable.just(timeSet)
     }
     
     /// Delete the timer set
-    func deleteTimerSet(_ timeSet: TimeSet) -> Observable<TimeSet> {
+    func deleteTimeSet(_ timeSet: TimeSet) -> Observable<TimeSet> {
         guard let index = timeSets.firstIndex(where: { $0 === timeSet }) else { return Observable.empty() }
         let timeSet = timeSets.remove(at: index)
         return Observable.just(timeSet)

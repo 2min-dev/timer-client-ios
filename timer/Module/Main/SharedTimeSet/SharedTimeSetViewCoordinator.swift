@@ -9,7 +9,7 @@
 /// Route from shread time set view
 class SharedTimeSetViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum Route {
+    enum ShraedTimeSetRoute {
         case intro
     }
     
@@ -22,7 +22,7 @@ class SharedTimeSetViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: Route) {
+    func present(for route: ShraedTimeSetRoute) {
         
     }
 }

@@ -45,11 +45,11 @@ class ProductivityViewReactor: Reactor {
     
     // MARK: properties
     var initialState: State
-    private let timerService: TimerSetServicePorotocol
+    private let timerService: TimeSetServicePorotocol
     
     let timeSetInfo: TimeSetInfo // Default timer set info
     
-    init(timerService: TimerSetServicePorotocol) {
+    init(timerService: TimeSetServicePorotocol) {
         // Create default a timer
         let info = TimerInfo(title: "1 번째 타이머", endTime: 0)
         

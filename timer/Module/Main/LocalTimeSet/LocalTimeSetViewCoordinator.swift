@@ -9,7 +9,7 @@
 /// Route from local time set view
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
-    enum TimerSetListRoute {
+    enum LocalTimeSetRoute {
         
     }
     
@@ -22,7 +22,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: TimerSetListRoute) {
+    func present(for route: LocalTimeSetRoute) {
         
     }
 }

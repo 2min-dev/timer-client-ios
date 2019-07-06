@@ -33,7 +33,7 @@
 		F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerInfo.swift */; };
 		F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimeSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimeSetInfo.swift */; };
-		F373CCD42265F995007ECCA0 /* TimerSetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD32265F995007ECCA0 /* TimerSetService.swift */; };
+		F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD32265F995007ECCA0 /* TimeSetService.swift */; };
 		F373CCD62265FA33007ECCA0 /* TMTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD52265FA33007ECCA0 /* TMTimer.swift */; };
 		F389657722759BAA0043E177 /* TimerSetServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F389657622759BAA0043E177 /* TimerSetServiceTest.swift */; };
 		F3925ACC2281CA96005CE9DD /* ProductivityTimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* ProductivityTimerCollectionViewCell.swift */; };
@@ -156,7 +156,7 @@
 		F37041C8226B65550012EA16 /* TimerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimeSetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInfo.swift; sourceTree = "<group>"; };
-		F373CCD32265F995007ECCA0 /* TimerSetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetService.swift; sourceTree = "<group>"; };
+		F373CCD32265F995007ECCA0 /* TimeSetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetService.swift; sourceTree = "<group>"; };
 		F373CCD52265FA33007ECCA0 /* TMTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTimer.swift; sourceTree = "<group>"; };
 		F389657422759BAA0043E177 /* test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F389657622759BAA0043E177 /* TimerSetServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetServiceTest.swift; sourceTree = "<group>"; };
@@ -486,7 +486,7 @@
 			children = (
 				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
 				F3C18757226318DB00B2C644 /* AppService.swift */,
-				F373CCD32265F995007ECCA0 /* TimerSetService.swift */,
+				F373CCD32265F995007ECCA0 /* TimeSetService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -877,7 +877,7 @@
 				F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */,
 				F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */,
 				F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */,
-				F373CCD42265F995007ECCA0 /* TimerSetService.swift in Sources */,
+				F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */,
 				F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
