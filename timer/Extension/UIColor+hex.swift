@@ -1,6 +1,6 @@
 //
 //  UIColor.swift
-//  TaskManager-Swift
+//  timer
 //
 //  Created by Jeong Jin Eun on 29/12/2018.
 //  Copyright © 2018 Jeong Jin Eun. All rights reserved.

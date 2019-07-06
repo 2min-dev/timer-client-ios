@@ -1,13 +1,13 @@
 /* 
   Localizable.strings
-  timerset-ios
+  timer
 
   Created by JSilver on 19/04/2019.
   Copyright © 2019 Jeong Jin Eun. All rights reserved.
 */
 
 // MARK: - Default App String
-"CFBundleDisplayName" = "타이머";
+"CFBundleDisplayName" = "2min";
 
 // MARK: - App String
 // MARK: - Tab

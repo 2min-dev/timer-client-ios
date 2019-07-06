@@ -1,6 +1,6 @@
 //
 //  CommonConstants.swift
-//  TaskManager-Swift
+//  timer
 //
 //  Created by Jeong Jin Eun on 24/12/2018.
 //  Copyright © 2018 Jeong Jin Eun. All rights reserved.
@@ -14,7 +14,7 @@ enum Constants {
         return UIDevice.current.userInterfaceIdiom
     }()
     
-    static let appTitle: String = "timerset-ios"
+    static let appTitle: String = "2min"
     
     // base screen display weight
     static let weight: CGFloat = {

@@ -1,6 +1,6 @@
 //
 //  CommonFunctions.swift
-//  TaskManager-Swift
+//  timer
 //
 //  Created by Jeong Jin Eun on 27/01/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
