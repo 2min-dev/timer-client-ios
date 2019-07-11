@@ -11,11 +11,9 @@ import RxSwift
 import ReactorKit
 import RxDataSources
 
-typealias ProductivityTimerSection = SectionModel<Void, ProductivityTimerCollectionViewCellReactor>
-
 class ProductivityViewReactor: Reactor {
     enum Action {
-        case updateTimeInput(Int)
+        case updateTime(Int)
         case tapTimeKey(ProductivityView.TimeKey)
         case clearTimer
         case addTimer
@@ -27,16 +25,16 @@ class ProductivityViewReactor: Reactor {
         case setTimer(TimeInterval)
         case setSumOfTimers(TimeInterval)
         
-        case appendSectionItem(ProductivityTimerSection.Item)
+        case appendTimer(TimerInfo)
         case setSelectedIndexPath(IndexPath)
     }
     
     struct State {
-        var time: Int
-        var timer: TimeInterval
-        var sumOfTimers: TimeInterval
+        var time: Int // The time that user inputed
+        var timer: TimeInterval // The time of timer
+        var sumOfTimers: TimeInterval // The time that sum of all timers
         
-        var sections: [ProductivityTimerSection]
+        var timers: [TimerInfo]
         var selectedIndexPath: IndexPath
         
         var canStart: Bool
@@ -50,8 +48,10 @@ class ProductivityViewReactor: Reactor {
     let timeSetInfo: TimeSetInfo // Default timer set info
     
     init(timerService: TimeSetServicePorotocol) {
+        self.timerService = timerService
+        
         // Create default a timer
-        let info = TimerInfo(title: "1 번째 타이머", endTime: 0)
+        let info = TimerInfo(title: "1 번째 타이머")
         
         // Create default timer set and add default a timer
         self.timeSetInfo = TimeSetInfo(name: "", description: "")
@@ -60,16 +60,15 @@ class ProductivityViewReactor: Reactor {
         self.initialState = State(time: 0,
                                   timer: 0,
                                   sumOfTimers: 0,
-                                  sections: [ProductivityTimerSection(model: Void(), items: [ProductivityTimerCollectionViewCellReactor(info: info, index: 1, selected: true)])],
+                                  timers: timeSetInfo.timers,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   canStart: false,
                                   shouldReloadSection: true)
-        self.timerService = timerService
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case let .updateTimeInput(time):
+        case let .updateTime(time):
             return .just(Mutation.setTime(time))
         case let .tapTimeKey(key):
             var timeInterval = currentState.timer
@@ -91,18 +90,19 @@ class ProductivityViewReactor: Reactor {
             return .concat(setTimer, setSumOfTimers, setTime)
         case .clearTimer:
             let setTimer = Observable.just(Mutation.setTimer(0))
-            let setTime = Observable.just(Mutation.setTime(0))
             let setSumOfTimers = Observable.just(Mutation.setSumOfTimers(currentState.sumOfTimers - currentState.timer))
+            let setTime = Observable.just(Mutation.setTime(0))
             
             return .concat(setTimer, setTime, setSumOfTimers)
         case .addTimer:
             // Create default a timer (set 0)
-            let info = TimerInfo(title: "\(timeSetInfo.timers.count + 1) 번째 타이머")
+            let index = timeSetInfo.timers.count + 1
+            let info = TimerInfo(title: "\(index) 번째 타이머")
             // Add timer
             timeSetInfo.timers.append(info)
             
-            let appendSectionItem = Observable.just(Mutation.appendSectionItem(ProductivityTimerCollectionViewCellReactor(info: info, index: timeSetInfo.timers.count)))
-            let setSelectIndexPath = mutate(action: .timerSelected(IndexPath(row: timeSetInfo.timers.count - 1, section: 0)))
+            let appendSectionItem = Observable.just(Mutation.appendTimer(info))
+            let setSelectIndexPath = mutate(action: .timerSelected(IndexPath(row: index - 1, section: 0)))
             
             return .concat(appendSectionItem, setSelectIndexPath)
         case let .timerSelected(indexPath):
@@ -124,30 +124,21 @@ class ProductivityViewReactor: Reactor {
             return state
         case let .setTimer(timeInterval):
             // Update time
-            let timerReactor = state.sections[0].items[state.selectedIndexPath.row]
-            timerReactor.action.onNext(.updateTime(timeInterval))
-            
+            state.timers[state.selectedIndexPath.row].endTime = timeInterval
             state.timer = timeInterval
-            state.canStart = state.sections[0].items.count > 1 || state.timer > 0
+            
+            state.canStart = state.timers.count > 1 || state.timer > 0
             return state
         case let .setSumOfTimers(timeInterval):
             state.sumOfTimers = timeInterval
             return state
-        case let .appendSectionItem(reactor):
-            state.sections[0].items.append(reactor)
+        case let .appendTimer(info):
+            state.timers.append(info)
             
             state.canStart = true
             state.shouldReloadSection = true
             return state
         case let .setSelectedIndexPath(indexPath):
-            // Deselect previous selected timer
-            let previousItem = state.sections[0].items[state.selectedIndexPath.row]
-            previousItem.action.onNext(.select(false))
-            
-            // Select current selected timer
-            let item = state.sections[0].items[indexPath.row]
-            item.action.onNext(.select(true))
-            
             state.selectedIndexPath = indexPath
             return state
         }

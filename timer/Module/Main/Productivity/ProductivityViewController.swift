@@ -29,7 +29,7 @@ class ProductivityViewController: BaseViewController, View {
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
     
-    private var timerCollectionView: UICollectionView { return productivityView.timerCollectionView }
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
     private var saveButton: UIButton { return productivityView.saveButton }
     private var addButton: UIButton { return productivityView.addButton }
@@ -41,12 +41,6 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
     
-    private let dataSource = RxCollectionViewSectionedReloadDataSource<ProductivityTimerSection>(configureCell: { (dataSource, collectionView, indexPath, reactor) -> UICollectionViewCell in
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductivityTimerCollectionViewCell.ReuseableIdentifier, for: indexPath) as! ProductivityTimerCollectionViewCell
-        cell.reactor = reactor
-        return cell
-    })
-    
     // MARK: - lifecycle
     override func loadView() {
         self.view = ProductivityView()
@@ -54,9 +48,19 @@ class ProductivityViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Regiser timer collection view cell
-        timerCollectionView.register(ProductivityTimerCollectionViewCell.self, forCellWithReuseIdentifier: ProductivityTimerCollectionViewCell.ReuseableIdentifier)
+    
+        timerBadgeCollectionView.anchorPoint = TimerBadgeCollectionView.centerAnchor
+        timerBadgeCollectionView.setExtraCell(.add) { timers, cellType in
+            switch cellType {
+            case .add:
+                if timers.count < 10 {
+                    return true
+                }
+                return false
+            default:
+                return false
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -97,8 +101,6 @@ class ProductivityViewController: BaseViewController, View {
                     .disposed(by: self.disposeBag)
             })
             .disposed(by: disposeBag)
-        
-        timerCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     func bind(reactor: ProductivityViewReactor) {
@@ -111,7 +113,7 @@ class ProductivityViewController: BaseViewController, View {
         keyPadView.rx.keyPadTap
             .filter { [unowned self] in self.isValidKey($0) }
             .map { [unowned self] in self.makeTimeWithKey($0) }
-            .map { Reactor.Action.updateTimeInput($0) }
+            .map { Reactor.Action.updateTime($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -130,9 +132,16 @@ class ProductivityViewController: BaseViewController, View {
             .map { Reactor.Action.addTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-        
-        timerCollectionView.rx.itemSelected
-            .map { Reactor.Action.timerSelected($0) }
+
+        timerBadgeCollectionView.rx.badgeSelected
+            .map { badge -> Reactor.Action in
+                switch badge.1 {
+                case .add:
+                    return Reactor.Action.addTimer
+                default:
+                    return Reactor.Action.timerSelected(badge.0)
+                }
+            }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -142,6 +151,12 @@ class ProductivityViewController: BaseViewController, View {
             .distinctUntilChanged()
             .map { $0 > 0 ? String($0) : "" }
             .bind(to: timerInputLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.timer }
+            .distinctUntilChanged()
+            .bind(to: timerBadgeCollectionView.rx.timer)
             .disposed(by: disposeBag)
         
         reactor.state
@@ -205,22 +220,6 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .debounce(0.1, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] indexPath in
-                guard let `self` = self else { return }
-                guard let layout = self.timerCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-
-                let index = CGFloat(indexPath.row)
-                let cellOffsetX = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
-                UIView.animate(withDuration: 1) {
-                    self.timerCollectionView.setContentOffset(CGPoint(x: cellOffsetX - self.timerCollectionView.bounds.width / 2 + layout.itemSize.width / 2, y: 0), animated: true)
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        reactor.state
             .map { $0.canStart }
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in
@@ -236,7 +235,7 @@ class ProductivityViewController: BaseViewController, View {
                 self.endOfTimerLabel.isHidden = !$0
                 
                 // Show created timers
-                self.timerCollectionView.isHidden = !$0
+                self.timerBadgeCollectionView.isHidden = !$0
                 // Show timer option footer view
                 self.showFooterView(isShow: $0)
             })
@@ -244,16 +243,8 @@ class ProductivityViewController: BaseViewController, View {
         
         reactor.state
             .filter { $0.shouldReloadSection }
-            .map { $0.sections }
-            .bind(to: timerCollectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { [weak self] in
-                guard let `self` = self else { return false }
-                return $0.sections[0].items.count < self.MAX_TIMER_COUNT
-            }
-            .bind(to: addButton.rx.isEnabled)
+            .map { $0.timers }
+            .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
     }
     
@@ -319,24 +310,5 @@ class ProductivityViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension ProductivityViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let first = indexPath.row == 0
-        let last = indexPath.row == collectionView.numberOfItems(inSection: 0) - 1
-        
-        guard first || last else { return }
-        let inset = collectionView.bounds.width / 2 - cell.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width / 2
-        
-        // Set content inset for center align of cells
-        var contentInset = collectionView.contentInset
-        if first {
-            contentInset.left = inset
-        } else {
-            contentInset.right = inset
-        }
-        collectionView.contentInset = contentInset
     }
 }

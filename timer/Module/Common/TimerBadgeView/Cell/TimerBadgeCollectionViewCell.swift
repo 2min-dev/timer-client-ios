@@ -1,5 +1,5 @@
 //
-//  ProductivityTimerCollectionViewCell.swift
+//  TimerBadgeCollectionViewCell.swift
 //  timer
 //
 //  Created by JSilver on 07/05/2019.
@@ -10,13 +10,12 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
-    static let ReuseableIdentifier = "ProductivityTimerCollectionViewCell"
+class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
+    static let ReuseableIdentifier = "TimerBadgeCollectionViewCell"
     
     // MARK: - view properties
     let timeLabel: UILabel = {
         let view = UILabel()
-        view.text = ""
         view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
         view.textAlignment = .center
@@ -45,7 +44,6 @@ class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
 
     private let indexLabel: UILabel = {
         let view = UILabel()
-        view.text = "1"
         view.textColor = Constants.Color.gray
         view.font = Constants.Font.ExtraBold.withSize(10.adjust())
         view.textAlignment = .center
@@ -70,12 +68,12 @@ class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalTo(containerView.snp.top).offset(-5.adjust())
-            make.height.equalTo(13.adjust())
         }
         
         containerView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+            make.centerY.equalToSuperview()
             make.height.equalTo(24.adjust())
         }
         
@@ -92,25 +90,18 @@ class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
     }
     
     // MARK: - lifecycle
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func draw(_ rect: CGRect) {
         containerView.layer.cornerRadius = containerView.bounds.height / 2
     }
     
     // MARK: - reactor bind
-    func bind(reactor: ProductivityTimerCollectionViewCellReactor) {
+    func bind(reactor: TimerBadgeCellReactor) {
         // MARK: action
         
         // MARK: state
         reactor.state
-            .map { Int($0.time) }
-            .map {
-                let seconds = $0 % 60
-                let minutes = ($0 / 60) % 60
-                let hours = $0 / 3600
-                
-                return String.init(format: "%03d:%02d:%02d", hours, minutes, seconds)
-            }
+            .map { getTime(interval: $0.time) }
+            .map { String(format: "%02d:%02d:%02d", $0.0, $0.1, $0.2) }
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -120,21 +111,19 @@ class ProductivityTimerCollectionViewCell: UICollectionViewCell, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.selected }
-            .subscribe(onNext: { [weak self] in
-                guard let `self` = self else { return }
-                self.setSelected($0)
-            })
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { !$0.selected }
-            .bind(to: optionButton.rx.isHidden)
+            .map { $0.isSelected }
+            .subscribe(onNext: { [weak self] in self?.setSelected($0) })
             .disposed(by: disposeBag)
     }
     
     private func setSelected(_ isSelected: Bool) {
+        guard let reactor = reactor else { return }
+        
+        // Set time label color
         containerView.backgroundColor = isSelected ? Constants.Color.black : Constants.Color.clear
         timeLabel.textColor = isSelected ? Constants.Color.white : Constants.Color.black
+        
+        // Set option button visible
+        optionButton.isHidden = !reactor.currentState.isOptionVisible || !isSelected
     }
 }

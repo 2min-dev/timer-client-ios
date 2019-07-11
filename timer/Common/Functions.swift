@@ -24,6 +24,16 @@ func getDate(format: String, date: String) -> Date? {
     return formatter.date(from: date)
 }
 
+func getTime(interval: TimeInterval) -> (Int, Int, Int) {
+    let time = Int(interval)
+    
+    let seconds = time % 60
+    let minutes = (time / 60) % 60
+    let hours = time / 3600
+    
+    return (hours, minutes, seconds)
+}
+
 func roundCorners(view: UIView, byRoundingCorners: UIRectCorner, cornerRadius: CGFloat) {
     let maskLayer = CAShapeLayer()
     maskLayer.frame = view.bounds
