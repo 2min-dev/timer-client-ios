@@ -37,7 +37,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
 
     private let optionButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "timer_more_btn"), for: .normal)
+        view.setImage(UIImage(named: "btn_timer_more"), for: .normal)
         view.contentVerticalAlignment = .bottom
         return view
     }()
@@ -100,7 +100,9 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         
         // MARK: state
         reactor.state
-            .map { getTime(interval: $0.time) }
+            .map { $0.time }
+            .distinctUntilChanged()
+            .map { getTime(interval: $0) }
             .map { String(format: "%02d:%02d:%02d", $0.0, $0.1, $0.2) }
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
