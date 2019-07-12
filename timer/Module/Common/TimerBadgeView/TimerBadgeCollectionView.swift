@@ -125,24 +125,25 @@ class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
         guard let indexPath = indexPath,
             let layout = self.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         
+        let index = CGFloat(indexPath.row)
+        let cellSize = collectionView(self, layout: layout, sizeForItemAt: indexPath)
+        
         let cellOffset: CGFloat // Current cell offset in collection view
         let diff: CGFloat // Deference about between cell offset and anchor point
-        
-        let index = CGFloat(indexPath.row)
         switch layout.scrollDirection {
         case .horizontal:
             // Horizontal scroll
             cellOffset = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
             if self.anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                diff = self.bounds.width / 2 - layout.itemSize.width / 2
+                diff = self.bounds.width / 2 - cellSize.width / 2
             } else {
                 diff = self.anchorPoint.x
             }
         case .vertical:
             // Vertical scroll
-            cellOffset = index * layout.itemSize.height + index * layout.minimumLineSpacing
+            cellOffset = index * cellSize.height + index * layout.minimumLineSpacing
             if self.anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                diff = self.bounds.height / 2 - layout.itemSize.height / 2
+                diff = self.bounds.height / 2 - cellSize.height / 2
             } else {
                 diff = self.anchorPoint.y
             }
