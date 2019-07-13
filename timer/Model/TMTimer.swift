@@ -63,7 +63,6 @@ class TMTimer: EventStreamProtocol {
             self.timer = nil
             
             info.state = .pause
-            
             // Send state changed event
             event.onNext(.changeState(info.state))
         } else {
@@ -79,8 +78,8 @@ class TMTimer: EventStreamProtocol {
         }
     
         info.currentTime = 0
-        info.state = .stop
         
+        info.state = .stop
         // Send state changed event
         event.onNext(.changeState(info.state))
     }
@@ -92,8 +91,8 @@ class TMTimer: EventStreamProtocol {
             self.timer = nil
         
             info.currentTime = info.endTime
-            info.state = .end
             
+            info.state = .end
             // Send state changed event
             event.onNext(.changeState(info.state))
         } else {
