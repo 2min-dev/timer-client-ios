@@ -16,6 +16,7 @@ class ProductivityViewReactor: Reactor {
         case updateTime(Int)
         case tapTimeKey(ProductivityView.TimeKey)
         case clearTimer
+        case tapTimeSetLoop
         case addTimer
         case timerSelected(IndexPath)
     }
@@ -24,6 +25,7 @@ class ProductivityViewReactor: Reactor {
         case setTime(Int)
         case setTimer(TimeInterval)
         case setSumOfTimers(TimeInterval)
+        case setIsTimeSetLoop(Bool)
         
         case appendTimer(TimerInfo)
         case setSelectedIndexPath(IndexPath)
@@ -33,6 +35,7 @@ class ProductivityViewReactor: Reactor {
         var time: Int // The time that user inputed
         var timer: TimeInterval // The time of timer
         var sumOfTimers: TimeInterval // The time that sum of all timers
+        var isTimeSetLoop: Bool // Is the time set loop
         
         var timers: [TimerInfo]
         var selectedIndexPath: IndexPath
@@ -60,6 +63,7 @@ class ProductivityViewReactor: Reactor {
         self.initialState = State(time: 0,
                                   timer: 0,
                                   sumOfTimers: 0,
+                                  isTimeSetLoop: false,
                                   timers: timeSetInfo.timers,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   canStart: false,
@@ -94,6 +98,9 @@ class ProductivityViewReactor: Reactor {
             let setTime = Observable.just(Mutation.setTime(0))
             
             return .concat(setTimer, setTime, setSumOfTimers)
+        case .tapTimeSetLoop:
+            timeSetInfo.isLoop.toggle()
+            return .just(.setIsTimeSetLoop(timeSetInfo.isLoop))
         case .addTimer:
             // Create default a timer (set 0)
             let index = timeSetInfo.timers.count + 1
@@ -131,6 +138,9 @@ class ProductivityViewReactor: Reactor {
             return state
         case let .setSumOfTimers(timeInterval):
             state.sumOfTimers = timeInterval
+            return state
+        case let .setIsTimeSetLoop(isTimeSetLoop):
+            state.isTimeSetLoop = isTimeSetLoop
             return state
         case let .appendTimer(info):
             state.timers.append(info)

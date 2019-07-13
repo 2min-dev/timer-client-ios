@@ -23,16 +23,17 @@ class ProductivityViewController: BaseViewController, View {
     private var timerLabel: UILabel { return productivityView.timerLabel }
     private var timerClearButton: UIButton { return productivityView.timerClearButton }
     
+    private var timeInfoView: UIView { return productivityView.timeInfoView }
     private var sumOfTimersLabel: UILabel { return productivityView.sumOfTimersLabel }
     private var endOfTimerLabel: UILabel { return productivityView.endOfTimerLabel }
-    private var timerInputLabel: UILabel { return productivityView.timerInputLabel }
+    private var loopButton: UIButton { return productivityView.loopButton }
+    private var timerInputLabel: UILabel { return productivityView.timeInputLabel }
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
     private var saveButton: UIButton { return productivityView.saveButton }
-    private var addButton: UIButton { return productivityView.addButton }
     
     // MARK: - constants
     private let MAX_TIMER_COUNT: Int = 10
@@ -127,11 +128,6 @@ class ProductivityViewController: BaseViewController, View {
             .map { Reactor.Action.tapTimeKey($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-        
-        addButton.rx.tap
-            .map { Reactor.Action.addTimer }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
 
         timerBadgeCollectionView.rx.badgeSelected
             .map { badge -> Reactor.Action in
@@ -145,6 +141,11 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        loopButton.rx.tap
+            .map { Reactor.Action.tapTimeSetLoop }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         // MARK: state
         reactor.state
             .map { $0.time }
@@ -153,69 +154,60 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: timerInputLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // Time info view hidden
+        reactor.state
+            .map { $0.time > 0 || !$0.canStart }
+            .distinctUntilChanged()
+            .bind(to: timeInfoView.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        // Timer badge update
         reactor.state
             .map { $0.timer }
             .distinctUntilChanged()
             .bind(to: timerBadgeCollectionView.rx.timer)
             .disposed(by: disposeBag)
         
+        // Timer update
         reactor.state
             .map { $0.timer }
             .distinctUntilChanged()
-            .map {
-                guard $0 > 0 else { return "0" }
-                
-                let formatter = DateComponentsFormatter()
-                formatter.unitsStyle = .full
-                formatter.allowedUnits = [.hour, .minute, .second]
-                return formatter.string(from: $0) ?? ""
-            }
+            .map { getTime(interval: $0) }
+            .map { String(format: "%02d:%02d:%02d", $0.0, $0.1, $0.2) }
             .bind(to: timerLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // Timer clear button
         reactor.state
             .map { $0.timer }
-            .map { $0 > 0 }
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] hasTime in
-                guard let `self` = self else { return }
-                
-                // Show timer clear button
-                self.timerClearButton.isHidden = !hasTime
-                
-                let borderColor = hasTime ? Constants.Color.black.cgColor : Constants.Color.gray.cgColor
-                let animation = CABasicAnimation(keyPath: "borderColor")
-                animation.fromValue = self.timerInputView.layer.borderColor
-                animation.toValue = borderColor
-                animation.duration = 0.5
-                animation.isRemovedOnCompletion = false
-                animation.fillMode = .forwards
-                
-                self.timerInputView.layer.borderColor = borderColor
-                self.timerInputView.layer.add(animation, forKey: "borderColor")
-            })
+            .map { $0 <= 0 }
+            .distinctUntilChanged()
+            .bind(to: timerClearButton.rx.isHidden)
             .disposed(by: disposeBag)
         
+        // Sum of timers
         reactor.state
-            .map { Int($0.sumOfTimers) }
+            .map { $0.sumOfTimers }
             .distinctUntilChanged()
-            .map {
-                let seconds = $0 % 60
-                let minutes = ($0 / 60) % 60
-                let hours = $0 / 3600
-                
-                return String.init(format: "전체 %03d:%02d:%02d", hours, minutes, seconds)
-            }
+            .map { getTime(interval: $0) }
+            .map { String(format: "전체 %02d:%02d:%02d", $0.0, $0.1, $0.2) }
             .bind(to: sumOfTimersLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // Time set loop
+        reactor.state
+            .map { $0.isTimeSetLoop }
+            .distinctUntilChanged()
+            .bind(to: loopButton.rx.isSelected)
+            .disposed(by: disposeBag)
+        
+        // End of time set
         reactor.state
             .map { $0.sumOfTimers }
-            .map {
-                var current = Date()
-                current.addTimeInterval($0)
-                return getDateString(format: "종료 H:mm a", date: current, locale: Locale(identifier: Constants.Locale.USA))
-            }
+            .distinctUntilChanged()
+            .map { Date().addingTimeInterval($0) }
+            .map { getDateString(format: "종료 H:mm a", date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: endOfTimerLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -230,10 +222,6 @@ class ProductivityViewController: BaseViewController, View {
                     tabBarController.swipeEnable = !$0
                 }
                 
-                // Show timer info
-                self.sumOfTimersLabel.isHidden = !$0
-                self.endOfTimerLabel.isHidden = !$0
-                
                 // Show created timers
                 self.timerBadgeCollectionView.isHidden = !$0
                 // Show timer option footer view
@@ -241,6 +229,7 @@ class ProductivityViewController: BaseViewController, View {
             })
             .disposed(by: disposeBag)
         
+        // Timer badge view
         reactor.state
             .filter { $0.shouldReloadSection }
             .map { $0.timers }
