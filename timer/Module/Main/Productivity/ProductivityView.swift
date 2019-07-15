@@ -11,12 +11,7 @@ import RxSwift
 import RxCocoa
 
 class ProductivityView: UIView {
-    enum TimeKey {
-        case hour
-        case minute
-        case second
-    }
-    
+    // MARK: - constants
     enum TimerButtonType {
         case save
         case start
@@ -147,6 +142,9 @@ class ProductivityView: UIView {
         
         attributes[.foregroundColor] = Constants.Color.gray
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
         return view
     }()
     
@@ -161,6 +159,9 @@ class ProductivityView: UIView {
         
         attributes[.foregroundColor] = Constants.Color.gray
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
         return view
     }()
     
@@ -175,13 +176,17 @@ class ProductivityView: UIView {
         
         attributes[.foregroundColor] = Constants.Color.gray
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
+        
+        attributes[.foregroundColor] = Constants.Color.gray
+        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
         return view
     }()
     
-    private lazy var timeButtonStackView: UIStackView = { [unowned self] in
+    lazy var timeButtonStackView: UIStackView = { [unowned self] in
         let view = UIStackView(arrangedSubviews: [hourButton, minuteButton, secondButton])
         view.axis = .horizontal
         view.distribution = .fillEqually
+        view.isHidden = true
         return view
     }()
     
@@ -325,10 +330,10 @@ class ProductivityView: UIView {
 
 // MARK: - extension
 extension Reactive where Base: ProductivityView {
-    var timeKeyTap: ControlEvent<Base.TimeKey> {
-        let hourObservable = base.hourButton.rx.tap.map { Base.TimeKey.hour }
-        let minuteObservable = base.minuteButton.rx.tap.map { Base.TimeKey.minute }
-        let secondObservable = base.secondButton.rx.tap.map { Base.TimeKey.second }
+    var timeKeyTap: ControlEvent<ProductivityViewReactor.Time> {
+        let hourObservable = base.hourButton.rx.tap.map { ProductivityViewReactor.Time.hour }
+        let minuteObservable = base.minuteButton.rx.tap.map { ProductivityViewReactor.Time.minute }
+        let secondObservable = base.secondButton.rx.tap.map { ProductivityViewReactor.Time.second }
         
         let source = Observable.merge(hourObservable, minuteObservable, secondObservable)
         return ControlEvent(events: source)

@@ -31,13 +31,17 @@ class ProductivityViewController: BaseViewController, View {
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
     
+    private var timeButtonStackView: UIStackView { return productivityView.timeButtonStackView }
+    private var hourButton: UIButton { return productivityView.hourButton }
+    private var minuteButton: UIButton { return productivityView.minuteButton }
+    private var secondButton: UIButton { return productivityView.secondButton }
+    
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
     private var saveButton: UIButton { return productivityView.saveButton }
     
     // MARK: - constants
     private let MAX_TIMER_COUNT: Int = 10
-    private let MAX_TIME_INPUT_COUNT: Int = 3
     
     // MARK: - properties
     var coordinator: ProductivityViewCoordinator!
@@ -54,7 +58,7 @@ class ProductivityViewController: BaseViewController, View {
         timerBadgeCollectionView.setExtraCell(.add) { timers, cellType in
             switch cellType {
             case .add:
-                if timers.count < 10 {
+                if timers.count < self.MAX_TIMER_COUNT {
                     return true
                 }
                 return false
@@ -88,7 +92,7 @@ class ProductivityViewController: BaseViewController, View {
                         ($0.viewController as? UITabBarController)?.selectedViewController == self
                     }
                     .subscribe(onNext: { [unowned self] viewController, animated in
-                        self.showFooterView(isShow: self.reactor?.currentState.canStart ?? false)
+                        self.showFooterView(isShow: self.reactor?.currentState.canTimeSetStart ?? false)
                     })
                     .disposed(by: self.disposeBag)
                 
@@ -97,7 +101,7 @@ class ProductivityViewController: BaseViewController, View {
                         $0 == self
                     }
                     .subscribe(onNext: { [unowned self] viewController in
-                        self.showFooterView(isShow: self.reactor?.currentState.canStart ?? false)
+                        self.showFooterView(isShow: self.reactor?.currentState.canTimeSetStart ?? false)
                     })
                     .disposed(by: self.disposeBag)
             })
@@ -112,8 +116,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         keyPadView.rx.keyPadTap
-            .filter { [unowned self] in self.isValidKey($0) }
-            .map { [unowned self] in self.makeTimeWithKey($0) }
+            .map { self.convertKeyToTime(key: $0) }
             .map { Reactor.Action.updateTime($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -130,14 +133,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
 
         timerBadgeCollectionView.rx.badgeSelected
-            .map { badge -> Reactor.Action in
-                switch badge.1 {
-                case .add:
-                    return Reactor.Action.addTimer
-                default:
-                    return Reactor.Action.timerSelected(badge.0)
-                }
-            }
+            .map { self.selectBadge($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -154,9 +150,16 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: timerInputLabel.rx.text)
             .disposed(by: disposeBag)
         
+        reactor.state
+            .map { $0.time > 0 || $0.canTimeSetStart }
+            .distinctUntilChanged()
+            .map { !$0 }
+            .bind(to: timeButtonStackView.rx.isHidden)
+            .disposed(by: disposeBag)
+        
         // Time info view hidden
         reactor.state
-            .map { $0.time > 0 || !$0.canStart }
+            .map { $0.time > 0 || !$0.canTimeSetStart }
             .distinctUntilChanged()
             .bind(to: timeInfoView.rx.isHidden)
             .disposed(by: disposeBag)
@@ -211,56 +214,82 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: endOfTimerLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // Time buttons
         reactor.state
-            .map { $0.canStart }
+            .map { $0.maxSelectableTime }
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] in
-                guard let `self` = self else { return }
-                
-                // Prevent tab bar swipe gesture
-                if let tabBarController = self.tabBarController as? MainViewController {
-                    tabBarController.swipeEnable = !$0
-                }
-                
-                // Show created timers
-                self.timerBadgeCollectionView.isHidden = !$0
-                // Show timer option footer view
-                self.showFooterView(isShow: $0)
-            })
+            .subscribe(onNext: { [weak self] in self?.activateTimeKey($0) })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.canTimeSetStart }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in self?.updateViewStateFromCanTimeSetStart($0) })
             .disposed(by: disposeBag)
         
         // Timer badge view
         reactor.state
-            .filter { $0.shouldReloadSection }
+            .filter { $0.shouldSectionReload }
             .map { $0.timers }
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
     }
     
     // MARK: - private method
-    private func isValidKey(_ key: KeyPad.Key) -> Bool {
-        guard key != .cancel else { return false }
-        guard let text = timerInputLabel.text else { return false }
-        
-        switch key {
-        case .back:
-            return !text.isEmpty
-        default:
-            return text.count < MAX_TIME_INPUT_COUNT
-        }
-    }
-    
-    private func makeTimeWithKey(_ key: KeyPad.Key) -> Int {
+    /// Convert number key pad input to time value
+    private func convertKeyToTime(key: KeyPad.Key) -> Int {
         guard var text = timerInputLabel.text else { return 0 }
         
-        switch key {
-        case .back:
+        if key == .back {
+            guard !text.isEmpty else { return 0 }
             text.removeLast()
-        default:
+        } else {
             text.append(String(key.rawValue))
         }
         
         return Int(text) ?? 0
+    }
+    
+    /// Convert badge select event to reactor action
+    private func selectBadge(_ badge: (IndexPath, TimerBadgeCellType)) -> ProductivityViewReactor.Action {
+        switch badge.1 {
+        case .add:
+            return Reactor.Action.addTimer
+        default:
+            return Reactor.Action.timerSelected(badge.0)
+        }
+    }
+    
+    /// Activate only selectable time key buttons
+    private func activateTimeKey(_ time: ProductivityViewReactor.Time) {
+        // Disable all key
+        hourButton.isEnabled = false
+        minuteButton.isEnabled = false
+        secondButton.isEnabled = false
+        
+        // Enable selectable key
+        switch time {
+        case .hour:
+            hourButton.isEnabled = true
+            fallthrough
+        case .minute:
+            minuteButton.isEnabled = true
+            fallthrough
+        case .second:
+            secondButton.isEnabled = true
+        }
+    }
+    
+    private func updateViewStateFromCanTimeSetStart(_ canTimeSetStart: Bool) {
+        // Prevent tab bar swipe gesture
+        if let tabBarController = tabBarController as? MainViewController {
+            tabBarController.swipeEnable = !canTimeSetStart
+        }
+        
+        // Show created timers
+        timerBadgeCollectionView.isHidden = !canTimeSetStart
+        // Show timer option footer view
+        showFooterView(isShow: canTimeSetStart)
     }
     
     /// Add footer view into tab bar controller's view to show top of the tab bar hierarchy
