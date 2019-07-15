@@ -115,40 +115,20 @@ class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
             .disposed(by: disposeBag)
     }
     
-    /**
-     Animate that move cell to anchor point
-     
-     - parameters:
-        - indexPath: Index path of selected cell
-     */
+    /// Animate that move cell to anchor point
     private func moveToSelectedBadge(indexPath: IndexPath?) {
         guard let indexPath = indexPath,
-            let layout = self.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+            let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
         
         let index = CGFloat(indexPath.row)
+        // Current cell offset in collection view
+        let cellOffset = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
+        // Get current cell size
         let cellSize = collectionView(self, layout: layout, sizeForItemAt: indexPath)
         
-        let cellOffset: CGFloat // Current cell offset in collection view
-        let diff: CGFloat // Deference about between cell offset and anchor point
-        switch layout.scrollDirection {
-        case .horizontal:
-            // Horizontal scroll
-            cellOffset = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
-            if self.anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                diff = self.bounds.width / 2 - cellSize.width / 2
-            } else {
-                diff = self.anchorPoint.x
-            }
-        case .vertical:
-            // Vertical scroll
-            cellOffset = index * cellSize.height + index * layout.minimumLineSpacing
-            if self.anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                diff = self.bounds.height / 2 - cellSize.height / 2
-            } else {
-                diff = self.anchorPoint.y
-            }
-        @unknown default:
-            fatalError()
+        var diff = anchorPoint.x // Deference about between cell offset and anchor point
+        if anchorPoint == TimerBadgeCollectionView.centerAnchor {
+            diff = bounds.width / 2 - cellSize.width / 2
         }
         
         // Animate scroll to anchor point
@@ -158,7 +138,7 @@ class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
     }
     
     // MARK: - public method
-    // Set timer badge extra cell config
+    /// Set timer badge extra cell config
     func setExtraCell(_ extraCell: TimerBadgeCellType, shouldShowExtraCell: (([TimerInfo], TimerBadgeCellType) -> Bool)?) {
         self.extraCell = extraCell
         if let shouldShowExtraCell = shouldShowExtraCell {
@@ -187,25 +167,10 @@ extension TimerBadgeCollectionView: UICollectionViewDelegate {
     }
     
     private func calcInsetOfCollectionView(_ collectionView: UICollectionView, cell: UICollectionViewCell, anchorPoint: CGPoint, isFirst: Bool) -> CGFloat {
-        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return 0 }
-        
-        switch layout.scrollDirection {
-        case .horizontal:
-            // Horizontal scroll
-            if anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                return collectionView.bounds.width / 2 - cell.bounds.width / 2
-            } else {
-                return isFirst ? anchorPoint.x : collectionView.bounds.width - (cell.bounds.width + anchorPoint.x)
-            }
-        case .vertical:
-            // Vertical scroll
-            if anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                return collectionView.bounds.height / 2 - cell.bounds.height / 2
-            } else {
-                return isFirst ? anchorPoint.y : collectionView.bounds.height - (cell.bounds.height + anchorPoint.y)
-            }
-        @unknown default:
-            fatalError()
+        if anchorPoint == TimerBadgeCollectionView.centerAnchor {
+            return collectionView.bounds.width / 2 - cell.bounds.width / 2
+        } else {
+            return isFirst ? anchorPoint.x : collectionView.bounds.width - (cell.bounds.width + anchorPoint.x)
         }
     }
 }
