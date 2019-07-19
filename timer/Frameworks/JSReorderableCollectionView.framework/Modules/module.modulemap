@@ -1,0 +1,11 @@
+framework module JSReorderableCollectionView {
+  umbrella header "JSReorderableCollectionView.h"
+
+  export *
+  module * { export * }
+}
+
+module JSReorderableCollectionView.Swift {
+    header "JSReorderableCollectionView-Swift.h"
+    requires objc
+}
