@@ -8,9 +8,9 @@ target 'timer' do
   # Pods for timer
 
   # RxSwift
-  pod 'RxSwift', '~> 4.0'
-  pod 'RxCocoa', '~> 4.0'
-  pod 'RxDataSources', '~> 3.0'
+  pod 'RxSwift', '~> 5'
+  pod 'RxCocoa', '~> 5'
+  pod 'RxDataSources', '~> 4.0'
   pod 'ReactorKit'
   pod 'SnapKit', '~> 4.0.0'
 
@@ -33,6 +33,6 @@ target 'timer' do
   target 'test' do
     inherit! :search_paths
     # Pods for testing
-    pod 'RxTest', '~> 4.0'
+    pod 'RxTest', '~> 5'
   end
 end
