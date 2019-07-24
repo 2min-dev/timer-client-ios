@@ -21,13 +21,21 @@ class ProductivityViewReactor: Reactor {
         case second
     }
     
+    enum TimeSetAction {
+        case Move
+        case Select
+        case None
+    }
+    
     enum Action {
         case updateTime(Int)
-        case tapTimeKey(Time)
         case clearTimer
+        case tapTimeKey(Time)
         case tapTimeSetLoop
+        
         case addTimer
-        case timerSelected(IndexPath)
+        case moveTimer(at: IndexPath, to: IndexPath)
+        case selectTimer(at: IndexPath)
     }
     
     enum Mutation {
@@ -37,9 +45,12 @@ class ProductivityViewReactor: Reactor {
         case setIsTimeSetLoop(Bool)
         
         case appendTimer(TimerInfo)
+        case swapTimer(at: IndexPath, to: IndexPath)
         case setSelectedIndexPath(IndexPath)
         
         case setMaxSelectableTime(Time)
+        case setTimeSetAction(TimeSetAction)
+        case sectionReload
     }
     
     struct State {
@@ -52,6 +63,7 @@ class ProductivityViewReactor: Reactor {
         var selectedIndexPath: IndexPath
         
         var maxSelectableTime: Time
+        var timeSetAction: TimeSetAction
         var canTimeSetStart: Bool
         var shouldSectionReload: Bool
     }
@@ -60,7 +72,7 @@ class ProductivityViewReactor: Reactor {
     var initialState: State
     private let timerService: TimeSetServicePorotocol
     
-    let timeSetInfo: TimeSetInfo // Default timer set info
+    let timeSetInfo: TimeSetInfo // Empty timer set info
     
     init(timerService: TimeSetServicePorotocol) {
         self.timerService = timerService
@@ -79,6 +91,7 @@ class ProductivityViewReactor: Reactor {
                                   timers: timeSetInfo.timers,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   maxSelectableTime: .hour,
+                                  timeSetAction: .None,
                                   canTimeSetStart: false,
                                   shouldSectionReload: true)
     }
@@ -86,6 +99,7 @@ class ProductivityViewReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case let .updateTime(time):
+            let setTime: Observable<Mutation> = .just(Mutation.setTime(time))
             var setMaxSelectableTimeKey: Observable<Mutation>
             if currentState.timer + TimeInterval(time) > ProductivityViewReactor.MAX_TIME_INTERVAL {
                 // Call mutate recursivly through max time value
@@ -99,7 +113,17 @@ class ProductivityViewReactor: Reactor {
                 setMaxSelectableTimeKey = .just(.setMaxSelectableTime(.hour))
             }
             
-            return .concat(.just(Mutation.setTime(time)), setMaxSelectableTimeKey)
+            return .concat(setTime, setMaxSelectableTimeKey)
+        case .clearTimer:
+            // Clear the timer's end time
+            timeSetInfo.timers[currentState.selectedIndexPath.row].endTime = 0
+            
+            let setTimer: Observable<Mutation> = .just(.setTimer(0))
+            let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(currentState.sumOfTimers - currentState.timer))
+            let setTime = mutate(action: .updateTime(0))
+            let sectionReload: Observable<Mutation> = .just(.sectionReload)
+            
+            return .concat(setTimer, setTime, setSumOfTimers, sectionReload)
         case let .tapTimeKey(key):
             var timeInterval = currentState.timer
             let sumOfTimers = currentState.sumOfTimers - timeInterval
@@ -113,17 +137,15 @@ class ProductivityViewReactor: Reactor {
                 timeInterval += Double(currentState.time)
             }
             
-            let setTimer = Observable.just(Mutation.setTimer(timeInterval))
-            let setSumOfTimers = Observable.just(Mutation.setSumOfTimers(sumOfTimers + timeInterval))
-            let setTime = mutate(action: .updateTime(0))
+            // Update the timer's end time
+            timeSetInfo.timers[currentState.selectedIndexPath.row].endTime = timeInterval
             
-            return .concat(setTimer, setSumOfTimers, setTime)
-        case .clearTimer:
-            let setTimer = Observable.just(Mutation.setTimer(0))
-            let setSumOfTimers = Observable.just(Mutation.setSumOfTimers(currentState.sumOfTimers - currentState.timer))
+            let setTimer: Observable<Mutation> = .just(.setTimer(timeInterval))
+            let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(sumOfTimers + timeInterval))
             let setTime = mutate(action: .updateTime(0))
+            let sectionReload: Observable<Mutation> = .just(.sectionReload)
             
-            return .concat(setTimer, setTime, setSumOfTimers)
+            return .concat(setTimer, setSumOfTimers, setTime, sectionReload)
         case .tapTimeSetLoop:
             timeSetInfo.isLoop.toggle()
             return .just(.setIsTimeSetLoop(timeSetInfo.isLoop))
@@ -134,16 +156,36 @@ class ProductivityViewReactor: Reactor {
             // Add timer
             timeSetInfo.timers.append(info)
             
-            let appendSectionItem = Observable.just(Mutation.appendTimer(info))
-            let setSelectIndexPath = mutate(action: .timerSelected(IndexPath(row: index - 1, section: 0)))
+            let appendSectionItem: Observable<Mutation> = .just(.appendTimer(info))
+            let setSelectIndexPath = mutate(action: .selectTimer(at: IndexPath(row: index - 1, section: 0)))
+            let sectionReload: Observable<Mutation> = .just(.sectionReload)
             
-            return .concat(appendSectionItem, setSelectIndexPath)
-        case let .timerSelected(indexPath):
-            let setSelectedIndexPath = Observable.just(Mutation.setSelectedIndexPath(indexPath))
-            let setTimer = Observable.just(Mutation.setTimer(timeSetInfo.timers[indexPath.row].endTime))
+            return .concat(appendSectionItem, setSelectIndexPath, sectionReload)
+        case let .moveTimer(at: sourceIndexPath, to: destinationIndexPath):
+            // Swap timer
+            timeSetInfo.timers.swapAt(sourceIndexPath.row, destinationIndexPath.row)
+            
+            let setTimeSetAction: Observable<Mutation> = .just(.setTimeSetAction(.Move))
+            let swapTimer: Observable<Mutation> = .just(.swapTimer(at: sourceIndexPath, to: destinationIndexPath))
+            // Update selected index path
+            var setSelectedIndexPath: Observable<Mutation>
+            if currentState.selectedIndexPath == sourceIndexPath {
+                setSelectedIndexPath = .just(.setSelectedIndexPath(destinationIndexPath))
+            } else if currentState.selectedIndexPath == destinationIndexPath {
+                setSelectedIndexPath = .just(.setSelectedIndexPath(sourceIndexPath))
+            } else {
+                setSelectedIndexPath = .empty()
+            }
+            
+            return .concat(setTimeSetAction, swapTimer, setSelectedIndexPath)
+        case let .selectTimer(indexPath):
+            // Update selected index path
+            let setTimeSetAction: Observable<Mutation> = .just(.setTimeSetAction(.Select))
+            let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
+            let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[indexPath.row].endTime))
             let setTime = mutate(action: .updateTime(0))
             
-            return .concat(setSelectedIndexPath, setTimer, setTime)
+            return .concat(setTimeSetAction, setSelectedIndexPath, setTimer, setTime)
         }
     }
     
@@ -157,9 +199,7 @@ class ProductivityViewReactor: Reactor {
             return state
         case let .setTimer(timeInterval):
             // Update time
-            state.timers[state.selectedIndexPath.row].endTime = timeInterval
             state.timer = timeInterval
-            
             state.canTimeSetStart = state.timers.count > 1 || state.timer > 0
             return state
         case let .setSumOfTimers(timeInterval):
@@ -170,15 +210,21 @@ class ProductivityViewReactor: Reactor {
             return state
         case let .appendTimer(info):
             state.timers.append(info)
-            
-            state.canTimeSetStart = true
-            state.shouldSectionReload = true
+            return state
+        case let .swapTimer(at: sourceIndexPath, to: destinationIndexPth):
+            state.timers.swapAt(sourceIndexPath.row, destinationIndexPth.row)
             return state
         case let .setSelectedIndexPath(indexPath):
             state.selectedIndexPath = indexPath
             return state
+        case let .setTimeSetAction(action):
+            state.timeSetAction = action
+            return state
         case let .setMaxSelectableTime(time):
             state.maxSelectableTime = time
+            return state
+        case .sectionReload:
+            state.shouldSectionReload = true
             return state
         }
     }

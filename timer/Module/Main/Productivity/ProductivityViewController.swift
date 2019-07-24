@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 import RxDataSources
+import JSReorderableCollectionView
 
 class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
@@ -54,7 +55,7 @@ class ProductivityViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        timerBadgeCollectionView.anchorPoint = TimerBadgeCollectionView.centerAnchor
+        timerBadgeCollectionView.reorderableDelegate = self
         timerBadgeCollectionView.setExtraCell(.add) { timers, cellType in
             switch cellType {
             case .add:
@@ -66,6 +67,9 @@ class ProductivityViewController: BaseViewController, View {
                 return false
             }
         }
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
+        timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -115,6 +119,11 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        loopButton.rx.tap
+            .map { Reactor.Action.tapTimeSetLoop }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         keyPadView.rx.keyPadTap
             .map { self.convertKeyToTime(key: $0) }
             .map { Reactor.Action.updateTime($0) }
@@ -131,14 +140,14 @@ class ProductivityViewController: BaseViewController, View {
             .map { Reactor.Action.tapTimeKey($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-
+        
         timerBadgeCollectionView.rx.badgeSelected
-            .map { self.selectBadge($0) }
+            .map { self.selectBadge(at: $0.0, cellType: $0.1) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        loopButton.rx.tap
-            .map { Reactor.Action.tapTimeSetLoop }
+        timerBadgeCollectionView.rx.badgeMoved
+            .map { Reactor.Action.moveTimer(at: $0.0, to: $0.1) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -162,13 +171,6 @@ class ProductivityViewController: BaseViewController, View {
             .map { $0.time > 0 || !$0.canTimeSetStart }
             .distinctUntilChanged()
             .bind(to: timeInfoView.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        // Timer badge update
-        reactor.state
-            .map { $0.timer }
-            .distinctUntilChanged()
-            .bind(to: timerBadgeCollectionView.rx.timer)
             .disposed(by: disposeBag)
         
         // Timer update
@@ -233,6 +235,16 @@ class ProductivityViewController: BaseViewController, View {
             .map { $0.timers }
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedIndexPath }
+            .distinctUntilChanged()
+            .debounce(0.01, scheduler: MainScheduler.instance)
+            .withLatestFrom(reactor.state.map { $0.timeSetAction }, resultSelector: { ($0, $1) })
+            .do(onNext: { [weak self] in self?.scrollToBadgeIfNeeded(at: $0.0, action: $0.1) })
+            .map { $0.0 }
+            .bind(to: timerBadgeCollectionView.rx.selected)
+            .disposed(by: disposeBag)
     }
     
     // MARK: - private method
@@ -251,12 +263,12 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     /// Convert badge select event to reactor action
-    private func selectBadge(_ badge: (IndexPath, TimerBadgeCellType)) -> ProductivityViewReactor.Action {
-        switch badge.1 {
+    private func selectBadge(at indexPath: IndexPath, cellType: TimerBadgeCellType) -> ProductivityViewReactor.Action {
+        switch cellType {
         case .add:
             return Reactor.Action.addTimer
         default:
-            return Reactor.Action.timerSelected(badge.0)
+            return Reactor.Action.selectTimer(at: indexPath)
         }
     }
     
@@ -290,6 +302,16 @@ class ProductivityViewController: BaseViewController, View {
         timerBadgeCollectionView.isHidden = !canTimeSetStart
         // Show timer option footer view
         showFooterView(isShow: canTimeSetStart)
+    }
+    
+    // Scroll badge view if needed by time set action
+    private func scrollToBadgeIfNeeded(at indexPath: IndexPath, action: ProductivityViewReactor.TimeSetAction) {
+        switch action {
+        case .Select:
+            timerBadgeCollectionView.scrollToBadge(at: indexPath)
+        default:
+            break
+        }
     }
     
     /// Add footer view into tab bar controller's view to show top of the tab bar hierarchy
@@ -326,7 +348,42 @@ class ProductivityViewController: BaseViewController, View {
         animator.startAnimation()
     }
     
+    // MARK: - selector
+    @objc private func longPressHandler(gesture: UILongPressGestureRecognizer) {
+        let location = gesture.location(in: timerBadgeCollectionView.superview)
+        
+        switch gesture.state {
+        case .began:
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            timerBadgeCollectionView.beginInteractiveWithLocation(location)
+        case .changed:
+            timerBadgeCollectionView.updateInteractiveWithLocation(location)
+        default:
+            timerBadgeCollectionView.finishInteractive()
+        }
+    }
+    
     deinit {
         Logger.verbose()
+    }
+}
+
+extension ProductivityViewController: JSReorderableCollectionViewDelegate {
+    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        guard let reactor = reactor, indexPath.row < reactor.currentState.timers.count else { return false }
+        return true
+    }
+    
+    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willSnapshot cell: UICollectionViewCell, at point: CGPoint) -> UIView {
+        guard let badge = cell as? TimerBadgeCollectionViewCell else { return cell.snapshotView(afterScreenUpdates: true)! }
+        
+        badge.optionButton.isHidden = true
+        badge.indexLabel.isHidden = true
+        
+        let snapshot = badge.snapshotView(afterScreenUpdates: true)
+        badge.optionButton.isHidden = false
+        badge.indexLabel.isHidden = false
+        
+        return snapshot!
     }
 }

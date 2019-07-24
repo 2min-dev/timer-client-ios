@@ -251,6 +251,8 @@ class ProductivityView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
+        view.isAxisFixedPoint = true
+        view.anchorPoint = TimerBadgeCollectionView.centerAnchor
         return view
     }()
     
