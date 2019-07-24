@@ -63,17 +63,7 @@ class TimerBadgeViewReactor: Reactor {
         case let .selectBadge(indexPath):
             return .just(.setSelectedIndexPath(indexPath))
         case let .moveBadge(at: sourceIndexPath, to: destinationIndexPath):
-            let swapItem: Observable<Mutation> = .just(.swapItem(at: sourceIndexPath, to: destinationIndexPath))
-            // Update selected index path
-            var setSelectedIndexPath: Observable<Mutation>
-            if currentState.selectedIndexPath == sourceIndexPath {
-                setSelectedIndexPath = .just(.setSelectedIndexPath(destinationIndexPath))
-            } else if currentState.selectedIndexPath == destinationIndexPath {
-                setSelectedIndexPath = .just(.setSelectedIndexPath(sourceIndexPath))
-            } else {
-                setSelectedIndexPath = .empty()
-            }
-            return .concat(swapItem, setSelectedIndexPath)
+            return .just(.swapItem(at: sourceIndexPath, to: destinationIndexPath))
         }
     }
     
