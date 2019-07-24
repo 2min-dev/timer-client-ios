@@ -225,30 +225,6 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var footerStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [saveButton, startButton])
-        view.backgroundColor = Constants.Color.white
-        view.axis = .horizontal
-        view.distribution = .fillEqually
-        return view
-    }()
-    
-    lazy var footerView: UIView = { [unowned self] in
-        let view = UIView()
-        view.backgroundColor = Constants.Color.white
-        
-        // Set constraint of subviews
-        view.addAutolayoutSubview(footerStackView)
-        footerStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.width.equalTo(320.adjust())
-        }
-        
-        return view
-    }()
-    
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         view.isAxisFixedPoint = true
@@ -301,12 +277,46 @@ class ProductivityView: UIView {
         return view
     }()
     
+    var timerOptionView: UIView = {
+        let view = UIView()
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.borderWidth = 3.adjust()
+        view.layer.cornerRadius = 10.adjust()
+        view.backgroundColor = .white
+        view.isHidden = true
+        return view
+    }()
+    
+    lazy var footerStackView: UIStackView = { [unowned self] in
+        let view = UIStackView(arrangedSubviews: [saveButton, startButton])
+        view.backgroundColor = Constants.Color.white
+        view.axis = .horizontal
+        view.distribution = .fillEqually
+        return view
+    }()
+    
+    lazy var footerView: UIView = { [unowned self] in
+        let view = UIView()
+        view.backgroundColor = Constants.Color.white
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubview(footerStackView)
+        footerStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.width.equalTo(320.adjust())
+        }
+        
+        return view
+    }()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        addAutolayoutSubviews([headerView, contentView])
+        addAutolayoutSubviews([headerView, contentView, timerOptionView])
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
@@ -322,6 +332,12 @@ class ProductivityView: UIView {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
+        }
+        
+        timerOptionView.snp.makeConstraints { make in
+            make.width.equalTo(keyPadView.snp.width)
+            make.height.equalTo(timerOptionView.snp.width).multipliedBy(1.3.adjust())
+            make.center.equalToSuperview()
         }
     }
     

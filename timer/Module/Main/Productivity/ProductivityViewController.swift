@@ -39,6 +39,8 @@ class ProductivityViewController: BaseViewController, View {
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
+    private var timerOptionView: UIView { return productivityView.timerOptionView }
+    
     private var saveButton: UIButton { return productivityView.saveButton }
     
     // MARK: - constants
@@ -237,13 +239,19 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .filter { $0.timeSetAction != .None }
             .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .debounce(0.01, scheduler: MainScheduler.instance)
             .withLatestFrom(reactor.state.map { $0.timeSetAction }, resultSelector: { ($0, $1) })
+            .debounce(.milliseconds(10), scheduler: MainScheduler.instance)
             .do(onNext: { [weak self] in self?.scrollToBadgeIfNeeded(at: $0.0, action: $0.1) })
             .map { $0.0 }
             .bind(to: timerBadgeCollectionView.rx.selected)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { !$0.isTimerOptionVisible }
+            .distinctUntilChanged()
+            .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
             .disposed(by: disposeBag)
     }
     
