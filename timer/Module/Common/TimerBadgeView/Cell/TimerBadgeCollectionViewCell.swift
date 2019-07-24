@@ -14,7 +14,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     static let ReuseableIdentifier = "TimerBadgeCollectionViewCell"
     
     // MARK: - view properties
-    let timeLabel: UILabel = {
+    private let timeLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
@@ -35,14 +35,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         return view
     }()
 
-    private let optionButton: UIButton = {
+    let optionButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_timer_more"), for: .normal)
         view.contentVerticalAlignment = .bottom
         return view
     }()
 
-    private let indexLabel: UILabel = {
+    let indexLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.gray
         view.font = Constants.Font.ExtraBold.withSize(10.adjust())
