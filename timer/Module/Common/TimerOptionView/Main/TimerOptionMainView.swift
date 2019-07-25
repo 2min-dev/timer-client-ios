@@ -17,7 +17,7 @@ class TimerOptionMainView: UIView {
         return view
     }()
     
-    let commentCountLabel: UILabel = {
+    let commentLengthLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .right
         view.font = Constants.Font.Light.withSize(12.adjust())
@@ -35,14 +35,14 @@ class TimerOptionMainView: UIView {
     private lazy var commentInputView: UIView = {
         let view = UIView()
         
-        view.addAutolayoutSubviews([commentTextView, commentCountLabel, commentHintLabel])
+        view.addAutolayoutSubviews([commentTextView, commentLengthLabel, commentHintLabel])
         commentTextView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(10.adjust())
             make.leading.equalToSuperview().inset(10.adjust())
             make.trailing.equalToSuperview().inset(10.adjust())
         }
         
-        commentCountLabel.snp.makeConstraints { make in
+        commentLengthLabel.snp.makeConstraints { make in
             make.top.equalTo(commentTextView.snp.bottom).offset(10.adjust())
             make.trailing.equalToSuperview().inset(10.adjust())
             make.bottom.equalToSuperview().inset(10.adjust())
@@ -136,13 +136,13 @@ class TimerOptionMainView: UIView {
         return view
     }()
     
-    let timerNameLabel: UILabel = {
+    let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         return view
     }()
         
-    let timerDeleteButton: UIButton = {
+    let deleteButton: UIButton = {
         let view = UIButton()
         view.backgroundColor = UIColor.green
         return view
@@ -151,7 +151,7 @@ class TimerOptionMainView: UIView {
     private lazy var timerInfoView: UIView = {
         let view = UIView()
         
-        view.addAutolayoutSubviews([timerIconImageView, timerNameLabel, timerDeleteButton])
+        view.addAutolayoutSubviews([timerIconImageView, titleLabel, deleteButton])
         // Set constarint of subviews
         timerIconImageView.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -160,18 +160,18 @@ class TimerOptionMainView: UIView {
             make.width.equalTo(timerIconImageView.snp.height)
         }
         
-        timerNameLabel.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalTo(timerIconImageView.snp.trailing)
-            make.trailing.equalTo(timerDeleteButton.snp.leading)
+            make.trailing.equalTo(deleteButton.snp.leading)
             make.bottom.equalToSuperview()
         }
         
-        timerDeleteButton.snp.makeConstraints { make in
+        deleteButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.width.equalTo(timerDeleteButton.snp.height)
+            make.width.equalTo(deleteButton.snp.height)
         }
         
         return view
