@@ -1,5 +1,5 @@
 //
-//  TimerOptionViewReactor.swift
+//  TimerOptionMainViewReactor.swift
 //  timer
 //
 //  Created by JSilver on 25/07/2019.
@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class TimerOptionViewReactor: Reactor {
+class TimerOptionMainViewReactor: Reactor {
     enum Action {
         
     }

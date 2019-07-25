@@ -72,6 +72,10 @@ class ProductivityViewController: BaseViewController, View {
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
+        
+        // Add timer option view controller
+        let viewController = TimerOptionViewController()
+        addChild(viewController, in: timerOptionView)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -369,6 +373,10 @@ class ProductivityViewController: BaseViewController, View {
         default:
             timerBadgeCollectionView.finishInteractive()
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
     
     deinit {

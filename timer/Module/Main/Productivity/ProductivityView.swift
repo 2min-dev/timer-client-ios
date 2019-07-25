@@ -37,7 +37,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var timerInputView: UIView = { [unowned self] in
+    lazy var timerInputView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 1.adjust()
         view.layer.borderColor = Constants.Color.gray.cgColor
@@ -79,7 +79,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var timeInfoView: UIView = { [unowned self] in
+    lazy var timeInfoView: UIView = {
         let view = UIView()
         
         // Create info container view
@@ -232,7 +232,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var contentView: UIView = { [unowned self] in
+    lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
@@ -280,14 +280,13 @@ class ProductivityView: UIView {
     var timerOptionView: UIView = {
         let view = UIView()
         view.layer.borderColor = UIColor.black.cgColor
-        view.layer.borderWidth = 3.adjust()
-        view.layer.cornerRadius = 10.adjust()
+        view.layer.borderWidth = 1.adjust()
         view.backgroundColor = .white
         view.isHidden = true
         return view
     }()
     
-    lazy var footerStackView: UIStackView = { [unowned self] in
+    lazy var footerStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [saveButton, startButton])
         view.backgroundColor = Constants.Color.white
         view.axis = .horizontal
@@ -295,7 +294,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var footerView: UIView = { [unowned self] in
+    lazy var footerView: UIView = {
         let view = UIView()
         view.backgroundColor = Constants.Color.white
         

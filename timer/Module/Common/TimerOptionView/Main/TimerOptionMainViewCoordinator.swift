@@ -1,12 +1,12 @@
 //
-//  TimerOptionViewCoordinator.swift
+//  TimerOptionMainViewCoordinator.swift
 //  timer
 //
 //  Created by JSilver on 25/07/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-class TimerOptionViewCoordinator {
+class TimerOptionMainViewCoordinator {
     // MARK: - route enumeration
     enum Route {
         
