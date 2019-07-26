@@ -20,13 +20,17 @@ class TimerInfo: Codable {
     
     // MARK: properties
     var title: String // The title of the timer
+    var comment: String // The comment of the timer
+    var alarm: String // The alarm name of the timer
     var currentTime: TimeInterval // Current time interval of the timer
     var endTime: TimeInterval // Target end time interval of the timer
     var state: State // Current state of the timer
     
     // MARK: constructor
-    init(title: String, currentTime: TimeInterval = 0, endTime: TimeInterval = 0, state: State = .stop) {
+    init(title: String, comment: String = "", alarm: String = "system", currentTime: TimeInterval = 0, endTime: TimeInterval = 0, state: State = .stop) {
         self.title = title
+        self.comment = comment
+        self.alarm = alarm
         self.currentTime = currentTime
         self.endTime = endTime
         self.state = state
