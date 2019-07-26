@@ -40,6 +40,7 @@ class ProductivityViewController: BaseViewController, View {
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
     private var timerOptionView: UIView { return productivityView.timerOptionView }
+    private var timerOptionViewController: TimerOptionViewController!
     
     private var saveButton: UIButton { return productivityView.saveButton }
     
@@ -74,8 +75,11 @@ class ProductivityViewController: BaseViewController, View {
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
         
         // Add timer option view controller
-        let viewController = TimerOptionViewController()
-        addChild(viewController, in: timerOptionView)
+        if let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
+            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController {
+            addChild(timerOptionNavigationController, in: timerOptionView)
+            self.timerOptionViewController = timerOptionViewController
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -255,7 +259,19 @@ class ProductivityViewController: BaseViewController, View {
         reactor.state
             .map { !$0.isTimerOptionVisible }
             .distinctUntilChanged()
+            .do(onNext: {
+                if $0 {
+                   self.timerOptionViewController.navigationController?.popViewController(animated: false)
+                }
+            })
             .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.timers[$0.selectedIndexPath.row] }
+            .distinctUntilChanged { $0 === $1 }
+            .debug()
+            .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
     }
     

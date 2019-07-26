@@ -47,8 +47,9 @@ class TimerOptionViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         alarmChangeButton.rx.tap
-            .subscribe(onNext: {
-                self.coordinator.present(for: .alarmChange)
+            .subscribe(onNext: { [weak self] in
+                self?.view.endEditing(true)
+                self?.coordinator.present(for: .alarmChange)
             })
             .disposed(by: disposeBag)
         
