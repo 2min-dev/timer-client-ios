@@ -59,7 +59,7 @@ class ProductivityViewController: BaseViewController, View {
         super.viewDidLoad()
     
         timerBadgeCollectionView.reorderableDelegate = self
-        timerBadgeCollectionView.setExtraCell(.add) { timers, cellType in
+        timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
             switch cellType {
             case .add:
                 if timers.count < self.MAX_TIMER_COUNT {
@@ -135,7 +135,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         keyPadView.rx.keyPadTap
-            .map { self.convertKeyToTime(key: $0) }
+            .map { [unowned self] in self.convertKeyToTime(key: $0) }
             .map { Reactor.Action.updateTime($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -152,7 +152,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.badgeSelected
-            .map { self.selectBadge(at: $0.0, cellType: $0.1) }
+            .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -259,9 +259,9 @@ class ProductivityViewController: BaseViewController, View {
         reactor.state
             .map { !$0.isTimerOptionVisible }
             .distinctUntilChanged()
-            .do(onNext: {
+            .do(onNext: { [weak self] in
                 if $0 {
-                   self.timerOptionViewController.navigationController?.popViewController(animated: false)
+                   self?.timerOptionViewController.navigationController?.popViewController(animated: false)
                 }
             })
             .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
@@ -270,7 +270,6 @@ class ProductivityViewController: BaseViewController, View {
         reactor.state
             .map { $0.timers[$0.selectedIndexPath.row] }
             .distinctUntilChanged { $0 === $1 }
-            .debug()
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
     }
