@@ -12,7 +12,6 @@ import RxCocoa
 
 class RootViewController: UINavigationController {
     // MARK: - properties
-    var coordinator: RootViewCoordinator!
     
     // MARK: - lifecycle
     override func viewDidLoad() {

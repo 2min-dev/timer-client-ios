@@ -6,7 +6,7 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol CoordinatorProtocol: class {
     associatedtype Route
@@ -17,5 +17,6 @@ protocol CoordinatorProtocol: class {
     
     init(provider: ServiceProviderProtocol, rootViewController: ViewController)
     
-    func present(for route: Route)
+    func present(for route: Route) -> UIViewController
+    func get(for route: Route) -> UIViewController
 }

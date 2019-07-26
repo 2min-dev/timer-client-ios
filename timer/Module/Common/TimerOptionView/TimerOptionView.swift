@@ -1,5 +1,5 @@
 //
-//  TimerOptionMainView.swift
+//  TimerOptionView.swift
 //  timer
 //
 //  Created by JSilver on 25/07/2019.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TimerOptionMainView: UIView {
+class TimerOptionView: UIView {
     // MARK: - view properties
     let commentTextView: UITextView = {
         let view = UITextView()
