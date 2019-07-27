@@ -11,14 +11,14 @@ import ReactorKit
 
 class AppInfoViewController: BaseViewController, View {
 	// MARK: view properties
-	private var appInfoView: AppInfoView { return self.view as! AppInfoView }
+	private var appInfoView: AppInfoView { return view as! AppInfoView }
 	
 	// MARK: properties
 	var coordinator: AppInfoCoordinator!
 
 	// MARK: lifecycle
 	override func loadView() {
-		self.view = AppInfoView()
+		view = AppInfoView()
 	}
 
 	override func viewDidLoad() {

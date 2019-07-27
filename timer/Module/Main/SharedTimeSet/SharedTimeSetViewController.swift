@@ -13,14 +13,14 @@ import ReactorKit
 
 class SharedTimeSetViewController: BaseViewController, View {
     // MARK: - view properties
-    private var sharedTimeSetView: SharedTimeSetView { return self.view as! SharedTimeSetView }
+    private var sharedTimeSetView: SharedTimeSetView { return view as! SharedTimeSetView }
     
     // MARK: - properties
     var coordinator: SharedTimeSetViewCoordinator!
     
     // MARK: - lifecycle
     override func loadView() {
-        self.view = SharedTimeSetView()
+        view = SharedTimeSetView()
     }
     
     override func viewDidLoad() {

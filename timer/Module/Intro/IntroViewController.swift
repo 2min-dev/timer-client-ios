@@ -13,14 +13,14 @@ import ReactorKit
 
 class IntroViewController: BaseViewController, View {
     // MARK: view properties
-    private var introView: IntroView { return self.view as! IntroView }
+    private var introView: IntroView { return view as! IntroView }
     
     // MARK: properties
     var coordinator: IntroViewCoordinator!
     
     // MARK: ### lifecycle ###
     override func loadView() {
-        self.view = IntroView()
+        view = IntroView()
     }
     
     override func viewDidLoad() {

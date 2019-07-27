@@ -14,7 +14,7 @@ import JSReorderableCollectionView
 
 class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
-    private var productivityView: ProductivityView { return self.view as! ProductivityView }
+    private var productivityView: ProductivityView { return view as! ProductivityView }
     private var contentView: UIView { return productivityView.contentView }
     
     private var footerStackView: UIStackView { return productivityView.footerStackView }
@@ -52,7 +52,7 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: - lifecycle
     override func loadView() {
-        self.view = ProductivityView()
+        view = ProductivityView()
     }
     
     override func viewDidLoad() {

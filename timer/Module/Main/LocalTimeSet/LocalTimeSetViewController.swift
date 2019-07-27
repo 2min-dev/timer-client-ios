@@ -13,14 +13,14 @@ import RxDataSources
 
 class LocalTimeSetViewController: BaseViewController, View {
     // MARK: - view properties
-    private var localTimeSetView: LocalTimeSetView { return self.view as! LocalTimeSetView }
+    private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     
     // MARK: - properties
     var coordinator: LocalTimeSetViewCoordinator!
     
     // MARK: - lifecycle
     override func loadView() {
-        self.view = LocalTimeSetView()
+        view = LocalTimeSetView()
     }
     
     override func viewDidLoad() {
