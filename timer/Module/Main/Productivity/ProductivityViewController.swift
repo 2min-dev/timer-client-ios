@@ -125,29 +125,29 @@ class ProductivityViewController: BaseViewController, View {
     func bind(reactor: ProductivityViewReactor) {
         // MARK: action
         timerClearButton.rx.tap
-            .map { Reactor.Action.clearTimer }
+            .map { Reactor.Action.clear }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         loopButton.rx.tap
-            .map { Reactor.Action.tapTimeSetLoop }
+            .map { Reactor.Action.toggleTimeSetLoop }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         keyPadView.rx.keyPadTap
             .map { [unowned self] in self.convertKeyToTime(key: $0) }
-            .map { Reactor.Action.updateTime($0) }
+            .map { Reactor.Action.tapKeyPad($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         keyPadView.rx.keyPadTap
             .filter { $0 == .cancel }
-            .map { _ in Reactor.Action.clearTimer }
+            .map { _ in Reactor.Action.clear }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         productivityView.rx.timeKeyTap
-            .map { Reactor.Action.tapTimeKey($0) }
+            .map { Reactor.Action.tapTime($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -158,6 +158,16 @@ class ProductivityViewController: BaseViewController, View {
         
         timerBadgeCollectionView.rx.badgeMoved
             .map { Reactor.Action.moveTimer(at: $0.0, to: $0.1) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        timerOptionViewController.rx.alarmApplyAll
+            .map { Reactor.Action.applyAlarm($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        timerOptionViewController.rx.delete
+            .map { Reactor.Action.deleteTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -228,7 +238,7 @@ class ProductivityViewController: BaseViewController, View {
         
         // Time buttons
         reactor.state
-            .map { $0.maxSelectableTime }
+            .map { $0.selectableTime }
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.activateTimeKey($0) })
             .disposed(by: disposeBag)
@@ -256,14 +266,11 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
+        // Timer option view
         reactor.state
             .map { !$0.isTimerOptionVisible }
             .distinctUntilChanged()
-            .do(onNext: { [weak self] in
-                if $0 {
-                   self?.timerOptionViewController.navigationController?.popViewController(animated: false)
-                }
-            })
+            .do(onNext: { [weak self] in self?.popToTimerOptionMain(isTimerOptionVisible: !$0) })
             .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
             .disposed(by: disposeBag)
         
@@ -271,6 +278,14 @@ class ProductivityViewController: BaseViewController, View {
             .map { $0.timers[$0.selectedIndexPath.row] }
             .distinctUntilChanged { $0 === $1 }
             .bind(to: timerOptionViewController.rx.timer)
+            .disposed(by: disposeBag)
+        
+        // Alert
+        reactor.state
+            .map { $0.alert }
+            .filter { $0 != nil }
+            .map { $0! }
+            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
             .disposed(by: disposeBag)
     }
     
@@ -319,6 +334,7 @@ class ProductivityViewController: BaseViewController, View {
         }
     }
     
+    /// Show/Hide view according to `canTimeSetStart` value
     private func updateViewStateFromCanTimeSetStart(_ canTimeSetStart: Bool) {
         // Prevent tab bar swipe gesture
         if let tabBarController = tabBarController as? MainViewController {
@@ -331,7 +347,7 @@ class ProductivityViewController: BaseViewController, View {
         showFooterView(isShow: canTimeSetStart)
     }
     
-    // Scroll badge view if needed by time set action
+    /// Scroll badge view if needed by time set action
     private func scrollToBadgeIfNeeded(at indexPath: IndexPath, action: ProductivityViewReactor.TimeSetAction) {
         switch action {
         case .Select:
@@ -339,6 +355,25 @@ class ProductivityViewController: BaseViewController, View {
         default:
             break
         }
+    }
+    
+    /// Pop view controller to go to main option view
+    private func popToTimerOptionMain(isTimerOptionVisible: Bool) {
+        guard !isTimerOptionVisible else { return }
+        timerOptionViewController.navigationController?.popViewController(animated: false)
+    }
+    
+    /// Show popup alert
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        // Alert view controller dismiss after 1 seconds
+        alert.rx.viewDidLoad
+            .delay(.seconds(1), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak alert] in alert?.dismiss(animated: true) })
+            .disposed(by: disposeBag)
+        
+        // Present alert view controller
+        present(alert, animated: true)
     }
     
     /// Add footer view into tab bar controller's view to show top of the tab bar hierarchy
