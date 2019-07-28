@@ -10,6 +10,9 @@
 		1236FB8BB1172A8260339148 /* Pods_test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */; };
 		62F447025DA9571328264AAF /* Pods_widget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08C6E86474A099E3080F5433 /* Pods_widget.framework */; };
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
+		F302608822EB674100E3E431 /* AlarmChangeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608722EB674100E3E431 /* AlarmChangeTableViewCell.swift */; };
+		F302608A22EC86F500E3E431 /* AlarmChangeViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608922EC86F500E3E431 /* AlarmChangeViewReactor.swift */; };
+		F302608D22EC87C300E3E431 /* AlarmChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608C22EC87C300E3E431 /* AlarmChangeView.swift */; };
 		F30349DC22E2137A0053FF31 /* JSReorderableCollectionView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */; };
 		F30349DD22E2137A0053FF31 /* JSReorderableCollectionView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F266225CC9E900A11FAF /* RootViewController.swift */; };
@@ -153,6 +156,9 @@
 		8DAA476B776A79A887A8BAB2 /* Pods-timer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.debug.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.debug.xcconfig"; sourceTree = "<group>"; };
 		CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-test.release.xcconfig"; path = "Target Support Files/Pods-test/Pods-test.release.xcconfig"; sourceTree = "<group>"; };
 		E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.release.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.release.xcconfig"; sourceTree = "<group>"; };
+		F302608722EB674100E3E431 /* AlarmChangeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmChangeTableViewCell.swift; sourceTree = "<group>"; };
+		F302608922EC86F500E3E431 /* AlarmChangeViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmChangeViewReactor.swift; sourceTree = "<group>"; };
+		F302608C22EC87C300E3E431 /* AlarmChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmChangeView.swift; sourceTree = "<group>"; };
 		F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JSReorderableCollectionView.framework; sourceTree = "<group>"; };
 		F303F266225CC9E900A11FAF /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewController.swift; sourceTree = "<group>"; };
@@ -296,6 +302,14 @@
 				CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		F302608B22EC879600E3E431 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F302608722EB674100E3E431 /* AlarmChangeTableViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		F303F259225CC56800A11FAF /* Resources */ = {
@@ -600,7 +614,10 @@
 		F3E0C09E22EA1519005D9FA4 /* AlarmChange */ = {
 			isa = PBXGroup;
 			children = (
+				F302608B22EC879600E3E431 /* Cell */,
 				F3E0C09F22EA153B005D9FA4 /* AlarmChangeViewController.swift */,
+				F302608C22EC87C300E3E431 /* AlarmChangeView.swift */,
+				F302608922EC86F500E3E431 /* AlarmChangeViewReactor.swift */,
 			);
 			path = AlarmChange;
 			sourceTree = "<group>";
@@ -925,12 +942,14 @@
 				F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */,
 				F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */,
 				F334090522D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift in Sources */,
+				F302608822EB674100E3E431 /* AlarmChangeTableViewCell.swift in Sources */,
 				F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */,
 				F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
 				F3F65D7A22CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift in Sources */,
+				F302608D22EC87C300E3E431 /* AlarmChangeView.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
@@ -973,6 +992,7 @@
 				F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */,
 				F3C187542262052300B2C644 /* AppInfoView.swift in Sources */,
 				F3D1F7AC225CC21A006DC162 /* IntroViewController.swift in Sources */,
+				F302608A22EC86F500E3E431 /* AlarmChangeViewReactor.swift in Sources */,
 				F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */,
 				F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */,
 			);
