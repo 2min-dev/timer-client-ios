@@ -195,7 +195,6 @@ extension TimerBadgeCollectionView: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Rx extension
-// TODO: Check memory leak
 extension Reactive where Base: TimerBadgeCollectionView {
     // MARK: - binder
     var items: Binder<[TimerInfo]> {
