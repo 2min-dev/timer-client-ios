@@ -13,13 +13,13 @@ class TimerOptionView: UIView {
     let commentTextView: UITextView = {
         let view = UITextView()
         view.font = Constants.Font.Regular.withSize(15.adjust())
+        // Disable auto correction (keyboard)
         view.autocorrectionType = .no
         return view
     }()
     
     let commentLengthLabel: UILabel = {
         let view = UILabel()
-        view.textAlignment = .right
         view.font = Constants.Font.Light.withSize(12.adjust())
         return view
     }()
@@ -36,6 +36,7 @@ class TimerOptionView: UIView {
         let view = UIView()
         
         view.addAutolayoutSubviews([commentTextView, commentLengthLabel, commentHintLabel])
+        // Set constarint of subviews
         commentTextView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(10.adjust())
             make.leading.equalToSuperview().inset(10.adjust())
@@ -58,6 +59,7 @@ class TimerOptionView: UIView {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
+        // TODO: remove it after resource applied
         view.backgroundColor = UIColor.blue
         return view
     }()
@@ -65,8 +67,6 @@ class TimerOptionView: UIView {
     let alarmNameLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        // TODO: Sample text (remove it)
-        view.text = "기본음"
         return view
     }()
     
@@ -132,6 +132,7 @@ class TimerOptionView: UIView {
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
+        // TODO: remove it after resource applied
         view.backgroundColor = UIColor.yellow
         return view
     }()
@@ -144,6 +145,7 @@ class TimerOptionView: UIView {
         
     let deleteButton: UIButton = {
         let view = UIButton()
+        // TODO: remove it after resource applied
         view.backgroundColor = UIColor.green
         return view
     }()
@@ -189,6 +191,7 @@ class TimerOptionView: UIView {
         timerInfoView.snp.makeConstraints { make in
             make.height.equalTo(50.adjust())
         }
+        
         return view
     }()
     

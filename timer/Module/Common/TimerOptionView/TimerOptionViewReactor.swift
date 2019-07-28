@@ -21,32 +21,32 @@ class TimerOptionViewReactor: Reactor {
     
     enum Mutation {
         case setTitle(String)
-        case setAlarm(String)
         case setComment(String)
+        case setAlarm(String)
     }
     
     struct State {
-        var title: String
-        var comment: String
-        var alarm: String
+        var title: String           // Title of the timer
+        var comment: String         // Comment of the timer
+        var alarm: String           // Alarm of the timer
     }
     
     // MARK: - properties
     var initialState: State
-    private var timerInfo: TimerInfo
+    var timerInfo: TimerInfo?
     
     // MARK: - constructor
     init() {
-        self.timerInfo = TimerInfo(title: "default")
-        self.initialState = State(title: self.timerInfo.title,
-                                  comment: self.timerInfo.comment,
-                                  alarm: self.timerInfo.alarm)
+        self.initialState = State(title: "",
+                                  comment: "",
+                                  alarm: "")
     }
     
     // MARK: - Mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case let .changeTimer(timerInfo):
+            // Change current timer
             self.timerInfo = timerInfo
             
             let setTitle: Observable<Mutation> = .just(.setTitle(timerInfo.title))
@@ -55,16 +55,19 @@ class TimerOptionViewReactor: Reactor {
             
             return .concat(setTitle, setComment, setAlarm)
         case let .updateComment(comment):
+            // Update timer's comment
+            guard let timerInfo = timerInfo else { return .empty() }
             let length = comment.lengthOfBytes(using: .utf8)
             
-            var setComment: Observable<Mutation> = .just(.setComment(timerInfo.comment))
-            if length < TimerOptionViewReactor.MAX_COMMENT_LENGTH {
-                timerInfo.comment = comment
-                setComment = .just(.setComment(comment))
+            guard length <= TimerOptionViewReactor.MAX_COMMENT_LENGTH else {
+                return .just(.setComment(timerInfo.comment))
             }
             
-            return setComment
+            timerInfo.comment = comment
+            
+            return .just(.setComment(comment))
         case let .updateAlarm(alarm):
+            // Update alarm title
             return .just(.setAlarm(alarm))
         }
     }

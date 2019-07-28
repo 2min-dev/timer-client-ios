@@ -12,25 +12,27 @@ import ReactorKit
 
 class TimerOptionViewController: BaseViewController, View {
     // MARK: - view properties
-    private var timerOptionView: TimerOptionView { return self.view as! TimerOptionView }
+    private var timerOptionView: TimerOptionView { return view as! TimerOptionView }
     
     private var commentTextView: UITextView { return timerOptionView.commentTextView }
     private var commentLengthLabel: UILabel { return timerOptionView.commentLengthLabel }
     private var commentHintLabel: UILabel { return timerOptionView.commentHintLabel }
     
     private var alarmNameLabel: UILabel { return timerOptionView.alarmNameLabel }
-    private var alarmApplyAllButton: UIButton { return timerOptionView.alarmApplyAllButton }
+    fileprivate var alarmApplyAllButton: UIButton { return timerOptionView.alarmApplyAllButton }
     private var alarmChangeButton: UIButton { return timerOptionView.alarmChangeButton }
     
     private var titleLabel: UILabel { return timerOptionView.titleLabel }
-    private var deleteButton: UIButton { return timerOptionView.deleteButton }
+    fileprivate var deleteButton: UIButton { return timerOptionView.deleteButton }
+    
+    private var alarmChangeViewController: AlarmChangeViewController!
     
     // MARK: - properties
     var coordinator: TimerOptionViewCoordinator!
     
     // MARK: - lifecycle
     override func loadView() {
-        self.view = TimerOptionView()
+        view = TimerOptionView()
     }
     
     override func viewDidLoad() {
@@ -47,10 +49,7 @@ class TimerOptionViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         alarmChangeButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.view.endEditing(true)
-                self?.coordinator.present(for: .alarmChange)
-            })
+            .subscribe(onNext: { [weak self] in self?.navigateToAlarmChange() })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -94,8 +93,18 @@ class TimerOptionViewController: BaseViewController, View {
     }
     
     // MARK: - priate method
-    
-    // MARK: - public method
+    private func navigateToAlarmChange() {
+        guard let reactor = reactor,
+            let timerInfo = reactor.timerInfo else { return }
+        
+        view.endEditing(true)
+        if let viewController = coordinator.present(for: .alarmChange(timerInfo.alarm)) as? AlarmChangeViewController {
+            viewController.rx.alarmSelected
+                .map { Reactor.Action.updateAlarm($0) }
+                .bind(to: reactor.action)
+                .disposed(by: viewController.disposeBag)
+        }
+    }
     
     deinit {
         Logger.verbose()
@@ -114,4 +123,14 @@ extension Reactive where Base: TimerOptionViewController {
     }
     
     // MARK: - control event
+    var alarmApplyAll: ControlEvent<String> {
+        let source = base.alarmApplyAllButton.rx.tap
+            .map { self.base.reactor!.currentState.alarm }
+        return ControlEvent(events: source)
+    }
+    
+    var delete: ControlEvent<Void> {
+        let source = base.deleteButton.rx.tap
+        return ControlEvent(events: source)
+    }
 }
