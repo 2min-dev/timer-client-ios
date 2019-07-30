@@ -6,6 +6,8 @@ target 'timer' do
   use_frameworks!
 
   # Pods for timer
+  # Common Libraries
+  pod 'JSReorderableCollectionView'
 
   # RxSwift
   pod 'RxSwift', '~> 5'
