@@ -25,18 +25,10 @@ class TimerInfo: Codable {
     var state: State // Current state of the timer
     
     // MARK: constructor
-    init(title: String, currentTime: TimeInterval, endTime: TimeInterval, state: State) {
+    init(title: String, currentTime: TimeInterval = 0, endTime: TimeInterval = 0, state: State = .stop) {
         self.title = title
         self.currentTime = currentTime
         self.endTime = endTime
         self.state = state
-    }
-    
-    convenience init(title: String, endTime: TimeInterval) {
-        self.init(title: title, currentTime: 0, endTime: endTime, state: .stop)
-    }
-    
-    convenience init(title: String) {
-        self.init(title: title, currentTime: 0, endTime: 0, state: .stop)
     }
 }

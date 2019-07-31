@@ -234,16 +234,8 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let timerCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // self-sizing cell
-        layout.itemSize = CGSize(width: 75.adjust(), height: 60.adjust())
-        layout.minimumInteritemSpacing = 10.adjust()
-        
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = Constants.Color.clear
-        view.showsHorizontalScrollIndicator = false
+    let timerBadgeCollectionView: TimerBadgeCollectionView = {
+        let view = TimerBadgeCollectionView(frame: .zero)
         return view
     }()
     
@@ -251,7 +243,7 @@ class ProductivityView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([self.timerInputView, self.timerInfoStackView, self.keyPadView, self.timeButtonStackView, self.timerCollectionView])
+        view.addAutolayoutSubviews([self.timerInputView, self.timerInfoStackView, self.keyPadView, self.timeButtonStackView, self.timerBadgeCollectionView])
         timerInputView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(43.5.adjust())
             make.centerX.equalToSuperview()
@@ -276,11 +268,10 @@ class ProductivityView: UIView {
             make.width.equalTo(258.adjust())
         }
         
-        timerCollectionView.snp.makeConstraints { make in
+        timerBadgeCollectionView.snp.makeConstraints { make in
             make.top.equalTo(timeButtonStackView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.height.equalTo(60.adjust())
         }
         
         return view
