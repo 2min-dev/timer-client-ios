@@ -31,13 +31,13 @@ class TimeSetService: TimeSetServicePorotocol {
     // MARK: - constructor
     init() {
         // Create timer set mock
-        let timeSet = TimeSet(info: TimeSetInfo(name: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end", timers: [
+        let timeSet = TimeSet(info: TimeSetInfo(title: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end", timers: [
             TimerInfo(title: "First timer (5 sec)", endTime: 5),
             TimerInfo(title: "Second timer (3 sec)", endTime: 3),
             TimerInfo(title: "Third timer (5 sec)", endTime: 5)
         ]))
     
-        let timeSet2 = TimeSet(info: TimeSetInfo(name: "Second Sample Timer set", description: "3 sec -> 5 sec -> end", timers: [
+        let timeSet2 = TimeSet(info: TimeSetInfo(title: "Second Sample Timer set", description: "3 sec -> 5 sec -> end", timers: [
             TimerInfo(title: "First timer (3 sec)", endTime: 3),
             TimerInfo(title: "Second timer (5 sec)", endTime: 5)
         ]))
@@ -45,8 +45,8 @@ class TimeSetService: TimeSetServicePorotocol {
         timeSets = [
             timeSet,
             timeSet2,
-            TimeSet(info: TimeSetInfo(name: "Empty timer set 1", description: "")),
-            TimeSet(info: TimeSetInfo(name: "Empty timer set 2", description: ""))
+            TimeSet(info: TimeSetInfo(title: "Empty timer set 1", description: "")),
+            TimeSet(info: TimeSetInfo(title: "Empty timer set 2", description: ""))
         ]
     }
     

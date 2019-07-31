@@ -9,6 +9,7 @@
 import UIKit
 
 class AppInfoView: UIView {
+    // MARK: - view properties
     let developer: UILabel = {
         let view = UILabel()
         view.text = "Jeong Jin Eun"
@@ -38,6 +39,7 @@ class AppInfoView: UIView {
         return view
     }()
     
+    // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white

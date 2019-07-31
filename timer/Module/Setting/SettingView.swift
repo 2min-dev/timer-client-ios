@@ -15,6 +15,7 @@ class SettingView: UIView {
         return view
     }()
     
+    // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         

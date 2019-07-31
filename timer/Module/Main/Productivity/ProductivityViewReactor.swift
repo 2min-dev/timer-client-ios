@@ -82,12 +82,13 @@ class ProductivityViewReactor: Reactor {
         var shouldSectionReload: Bool       // Need section reload
     }
     
-    // MARK: properties
+    // MARK: - properties
     var initialState: State
     private let timerService: TimeSetServicePorotocol
     
     let timeSetInfo: TimeSetInfo // Empty timer set info
     
+    // MARK: - constructor
     init(timerService: TimeSetServicePorotocol) {
         self.timerService = timerService
         
@@ -95,7 +96,7 @@ class ProductivityViewReactor: Reactor {
         let info = TimerInfo(title: "1 번째 타이머")
         
         // Create default timer set and add default a timer
-        self.timeSetInfo = TimeSetInfo(name: "", description: "")
+        self.timeSetInfo = TimeSetInfo(title: "첫번째 생산성", description: "")
         self.timeSetInfo.timers.append(info)
  
         self.initialState = State(time: 0,

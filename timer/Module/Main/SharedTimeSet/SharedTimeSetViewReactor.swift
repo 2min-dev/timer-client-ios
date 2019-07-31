@@ -25,6 +25,7 @@ class SharedTimeSetViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     
+    // MARK: - constructor
     init() {
         self.initialState = State()
     }

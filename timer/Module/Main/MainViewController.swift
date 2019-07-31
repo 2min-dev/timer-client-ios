@@ -17,10 +17,7 @@ class MainViewController: UITabBarController {
         case SharedTimeSet
     }
     
-    // MARK: - properties
-    var coordinator: MainViewCoordinator!
-    
-    // Custom tab bar
+    // MARK: - view properties
     let _tabBar: TMTabBar = {
         let view = TMTabBar()
         view.tintColor = Constants.Color.appColor
@@ -28,14 +25,25 @@ class MainViewController: UITabBarController {
         return view
     }()
     
+    // MARK: - properties
     private var panGestureRecognizer: UIPanGestureRecognizer!
     private var panGestureDirection: UIRectEdge?
-    
-    var disposeBag = DisposeBag()
     
     // Enable/Disable swipes on the tab bar controller
     var swipeEnable = true {
         didSet { panGestureRecognizer.isEnabled = swipeEnable }
+    }
+    
+    var coordinator: MainViewCoordinator
+    var disposeBag = DisposeBag()
+    
+    init(coordinator: MainViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - lifecycle
@@ -50,6 +58,16 @@ class MainViewController: UITabBarController {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        // Set tab bar items
+        _tabBar.tabBarItems = [
+            TMTabBarItem(title: "tab_button_local_time_set".localized, icon: UIImage(named: "local")),
+            TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "home")),
+            TMTabBarItem(title: "tab_button_shared_time_set".localized, icon: UIImage(named: "share"))
+        ]
+        
+        // Set view controllers
+        viewControllers = [coordinator.get(for: .local), coordinator.get(for: .productivity), coordinator.get(for: .share)]
         
         // Set tab bar view controller delegate for swipable
         delegate = self

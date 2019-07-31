@@ -16,7 +16,17 @@ class LocalTimeSetViewController: BaseViewController, View {
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     
     // MARK: - properties
-    var coordinator: LocalTimeSetViewCoordinator!
+    var coordinator: LocalTimeSetViewCoordinator
+    
+    // MARK: - constructor
+    init(coordinator: LocalTimeSetViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - lifecycle
     override func loadView() {
@@ -27,7 +37,7 @@ class LocalTimeSetViewController: BaseViewController, View {
         super.viewDidLoad()
     }
     
-    // MARK: - reactor bind
+    // MARK: - bind
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
         

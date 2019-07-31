@@ -10,50 +10,19 @@ import UIKit
 
 /// Route from main view (tab bar)
 class MainViewCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum MainRoute {
-        
+        case productivity
+        case local
+        case share
     }
     
-    weak var rootViewController: MainViewController!
+    weak var viewController: MainViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: MainViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
-        
-        // tab bar controller initialize
-        let productivityViewController = ProductivityViewController()
-        let productivityViewCoordinator = ProductivityViewCoordinator(provider: provider, rootViewController: productivityViewController)
-        let productivityViewReactor = ProductivityViewReactor(timerService: provider.timerService)
-        
-        let localViewController = LocalTimeSetViewController()
-        let localViewCoordinator = LocalTimeSetViewCoordinator(provider: provider, rootViewController: localViewController)
-        let localViewReactor = LocalTimeSetViewReactor()
-        
-        let shareViewController = SharedTimeSetViewController()
-        let shareViewCoordinator = SharedTimeSetViewCoordinator(provider: provider, rootViewController: shareViewController)
-        let shareViewReactor = SharedTimeSetViewReactor()
-        
-        // DI
-        productivityViewController.coordinator = productivityViewCoordinator
-        productivityViewController.reactor = productivityViewReactor
-        
-        localViewController.coordinator = localViewCoordinator
-        localViewController.reactor = localViewReactor
-        
-        shareViewController.coordinator = shareViewCoordinator
-        shareViewController.reactor = shareViewReactor
-        
-        // Set tab bar items
-        self.rootViewController._tabBar.tabBarItems = [
-            TMTabBarItem(title: "tab_button_local_time_set".localized, icon: UIImage(named: "local")),
-            TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "home")),
-            TMTabBarItem(title: "tab_button_shared_time_set".localized, icon: UIImage(named: "share"))
-        ]
-        
-        // Set view controllers
-        self.rootViewController.viewControllers = [localViewController, productivityViewController, shareViewController]
     }
     
     func present(for route: MainRoute) -> UIViewController {
@@ -63,6 +32,37 @@ class MainViewCoordinator: CoordinatorProtocol {
     }
     
     func get(for route: MainRoute) -> UIViewController {
-        return UIViewController()
+        switch route {
+        case .productivity:
+            let coordinator = ProductivityViewCoordinator(provider: provider)
+            let reactor = ProductivityViewReactor(timerService: provider.timerService)
+            let viewController = ProductivityViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        case .local:
+            let coordinator = LocalTimeSetViewCoordinator(provider: provider)
+            let reactor = LocalTimeSetViewReactor()
+            let viewController = LocalTimeSetViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        case .share:
+            let coordinator = SharedTimeSetViewCoordinator(provider: provider)
+            let reactor = SharedTimeSetViewReactor()
+            let viewController = SharedTimeSetViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        }
     }
 }

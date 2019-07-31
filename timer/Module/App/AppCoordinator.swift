@@ -10,15 +10,16 @@ import UIKit
 
 /// Route from app initialze
 class AppCoordinator {
-    // MARK: route enumeration
+    // MARK: - route enumeration
     enum AppRoute {
         case intro
     }
 
-    // MARK: properties
+    // MARK: - properties
     let window: UIWindow
     let provider: ServiceProviderProtocol
     
+    // MARK: - constructor
     init(provider: ServiceProviderProtocol, window: UIWindow) {
         self.provider = provider
         self.window = window
@@ -38,13 +39,12 @@ class AppCoordinator {
     func get(for route: AppRoute) -> UIViewController {
         switch route {
         case .intro:
-            // initial view
-            let introViewController = IntroViewController()
-            let introViewCoordinator = IntroViewCoordinator(provider: provider, rootViewController: introViewController)
+            let introViewCoordinator = IntroViewCoordinator(provider: provider)
             let introViewReactor = IntroViewReactor()
+            let introViewController = IntroViewController(coordinator: introViewCoordinator)
             
             // DI
-            introViewController.coordinator = introViewCoordinator
+            introViewCoordinator.viewController = introViewController
             introViewController.reactor = introViewReactor
             
             let viewController: RootViewController = RootViewController(rootViewController: introViewController)

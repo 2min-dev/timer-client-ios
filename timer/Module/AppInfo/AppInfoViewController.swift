@@ -10,13 +10,23 @@ import RxSwift
 import ReactorKit
 
 class AppInfoViewController: BaseViewController, View {
-	// MARK: view properties
+	// MARK: - view properties
 	private var appInfoView: AppInfoView { return view as! AppInfoView }
 	
-	// MARK: properties
-	var coordinator: AppInfoCoordinator!
-
-	// MARK: lifecycle
+	// MARK: - properties
+	var coordinator: AppInfoCoordinator
+    
+    // MARK: - constructor
+    init(coordinator: AppInfoCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+	// MARK: - lifecycle
 	override func loadView() {
 		view = AppInfoView()
 	}
@@ -25,7 +35,7 @@ class AppInfoViewController: BaseViewController, View {
 		super.viewDidLoad()
 	}
 
-	// MARK: reactor bind
+	// MARK: - bind
 	func bind(reactor: AppInfoViewReactor) {
 		// MARK: action
 

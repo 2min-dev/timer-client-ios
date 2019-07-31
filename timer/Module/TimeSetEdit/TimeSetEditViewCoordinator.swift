@@ -9,29 +9,41 @@
 import UIKit
 
 class TimeSetEditViewCoordinator: CoordinatorProtocol {
-    
     // MARK: - route enumeration
-    enum Route {
-        
+    enum TimeSetEditRoute {
+        case timerOption
     }
     
     // MARK: - properties
-    weak var rootViewController: TimeSetEditViewController!
+    weak var viewController: TimeSetEditViewController!
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol, rootViewController: TimeSetEditViewController) {
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController {
+    func present(for route: TimeSetEditRoute) -> UIViewController {
         let viewController = get(for: route)
         return viewController
     }
     
-    func get(for route: Route) -> UIViewController {
-        return UIViewController()
+    func get(for route: TimeSetEditRoute) -> UIViewController {
+        switch route {
+        case .timerOption:
+            let coordinator = TimerOptionViewCoordinator(provider: provider)
+            let reactor = TimerOptionViewReactor()
+            let viewController = TimerOptionViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            let navigationController = UINavigationController(rootViewController: viewController)
+            navigationController.isNavigationBarHidden = true
+            
+            return navigationController
+        }
     }
 }

@@ -15,14 +15,24 @@ class SettingViewController: BaseViewController, View {
         case setting = 0
     }
     
-    // MARK: view properties
+    // MARK: - view properties
     private var settingView: SettingView { return view as! SettingView }
     private var settingTableView: UITableView { return settingView.tableView }
     
-    // MARK: properties
-    var coordinator: SettingViewCoordinator!
+    // MARK: - properties
+    var coordinator: SettingViewCoordinator
     
-    // MARK: lifecycle
+    // MARK: - constructor
+    init(coordinator: SettingViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - lifecycle
     override func loadView() {
         view = SettingView()
     }
@@ -38,7 +48,7 @@ class SettingViewController: BaseViewController, View {
         Logger.verbose()
     }
     
-    // MARK: reactor bind
+    // MARK: - bind
     func bind(reactor: SettingViewReactor) {
         // MARK: action
         reactor.action.onNext(.viewDidLoad)

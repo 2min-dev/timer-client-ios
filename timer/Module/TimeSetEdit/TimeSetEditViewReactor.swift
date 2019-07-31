@@ -15,11 +15,18 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     enum Mutation {
-        
+        case sectionReload
     }
     
     struct State {
+        let title: String                   // Title of time set
+        let sumOfTimers: TimeInterval       // The time that sum of all timers
+        var isStartAfterSave: Bool          // Is time set start after it save
         
+        var timers: [TimerInfo]             // The timer list model of time set
+        var selectedIndexPath: IndexPath    // Current selected timer index path
+        
+        var shouldSectionReload: Bool       // Need section reload
     }
     
     // MARK: - properties
@@ -29,7 +36,12 @@ class TimeSetEditViewReactor: Reactor {
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {
         self.timeSetInfo = timeSetInfo
-        self.initialState = State()
+        self.initialState = State(title: timeSetInfo.title,
+                                  sumOfTimers: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                                  isStartAfterSave: false,
+                                  timers: timeSetInfo.timers,
+                                  selectedIndexPath: IndexPath(row: 0, section: 0),
+                                  shouldSectionReload: true)
     }
     
     // MARK: - Mutation
@@ -38,6 +50,13 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        return state
+        var state = state
+        state.shouldSectionReload = false
+        
+        switch mutation {
+        case .sectionReload:
+            state.shouldSectionReload = true
+            return state
+        }
     }
 }

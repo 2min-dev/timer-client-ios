@@ -12,10 +12,10 @@ protocol CoordinatorProtocol: class {
     associatedtype Route
     associatedtype ViewController
     
-    var rootViewController: ViewController! { get }
+    var viewController: ViewController! { get }
     var provider: ServiceProviderProtocol { get }
     
-    init(provider: ServiceProviderProtocol, rootViewController: ViewController)
+    init(provider: ServiceProviderProtocol)
     
     func present(for route: Route) -> UIViewController
     func get(for route: Route) -> UIViewController

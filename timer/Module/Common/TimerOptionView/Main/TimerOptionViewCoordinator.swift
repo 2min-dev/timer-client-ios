@@ -15,13 +15,12 @@ class TimerOptionViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var rootViewController: TimerOptionViewController!
+    weak var viewController: TimerOptionViewController!
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol, rootViewController: TimerOptionViewController) {
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     // MARK: - presentation
@@ -30,13 +29,13 @@ class TimerOptionViewCoordinator: CoordinatorProtocol {
         
         switch route {
         case .alarmChange(_):
-            rootViewController.navigationController?.pushViewController(viewController, animated: true)
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
         return viewController
     }
     
-    func get(for route: TimerOptionViewCoordinator.Route) -> UIViewController {
+    func get(for route: Route) -> UIViewController {
         switch route {
         case let .alarmChange(alarm):
             let viewController = AlarmChangeViewController()

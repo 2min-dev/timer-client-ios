@@ -22,7 +22,7 @@ class LocalTimeSetViewReactor: Reactor {
         
     }
     
-    // MARK: properties
+    // MARK: - properties
     var initialState: State
     
     init() {

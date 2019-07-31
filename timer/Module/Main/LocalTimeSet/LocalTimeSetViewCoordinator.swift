@@ -10,18 +10,18 @@ import UIKit
 
 /// Route from local time set view
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum LocalTimeSetRoute {
         
     }
     
-    // MARK: properties
-    weak var rootViewController: LocalTimeSetViewController!
+    // MARK: - properties
+    weak var viewController: LocalTimeSetViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: LocalTimeSetViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     func present(for route: LocalTimeSetRoute) -> UIViewController {

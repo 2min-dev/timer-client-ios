@@ -22,12 +22,13 @@ class SettingViewReactor: Reactor {
         var sections: [BaseTableSection]
     }
     
-    // MARK: properties
+    // MARK: - properties
     var initialState: State
     private let appService: AppServicePorotocol
     
     private var disposeBag = DisposeBag()
     
+    // MARK: - constructor
     init(appService: AppServicePorotocol) {
         self.initialState = State(sections: [])
         self.appService = appService

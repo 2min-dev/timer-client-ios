@@ -10,12 +10,13 @@ import UIKit
 import SnapKit
 
 class IntroView: UIView {
-    // MARK: view propeties
+    // MARK: - view propeties
     let view: UIView = {
         let view = UIView()
         return view
     }()
     
+    // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white

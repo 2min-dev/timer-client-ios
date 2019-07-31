@@ -16,12 +16,12 @@ class SharedTimeSetViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var rootViewController: SharedTimeSetViewController!
+    weak var viewController: SharedTimeSetViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: SharedTimeSetViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     func present(for route: ShraedTimeSetRoute) -> UIViewController {

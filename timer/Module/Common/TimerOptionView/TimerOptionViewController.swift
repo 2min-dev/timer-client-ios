@@ -28,7 +28,17 @@ class TimerOptionViewController: BaseViewController, View {
     private var alarmChangeViewController: AlarmChangeViewController!
     
     // MARK: - properties
-    var coordinator: TimerOptionViewCoordinator!
+    var coordinator: TimerOptionViewCoordinator
+    
+    // MARK: - constructor
+    init(coordinator: TimerOptionViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - lifecycle
     override func loadView() {

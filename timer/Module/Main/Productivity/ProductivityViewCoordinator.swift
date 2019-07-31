@@ -10,26 +10,26 @@ import UIKit
 
 /// Route from one touch timer view
 class ProductivityViewCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum ProductivityRoute {
         case timerOption
         case timeSetEdit(TimeSetInfo)
     }
 
-    // MARK: properties
-    weak var rootViewController: ProductivityViewController!
+    // MARK: - properties
+    weak var viewController: ProductivityViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: ProductivityViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     func present(for route: ProductivityRoute) -> UIViewController {
         let viewController = get(for: route)
         switch route {
         case .timeSetEdit(_):
-            rootViewController.navigationController?.pushViewController(viewController, animated: true)
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
         default:
             break
         }
@@ -40,22 +40,26 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     func get(for route: ProductivityRoute) -> UIViewController {
         switch route {
         case .timerOption:
-            let viewController = TimerOptionViewController()
+            let coordinator = TimerOptionViewCoordinator(provider: provider)
+            let reactor = TimerOptionViewReactor()
+            let viewController = TimerOptionViewController(coordinator: coordinator)
             
             // DI
-            viewController.reactor = TimerOptionViewReactor()
-            viewController.coordinator = TimerOptionViewCoordinator(provider: provider, rootViewController: viewController)
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
             
             let navigationController = UINavigationController(rootViewController: viewController)
             navigationController.isNavigationBarHidden = true
             
             return navigationController
         case let .timeSetEdit(timeSetInfo):
-            let viewController = TimeSetEditViewController()
+            let coordinator = TimeSetEditViewCoordinator(provider: provider)
+            let reactor = TimeSetEditViewReactor(timeSetInfo: timeSetInfo)
+            let viewController = TimeSetEditViewController(coordinator: coordinator)
             
             // DI
-            viewController.reactor = TimeSetEditViewReactor(timeSetInfo: timeSetInfo)
-            viewController.coordinator = TimeSetEditViewCoordinator(provider: provider, rootViewController: viewController)
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
             
             return viewController
         }

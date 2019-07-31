@@ -16,7 +16,17 @@ class SharedTimeSetViewController: BaseViewController, View {
     private var sharedTimeSetView: SharedTimeSetView { return view as! SharedTimeSetView }
     
     // MARK: - properties
-    var coordinator: SharedTimeSetViewCoordinator!
+    var coordinator: SharedTimeSetViewCoordinator
+    
+    // MARK: - constructor
+    init(coordinator: SharedTimeSetViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - lifecycle
     override func loadView() {
@@ -27,7 +37,7 @@ class SharedTimeSetViewController: BaseViewController, View {
         super.viewDidLoad()
     }
     
-    // MARK: - reactor bind
+    // MARK: - bind
     func bind(reactor: SharedTimeSetViewReactor) {
         // MARK: action
         

@@ -22,11 +22,12 @@ class AppInfoViewReactor: Reactor {
         
 	}
 
-	// MARK: properties
+	// MARK: - properties
 	var initialState: State
     
     private var disposeBag = DisposeBag()
     
+    // MARK: - constructor
     init() {
 		self.initialState = State()
 	}

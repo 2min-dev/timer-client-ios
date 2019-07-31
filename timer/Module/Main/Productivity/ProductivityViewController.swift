@@ -13,6 +13,9 @@ import RxDataSources
 import JSReorderableCollectionView
 
 class ProductivityViewController: BaseViewController, View {
+    // MARK: - constants
+    private let MAX_TIMER_COUNT: Int = 10
+    
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
     
@@ -42,11 +45,18 @@ class ProductivityViewController: BaseViewController, View {
     
     private var saveButton: UIButton { return productivityView.saveButton }
     
-    // MARK: - constants
-    private let MAX_TIMER_COUNT: Int = 10
-    
     // MARK: - properties
-    var coordinator: ProductivityViewCoordinator!
+    var coordinator: ProductivityViewCoordinator
+    
+    // MARK: - constructor
+    init(coordinator: ProductivityViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - lifecycle
     override func loadView() {

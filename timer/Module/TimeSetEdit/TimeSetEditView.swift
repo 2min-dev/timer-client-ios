@@ -24,7 +24,7 @@ class TimeSetEditView: UIView {
         return view
     }()
     
-    private let titleHintLabel: UILabel = {
+    let titleHintLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
