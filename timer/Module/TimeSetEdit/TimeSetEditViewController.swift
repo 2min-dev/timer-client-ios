@@ -12,18 +12,19 @@ import ReactorKit
 
 class TimeSetEditViewController: BaseViewController, View {
     // MARK: - view properties
-    private var timeSetEditView: TimeSetEditView { return self.view as! TimeSetEditView }
+    private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
     // MARK: - properties
     var coordinator: TimeSetEditViewCoordinator!
     
     // MARK: - lifecycle
     override func loadView() {
-        self.view = TimeSetEditView()
+        view = TimeSetEditView()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.layoutIfNeeded()
     }
     
     // MARK: - bine

@@ -276,12 +276,18 @@ class ProductivityView: UIView {
         
         return view
     }()
+
+    private let timerOptionLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.strokeColor = Constants.Color.black.cgColor
+        layer.lineWidth = 1
+        return layer
+    }()
     
-    var timerOptionView: UIView = {
+    lazy var timerOptionView: UIView = {
         let view = UIView()
-        view.layer.borderColor = UIColor.black.cgColor
-        view.layer.borderWidth = 1.adjust()
         view.backgroundColor = .white
+        view.layer.addSublayer(timerOptionLayer)
         view.isHidden = true
         return view
     }()
@@ -334,14 +340,47 @@ class ProductivityView: UIView {
         }
         
         timerOptionView.snp.makeConstraints { make in
-            make.width.equalTo(keyPadView.snp.width)
-            make.height.equalTo(timerOptionView.snp.width).multipliedBy(1.3.adjust())
+            make.width.equalTo(250.adjust())
+            make.height.equalTo(271.adjust())
             make.center.equalToSuperview()
         }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - lifecycle
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Update timer option layer frame
+        timerOptionLayer.frame = CGRect(x: 0, y: 0, width: timerOptionView.bounds.width, height: timerOptionView.bounds.height)
+        timerOptionLayer.path = drawTimerOptionLayer(frame: timerOptionView.frame)
+    }
+    
+    // MARK: - private method
+    private func drawTimerOptionLayer(frame: CGRect) -> CGPath {
+        let tailSize = CGSize(width: 13.adjust(), height: 8.adjust())
+        
+        let edgePoints: [CGPoint] = [
+            CGPoint(x: -0.5, y: frame.height + 0.5),
+            CGPoint(x: (frame.width - tailSize.width) * 0.5, y: frame.height + 0.5),
+            CGPoint(x: frame.width * 0.5, y: frame.height + tailSize.height + 0.5),
+            CGPoint(x: (frame.width + tailSize.width) * 0.5, y: frame.height + 0.5),
+            CGPoint(x: frame.width + 0.5, y: frame.height + 0.5),
+            CGPoint(x: frame.width + 0.5, y: -0.5),
+            CGPoint(x: -0.5, y: -0.5)
+        ]
+        
+        // Move starting point
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: -0.5, y: -0.5))
+        edgePoints.forEach {
+            path.addLine(to: $0)
+            path.move(to: $0)
+        }
+        
+        return path.cgPath
     }
 }
 
