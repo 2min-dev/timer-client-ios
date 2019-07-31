@@ -420,7 +420,7 @@ class ProductivityViewController: BaseViewController, View {
         
         switch gesture.state {
         case .began:
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            reactor?.action.onNext(.longPressTimer)
             timerBadgeCollectionView.beginInteractiveWithLocation(location)
         case .changed:
             timerBadgeCollectionView.updateInteractiveWithLocation(location)
@@ -447,12 +447,15 @@ extension ProductivityViewController: JSReorderableCollectionViewDelegate {
     func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willSnapshot cell: UICollectionViewCell, at point: CGPoint) -> UIView {
         guard let badge = cell as? TimerBadgeCollectionViewCell else { return cell.snapshotView(afterScreenUpdates: true)! }
         
+        let originOptionIsHidden = badge.optionButton.isHidden
+        let originIndexIsHidden = badge.indexLabel.isHidden
+        
         badge.optionButton.isHidden = true
         badge.indexLabel.isHidden = true
         
         let snapshot = badge.snapshotView(afterScreenUpdates: true)
-        badge.optionButton.isHidden = false
-        badge.indexLabel.isHidden = false
+        badge.optionButton.isHidden = originOptionIsHidden
+        badge.indexLabel.isHidden = originIndexIsHidden
         
         return snapshot!
     }

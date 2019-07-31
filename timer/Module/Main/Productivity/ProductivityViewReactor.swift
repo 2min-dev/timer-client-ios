@@ -38,6 +38,7 @@ class ProductivityViewReactor: Reactor {
         case deleteTimer
         case moveTimer(at: IndexPath, to: IndexPath)
         case selectTimer(at: IndexPath)
+        case longPressTimer
         
         case applyAlarm(String)
     }
@@ -230,6 +231,8 @@ class ProductivityViewReactor: Reactor {
             }
             
             return .concat(setTimerOptionVisible, setSelectedIndexPath, setTimer, setTime, setTimeSetAction)
+        case .longPressTimer:
+            return .just(.setTimerOptionVisible(false))
         case let .applyAlarm(alarm):
             timeSetInfo.timers.forEach { $0.alarm = alarm }
             return .just(.alert("알람이 전체 적용 되었습니다."))
