@@ -1,6 +1,7 @@
 PODS:
   - Alamofire (4.8.2)
   - Differentiator (4.0.1)
+  - JSReorderableCollectionView (1.0.2)
   - ReactorKit (2.0.1):
     - RxSwift (~> 5.0)
   - RxCocoa (5.0.0):
@@ -21,6 +22,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - JSReorderableCollectionView
   - ReactorKit
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
@@ -34,6 +36,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - Differentiator
+    - JSReorderableCollectionView
     - ReactorKit
     - RxCocoa
     - RxDataSources
@@ -47,6 +50,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
+  JSReorderableCollectionView: 295e69e500f2b35482df1ecbf4e8e7ffc3f1ff2c
   ReactorKit: a63c5e11e0fd32d59d672e54178b0ed2876b764b
   RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
@@ -57,6 +61,6 @@ SPEC CHECKSUMS:
   SwiftLint: 79d48a17c6565dc286c37efb8322c7b450f95c67
   SwiftyBeaver: 4cc0080d2e23f980652e28978db11a5c9da39165
 
-PODFILE CHECKSUM: 1eef36a1126155fd9e77f3bb34ce4829ec5e309e
+PODFILE CHECKSUM: a81712bf593cdf8a3e99765b1b1cf702d306446c
 
-COCOAPODS: 1.7.4
+COCOAPODS: 1.7.5

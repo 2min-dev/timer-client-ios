@@ -13,8 +13,8 @@
 		F302608822EB674100E3E431 /* AlarmChangeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608722EB674100E3E431 /* AlarmChangeTableViewCell.swift */; };
 		F302608A22EC86F500E3E431 /* AlarmChangeViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608922EC86F500E3E431 /* AlarmChangeViewReactor.swift */; };
 		F302608D22EC87C300E3E431 /* AlarmChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608C22EC87C300E3E431 /* AlarmChangeView.swift */; };
-		F30349DC22E2137A0053FF31 /* JSReorderableCollectionView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */; };
-		F30349DD22E2137A0053FF31 /* JSReorderableCollectionView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* TMTabBar.swift */; };
+		F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* TMTabBarItem.swift */; };
 		F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F266225CC9E900A11FAF /* RootViewController.swift */; };
 		F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */; };
 		F303F26D225CCAE400A11FAF /* LocalTimeSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */; };
@@ -122,17 +122,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		F30349DE22E2137A0053FF31 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				F30349DD22E2137A0053FF31 /* JSReorderableCollectionView.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F3F342BC226751A300A226C0 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -159,7 +148,8 @@
 		F302608722EB674100E3E431 /* AlarmChangeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmChangeTableViewCell.swift; sourceTree = "<group>"; };
 		F302608922EC86F500E3E431 /* AlarmChangeViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmChangeViewReactor.swift; sourceTree = "<group>"; };
 		F302608C22EC87C300E3E431 /* AlarmChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmChangeView.swift; sourceTree = "<group>"; };
-		F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JSReorderableCollectionView.framework; sourceTree = "<group>"; };
+		F302608E22EEAFC300E3E431 /* TMTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTabBar.swift; sourceTree = "<group>"; };
+		F302609022EEB89600E3E431 /* TMTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTabBarItem.swift; sourceTree = "<group>"; };
 		F303F266225CC9E900A11FAF /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewController.swift; sourceTree = "<group>"; };
 		F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewReactor.swift; sourceTree = "<group>"; };
@@ -263,7 +253,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F30349DC22E2137A0053FF31 /* JSReorderableCollectionView.framework in Frameworks */,
 				D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,14 +354,6 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
-		F367EB6F22E0FF8A009FB230 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F30349D022E208600053FF31 /* JSReorderableCollectionView.framework */,
-			);
-			path = Frameworks;
-			sourceTree = "<group>";
-		};
 		F3735C9222CFA78100DC247C /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -448,6 +429,8 @@
 		F3735C9922CFA8C000DC247C /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				F302609022EEB89600E3E431 /* TMTabBarItem.swift */,
+				F302608E22EEAFC300E3E431 /* TMTabBar.swift */,
 				F303F282225CD51400A11FAF /* MainViewController.swift */,
 				F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */,
 				F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */,
@@ -538,7 +521,6 @@
 		F3D1F78A225CB6C1006DC162 /* timer */ = {
 			isa = PBXGroup;
 			children = (
-				F367EB6F22E0FF8A009FB230 /* Frameworks */,
 				F3D1F7C0225CC3BE006DC162 /* Common */,
 				F3D1F7B5225CC322006DC162 /* Extension */,
 				F3D1F79D225CBC1D006DC162 /* Model */,
@@ -676,7 +658,6 @@
 				F3D1F7A6225CBEA8006DC162 /* ShellScript */,
 				F3F342BC226751A300A226C0 /* Embed App Extensions */,
 				283C33AA16640F95B060C8BA /* [CP] Embed Pods Frameworks */,
-				F30349DE22E2137A0053FF31 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -967,6 +948,7 @@
 				F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */,
 				F303F283225CD51400A11FAF /* MainViewController.swift in Sources */,
 				F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */,
+				F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */,
 				F3F65D7622CFACA5009C667B /* SharedTimeSetViewReactor.swift in Sources */,
 				F303F27F225CCE7100A11FAF /* ProductivityViewReactor.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
@@ -986,6 +968,7 @@
 				F334090722D3A139008661EC /* TimerBadgeViewReactor.swift in Sources */,
 				F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */,
 				F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */,
+				F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */,
 				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,
 				F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */,
 				F309F97822E9883100C280A0 /* TimerOptionViewCoordinator.swift in Sources */,

@@ -44,13 +44,14 @@ enum Constants {
     }
     
     enum Color {
-        static let appColor: UIColor = #colorLiteral(red: 0.5333333333, green: 0.8666666667, blue: 0.5333333333, alpha: 1)
+        static let appColor: UIColor = UIColor(hex: "#F24150")
         
         static let clear: UIColor = .clear
         static let white: UIColor = .white
         static let black: UIColor = UIColor(hex: "#0A0A0A")
-        static let gray: UIColor = UIColor(hex: "#C8C8C8")
-        static let lightGray: UIColor = UIColor(hex: "#969696")
+        static let gray: UIColor = UIColor(hex: "#969696")
+        static let lightGray: UIColor = UIColor(hex: "#C8C8C8")
+        static let lightLightGray: UIColor = UIColor(hex: "#FDFDFD")
     }
     
     enum Locale {

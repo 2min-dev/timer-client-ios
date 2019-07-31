@@ -12,32 +12,37 @@ class TabBarInteractor: UIPercentDrivenInteractiveTransition {
     // MARK: - constants
     private let completeVelocity: CGFloat = 200.0
     private let cancleVelocity: CGFloat = 30.0
-    private let direction: UIRectEdge
     
     // MARK: - properties
+    private let animator: UIViewPropertyAnimator
     private let gestureRecognizer: UIPanGestureRecognizer
+    private let direction: UIRectEdge
     
     // MARK: - constructor
-    init(gestureRecognizer: UIPanGestureRecognizer, direction: UIRectEdge) {
+    init(animator: UIViewPropertyAnimator, gestureRecognizer: UIPanGestureRecognizer, direction: UIRectEdge) {
+        self.animator = animator
         self.gestureRecognizer = gestureRecognizer
         self.direction = direction
         super.init()
         
-        gestureRecognizer.addTarget(self, action: #selector(handleGesture(recognizer:)))
+        gestureRecognizer.addTarget(self, action: #selector(handleGesture(gesture:)))
     }
     
     // MARK: - selector
-    @objc private func handleGesture(recognizer: UIPanGestureRecognizer) {
+    @objc private func handleGesture(gesture: UIPanGestureRecognizer) {
         guard let containerView = gestureRecognizer.view else { return }
         
         let transition = gestureRecognizer.translation(in: containerView)
         let progress = transition.x / containerView.bounds.width
     
-        switch recognizer.state {
+        switch gesture.state {
         case .began:
             break
         case .changed:
-            update(percentOfProgress(progress, by: direction))
+            let percent = percentOfProgress(progress, by: direction)
+            
+            update(percent)
+            animator.fractionComplete = percent // Update tab bar animator
         case .ended:
             let velocity = gestureRecognizer.velocity(in: containerView)
             
@@ -55,7 +60,12 @@ class TabBarInteractor: UIPercentDrivenInteractiveTransition {
                 finish()
             } else {
                 cancel()
+                animator.isReversed = true // Tab bar animator reverse when transition canceled
             }
+            animator.startAnimation() // Resume tab bar animation
+            
+            // Remove gesture recognizer when pan gesture ended (1 transition - 1 swipe)
+            gestureRecognizer.removeTarget(self, action: #selector(handleGesture(gesture:)))
         default:
             cancel()
         }

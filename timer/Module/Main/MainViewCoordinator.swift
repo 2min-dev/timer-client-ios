@@ -45,27 +45,14 @@ class MainViewCoordinator: CoordinatorProtocol {
         shareViewController.coordinator = shareViewCoordinator
         shareViewController.reactor = shareViewReactor
         
-        let productivityTabBarItem = UITabBarItem(title: "tab_button_home".localized, image: UIImage(named: "home"), tag: 0)
-        productivityViewController.tabBarItem = productivityTabBarItem
+        // Set tab bar items
+        self.rootViewController._tabBar.tabBarItems = [
+            TMTabBarItem(title: "tab_button_local_time_set".localized, icon: UIImage(named: "local")),
+            TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "home")),
+            TMTabBarItem(title: "tab_button_shared_time_set".localized, icon: UIImage(named: "share"))
+        ]
         
-        let localTabBarItem = UITabBarItem(title: "tab_button_local_time_set".localized, image: UIImage(named: "local"), tag: 0)
-        localViewController.tabBarItem = localTabBarItem
-        
-        let shareTabBarItem = UITabBarItem(title: "tab_button_shared_time_set".localized, image: UIImage(named: "share"), tag: 0)
-        shareViewController.tabBarItem = shareTabBarItem
-        
-        // Set tab bar item inset only phone
-        if Constants.device == .phone {
-            productivityTabBarItem.imageInsets = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
-            productivityTabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -10.adjust())
-            
-            localTabBarItem.imageInsets = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
-            localTabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -10.adjust())
-            
-            shareTabBarItem.imageInsets = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
-            shareTabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -10.adjust())
-        }
-        
+        // Set view controllers
         self.rootViewController.viewControllers = [localViewController, productivityViewController, shareViewController]
     }
     

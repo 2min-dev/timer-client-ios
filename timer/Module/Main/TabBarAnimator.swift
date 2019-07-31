@@ -12,9 +12,14 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     // MARK: - properties
     private let tabBarController: UITabBarController
     
+    let fromIndex: Int
+    let toIndex: Int
+    
     // MARK: - constructor
-    init(tabBarController: UITabBarController) {
+    init(tabBarController: UITabBarController, at fromIndex: Int, to toIndex: Int) {
         self.tabBarController = tabBarController
+        self.fromIndex = fromIndex
+        self.toIndex = toIndex
     }
     
     // Duration of transition
@@ -30,9 +35,9 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         guard let fromVC = transitionContext.viewController(forKey: .from) else { return UIViewPropertyAnimator() }
         guard let toVC = transitionContext.viewController(forKey: .to) else { return UIViewPropertyAnimator() }
         
-        // Get index of view controller on tab bar controller
-        guard let fromIndex = getIndex(viewController: fromVC),
-            let toIndex = getIndex(viewController: toVC) else { return UIViewPropertyAnimator() }
+//        // Get index of view controller on tab bar controller
+//        guard let fromIndex = getIndex(viewController: fromVC),
+//            let toIndex = getIndex(viewController: toVC) else { return UIViewPropertyAnimator() }
         
         // Add view
         transitionContext.containerView.addSubview(toVC.view)
@@ -50,7 +55,9 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         toVC.view.frame = toVCStartFrame
         
         // Create animator
-        let animator = UIViewPropertyAnimator(duration: transitionDuration(using: transitionContext), curve: .easeIn) {
+        let animator = UIViewPropertyAnimator(duration: transitionDuration(using: transitionContext),
+                                              controlPoint1: CGPoint(x: 0.65, y: 0.0),
+                                              controlPoint2: CGPoint(x: 0.35, y: 1.0)) {
             toVC.view.frame = frame
             fromVC.view.frame = fromVCEndFrame
         }
@@ -83,11 +90,11 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
        - viewController: view controller to get index
      - returns: tab index (optional)
      */
-    func getIndex(viewController: UIViewController) -> Int? {
-        guard let viewControllers = tabBarController.viewControllers else { return nil }
-        for (index, vc) in viewControllers.enumerated() {
-            if vc == viewController { return index }
-        }
-        return nil
-    }
+//    func getIndex(viewController: UIViewController) -> Int? {
+//        guard let viewControllers = tabBarController.viewControllers else { return nil }
+//        for (index, vc) in viewControllers.enumerated() {
+//            if vc == viewController { return index }
+//        }
+//        return nil
+//    }
 }
