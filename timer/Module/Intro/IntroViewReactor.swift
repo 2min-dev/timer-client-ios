@@ -32,7 +32,7 @@ class IntroViewReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return Observable.just(Mutation.introDone).delay(3, scheduler: MainScheduler.instance)
+            return Observable.just(Mutation.introDone).delay(.seconds(3), scheduler: MainScheduler.instance)
         }
     }
     

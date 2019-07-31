@@ -6,6 +6,8 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import UIKit
+
 /// Route from shread time set view
 class SharedTimeSetViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
@@ -22,7 +24,13 @@ class SharedTimeSetViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: ShraedTimeSetRoute) {
+    func present(for route: ShraedTimeSetRoute) -> UIViewController {
+        let viewController = get(for: route)
         
+        return viewController
+    }
+    
+    func get(for route: ShraedTimeSetRoute) -> UIViewController {
+        return UIViewController()
     }
 }

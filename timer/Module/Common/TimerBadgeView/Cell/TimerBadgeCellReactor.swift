@@ -11,20 +11,22 @@ import ReactorKit
 
 class TimerBadgeCellReactor: Reactor {
     enum Action {
+        case updateIndex(Int)
         case updateTime(TimeInterval)
         case select(Bool)
-        
-        case setoOtionVisible(Bool)
+        case updateOptionVisible(Bool)
     }
     
     enum Mutation {
+        case setIndex(Int)
         case setTime(TimeInterval)
         case setSelected(Bool)
         case setIsOptionVisible(Bool)
+        
     }
     
     struct State {
-        let index: Int
+        var index: Int
         var time: TimeInterval
         var isSelected: Bool
         var isOptionVisible: Bool
@@ -32,22 +34,20 @@ class TimerBadgeCellReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private var timerInfo: TimerInfo
     
     init(info: TimerInfo, index: Int, isSelected: Bool = false, isOptionVisible: Bool = true) {
-        self.timerInfo = info
         self.initialState = State(index: index, time: info.endTime, isSelected: isSelected, isOptionVisible: isOptionVisible)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case let .updateIndex(index):
+            return .just(.setIndex(index))
         case let .updateTime(time):
-            // Update timer info
-            timerInfo.endTime = time
             return .just(.setTime(time))
         case let .select(isSelected):
             return .just(.setSelected(isSelected))
-        case let .setoOtionVisible(isOptionVisible):
+        case let .updateOptionVisible(isOptionVisible):
             return .just(.setIsOptionVisible(isOptionVisible))
         }
     }
@@ -55,6 +55,9 @@ class TimerBadgeCellReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
+        case let .setIndex(index):
+            state.index = index
+            return state
         case let .setTime(time):
             state.time = time
             return state

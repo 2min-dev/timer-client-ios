@@ -24,11 +24,22 @@ class SettingViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: SettingRoute) {
+    func present(for route: SettingRoute) -> UIViewController {
+        let viewController = get(for: route)
+        
         switch route {
         case .appInfo:
             Logger.verbose("presenting app info view controller.")
-            
+            // push view controller
+            rootViewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
+        return viewController
+    }
+    
+    func get(for route: SettingRoute) -> UIViewController {
+        switch route {
+        case .appInfo:
             let viewController = AppInfoViewController()
             let coordinator = AppInfoCoordinator(provider: provider, rootViewController: viewController)
             
@@ -36,8 +47,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
             viewController.coordinator = coordinator
             viewController.reactor = AppInfoViewReactor()
             
-            // push view controller
-            rootViewController.navigationController?.pushViewController(viewController, animated: true)
+            return viewController
         }
     }
 }

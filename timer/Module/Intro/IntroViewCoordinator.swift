@@ -6,6 +6,8 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import UIKit
+
 /// Route from intro view
 class IntroViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
@@ -22,7 +24,19 @@ class IntroViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: IntroRoute) {
+    func present(for route: IntroRoute) -> UIViewController {
+        let viewController = get(for: route)
+        
+        switch route {
+        case .main:
+            // Present main view
+            rootViewController.navigationController?.viewControllers = [viewController]
+        }
+        
+        return viewController
+    }
+    
+    func get(for route: IntroRoute) -> UIViewController {
         switch route {
         case .main:
             let viewController = MainViewController()
@@ -33,9 +47,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
             
             // set tab bar view controller initial index
             viewController.selectedIndex = MainViewController.TabType.Productivity.rawValue
-            
-            // present view
-            rootViewController.navigationController?.viewControllers = [viewController]
+            return viewController
         }
     }
 }

@@ -11,26 +11,21 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 import ReactorKit
-
-protocol ReactiveDataSource: View {
-    associatedtype SectionType: SectionModelType
-}
+import JSReorderableCollectionView
 
 typealias TimerBadgeSectionModel = SectionModel<Void, TimerBadgeCellType>
 
-class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
-    typealias SectionType = TimerBadgeSectionModel
-    
+class TimerBadgeCollectionView: JSReorderableCollectionView, View {
     // MARK: - constants
     static let centerAnchor = CGPoint(x: -1, y: -1)
     
     // MARK: - properties
-    private lazy var _dataSource = RxCollectionViewSectionedReloadDataSource<SectionType>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+    private lazy var _dataSource = RxCollectionViewSectionedReloadDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
         switch cellType {
         case let .regular(reactor):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.ReuseableIdentifier, for: indexPath) as! TimerBadgeCollectionViewCell
             // Send action into reactor for initialize state
-            reactor.action.onNext(.setoOtionVisible(self.isOptionButtonVisible))
+            reactor.action.onNext(.updateOptionVisible(self.isOptionButtonVisible))
             cell.reactor = reactor
             
             return cell
@@ -40,17 +35,17 @@ class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
         }
     })
     
-    // Timer badge option button visible/hidden property
+    // Timer badge option button visible/hidden
     var isOptionButtonVisible = true
     
-    // Timer badge extra cell config property
+    // Timer badge extra cell config
     fileprivate var extraCell: TimerBadgeCellType?
     fileprivate var shouldShowExtraCell: ([TimerInfo], TimerBadgeCellType) -> Bool = { _, _ in
         return true
     }
-    
+
+    // Timer badge anchor point
     var anchorPoint = CGPoint(x: 0, y: 0)
-    var isAutoScroll = true
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 0, height: 60.adjust())
@@ -95,59 +90,55 @@ class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
     
     func bind(reactor: TimerBadgeViewReactor) {
         // MARK: action
-        rx.itemSelected
-            .map { Reactor.Action.selectBadge($0) }
+        rx.badgeMoved
+            .map { Reactor.Action.moveBadge(at: $0.0, to: $0.1) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
+            .filter { $0.shouldSectionReload }
             .map { $0.sections }
             .bind(to: rx.items(dataSource: _dataSource))
             .disposed(by: disposeBag)
-    
-        reactor.state
-            .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .filter { _ in self.isAutoScroll }
-            .debounce(0.1, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] indexPath in self?.moveToSelectedBadge(indexPath: indexPath) })
-            .disposed(by: disposeBag)
     }
     
-    /**
-     Animate that move cell to anchor point
-     
-     - parameters:
-        - indexPath: Index path of selected cell
-     */
-    private func moveToSelectedBadge(indexPath: IndexPath?) {
-        guard let indexPath = indexPath,
-            let layout = self.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+    // MARK: - private method
+    private func canScrollBadge(at indexPath: IndexPath) -> Bool {
+        guard let items = reactor?.currentState.sections[0].items, indexPath.row < items.count else { return false }
         
-        let cellOffset: CGFloat // Current cell offset in collection view
-        let diff: CGFloat // Deference about between cell offset and anchor point
+        let cellType = items[indexPath.row]
+        switch cellType {
+        case .add:
+            return false
+        default:
+            return true
+        }
+    }
+    
+    // MARK: - public method
+    /// Set timer badge extra cell config
+    func setExtraCell(_ extraCell: TimerBadgeCellType?, shouldShowExtraCell: (([TimerInfo], TimerBadgeCellType) -> Bool)?) {
+        self.extraCell = extraCell
+        if let shouldShowExtraCell = shouldShowExtraCell {
+            self.shouldShowExtraCell = shouldShowExtraCell
+        }
+    }
+    
+    /// Animate that move cell to anchor point
+    func scrollToBadge(at indexPath: IndexPath) {
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout,
+            let items = reactor?.currentState.sections[0].items, indexPath.row < items.count else { return }
         
         let index = CGFloat(indexPath.row)
-        switch layout.scrollDirection {
-        case .horizontal:
-            // Horizontal scroll
-            cellOffset = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
-            if self.anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                diff = self.bounds.width / 2 - layout.itemSize.width / 2
-            } else {
-                diff = self.anchorPoint.x
-            }
-        case .vertical:
-            // Vertical scroll
-            cellOffset = index * layout.itemSize.height + index * layout.minimumLineSpacing
-            if self.anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                diff = self.bounds.height / 2 - layout.itemSize.height / 2
-            } else {
-                diff = self.anchorPoint.y
-            }
-        @unknown default:
-            fatalError()
+        // Current cell offset in collection view
+        let cellOffset = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
+        // Get current cell size
+        let cellSize = collectionView(self, layout: layout, sizeForItemAt: indexPath)
+        
+        var diff = anchorPoint.x // Deference about between cell offset and anchor point
+        if anchorPoint == TimerBadgeCollectionView.centerAnchor {
+            diff = bounds.width / 2 - cellSize.width / 2
         }
         
         // Animate scroll to anchor point
@@ -155,18 +146,10 @@ class TimerBadgeCollectionView: UICollectionView, ReactiveDataSource {
             self.setContentOffset(CGPoint(x: cellOffset - diff, y: 0), animated: true)
         }
     }
-    
-    // MARK: - public method
-    // Set timer badge extra cell config
-    func setExtraCell(_ extraCell: TimerBadgeCellType, shouldShowExtraCell: (([TimerInfo], TimerBadgeCellType) -> Bool)?) {
-        self.extraCell = extraCell
-        if let shouldShowExtraCell = shouldShowExtraCell {
-            self.shouldShowExtraCell = shouldShowExtraCell
-        }
-    }
 }
 
 extension TimerBadgeCollectionView: UICollectionViewDelegate {
+    /// Set content inset of collection view to align center
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         // Ignore if display cell isn't first or last
         guard indexPath.row == 0 || indexPath.row == collectionView.numberOfItems(inSection: 0) - 1 else { return }
@@ -186,25 +169,10 @@ extension TimerBadgeCollectionView: UICollectionViewDelegate {
     }
     
     private func calcInsetOfCollectionView(_ collectionView: UICollectionView, cell: UICollectionViewCell, anchorPoint: CGPoint, isFirst: Bool) -> CGFloat {
-        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return 0 }
-        
-        switch layout.scrollDirection {
-        case .horizontal:
-            // Horizontal scroll
-            if anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                return collectionView.bounds.width / 2 - cell.bounds.width / 2
-            } else {
-                return isFirst ? anchorPoint.x : collectionView.bounds.width - (cell.bounds.width + anchorPoint.x)
-            }
-        case .vertical:
-            // Vertical scroll
-            if anchorPoint == TimerBadgeCollectionView.centerAnchor {
-                return collectionView.bounds.height / 2 - cell.bounds.height / 2
-            } else {
-                return isFirst ? anchorPoint.y : collectionView.bounds.height - (cell.bounds.height + anchorPoint.y)
-            }
-        @unknown default:
-            fatalError()
+        if anchorPoint == TimerBadgeCollectionView.centerAnchor {
+            return collectionView.bounds.width / 2 - cell.bounds.width / 2
+        } else {
+            return isFirst ? anchorPoint.x : collectionView.bounds.width - (cell.bounds.width + anchorPoint.x)
         }
     }
 }
@@ -227,13 +195,14 @@ extension TimerBadgeCollectionView: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Rx extension
-// TODO: Check memory leak
 extension Reactive where Base: TimerBadgeCollectionView {
+    // MARK: - binder
     var items: Binder<[TimerInfo]> {
         return Binder(base.self) { _, timers in
             Observable.just(timers)
                 .map {
                     if let extraCell = self.base.extraCell, self.base.shouldShowExtraCell(timers, extraCell) {
+                        // Set timer section model with extra badge if extra badge is exsit & satisfy extra badge show condition
                         return Base.Reactor.Action.updateTimers($0, extraCell)
                     }
                     return Base.Reactor.Action.updateTimers($0, nil)
@@ -243,23 +212,37 @@ extension Reactive where Base: TimerBadgeCollectionView {
         }
     }
     
-    var timer: Binder<TimeInterval> {
-        return Binder(base.self) { _, timeInterval in
-            Observable.just(timeInterval)
-                .map { Base.Reactor.Action.updateTimer($0) }
+    var selected: Binder<IndexPath> {
+        return Binder(base.self) { _, indexPath in
+            Observable.just(indexPath)
+                .map { Base.Reactor.Action.selectBadge($0) }
                 .bind(to: self.base.reactor!.action)
                 .disposed(by: self.base.disposeBag)
         }
     }
     
+    // MARK: - control event
     var badgeSelected: ControlEvent<(IndexPath, TimerBadgeCellType)> {
         let source = delegate.methodInvoked(#selector(UICollectionViewDelegate.collectionView(_:didSelectItemAt:)))
-            .map { a -> (IndexPath, TimerBadgeCellType) in
-                let indexPath = a[1] as! IndexPath
+            .flatMap { a -> Observable<(IndexPath, TimerBadgeCellType)> in
+                guard let indexPath = a[1] as? IndexPath else { return .empty() }
                 let cellType = self.base.reactor!.currentState.sections[0].items[indexPath.row]
                 
-                return (a[1] as! IndexPath, cellType)
+                return .just((indexPath, cellType))
         }
+        
+        return ControlEvent(events: source)
+    }
+    
+    var badgeMoved: ControlEvent<(IndexPath, IndexPath)> {
+        let source = dataSource.methodInvoked(#selector(UICollectionViewDataSource.collectionView(_:moveItemAt:to:)))
+            .flatMap { a -> Observable<(IndexPath, IndexPath)> in
+                guard let sourceIndexPath = a[1] as? IndexPath, let destinationIndexPath = a[2] as? IndexPath else {
+                    return .empty()
+                }
+                
+                return .just((sourceIndexPath, destinationIndexPath))
+            }
         
         return ControlEvent(events: source)
     }

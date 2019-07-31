@@ -12,26 +12,32 @@ import ReactorKit
 class TimerBadgeViewReactor: Reactor {
     enum Action {
         case updateTimers([TimerInfo], TimerBadgeCellType?)
-        case updateTimer(TimeInterval)
         case selectBadge(IndexPath)
+        case moveBadge(at: IndexPath, to: IndexPath)
     }
     
     enum Mutation {
         case setSections([TimerBadgeSectionModel])
         case setSelectedIndexPath(IndexPath)
-        case updateTimer(TimeInterval, at: IndexPath)
+        case swapItem(at: IndexPath, to: IndexPath)
+        
+        case sectionReload
     }
     
     struct State {
         var sections: [TimerBadgeSectionModel]
         var selectedIndexPath: IndexPath?
+        
+        var shouldSectionReload: Bool
     }
     
     // MARK: - properties
     var initialState: State
     
     init() {
-        self.initialState = State(sections: [TimerBadgeSectionModel(model: Void(), items: [])], selectedIndexPath: nil)
+        self.initialState = State(sections: [TimerBadgeSectionModel(model: Void(), items: [])],
+                                  selectedIndexPath: nil,
+                                  shouldSectionReload: false)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -45,22 +51,26 @@ class TimerBadgeViewReactor: Reactor {
                 items.append(extraCell)
             }
             
-            let setSections = Observable.just(Mutation.setSections([TimerBadgeSectionModel(model: Void(), items: items)]))
-            let setSelectedIndexPath = currentState.selectedIndexPath == nil ?
-                Observable.just(Mutation.setSelectedIndexPath(IndexPath(row: 0, section: 0))) :
-                Observable.just(Mutation.setSelectedIndexPath(IndexPath(row: timers.count - 1, section: 0)))
+            let setSections: Observable<Mutation> = .just(.setSections([TimerBadgeSectionModel(model: Void(), items: items)]))
+            
+            var setSelectedIndexPath: Observable<Mutation> = .empty()
+            if let indexPath = currentState.selectedIndexPath {
+                setSelectedIndexPath = .just(.setSelectedIndexPath(indexPath))
+            }
+            let sectionReload: Observable<Mutation> = .just(.sectionReload)
     
-            return .concat(setSections, setSelectedIndexPath)
-        case let .updateTimer(timeInterval):
-            guard let indexPath = currentState.selectedIndexPath else { return .empty() }
-            return .just(.updateTimer(timeInterval, at: indexPath))
+            return .concat(setSections, setSelectedIndexPath, sectionReload)
         case let .selectBadge(indexPath):
             return .just(.setSelectedIndexPath(indexPath))
+        case let .moveBadge(at: sourceIndexPath, to: destinationIndexPath):
+            return .just(.swapItem(at: sourceIndexPath, to: destinationIndexPath))
         }
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
+        state.shouldSectionReload = false
+        
         switch mutation {
         case let .setSections(sections):
             state.sections = sections
@@ -73,8 +83,16 @@ class TimerBadgeViewReactor: Reactor {
             
             state.selectedIndexPath = indexPath
             return state
-        case let .updateTimer(timeInterval, at: indexPath):
-            state.sections[0].items[indexPath.row].item?.action.onNext(.updateTime(timeInterval))
+        case let .swapItem(at: sourceIndexPath, to: destinationIndexPath):
+            state.sections[0].items.swapAt(sourceIndexPath.row, destinationIndexPath.row)
+            
+            var items = state.sections[0].items
+            items[sourceIndexPath.row].item?.action.onNext(.updateIndex(sourceIndexPath.row + 1))
+            items[destinationIndexPath.row].item?.action.onNext(.updateIndex(destinationIndexPath.row + 1))
+            
+            return state
+        case .sectionReload:
+            state.shouldSectionReload = true
             return state
         }
     }

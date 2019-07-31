@@ -69,7 +69,13 @@ class MainViewCoordinator: CoordinatorProtocol {
         self.rootViewController.viewControllers = [localViewController, productivityViewController, shareViewController]
     }
     
-    func present(for route: MainRoute) {
+    func present(for route: MainRoute) -> UIViewController {
+        let viewController = get(for: route)
         
+        return viewController
+    }
+    
+    func get(for route: MainRoute) -> UIViewController {
+        return UIViewController()
     }
 }

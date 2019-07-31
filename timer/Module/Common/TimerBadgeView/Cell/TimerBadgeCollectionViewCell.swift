@@ -14,7 +14,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     static let ReuseableIdentifier = "TimerBadgeCollectionViewCell"
     
     // MARK: - view properties
-    let timeLabel: UILabel = {
+    private let timeLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
@@ -35,14 +35,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         return view
     }()
 
-    private let optionButton: UIButton = {
+    let optionButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "timer_more_btn"), for: .normal)
+        view.setImage(UIImage(named: "btn_timer_more"), for: .normal)
         view.contentVerticalAlignment = .bottom
         return view
     }()
 
-    private let indexLabel: UILabel = {
+    let indexLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.gray
         view.font = Constants.Font.ExtraBold.withSize(10.adjust())
@@ -100,7 +100,9 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         
         // MARK: state
         reactor.state
-            .map { getTime(interval: $0.time) }
+            .map { $0.time }
+            .distinctUntilChanged()
+            .map { getTime(interval: $0) }
             .map { String(format: "%02d:%02d:%02d", $0.0, $0.1, $0.2) }
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)

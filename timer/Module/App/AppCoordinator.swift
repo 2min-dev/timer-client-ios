@@ -25,28 +25,30 @@ class AppCoordinator {
     }
     
     func present(for route: AppRoute) {
+        let viewController = get(for: route)
+        
         switch route {
         case .intro:
-            let viewController: RootViewController = RootViewController()
-            let coordinator: RootViewCoordinator = RootViewCoordinator(provider: provider, rootViewController: viewController)
-            
+            // Present intro view
+            window.rootViewController = viewController
+            window.makeKeyAndVisible()
+        }
+    }
+    
+    func get(for route: AppRoute) -> UIViewController {
+        switch route {
+        case .intro:
             // initial view
             let introViewController = IntroViewController()
             let introViewCoordinator = IntroViewCoordinator(provider: provider, rootViewController: introViewController)
             let introViewReactor = IntroViewReactor()
             
             // DI
-            viewController.coordinator = coordinator
-            
             introViewController.coordinator = introViewCoordinator
             introViewController.reactor = introViewReactor
             
-            // initialize root view
-            viewController.viewControllers = [introViewController]
-            
-            // present view
-            window.rootViewController = viewController
-            window.makeKeyAndVisible()
+            let viewController: RootViewController = RootViewController(rootViewController: introViewController)
+            return viewController
         }
     }
 }

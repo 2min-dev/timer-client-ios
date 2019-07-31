@@ -16,7 +16,7 @@ class SettingViewController: BaseViewController, View {
     }
     
     // MARK: view properties
-    private var settingView: SettingView { return self.view as! SettingView }
+    private var settingView: SettingView { return view as! SettingView }
     private var settingTableView: UITableView { return settingView.tableView }
     
     // MARK: properties
@@ -24,7 +24,7 @@ class SettingViewController: BaseViewController, View {
     
     // MARK: lifecycle
     override func loadView() {
-        self.view = SettingView()
+        view = SettingView()
     }
     
     override func viewDidLoad() {

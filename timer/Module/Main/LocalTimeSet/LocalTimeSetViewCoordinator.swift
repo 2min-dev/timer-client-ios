@@ -6,6 +6,8 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import UIKit
+
 /// Route from local time set view
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
@@ -22,7 +24,13 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: LocalTimeSetRoute) {
+    func present(for route: LocalTimeSetRoute) -> UIViewController {
+        let viewController = get(for: route)
         
+        return viewController
+    }
+    
+    func get(for route: LocalTimeSetRoute) -> UIViewController {
+        return UIViewController()
     }
 }

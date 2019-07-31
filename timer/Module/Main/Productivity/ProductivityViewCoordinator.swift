@@ -6,11 +6,13 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import UIKit
+
 /// Route from one touch timer view
 class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum ProductivityRoute {
-        
+        case timerOption
     }
 
     // MARK: properties
@@ -22,9 +24,25 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         self.rootViewController = rootViewController
     }
     
-    func present(for route: ProductivityRoute) {
+    func present(for route: ProductivityRoute) -> UIViewController {
+        let viewController = get(for: route)
+        
+        return viewController
+    }
+    
+    func get(for route: ProductivityRoute) -> UIViewController {
         switch route {
+        case .timerOption:
+            let viewController = TimerOptionViewController()
             
+            // DI
+            viewController.reactor = TimerOptionViewReactor()
+            viewController.coordinator = TimerOptionViewCoordinator(provider: provider, rootViewController: viewController)
+            
+            let navigationController = UINavigationController(rootViewController: viewController)
+            navigationController.isNavigationBarHidden = true
+            
+            return navigationController
         }
     }
 }

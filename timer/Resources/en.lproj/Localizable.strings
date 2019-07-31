@@ -16,16 +16,19 @@
 "tab_button_shared_time_set" = "SHARED";
 
 // MARK: - Productivity
-"productivity_button_hour_title" = "Hour";
-"productivity_button_minute_title" = "Minute";
-"productivity_button_second_title" = "Second";
-
-"productivity_button_alert_default" = "Default";
-"productivity_button_alert_change_title" = "Change";
+"productivity_button_hour_title" = "H";
+"productivity_button_minute_title" = "M";
+"productivity_button_second_title" = "S";
 
 "productivity_button_timer_save_title" = "Save";
 "productivity_button_timer_add_title" = "+";
 "productivity_button_timer_start_title" = "Start";
+
+// MARK: - Timer option
+"timer_option_comment_hint" = "You can typing comment";
+"timer_option_comment_bytes" = "%02d/%d bytes";
+"timer_option_alarm_all_apply" = "All";
+"timer_option_alarm_change" = "Change";
 
 // MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";
