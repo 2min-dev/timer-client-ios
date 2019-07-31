@@ -68,13 +68,6 @@ class TimerOptionViewController: BaseViewController, View {
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
         
-        // Comment hint
-        reactor.state
-            .map { !$0.comment.isEmpty }
-            .distinctUntilChanged()
-            .bind(to: commentHintLabel.rx.isHidden)
-            .disposed(by: disposeBag)
-        
         // Comment length
         reactor.state
             .map { $0.comment }

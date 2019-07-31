@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class TimerOptionView: UIView {
     // MARK: - view properties
@@ -195,6 +197,9 @@ class TimerOptionView: UIView {
         return view
     }()
     
+    // MARK: - properties
+    private var disposeBag = DisposeBag()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -205,9 +210,19 @@ class TimerOptionView: UIView {
         contentStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        
+        bind()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - bind
+    private func bind() {
+        commentTextView.rx.text
+            .map { !$0!.isEmpty }
+            .bind(to: commentHintLabel.rx.isHidden)
+            .disposed(by: disposeBag)
     }
 }
