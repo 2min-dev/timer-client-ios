@@ -13,6 +13,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: route enumeration
     enum ProductivityRoute {
         case timerOption
+        case timeSetEdit(TimeSetInfo)
     }
 
     // MARK: properties
@@ -26,6 +27,12 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     
     func present(for route: ProductivityRoute) -> UIViewController {
         let viewController = get(for: route)
+        switch route {
+        case .timeSetEdit(_):
+            rootViewController.navigationController?.pushViewController(viewController, animated: true)
+        default:
+            break
+        }
         
         return viewController
     }
@@ -43,6 +50,14 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             navigationController.isNavigationBarHidden = true
             
             return navigationController
+        case let .timeSetEdit(timeSetInfo):
+            let viewController = TimeSetEditViewController()
+            
+            // DI
+            viewController.reactor = TimeSetEditViewReactor(timeSetInfo: timeSetInfo)
+            viewController.coordinator = TimeSetEditViewCoordinator(provider: provider, rootViewController: viewController)
+            
+            return viewController
         }
     }
 }

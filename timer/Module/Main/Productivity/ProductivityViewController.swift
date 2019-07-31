@@ -171,6 +171,12 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        saveButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))
+            })
+            .disposed(by: disposeBag)
+        
         // MARK: state
         reactor.state
             .map { $0.time }
