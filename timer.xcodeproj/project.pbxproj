@@ -45,6 +45,10 @@
 		F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimeSetInfo.swift */; };
 		F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD32265F995007ECCA0 /* TimeSetService.swift */; };
 		F373CCD62265FA33007ECCA0 /* TMTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F373CCD52265FA33007ECCA0 /* TMTimer.swift */; };
+		F387AF3022F18215002ABDB6 /* TimeSetEditViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2C22F18215002ABDB6 /* TimeSetEditViewCoordinator.swift */; };
+		F387AF3122F18215002ABDB6 /* TimeSetEditViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2D22F18215002ABDB6 /* TimeSetEditViewReactor.swift */; };
+		F387AF3222F18215002ABDB6 /* TimeSetEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2E22F18215002ABDB6 /* TimeSetEditViewController.swift */; };
+		F387AF3322F18215002ABDB6 /* TimeSetEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2F22F18215002ABDB6 /* TimeSetEditView.swift */; };
 		F389657722759BAA0043E177 /* TimerSetServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F389657622759BAA0043E177 /* TimerSetServiceTest.swift */; };
 		F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */; };
 		F399F6BE22E9937C00997E31 /* TimerOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F399F6BD22E9937C00997E31 /* TimerOptionViewController.swift */; };
@@ -180,6 +184,10 @@
 		F37041CC226C35B80012EA16 /* TimeSetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInfo.swift; sourceTree = "<group>"; };
 		F373CCD32265F995007ECCA0 /* TimeSetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetService.swift; sourceTree = "<group>"; };
 		F373CCD52265FA33007ECCA0 /* TMTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTimer.swift; sourceTree = "<group>"; };
+		F387AF2C22F18215002ABDB6 /* TimeSetEditViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditViewCoordinator.swift; sourceTree = "<group>"; };
+		F387AF2D22F18215002ABDB6 /* TimeSetEditViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditViewReactor.swift; sourceTree = "<group>"; };
+		F387AF2E22F18215002ABDB6 /* TimeSetEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditViewController.swift; sourceTree = "<group>"; };
+		F387AF2F22F18215002ABDB6 /* TimeSetEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditView.swift; sourceTree = "<group>"; };
 		F389657422759BAA0043E177 /* test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F389657622759BAA0043E177 /* TimerSetServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSetServiceTest.swift; sourceTree = "<group>"; };
 		F389657822759BAA0043E177 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -372,6 +380,7 @@
 				F3735C9422CFA7EC00DC247C /* Root */,
 				F3735C9722CFA83C00DC247C /* Intro */,
 				F3735C9922CFA8C000DC247C /* Main */,
+				F387AF2B22F181FA002ABDB6 /* TimeSetEdit */,
 				F3735C9C22CFAA8200DC247C /* Setting */,
 				F3735C9D22CFAAA000DC247C /* AppInfo */,
 			);
@@ -484,6 +493,17 @@
 				F3C18751226204F700B2C644 /* AppInfoCoordinator.swift */,
 			);
 			path = AppInfo;
+			sourceTree = "<group>";
+		};
+		F387AF2B22F181FA002ABDB6 /* TimeSetEdit */ = {
+			isa = PBXGroup;
+			children = (
+				F387AF2F22F18215002ABDB6 /* TimeSetEditView.swift */,
+				F387AF2E22F18215002ABDB6 /* TimeSetEditViewController.swift */,
+				F387AF2D22F18215002ABDB6 /* TimeSetEditViewReactor.swift */,
+				F387AF2C22F18215002ABDB6 /* TimeSetEditViewCoordinator.swift */,
+			);
+			path = TimeSetEdit;
 			sourceTree = "<group>";
 		};
 		F389657522759BAA0043E177 /* test */ = {
@@ -911,6 +931,7 @@
 				F303F273225CCB7500A11FAF /* SettingViewCoordinator.swift in Sources */,
 				F3C2E7B9228318C500C69FF2 /* TimerBadgeCellReactor.swift in Sources */,
 				F373CCD62265FA33007ECCA0 /* TMTimer.swift in Sources */,
+				F387AF3222F18215002ABDB6 /* TimeSetEditViewController.swift in Sources */,
 				F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */,
 				F3E0C0A022EA153B005D9FA4 /* AlarmChangeViewController.swift in Sources */,
 				F3F65D7422CFAC77009C667B /* SharedTimeSetViewController.swift in Sources */,
@@ -928,6 +949,7 @@
 				F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
+				F387AF3122F18215002ABDB6 /* TimeSetEditViewReactor.swift in Sources */,
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
 				F3F65D7A22CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift in Sources */,
 				F302608D22EC87C300E3E431 /* AlarmChangeView.swift in Sources */,
@@ -935,6 +957,7 @@
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
 				F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */,
+				F387AF3322F18215002ABDB6 /* TimeSetEditView.swift in Sources */,
 				F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */,
 				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */,
@@ -943,6 +966,7 @@
 				F303F27D225CCE2400A11FAF /* ProductivityView.swift in Sources */,
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
 				F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */,
+				F387AF3022F18215002ABDB6 /* TimeSetEditViewCoordinator.swift in Sources */,
 				F303F275225CCBA100A11FAF /* SettingViewController.swift in Sources */,
 				F3F800A7226A0981003D1D88 /* Constants.swift in Sources */,
 				F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */,
