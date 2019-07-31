@@ -35,8 +35,8 @@ class TimerOptionView: UIView {
     private lazy var commentInputView: UIView = {
         let view = UIView()
         
+        // Set constraint of subviews
         view.addAutolayoutSubviews([commentTextView, commentLengthLabel, commentHintLabel])
-        // Set constarint of subviews
         commentTextView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(10.adjust())
             make.leading.equalToSuperview().inset(10.adjust())
@@ -97,8 +97,8 @@ class TimerOptionView: UIView {
     private lazy var alarmSettingView: UIView = {
         let view = UIView()
         
+        // Set constraint of subviews
         view.addAutolayoutSubviews([alarmIconImageView, alarmNameLabel, alarmApplyAllButton, alarmChangeButton])
-        // Set constarint of subviews
         alarmIconImageView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -153,8 +153,8 @@ class TimerOptionView: UIView {
     private lazy var timerInfoView: UIView = {
         let view = UIView()
         
+        // Set constraint of subviews
         view.addAutolayoutSubviews([timerIconImageView, titleLabel, deleteButton])
-        // Set constarint of subviews
         timerIconImageView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -183,7 +183,7 @@ class TimerOptionView: UIView {
         let view = UIStackView(arrangedSubviews: [commentInputView, alarmSettingView, timerInfoView])
         view.axis = .vertical
         
-        // Set constarint of subviews
+        // Set constraint of subviews
         alarmSettingView.snp.makeConstraints { make in
             make.height.equalTo(50.adjust())
         }
@@ -200,8 +200,8 @@ class TimerOptionView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
+        // Set constraint of subviews
         addAutolayoutSubview(contentStackView)
-        // Set constarint of subviews
         contentStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

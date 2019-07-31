@@ -15,9 +15,7 @@ import JSReorderableCollectionView
 class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
-    private var contentView: UIView { return productivityView.contentView }
     
-    private var footerStackView: UIStackView { return productivityView.footerStackView }
     private var footerView: UIView { return productivityView.footerView }
     
     private var timerInputView: UIView { return productivityView.timerInputView }

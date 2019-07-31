@@ -26,7 +26,7 @@ class AlarmChangeView: UIView {
         let view = UIStackView(arrangedSubviews: [backButton, currentAlarmLabel])
         view.axis = .horizontal
         
-        // Set constarint of subviews
+        // Set constraint of subviews
         backButton.snp.makeConstraints { make in
             make.width.equalTo(backButton.snp.height)
         }
@@ -48,7 +48,7 @@ class AlarmChangeView: UIView {
         let view = UIStackView(arrangedSubviews: [headerStackView, alarmTableView])
         view.axis = .vertical
         
-        // Set constarint of subviews
+        // Set constraint of subviews
         headerStackView.snp.makeConstraints { make in
             make.height.equalTo(50.adjust())
         }
@@ -61,8 +61,8 @@ class AlarmChangeView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
+        // Set constraint of subviews
         addAutolayoutSubview(contentStackView)
-        // Set constarint of subviews
         contentStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

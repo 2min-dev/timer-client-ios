@@ -35,7 +35,7 @@ class AlarmChangeTableViewCell: UITableViewCell {
         let view = UIStackView(arrangedSubviews: [playButton, nameLabel, checkImageView])
         view.axis = .horizontal
         
-        // Set constarint of subviews
+        // Set constraint of subviews
         playButton.snp.makeConstraints { make in
             make.width.equalTo(playButton.snp.height)
         }
@@ -55,8 +55,8 @@ class AlarmChangeTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
 
+        // Set constraint of subviews
         contentView.addAutolayoutSubview(contentStackView)
-        // Set constarint of subviews
         contentStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.height.equalTo(50.adjust())

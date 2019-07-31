@@ -84,8 +84,8 @@ class ProductivityView: UIView {
         
         // Create info container view
         let infoContainerView = UIView()
+        // Set constraint of subviews
         infoContainerView.addAutolayoutSubviews([sumOfTimersLabel, endOfTimerLabel])
-        // Set constarint of subviews
         sumOfTimersLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -99,8 +99,8 @@ class ProductivityView: UIView {
             make.bottom.equalToSuperview()
         }
         
+        // Set constraint of subviews
         view.addAutolayoutSubviews([infoContainerView, loopButton])
-        // Set constarint of subviews
         infoContainerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
@@ -232,7 +232,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var contentView: UIView = {
+    private lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
@@ -286,7 +286,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var footerStackView: UIStackView = {
+    private lazy var footerStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [saveButton, startButton])
         view.backgroundColor = Constants.Color.white
         view.axis = .horizontal

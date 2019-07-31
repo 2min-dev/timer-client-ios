@@ -26,7 +26,7 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = Constants.Color.black
         
-        // Set constarint of subviews
+        // Set constraint of subviews
         view.addAutolayoutSubview(self.addLabel)
         addLabel.snp.makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: 5.adjust(), left: 6.adjust(), bottom: 5.adjust(), right: 6.adjust()))
