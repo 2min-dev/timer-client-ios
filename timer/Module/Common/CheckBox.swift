@@ -12,61 +12,42 @@ import RxCocoa
 
 class CheckBox: UIView {
     // MARK: - view properties
-    private lazy var checkBoxView: UIView = { [unowned self] in
+    private let checkBoxLayer: CALayer = {
+        let layer = CALayer()
+        layer.borderColor = UIColor.black.cgColor
+        layer.borderWidth = 0.5
+        return layer
+    }()
+    
+    private let checkedLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.strokeColor = UIColor.black.cgColor
+        layer.lineWidth = 1
+        return layer
+    }()
+    
+    private lazy var checkBoxView: UIView = {
         let view = UIView()
-        view.layer.addSublayer(self.backgroundBoxLayer)
+        view.layer.addSublayer(checkBoxLayer)
         return view
     }()
     
-    private let backgroundBoxLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.clear.cgColor
-        layer.strokeColor = Constants.Color.black.cgColor
-        layer.lineWidth = 2
-        return layer
-    }()
-    
-    private let checkedBoxLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.black.cgColor
-        return layer
-    }()
-    
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let view = UILabel()
         return view
     }()
     
-    private lazy var containerView: UIView = { [unowned self] in
+    private lazy var containerView: UIView = {
         let view = UIView()
-        view.addSubview(self.checkBoxView)
-        view.addSubview(self.titleLabel)
-        return view
-    }()
-    
-    // MARK: - properties
-    var space: CGFloat = 10
-    var isChecked: Bool = false {
-        didSet {
-            guard oldValue != isChecked else { return }
-            
-            isChecked ? addOnAnimation() : addOffAnimation()
-            // Reload check box layer
-            setNeedsDisplay()
-            layoutIfNeeded()
-        }
-    }
-    override var intrinsicContentSize: CGSize {
-        let textSize = titleLabel.intrinsicContentSize
-        return CGSize(width: textSize.height + textSize.width + space, height: textSize.height + 10)
-    }
-    
-    // MARK: - constructor
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        initGesture()
         
-        addAutolayoutSubview(containerView)
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([checkBoxView, titleLabel])
+        checkBoxView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.height.equalTo(titleLabel.snp.height)
+            make.width.equalTo(checkBoxView.snp.height)
+        }
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalTo(checkBoxView.snp.trailing).offset(space)
@@ -74,12 +55,55 @@ class CheckBox: UIView {
             make.centerY.equalToSuperview()
         }
         
-        checkBoxView.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.height.equalTo(titleLabel.snp.height)
-            make.width.equalTo(checkBoxView.snp.height)
+        return view
+    }()
+    
+    // MARK: - properties
+    var space: CGFloat = 10
+    var text: String? {
+        get { return titleLabel.text }
+        set {
+            titleLabel.text = newValue
+            invalidateIntrinsicContentSize()
         }
+    }
+    var textColor: UIColor {
+        get { return titleLabel.textColor }
+        set { titleLabel.textColor = newValue }
+    }
+    var highlightedTextColor: UIColor? {
+        get { return titleLabel.highlightedTextColor }
+        set { titleLabel.highlightedTextColor = newValue }
+    }
+    var font: UIFont {
+        get { return titleLabel.font }
+        set {
+            titleLabel.font = newValue
+            invalidateIntrinsicContentSize()
+        }
+    }
+    var isChecked: Bool = false {
+        didSet {
+            guard oldValue != isChecked else { return }
+            checked(isChecked)
+        }
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        let textSize = titleLabel.sizeThatFits(.zero)
+        return CGSize(width: textSize.height + textSize.width + space, height: textSize.height)
+    }
+    
+    // MARK: - constructor
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addAutolayoutSubview(containerView)
+        containerView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        initGesture()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -88,43 +112,51 @@ class CheckBox: UIView {
     
     // MARK: - lifecycle
     override func layoutSubviews() {
-        containerView.snp.remakeConstraints { make in
-            let textSize = titleLabel.intrinsicContentSize
-            let size = CGSize(width: textSize.height + textSize.width + space, height: textSize.height)
-            
-            make.center.equalToSuperview()
-            make.width.equalTo(size.width)
-            make.height.equalTo(size.height)
-        }
-        
-        var path = UIBezierPath(arcCenter: CGPoint(x: checkBoxView.bounds.midX, y: checkBoxView.bounds.midY),
-                                radius: checkBoxView.bounds.width / 2,
-                                startAngle: -CGFloat.pi / 2,
-                                endAngle: CGFloat.pi * 1.5,
-                                clockwise: true)
-        
-        backgroundBoxLayer.path = path.cgPath
-        
-        path = UIBezierPath(arcCenter: CGPoint(x: checkBoxView.bounds.midX, y: checkBoxView.bounds.midY),
-                            radius: checkBoxView.bounds.width / 2 - 3,
-                            startAngle: -CGFloat.pi / 2,
-                            endAngle: CGFloat.pi * 1.5,
-                            clockwise: true)
-        
-        checkedBoxLayer.path = path.cgPath
-    }
-    
-    override func draw(_ rect: CGRect) {
-        
+        super.layoutSubviews()
+        // Update check box layer frame
+        checkBoxLayer.frame = CGRect(x: 0, y: 0, width: bounds.height, height: bounds.height)
+        // Update checked layer frame & path
+        checkedLayer.frame = checkBoxLayer.frame
+        checkedLayer.path = drawCheckPath(frame: checkBoxLayer.frame)
     }
     
     // MARK: - private method
     private func initGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGesture(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureHandler(gesture:)))
         addGestureRecognizer(tapGesture)
     }
     
-    private func addOnAnimation() {
+    private func drawCheckPath(frame: CGRect) -> CGPath {
+        let checkPoints: [CGPoint] = [
+            CGPoint(x: frame.width * 0.42, y: frame.height * 0.75),
+            CGPoint(x: frame.width * 0.83, y: frame.height * 0.33)
+        ]
+        
+        // Move starting point
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: frame.width * 0.17, y: frame.height * 0.5))
+        checkPoints.forEach {
+            path.addLine(to: $0)
+            path.move(to: $0)
+        }
+        
+        return path.cgPath
+    }
+    
+    private func checked(_ isChecked: Bool) {
+        // Highlight title label
+        titleLabel.isHighlighted = isChecked
+        
+        // Update check box layer
+        if isChecked {
+            checkBoxView.layer.addSublayer(checkedLayer)
+        } else {
+            checkedLayer.removeFromSuperlayer()
+        }
+    }
+    
+    // Leave for layer animation example
+    private func animateCheck() {
         let animation = CABasicAnimation(keyPath: "transform.scale")
         animation.fromValue = 0
         animation.toValue = 1
@@ -132,15 +164,14 @@ class CheckBox: UIView {
         animation.isRemovedOnCompletion = false
         animation.fillMode = .forwards
         
-        checkBoxView.layer.addSublayer(checkedBoxLayer)
-        checkedBoxLayer.frame = checkBoxView.bounds
+        checkBoxView.layer.addSublayer(checkedLayer)
         
         CATransaction.begin()
-        checkedBoxLayer.add(animation, forKey: "on")
+        checkedLayer.add(animation, forKey: "check")
         CATransaction.commit()
     }
     
-    private func addOffAnimation() {
+    private func animateUncheck() {
         let animation = CABasicAnimation(keyPath: "transform.scale")
         animation.fromValue = 1
         animation.toValue = 0
@@ -149,29 +180,23 @@ class CheckBox: UIView {
         animation.fillMode = .forwards
         
         CATransaction.begin()
-        CATransaction.setCompletionBlock { [weak self] in
-            guard let `self` = self else { return }
-            self.checkedBoxLayer.removeFromSuperlayer()
+        CATransaction.setCompletionBlock {
+            self.checkedLayer.removeFromSuperlayer()
         }
-        checkedBoxLayer.add(animation, forKey: "off")
+        checkedLayer.add(animation, forKey: "uncheck")
         CATransaction.commit()
     }
     
-    // MARK: - public method
-    func setAttributedTitle(_ title: NSAttributedString?) {
-        titleLabel.attributedText = title
-    }
-    
     // MARK: - selctor
-    @objc fileprivate func tapGesture(_ recognizer: UITapGestureRecognizer) {
-        isChecked = !isChecked
+    @objc fileprivate func tapGestureHandler(gesture: UITapGestureRecognizer) {
+        isChecked.toggle()
     }
 }
 
 // MARK: - extension
 extension Reactive where Base: CheckBox {
     var tap: ControlEvent<Void> {
-        let source = self.methodInvoked(#selector(base.tapGesture(_:))).map { _ in }
+        let source = self.methodInvoked(#selector(base.tapGestureHandler)).map { _ in }
         return ControlEvent(events: source)
     }
     
