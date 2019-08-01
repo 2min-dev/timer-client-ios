@@ -62,7 +62,12 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - lifecycle
-    override func draw(_ rect: CGRect) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
         containerView.layer.cornerRadius = containerView.bounds.height / 2
+    }
+    
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
     }
 }

@@ -31,6 +31,8 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
             return cell
         case .add:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.ReuseableIdentifier, for: indexPath)
+            // Invalidated layout
+            cell.layoutIfNeeded()
             return cell
         }
     })
@@ -127,6 +129,7 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
     
     /// Animate that move cell to anchor point
     func scrollToBadge(at indexPath: IndexPath, animated: Bool) {
+        Logger.debug("[JS] scroll to \(indexPath.row) " + (animated ? "with animation" : ""))
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout,
             let items = reactor?.currentState.sections[0].items,
             indexPath.row < items.count else { return }

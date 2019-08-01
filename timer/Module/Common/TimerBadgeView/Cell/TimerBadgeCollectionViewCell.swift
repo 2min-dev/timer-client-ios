@@ -90,8 +90,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     }
     
     // MARK: - lifecycle
-    override func draw(_ rect: CGRect) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
         containerView.layer.cornerRadius = containerView.bounds.height / 2
+    }
+    
+    override func prepareForReuse() {
+        setSelected(false)
+        disposeBag = DisposeBag()
     }
     
     // MARK: - reactor bind
@@ -109,11 +115,13 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         
         reactor.state
             .map { String($0.index) }
+            .distinctUntilChanged()
             .bind(to: indexLabel.rx.text)
             .disposed(by: disposeBag)
         
         reactor.state
             .map { $0.isSelected }
+            .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.setSelected($0) })
             .disposed(by: disposeBag)
     }
