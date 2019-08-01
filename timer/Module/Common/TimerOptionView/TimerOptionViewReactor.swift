@@ -14,6 +14,7 @@ class TimerOptionViewReactor: Reactor {
     static let MAX_COMMENT_LENGTH: Int = 50
     
     enum Action {
+        case viewWillAppear
         case changeTimer(TimerInfo)
         case updateComment(String)
         case updateAlarm(String)
@@ -45,6 +46,9 @@ class TimerOptionViewReactor: Reactor {
     // MARK: - Mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewWillAppear:
+            guard let timerInfo = timerInfo else { return .empty() }
+            return mutate(action: .changeTimer(timerInfo))
         case let .changeTimer(timerInfo):
             // Change current timer
             self.timerInfo = timerInfo
@@ -68,6 +72,7 @@ class TimerOptionViewReactor: Reactor {
             return .just(.setComment(comment))
         case let .updateAlarm(alarm):
             // Update alarm title
+            timerInfo?.alarm = alarm
             return .just(.setAlarm(alarm))
         }
     }

@@ -52,6 +52,11 @@ class TimerOptionViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimerOptionViewReactor) {
         // MARK: action
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         commentTextView.rx.text
             .orEmpty
             .map { Reactor.Action.updateComment($0) }
@@ -74,7 +79,6 @@ class TimerOptionViewController: BaseViewController, View {
         reactor.state
             .map { $0.comment }
             .filter { self.commentTextView.text != $0 }
-            .debug()
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
         
