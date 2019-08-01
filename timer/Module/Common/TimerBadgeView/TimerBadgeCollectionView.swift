@@ -126,9 +126,10 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
     }
     
     /// Animate that move cell to anchor point
-    func scrollToBadge(at indexPath: IndexPath) {
+    func scrollToBadge(at indexPath: IndexPath, animated: Bool) {
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout,
-            let items = reactor?.currentState.sections[0].items, indexPath.row < items.count else { return }
+            let items = reactor?.currentState.sections[0].items,
+            indexPath.row < items.count else { return }
         
         let index = CGFloat(indexPath.row)
         // Current cell offset in collection view
@@ -142,9 +143,7 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
         }
         
         // Animate scroll to anchor point
-        UIView.animate(withDuration: 1) {
-            self.setContentOffset(CGPoint(x: cellOffset - diff, y: 0), animated: true)
-        }
+        setContentOffset(CGPoint(x: cellOffset - diff, y: 0), animated: animated)
     }
 }
 
@@ -223,11 +222,9 @@ extension Reactive where Base: TimerBadgeCollectionView {
     
     // MARK: - control event
     var badgeSelected: ControlEvent<(IndexPath, TimerBadgeCellType)> {
-        let source = delegate.methodInvoked(#selector(UICollectionViewDelegate.collectionView(_:didSelectItemAt:)))
-            .flatMap { a -> Observable<(IndexPath, TimerBadgeCellType)> in
-                guard let indexPath = a[1] as? IndexPath else { return .empty() }
+        let source = base.rx.itemSelected
+            .flatMap { indexPath -> Observable<(IndexPath, TimerBadgeCellType)> in
                 let cellType = self.base.reactor!.currentState.sections[0].items[indexPath.row]
-                
                 return .just((indexPath, cellType))
         }
         

@@ -96,7 +96,7 @@ class ProductivityViewReactor: Reactor {
         let info = TimerInfo(title: "1 번째 타이머")
         
         // Create default timer set and add default a timer
-        self.timeSetInfo = TimeSetInfo(title: "첫번째 생산성", description: "")
+        self.timeSetInfo = TimeSetInfo()
         self.timeSetInfo.timers.append(info)
  
         self.initialState = State(time: 0,

@@ -160,6 +160,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.badgeSelected
+            .do(onNext: { [weak self] in self?.scrollToBadgeIfNeeded(at: $0.0, cellType: $0.1) })
             .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -304,6 +305,16 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     // MARK: - private method
+    /// Scroll badge view if needed by time set action
+    private func scrollToBadgeIfNeeded(at indexPath: IndexPath, cellType: TimerBadgeCellType) {
+        switch cellType {
+        case .add:
+            break
+        default:
+            timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+        }
+    }
+    
     /// Convert number key pad input to time value
     private func convertKeyToTime(key: KeyPad.Key) -> Int {
         guard var text = timerInputLabel.text else { return 0 }

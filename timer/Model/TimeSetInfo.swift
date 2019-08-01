@@ -18,7 +18,7 @@ class TimeSetInfo: Codable {
     var timers: [TimerInfo] // Timer info list of the timer set
     
     // MARK: constructor
-    init(title: String, description: String, isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
+    init(title: String = "", description: String = "", isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
         self.title = title
         self.description = description
         self.state = state
