@@ -21,12 +21,6 @@ class ProductivityViewReactor: Reactor {
         case second
     }
     
-    enum TimeSetAction {
-        case Move
-        case Select
-        case None
-    }
-    
     enum Action {
         case clear
         
@@ -54,12 +48,11 @@ class ProductivityViewReactor: Reactor {
         case swapTimer(at: IndexPath, to: IndexPath)
         
         case setSelectedIndexPath(IndexPath)
-        case setTimeSetAction(TimeSetAction)
         
         case setSelectableTime(Time)
         case setTimerOptionVisible(Bool)
         
-        case alert(String)
+        case setAlertMessage(String)
         case sectionReload
     }
     
@@ -72,13 +65,12 @@ class ProductivityViewReactor: Reactor {
         var timers: [TimerInfo]             // The timer list model of timer set
         
         var selectedIndexPath: IndexPath    // Current selected timer index path
-        var timeSetAction: TimeSetAction    // To distinguish timer set operation
         
         var selectableTime: Time            // Selectable time key based on current time
         var canTimeSetStart: Bool           // Can the time set start
         var isTimerOptionVisible: Bool      // Is the timer option view visible
         
-        var alert: String?                  // Alert message
+        var alertMessage: String?           // Alert message
         var shouldSectionReload: Bool       // Need section reload
     }
     
@@ -105,11 +97,10 @@ class ProductivityViewReactor: Reactor {
                                   isTimeSetLoop: false,
                                   timers: timeSetInfo.timers,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
-                                  timeSetAction: .Select,
                                   selectableTime: .hour,
                                   canTimeSetStart: false,
                                   isTimerOptionVisible: false,
-                                  alert: nil,
+                                  alertMessage: nil,
                                   shouldSectionReload: true)
     }
     
@@ -168,16 +159,16 @@ class ProductivityViewReactor: Reactor {
             return .just(.setTimeSetLoop(timeSetInfo.isLoop))
         case .addTimer:
             // Create default a timer (set 0)
-            let index = timeSetInfo.timers.count + 1
-            let info = TimerInfo(title: "\(index) 번째 타이머")
+            let index = timeSetInfo.timers.count
+            let info = TimerInfo(title: "\(index + 1) 번째 타이머")
             // Add timer
             timeSetInfo.timers.append(info)
             
             let appendSectionItem: Observable<Mutation> = .just(.appendTimer(info))
-            let setSelectIndexPath = mutate(action: .selectTimer(at: IndexPath(row: index - 1, section: 0)))
+            let setSelectIndexPath = mutate(action: .selectTimer(at: IndexPath(row: index, section: 0)))
             let sectionReload: Observable<Mutation> = .just(.sectionReload)
             
-            return .concat(appendSectionItem, setSelectIndexPath, sectionReload)
+            return .concat(appendSectionItem, sectionReload, setSelectIndexPath)
         case .deleteTimer:
             let index = currentState.selectedIndexPath.row
             guard index > 0 else { return .empty() }
@@ -212,15 +203,13 @@ class ProductivityViewReactor: Reactor {
             } else {
                 setSelectedIndexPath = .empty()
             }
-            let setTimeSetAction: Observable<Mutation> = .just(.setTimeSetAction(.Move))
             
-            return .concat(swapTimer, setSelectedIndexPath, setTimeSetAction)
+            return .concat(swapTimer, setSelectedIndexPath)
         case let .selectTimer(indexPath):
             var setTimerOptionVisible: Observable<Mutation> = .just(.setTimerOptionVisible(false))
             let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
             var setTimer: Observable<Mutation> = .empty()
             var setTime: Observable<Mutation> = .empty()
-            let setTimeSetAction: Observable<Mutation> = .just(.setTimeSetAction(.Select))
             
             if currentState.selectedIndexPath == indexPath {
                 // Toggle timer option visible. if current selected index path equal index path
@@ -231,20 +220,19 @@ class ProductivityViewReactor: Reactor {
                 setTime = mutate(action: .tapKeyPad(0))
             }
             
-            return .concat(setTimerOptionVisible, setSelectedIndexPath, setTimer, setTime, setTimeSetAction)
+            return .concat(setTimerOptionVisible, setSelectedIndexPath, setTimer, setTime)
         case .longPressTimer:
             return .just(.setTimerOptionVisible(false))
         case let .applyAlarm(alarm):
             timeSetInfo.timers.forEach { $0.alarm = alarm }
-            return .just(.alert("알람이 전체 적용 되었습니다."))
+            return .just(.setAlertMessage("알람이 전체 적용 되었습니다."))
         }
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         state.shouldSectionReload = false
-        state.alert = nil
-        state.timeSetAction = .None
+        state.alertMessage = nil
         
         switch mutation {
         case let .setTime(time):
@@ -272,17 +260,14 @@ class ProductivityViewReactor: Reactor {
         case let .setSelectedIndexPath(indexPath):
             state.selectedIndexPath = indexPath
             return state
-        case let .setTimeSetAction(action):
-            state.timeSetAction = action
-            return state
         case let .setSelectableTime(time):
             state.selectableTime = time
             return state
         case let .setTimerOptionVisible(isVisible):
             state.isTimerOptionVisible = isVisible
             return state
-        case let .alert(message):
-            state.alert = message
+        case let .setAlertMessage(message):
+            state.alertMessage = message
             return state
         case .sectionReload:
             state.shouldSectionReload = true

@@ -46,6 +46,8 @@ class ProductivityViewController: BaseViewController, View {
     private var saveButton: UIButton { return productivityView.saveButton }
     
     // MARK: - properties
+    private var isBadgeMoving: Bool = false
+    
     var coordinator: ProductivityViewCoordinator
     
     // MARK: - constructor
@@ -272,13 +274,23 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.timeSetAction != .None }
+            .filter { [weak self] _ in !(self?.isBadgeMoving ?? false) }
             .map { $0.selectedIndexPath }
-            .withLatestFrom(reactor.state.map { $0.timeSetAction }, resultSelector: { ($0, $1) })
-            .debounce(.milliseconds(10), scheduler: MainScheduler.instance)
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfNeeded(at: $0.0, action: $0.1) })
-            .map { $0.0 }
+            .distinctUntilChanged()
+            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
             .bind(to: timerBadgeCollectionView.rx.selected)
+            .disposed(by: disposeBag)
+        
+        // Scroll when timer option view visible
+        reactor.state
+            .map { $0.isTimerOptionVisible }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .withLatestFrom(
+                reactor.state
+                    .map { $0.selectedIndexPath }
+                    .distinctUntilChanged()) { ($0, $1) }
+            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.1, animated: true) })
             .disposed(by: disposeBag)
         
         // Timer option view
@@ -297,7 +309,7 @@ class ProductivityViewController: BaseViewController, View {
         
         // Alert
         reactor.state
-            .map { $0.alert }
+            .map { $0.alertMessage }
             .filter { $0 != nil }
             .map { $0! }
             .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
@@ -372,16 +384,6 @@ class ProductivityViewController: BaseViewController, View {
         showFooterView(isShow: canTimeSetStart)
     }
     
-    /// Scroll badge view if needed by time set action
-    private func scrollToBadgeIfNeeded(at indexPath: IndexPath, action: ProductivityViewReactor.TimeSetAction) {
-        switch action {
-        case .Select:
-            timerBadgeCollectionView.scrollToBadge(at: indexPath)
-        default:
-            break
-        }
-    }
-    
     /// Pop view controller to go to main option view
     private func popToTimerOptionMain(isTimerOptionVisible: Bool) {
         guard !isTimerOptionVisible else { return }
@@ -441,11 +443,13 @@ class ProductivityViewController: BaseViewController, View {
         
         switch gesture.state {
         case .began:
+            isBadgeMoving = true
             reactor?.action.onNext(.longPressTimer)
             timerBadgeCollectionView.beginInteractiveWithLocation(location)
         case .changed:
             timerBadgeCollectionView.updateInteractiveWithLocation(location)
         default:
+            isBadgeMoving = false
             timerBadgeCollectionView.finishInteractive()
         }
     }
