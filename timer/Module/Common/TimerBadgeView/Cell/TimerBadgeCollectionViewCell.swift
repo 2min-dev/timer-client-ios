@@ -74,7 +74,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(24.adjust())
+            make.height.equalTo(29.adjust())
         }
         
         indexLabel.snp.makeConstraints { make in
