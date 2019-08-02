@@ -12,13 +12,13 @@ class AlarmChangeView: UIView {
     // MARK: - view properties
     let backButton: UIButton = {
         let view = UIButton()
-        view.backgroundColor = .yellow
+        view.setImage(UIImage(named: "btn_back_half"), for: .normal)
         return view
     }()
     
     let currentAlarmLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         return view
     }()
     

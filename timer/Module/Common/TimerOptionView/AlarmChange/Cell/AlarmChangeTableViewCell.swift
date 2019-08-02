@@ -15,19 +15,20 @@ class AlarmChangeTableViewCell: UITableViewCell {
     // MARK: - view properties
     private let playButton: UIButton = {
         let view = UIButton()
-        view.backgroundColor = .red
+        view.setImage(UIImage(named: "btn_play"), for: .normal)
         return view
     }()
     
     let nameLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(13.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         return view
     }()
     
     private let checkImageView: UIImageView = {
         let view = UIImageView()
-        view.backgroundColor = .green
+        view.contentMode = .center
+        view.image = UIImage(named: "icon_selected")
         return view
     }()
     
@@ -41,7 +42,7 @@ class AlarmChangeTableViewCell: UITableViewCell {
         }
         
         checkImageView.snp.makeConstraints { make in
-            make.width.equalTo(40.adjust())
+            make.width.equalTo(36.adjust())
         }
         
         return view

@@ -14,7 +14,7 @@ class TimerOptionView: UIView {
     // MARK: - view properties
     let commentTextView: UITextView = {
         let view = UITextView()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         // Disable auto correction (keyboard)
         view.autocorrectionType = .no
         return view
@@ -22,13 +22,13 @@ class TimerOptionView: UIView {
     
     let commentLengthLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Light.withSize(12.adjust())
+        view.font = Constants.Font.Light.withSize(10.adjust())
         return view
     }()
     
     let commentHintLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
         view.text = "timer_option_comment_hint".localized
         return view
@@ -61,14 +61,13 @@ class TimerOptionView: UIView {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
-        // TODO: remove it after resource applied
-        view.backgroundColor = UIColor.blue
+        view.image = UIImage(named: "icon_alarm")
         return view
     }()
     
     let alarmNameLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         return view
     }()
     
@@ -78,7 +77,7 @@ class TimerOptionView: UIView {
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .font: Constants.Font.Regular.withSize(13.adjust())
+            .font: Constants.Font.Regular.withSize(10.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         return view
@@ -90,7 +89,7 @@ class TimerOptionView: UIView {
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.black,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .font: Constants.Font.Regular.withSize(13.adjust())
+            .font: Constants.Font.Regular.withSize(10.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         return view
@@ -102,9 +101,9 @@ class TimerOptionView: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubviews([alarmIconImageView, alarmNameLabel, alarmApplyAllButton, alarmChangeButton])
         alarmIconImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(5.adjust())
+            make.centerY.equalToSuperview()
+            make.height.equalTo(36.adjust())
             make.width.equalTo(alarmIconImageView.snp.height)
         }
 
@@ -134,21 +133,20 @@ class TimerOptionView: UIView {
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
-        // TODO: remove it after resource applied
-        view.backgroundColor = UIColor.yellow
+        view.contentMode = .center
+        view.image = UIImage(named: "icon_timer")
         return view
     }()
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         return view
     }()
         
     let deleteButton: UIButton = {
         let view = UIButton()
-        // TODO: remove it after resource applied
-        view.backgroundColor = UIColor.green
+        view.setImage(UIImage(named: "btn_delete_mini"), for: .normal)
         return view
     }()
     
@@ -158,9 +156,9 @@ class TimerOptionView: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubviews([timerIconImageView, titleLabel, deleteButton])
         timerIconImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(5.adjust())
+            make.centerY.equalToSuperview()
+            make.height.equalTo(36.adjust())
             make.width.equalTo(timerIconImageView.snp.height)
         }
         
@@ -172,9 +170,9 @@ class TimerOptionView: UIView {
         }
         
         deleteButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-10.adjust())
+            make.centerY.equalToSuperview()
+            make.height.equalTo(24.adjust())
             make.width.equalTo(deleteButton.snp.height)
         }
         
