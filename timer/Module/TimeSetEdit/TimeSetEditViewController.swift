@@ -15,6 +15,7 @@ class TimeSetEditViewController: BaseViewController, View {
     private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
     private var titleTextField: UITextField { return timeSetEditView.titleTextField }
+    private var titleClearButton: UIButton { return timeSetEditView.titleClearButton }
     private var titleHintLabel: UILabel { return timeSetEditView.titleHintLabel }
     
     private var sumOfTimersLabel: UILabel { return timeSetEditView.sumOfTimersLabel}
@@ -62,12 +63,57 @@ class TimeSetEditViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetEditViewReactor) {
         // MARK: action
+        rx.viewDidLoad
+            .map { Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        titleTextField.rx.text
+            .orEmpty
+            .skipUntil(rx.viewWillAppear)
+            .map { Reactor.Action.updateTitle($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        titleClearButton.rx.tap
+            .map { Reactor.Action.clearTitle }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        startAfterSaveCheckBox.rx.tap
+            .map { Reactor.Action.toggleStartAfterSave }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        timerBadgeCollectionView.rx.badgeSelected
+            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.0, animated: true) })
+            .map { Reactor.Action.selectTimer(at: $0.0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        timerOptionViewController.rx.alarmApplyAll
+            .map { Reactor.Action.applyAlarm($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        timerOptionViewController.rx.delete
+            .map { Reactor.Action.deleteTimer }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // MARK: state
+        // Hint of title text field
+        reactor.state
+            .map { $0.hint }
+            .bind(to: titleHintLabel.rx.text)
+            .disposed(by: disposeBag)
+        
         // Title of time set
         reactor.state
             .map { $0.title }
-            .bind(to: titleHintLabel.rx.text)
+            .filter { [weak self] in $0 != self?.titleTextField.text }
+            .debug()
+            .bind(to: titleTextField.rx.text)
             .disposed(by: disposeBag)
         
         // Sum of timers
@@ -104,8 +150,7 @@ class TimeSetEditViewController: BaseViewController, View {
         
         reactor.state
             .map { $0.selectedIndexPath }
-            .debounce(.milliseconds(10), scheduler: MainScheduler.instance)
-            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0) })
+            .distinctUntilChanged()
             .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
@@ -115,12 +160,33 @@ class TimeSetEditViewController: BaseViewController, View {
             .distinctUntilChanged { $0 === $1 }
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
-    
+        
+        // Alert
+        reactor.state
+            .map { $0.alertMessage }
+            .filter { $0 != nil }
+            .map { $0! }
+            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
+            .disposed(by: disposeBag)
     }
     
-    // MARK: - priate method
+    // MARK: - private method
+    /// Show popup alert
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        // Alert view controller dismiss after 1 seconds
+        alert.rx.viewDidLoad
+            .delay(.seconds(1), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak alert] in alert?.dismiss(animated: true) })
+            .disposed(by: disposeBag)
+        
+        // Present alert view controller
+        present(alert, animated: true)
+    }
     
-    // MARK: - public method
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
     
     deinit {
         Logger.verbose()

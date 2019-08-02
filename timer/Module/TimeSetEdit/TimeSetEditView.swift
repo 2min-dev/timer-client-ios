@@ -21,6 +21,15 @@ class TimeSetEditView: UIView {
         let view = UITextField()
         view.textAlignment = .center
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        // Disable auto correction (keyboard)
+        view.autocorrectionType = .no
+        return view
+    }()
+    
+    let titleClearButton: UIButton = {
+        let view = UIButton()
+        view.setImage(UIImage(named: "btn_clear"), for: .normal)
+        view.isHidden = true
         return view
     }()
     
@@ -29,8 +38,6 @@ class TimeSetEditView: UIView {
         view.textAlignment = .center
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.textColor = Constants.Color.lightGray
-        // TODO: Layout test title. remove it.
-        view.text = "1번째 생산성"
         return view
     }()
     
@@ -44,9 +51,19 @@ class TimeSetEditView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleHintLabel, titleTextField, titleInputBottomLineView])
+        view.addAutolayoutSubviews([titleHintLabel, titleClearButton, titleTextField, titleInputBottomLineView])
         titleTextField.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.center.equalToSuperview()
+            make.width.equalTo(128.adjust())
+        }
+        
+        titleClearButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(titleClearButton.snp.width)
         }
         
         titleHintLabel.snp.makeConstraints { make in
@@ -67,8 +84,6 @@ class TimeSetEditView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
-        // TODO: Layout test title. remove it.
-        view.text = "전체 00:01:00"
         return view
     }()
     
@@ -76,8 +91,6 @@ class TimeSetEditView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
-        // TODO: Layout test title. remove it.
-        view.text = "종료 9:42 AM"
         return view
     }()
     
@@ -106,7 +119,6 @@ class TimeSetEditView: UIView {
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
         view.highlightedTextColor = Constants.Color.black
-        // TODO: Layout test title. remove it.
         view.text = "저장 완료 후 시작"
         return view
     }()
@@ -138,7 +150,7 @@ class TimeSetEditView: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubviews([titleInputView, timeInfoView, startAfterSaveCheckBox, timerOptionView, timerBadgeCollectionView])
         titleInputView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(40.adjust())
+            make.top.equalToSuperview().offset(25.adjust())
             make.centerX.equalToSuperview()
             make.width.equalTo(200.adjust())
             make.height.equalTo(50.adjust())
@@ -240,14 +252,20 @@ class TimeSetEditView: UIView {
         // Update timer option layer frame
         timerOptionLayer.frame = CGRect(x: 0, y: 0, width: timerOptionView.bounds.width, height: timerOptionView.bounds.height)
         timerOptionLayer.path = drawTimerOptionLayer(frame: timerOptionView.bounds)
-        
     }
     
     // MARK: - bind
     private func bind() {
-        titleTextField.rx.text
+        titleTextField.rx.textChanged
+            .filter { $0 != nil }
             .map { !$0!.isEmpty }
             .bind(to: titleHintLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        titleTextField.rx.textChanged
+            .filter { $0 != nil }
+            .map { $0!.isEmpty }
+            .bind(to: titleClearButton.rx.isHidden)
             .disposed(by: disposeBag)
     }
     
