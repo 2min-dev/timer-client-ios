@@ -32,7 +32,6 @@ class ProductivityViewReactor: Reactor {
         case deleteTimer
         case moveTimer(at: IndexPath, to: IndexPath)
         case selectTimer(at: IndexPath)
-        case longPressTimer
         
         case applyAlarm(String)
     }
@@ -50,7 +49,6 @@ class ProductivityViewReactor: Reactor {
         case setSelectedIndexPath(IndexPath)
         
         case setSelectableTime(Time)
-        case setTimerOptionVisible(Bool)
         
         case setAlertMessage(String)
         case sectionReload
@@ -68,7 +66,6 @@ class ProductivityViewReactor: Reactor {
         
         var selectableTime: Time            // Selectable time key based on current time
         var canTimeSetStart: Bool           // Can the time set start
-        var isTimerOptionVisible: Bool      // Is the timer option view visible
         
         var alertMessage: String?           // Alert message
         var shouldSectionReload: Bool       // Need section reload
@@ -99,7 +96,6 @@ class ProductivityViewReactor: Reactor {
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   selectableTime: .hour,
                                   canTimeSetStart: false,
-                                  isTimerOptionVisible: false,
                                   alertMessage: nil,
                                   shouldSectionReload: true)
     }
@@ -184,11 +180,10 @@ class ProductivityViewReactor: Reactor {
                 return .concat(setSelectIndexPath, removeTimer, sectionReload)
             }
             
-            let setTimerOptionVisible: Observable<Mutation> = .just(.setTimerOptionVisible(false))
             let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[index].endTime))
             let setTime: Observable<Mutation> = .just(.setTime(0))
             
-            return .concat(setTimerOptionVisible, setTimer, setTime, removeTimer, sectionReload)
+            return .concat(setTimer, setTime, removeTimer, sectionReload)
         case let .moveTimer(at: sourceIndexPath, to: destinationIndexPath):
             // Swap timer
             timeSetInfo.timers.swapAt(sourceIndexPath.row, destinationIndexPath.row)
@@ -206,23 +201,11 @@ class ProductivityViewReactor: Reactor {
             
             return .concat(swapTimer, setSelectedIndexPath)
         case let .selectTimer(indexPath):
-            var setTimerOptionVisible: Observable<Mutation> = .just(.setTimerOptionVisible(false))
             let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
-            var setTimer: Observable<Mutation> = .empty()
-            var setTime: Observable<Mutation> = .empty()
+            let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[indexPath.row].endTime))
+            let setTime: Observable<Mutation> = .just(.setTime(0))
             
-            if currentState.selectedIndexPath == indexPath {
-                // Toggle timer option visible. if current selected index path equal index path
-                setTimerOptionVisible = .just(.setTimerOptionVisible(!currentState.isTimerOptionVisible))
-            } else {
-                // Update timer info to selected index path
-                setTimer = .just(.setTimer(timeSetInfo.timers[indexPath.row].endTime))
-                setTime = mutate(action: .tapKeyPad(0))
-            }
-            
-            return .concat(setTimerOptionVisible, setSelectedIndexPath, setTimer, setTime)
-        case .longPressTimer:
-            return .just(.setTimerOptionVisible(false))
+            return .concat(setSelectedIndexPath, setTimer, setTime)
         case let .applyAlarm(alarm):
             timeSetInfo.timers.forEach { $0.alarm = alarm }
             return .just(.setAlertMessage("알람이 전체 적용 되었습니다."))
@@ -262,9 +245,6 @@ class ProductivityViewReactor: Reactor {
             return state
         case let .setSelectableTime(time):
             state.selectableTime = time
-            return state
-        case let .setTimerOptionVisible(isVisible):
-            state.isTimerOptionVisible = isVisible
             return state
         case let .setAlertMessage(message):
             state.alertMessage = message

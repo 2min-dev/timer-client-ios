@@ -47,6 +47,7 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: - properties
     private var isBadgeMoving: Bool = false
+    private var timerOptionVisibleSubject: BehaviorRelay = BehaviorRelay(value: false)
     
     var coordinator: ProductivityViewCoordinator
     
@@ -66,8 +67,6 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-    
         timerBadgeCollectionView.reorderableDelegate = self
         timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
             switch cellType {
@@ -90,6 +89,8 @@ class ProductivityViewController: BaseViewController, View {
             addChild(timerOptionNavigationController, in: timerOptionView)
             self.timerOptionViewController = timerOptionViewController
         }
+        
+        super.viewDidLoad()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -130,6 +131,14 @@ class ProductivityViewController: BaseViewController, View {
                     .disposed(by: self.disposeBag)
             })
             .disposed(by: disposeBag)
+        
+        // Timer option view visible
+        timerOptionVisibleSubject
+            .distinctUntilChanged()
+            .map { !$0 }
+            .do(onNext: { [weak self] in self?.popToTimerOptionMain(isTimerOptionVisible: !$0) })
+            .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
+            .disposed(by: disposeBag)
     }
     
     func bind(reactor: ProductivityViewReactor) {
@@ -162,7 +171,10 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfNeeded(at: $0.0, cellType: $0.1) })
+            .do(onNext: { [weak self] in
+                self?.scrollToBadgeIfCan(at: $0.0, cellType: $0.1)
+                self?.setVisibleOfTimerOptionView(oldIndexPath: reactor.currentState.selectedIndexPath, newIndexPath: $0.0)
+            })
             .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -183,9 +195,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))
-            })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo)) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -277,30 +287,14 @@ class ProductivityViewController: BaseViewController, View {
             .filter { [weak self] _ in !(self?.isBadgeMoving ?? false) }
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .do(onNext: { [weak self] in
+                self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true)
+                self?.timerOptionVisibleSubject.accept(false)
+            })
             .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
-        // Scroll when timer option view visible
-        reactor.state
-            .map { $0.isTimerOptionVisible }
-            .distinctUntilChanged()
-            .filter { $0 }
-            .withLatestFrom(
-                reactor.state
-                    .map { $0.selectedIndexPath }
-                    .distinctUntilChanged()) { ($0, $1) }
-            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.1, animated: true) })
-            .disposed(by: disposeBag)
-        
         // Timer option view
-        reactor.state
-            .map { !$0.isTimerOptionVisible }
-            .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.popToTimerOptionMain(isTimerOptionVisible: !$0) })
-            .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
-            .disposed(by: disposeBag)
-        
         reactor.state
             .map { $0.timers[$0.selectedIndexPath.row] }
             .distinctUntilChanged { $0 === $1 }
@@ -318,7 +312,7 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: - private method
     /// Scroll badge view if needed by time set action
-    private func scrollToBadgeIfNeeded(at indexPath: IndexPath, cellType: TimerBadgeCellType) {
+    private func scrollToBadgeIfCan(at indexPath: IndexPath, cellType: TimerBadgeCellType) {
         switch cellType {
         case .add:
             break
@@ -339,6 +333,15 @@ class ProductivityViewController: BaseViewController, View {
         }
         
         return Int(text) ?? 0
+    }
+    
+    /// Toggle timer option view visible state
+    private func setVisibleOfTimerOptionView(oldIndexPath: IndexPath, newIndexPath: IndexPath) {
+        if oldIndexPath == newIndexPath {
+            timerOptionVisibleSubject.accept(!timerOptionVisibleSubject.value)
+        } else {
+            timerOptionVisibleSubject.accept(false)
+        }
     }
     
     /// Convert badge select event to reactor action
@@ -444,7 +447,7 @@ class ProductivityViewController: BaseViewController, View {
         switch gesture.state {
         case .began:
             isBadgeMoving = true
-            reactor?.action.onNext(.longPressTimer)
+            timerOptionVisibleSubject.accept(false)
             timerBadgeCollectionView.beginInteractiveWithLocation(location)
         case .changed:
             timerBadgeCollectionView.updateInteractiveWithLocation(location)
