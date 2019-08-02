@@ -52,6 +52,7 @@ enum Constants {
         static let gray: UIColor = UIColor(hex: "#969696")
         static let lightGray: UIColor = UIColor(hex: "#C8C8C8")
         static let lightLightGray: UIColor = UIColor(hex: "#FDFDFD")
+        static let lightLightLightGray: UIColor = UIColor(hex: "#F0F0F0")
     }
     
     enum Locale {

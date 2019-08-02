@@ -15,6 +15,20 @@
 "tab_button_local_time_set" = "로컬 타임셋";
 "tab_button_shared_time_set" = "공유된 타임셋";
 
+// MARK: - Keypad
+"keypad_cancel" = "취소";
+"keypad_delete" = "삭제";
+
+// MARK: - Footer
+"footer_button_cancel" = "취소";
+"footer_button_confirm" = "완료";
+"footer_button_next" = "다음";
+"footer_button_save" = "저장";
+"footer_button_start" = "시작";
+"footer_button_pause" = "일시정지";
+"footer_button_restart" = "재시작";
+"footer_button_edit" = "편집";
+
 // MARK: - Productivity
 "productivity_button_hour_title" = "시";
 "productivity_button_minute_title" = "분";
@@ -29,6 +43,13 @@
 "timer_option_comment_bytes" = "%02d/%d bytes";
 "timer_option_alarm_all_apply" = "전체 적용";
 "timer_option_alarm_change" = "변경";
+
+// MARK: - Time set
+// MARK: Common
+"time_set_sum_of_all_timers_title" = "전체시간 ";
+"time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
+"time_set_expected_time_title" = "종료예정 ";
+"time_set_expected_time_format" = "H:mm a";
 
 // MARK: - Widget String
 "widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";
