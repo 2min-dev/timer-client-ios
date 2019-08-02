@@ -88,6 +88,11 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
     // MARK: - bind
     func bind() {
         rx.setDelegate(self).disposed(by: disposeBag)
+        
+        _ = rx.methodInvoked(#selector(layoutSubviews))
+            .filter { [weak self] _ in self?.bounds.width ?? 0 > 0 }
+            .first()
+            .subscribe { [weak self] _ in self?.scrollToBadge(at: IndexPath(row: 0, section: 0), animated: false) }
     }
     
     func bind(reactor: TimerBadgeViewReactor) {
