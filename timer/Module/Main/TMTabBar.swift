@@ -169,12 +169,3 @@ class TMTabBar: UIView {
         delegate?.tabBar(self, didSelect: sender.tag)
     }
 }
-
-extension Reactive where Base: TMTabBar {
-    var itemSelected: ControlEvent<Int> {
-        let source: Observable<Int> = .merge(base.tabBarItems.enumerated().map { index, tabBarItem in
-            tabBarItem.rx.tap.debug().map { index }
-        })
-        return ControlEvent(events: source)
-    }
-}

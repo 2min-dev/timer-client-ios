@@ -61,7 +61,7 @@ class TimerOptionView: UIView {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_alarm")
+        view.image = UIImage(named: "icon_sound")
         return view
     }()
     

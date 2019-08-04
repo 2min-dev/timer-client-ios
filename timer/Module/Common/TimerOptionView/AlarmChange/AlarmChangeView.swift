@@ -12,7 +12,7 @@ class AlarmChangeView: UIView {
     // MARK: - view properties
     let backButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_back_half"), for: .normal)
+        view.setImage(UIImage(named: "btn_back"), for: .normal)
         return view
     }()
     

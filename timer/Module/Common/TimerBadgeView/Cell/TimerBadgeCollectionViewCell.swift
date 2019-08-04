@@ -37,7 +37,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
 
     let optionButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_timer_more"), for: .normal)
+        view.setImage(UIImage(named: "btn_timer_detail"), for: .normal)
         view.contentVerticalAlignment = .bottom
         return view
     }()

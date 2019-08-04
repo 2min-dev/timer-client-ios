@@ -74,8 +74,8 @@ class ProductivityView: UIView {
     
     let loopButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_timeset_unloop"), for: .normal)
-        view.setImage(UIImage(named: "btn_timeset_loop"), for: .selected)
+        view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
+        view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
         return view
     }()
     
