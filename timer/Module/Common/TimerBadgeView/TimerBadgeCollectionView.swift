@@ -66,7 +66,7 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         // layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // self-sizing cell
-        layout.itemSize = CGSize(width: 111.adjust(), height: 60.adjust())
+        layout.itemSize = CGSize(width: 108.adjust(), height: 60.adjust())
         layout.minimumInteritemSpacing = 30.adjust()
 
         self.init(frame: frame, collectionViewLayout: layout)
@@ -197,7 +197,7 @@ extension TimerBadgeCollectionView: UICollectionViewDelegateFlowLayout {
         switch cellType {
         case .add:
             var size = layout.itemSize
-            size.width = 51.adjust()
+            size.width = 50.adjust()
             return size
         default:
             return layout.itemSize

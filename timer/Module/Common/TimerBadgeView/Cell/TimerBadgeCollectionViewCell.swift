@@ -25,6 +25,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
         view.backgroundColor = Constants.Color.codGray
+        view.layer.borderWidth = 1
 
         // Set constraint of subviews
         view.addAutolayoutSubview(self.timeLabel)
@@ -38,14 +39,13 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     let optionButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_timer_detail"), for: .normal)
-        view.contentVerticalAlignment = .bottom
         return view
     }()
 
     let indexLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
-        view.font = Constants.Font.ExtraBold.withSize(10.adjust())
+        view.font = Constants.Font.ExtraBold.withSize(12.adjust())
         view.textAlignment = .center
         return view
     }()
@@ -67,14 +67,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(containerView.snp.top).offset(-5.adjust())
+            make.bottom.equalTo(containerView.snp.top)
         }
         
         containerView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(29.adjust())
+            make.height.equalTo(30.adjust())
         }
         
         indexLabel.snp.makeConstraints { make in
@@ -129,9 +129,15 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     private func setSelected(_ isSelected: Bool) {
         guard let reactor = reactor else { return }
         
-        // Set time label color
+        // Set badge color
         containerView.backgroundColor = isSelected ? Constants.Color.codGray : Constants.Color.clear
-        timeLabel.textColor = isSelected ? Constants.Color.white : Constants.Color.codGray
+        containerView.layer.borderColor = isSelected ? Constants.Color.clear.cgColor : Constants.Color.gallery.cgColor
+        
+        // Set time label color
+        timeLabel.textColor = isSelected ? Constants.Color.gallery : Constants.Color.codGray
+        
+        // Set index label color
+        indexLabel.textColor = isSelected ? Constants.Color.codGray : Constants.Color.silver
         
         // Set option button visible
         optionButton.isHidden = !reactor.currentState.isOptionVisible || !isSelected

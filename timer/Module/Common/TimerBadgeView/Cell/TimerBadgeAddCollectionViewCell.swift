@@ -53,7 +53,7 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(31.adjust())
+            make.height.equalTo(30.adjust())
         }
     }
     
