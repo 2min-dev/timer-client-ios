@@ -16,7 +16,6 @@ class TimeSetEditViewReactor: Reactor {
         case viewDidLoad
         case clearTitle
         case updateTitle(String)
-        case toggleStartAfterSave
         
         case deleteTimer
         case selectTimer(at: IndexPath)
@@ -26,7 +25,6 @@ class TimeSetEditViewReactor: Reactor {
     
     enum Mutation {
         case setTitle(String)
-        case setStartAfterSave(Bool)
         case removeTimer(at: Int)
         case setSelectedIndexPath(at: IndexPath)
         
@@ -38,7 +36,6 @@ class TimeSetEditViewReactor: Reactor {
         var title: String                   // Title of time set
         var hint: String                    // Title hint of time set
         let sumOfTimers: TimeInterval       // The time that sum of all timers
-        var isStartAfterSave: Bool          // Is time set start after it save
         
         var timers: [TimerInfo]             // The timer list model of time set
         var selectedIndexPath: IndexPath    // Current selected timer index path
@@ -57,7 +54,6 @@ class TimeSetEditViewReactor: Reactor {
         self.initialState = State(title: timeSetInfo.title,
                                   hint: "생산성",
                                   sumOfTimers: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  isStartAfterSave: false,
                                   timers: timeSetInfo.timers,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   alertMessage: nil,
@@ -78,8 +74,6 @@ class TimeSetEditViewReactor: Reactor {
             
             timeSetInfo.title = title
             return .just(.setTitle(title))
-        case .toggleStartAfterSave:
-            return .just(.setStartAfterSave(!currentState.isStartAfterSave))
         case .deleteTimer:
             let index = currentState.selectedIndexPath.row
             guard index > 0 else { return .empty() }
@@ -108,13 +102,11 @@ class TimeSetEditViewReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         state.shouldSectionReload = false
+        state.alertMessage = nil
         
         switch mutation {
         case let .setTitle(title):
             state.title = title
-            return state
-        case let .setStartAfterSave(isStartAfterSave):
-            state.isStartAfterSave = isStartAfterSave
             return state
         case let .removeTimer(at: index):
             state.timers.remove(at: index)

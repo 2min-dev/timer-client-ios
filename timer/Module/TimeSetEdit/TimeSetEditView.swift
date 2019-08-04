@@ -21,6 +21,7 @@ class TimeSetEditView: UIView {
         let view = UITextField()
         view.textAlignment = .center
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.textColor = Constants.Color.black
         // Disable auto correction (keyboard)
         view.autocorrectionType = .no
         return view
@@ -60,14 +61,14 @@ class TimeSetEditView: UIView {
         }
         
         titleClearButton.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.width.equalTo(36.adjust())
-            make.height.equalTo(titleClearButton.snp.width)
+            make.bottom.equalToSuperview()
+            make.width.equalTo(titleClearButton.snp.height)
         }
         
         titleHintLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.edges.equalTo(titleTextField)
         }
         
         titleInputBottomLineView.snp.makeConstraints { make in
@@ -82,14 +83,12 @@ class TimeSetEditView: UIView {
     
     let sumOfTimersLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
         return view
     }()
     
     let endOfTimerLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.lightGray
         return view
     }()
@@ -111,15 +110,6 @@ class TimeSetEditView: UIView {
             make.bottom.equalToSuperview()
         }
         
-        return view
-    }()
-    
-    let startAfterSaveCheckBox: CheckBox = {
-        let view = CheckBox()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.lightGray
-        view.highlightedTextColor = Constants.Color.black
-        view.text = "저장 완료 후 시작"
         return view
     }()
     
@@ -148,34 +138,29 @@ class TimeSetEditView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleInputView, timeInfoView, startAfterSaveCheckBox, timerOptionView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([titleInputView, timeInfoView, timerOptionView, timerBadgeCollectionView])
         titleInputView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(25.adjust())
+            make.top.equalToSuperview().offset(22.adjust())
             make.centerX.equalToSuperview()
             make.width.equalTo(200.adjust())
-            make.height.equalTo(50.adjust())
+            make.height.equalTo(36.adjust())
         }
         
         timeInfoView.snp.makeConstraints { make in
             make.top.equalTo(titleInputView.snp.bottom).offset(10.adjust())
             make.centerX.equalTo(titleInputView)
-            make.width.equalTo(titleInputView).offset(-14.adjust())
-        }
-        
-        startAfterSaveCheckBox.snp.makeConstraints { make in
-            make.top.equalTo(timeInfoView.snp.bottom).offset(36.5.adjust())
-            make.centerX.equalToSuperview()
+            make.width.equalTo(titleInputView)
         }
         
         timerOptionView.snp.makeConstraints { make in
-            make.top.equalTo(startAfterSaveCheckBox.snp.bottom).offset(28.adjust())
+            make.top.equalTo(titleInputView.snp.bottom).offset(87.adjust())
             make.centerX.equalToSuperview()
             make.width.equalTo(250.adjust())
             make.height.equalTo(271.adjust())
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timerOptionView.snp.bottom).offset(14.5.adjust())
+            make.top.equalTo(timerOptionView.snp.bottom).offset(8.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -183,27 +168,12 @@ class TimeSetEditView: UIView {
         return view
     }()
     
-    let footerView: UIView = {
-        let view = UIView()
-        
-        let label = UILabel()
-        label.text = "Footer View"
-        label.textAlignment = .center
-        label.backgroundColor = .lightGray
-        label.layer.borderWidth = 1
-        
-        view.addAutolayoutSubview(label)
-        label.snp.makeConstraints { make in
-            if #available(iOS 11.0, *) {
-                make.edges.equalTo(view.safeAreaLayoutGuide)
-            } else {
-                make.edges.equalToSuperview()
-            }
-            make.height.equalTo(70.adjust())
-        }
-        
-        view.backgroundColor = .gray
-        view.layer.borderWidth = 1
+    let footerView: Footer = {
+        let view = Footer()
+        view.buttons = [
+            FooterButton(title: "footer_button_cancel".localized, type: .normal),
+            FooterButton(title: "footer_button_confirm".localized, type: .highlight)
+        ]
         return view
     }()
     

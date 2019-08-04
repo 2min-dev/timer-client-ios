@@ -11,6 +11,10 @@ import RxCocoa
 import ReactorKit
 
 class TimeSetEditViewController: BaseViewController, View {
+    // MARK: - constants
+    private let FOOTER_BUTTON_CANCEL = 0
+    private let FOOTER_BUTTON_CONFIRM = 1
+    
     // MARK: - view properties
     private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
@@ -21,14 +25,12 @@ class TimeSetEditViewController: BaseViewController, View {
     private var sumOfTimersLabel: UILabel { return timeSetEditView.sumOfTimersLabel}
     private var endOfTimerLabel: UILabel { return timeSetEditView.endOfTimerLabel }
     
-    private var startAfterSaveCheckBox: CheckBox { return timeSetEditView.startAfterSaveCheckBox }
-    
     private var timerOptionView: UIView { return timeSetEditView.timerOptionView }
     private var timerOptionViewController: TimerOptionViewController!
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetEditView.timerBadgeCollectionView }
     
-    private var footerView: UIView { return timeSetEditView.footerView }
+    private var footerView: Footer { return timeSetEditView.footerView }
     
     // MARK: - properties
     var coordinator: TimeSetEditViewCoordinator
@@ -80,11 +82,6 @@ class TimeSetEditViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
 
-        startAfterSaveCheckBox.rx.tap
-            .map { Reactor.Action.toggleStartAfterSave }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-
         timerBadgeCollectionView.rx.badgeSelected
             .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.0, animated: true) })
             .map { Reactor.Action.selectTimer(at: $0.0) }
@@ -99,6 +96,10 @@ class TimeSetEditViewController: BaseViewController, View {
         timerOptionViewController.rx.delete
             .map { Reactor.Action.deleteTimer }
             .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        footerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -121,8 +122,11 @@ class TimeSetEditViewController: BaseViewController, View {
             .map { $0.sumOfTimers }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { String(format: "전체 %02d:%02d:%02d", $0.0, $0.1, $0.2) }
-            .bind(to: sumOfTimersLabel.rx.text)
+            .map { [weak self] in
+                self?.getTimeSetInfoString(title: "time_set_sum_of_all_timers_title".localized,
+                                           info: String(format: "time_set_sum_of_all_timers_format".localized, $0.0, $0.1, $0.2))
+            }
+            .bind(to: sumOfTimersLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // End of time set
@@ -130,15 +134,11 @@ class TimeSetEditViewController: BaseViewController, View {
             .map { $0.sumOfTimers }
             .distinctUntilChanged()
             .map { Date().addingTimeInterval($0) }
-            .map { getDateString(format: "종료 H:mm a", date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
-            .bind(to: endOfTimerLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Start after save check box
-        reactor.state
-            .map { $0.isStartAfterSave }
-            .distinctUntilChanged()
-            .bind(to: startAfterSaveCheckBox.rx.isChecked)
+            .map { [weak self] in
+                self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
+                                           info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
+            }
+            .bind(to: endOfTimerLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // Timer badge view
@@ -171,6 +171,33 @@ class TimeSetEditViewController: BaseViewController, View {
     }
     
     // MARK: - private method
+    private func footerActionHandler(index: Int) {
+        if index == FOOTER_BUTTON_CANCEL {
+            // Cancel -> Pop view controller
+            navigationController?.popViewController(animated: true)
+        } else if index == FOOTER_BUTTON_CONFIRM {
+            // Confirm -> Present time set detail
+            // TODO: Present time set detail
+        }
+    }
+    
+    /// Get time set info's attributed string
+    private func getTimeSetInfoString(title: String, info: String) -> NSAttributedString {
+        let title = NSAttributedString(string: title,
+                                       attributes: [
+                                        .font: Constants.Font.Regular.withSize(12.adjust())
+        ])
+        let time = NSAttributedString(string: info,
+                                      attributes: [
+                                        .font: Constants.Font.Bold.withSize(12.adjust())
+        ])
+        
+        let attributedString = NSMutableAttributedString()
+        attributedString.append(title)
+        attributedString.append(time)
+        return attributedString
+    }
+    
     /// Show popup alert
     private func showAlert(message: String) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
