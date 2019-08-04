@@ -29,7 +29,7 @@ class TimerOptionView: UIView {
     let commentHintLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         view.text = "timer_option_comment_hint".localized
         return view
     }()
@@ -75,7 +75,7 @@ class TimerOptionView: UIView {
         let view = UIButton()
         let string = "timer_option_alarm_all_apply".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .font: Constants.Font.Regular.withSize(10.adjust())
         ]
@@ -87,7 +87,7 @@ class TimerOptionView: UIView {
         let view = UIButton()
         let string = "timer_option_alarm_change".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .font: Constants.Font.Regular.withSize(10.adjust())
         ]

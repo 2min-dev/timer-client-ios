@@ -15,7 +15,7 @@ class TodayView: UIView {
         view.textAlignment = .center
         view.numberOfLines = 0
         view.font = Constants.Font.Regular.withSize(18.adjust())
-        view.textColor = Constants.Color.gray
+        view.textColor = Constants.Color.silver
         view.text = "widget_preparing_title".localized
         return view
     }()

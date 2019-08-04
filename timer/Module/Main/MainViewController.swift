@@ -20,7 +20,7 @@ class MainViewController: UITabBarController {
     // MARK: - view properties
     let _tabBar: TMTabBar = {
         let view = TMTabBar()
-        view.tintColor = Constants.Color.appColor
+        view.tintColor = Constants.Color.carnation
         view.font = Constants.Font.Regular.withSize(12.adjust())
         return view
     }()

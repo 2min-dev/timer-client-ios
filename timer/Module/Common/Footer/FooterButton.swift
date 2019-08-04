@@ -16,7 +16,7 @@ class FooterButton: UIButton {
         var textColor: UIColor {
             switch self {
             case .normal:
-                return Constants.Color.appColor
+                return Constants.Color.carnation
             case .highlight:
                 return Constants.Color.white
             }
@@ -25,9 +25,9 @@ class FooterButton: UIButton {
         var backgroundColor: UIColor {
             switch self {
             case .normal:
-                return Constants.Color.lightLightLightGray
+                return Constants.Color.gallery
             case .highlight:
-                return Constants.Color.appColor
+                return Constants.Color.carnation
             }
         }
     }
@@ -39,7 +39,7 @@ class FooterButton: UIButton {
     override var isEnabled: Bool {
         didSet {
             if isEnabled {
-                backgroundColor = Constants.Color.lightLightLightGray
+                backgroundColor = Constants.Color.gallery
             } else {
                 backgroundColor = type.backgroundColor
             }
@@ -81,7 +81,7 @@ class FooterButton: UIButton {
         ]
         setAttributedTitle(NSAttributedString(string: title ?? "", attributes: attributes), for: .normal)
         
-        attributes[.foregroundColor] = Constants.Color.lightGray
+        attributes[.foregroundColor] = Constants.Color.silver
         setAttributedTitle(NSAttributedString(string: title ?? "", attributes: attributes), for: .disabled)
     }
     

@@ -16,7 +16,7 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     let addLabel: UILabel = {
         let view = UILabel()
         view.text = "+"
-        view.textColor = Constants.Color.black
+        view.textColor = Constants.Color.codGray
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.textAlignment = .center
         return view
@@ -24,7 +24,7 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
-        view.backgroundColor = Constants.Color.lightLightLightGray
+        view.backgroundColor = Constants.Color.gallery
         
         // Set constraint of subviews
         view.addAutolayoutSubview(self.addLabel)

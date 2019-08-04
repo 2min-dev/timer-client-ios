@@ -21,7 +21,7 @@ class TimeSetEditView: UIView {
         let view = UITextField()
         view.textAlignment = .center
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.black
+        view.textColor = Constants.Color.codGray
         // Disable auto correction (keyboard)
         view.autocorrectionType = .no
         return view
@@ -38,13 +38,13 @@ class TimeSetEditView: UIView {
         let view = UILabel()
         view.textAlignment = .center
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         return view
     }()
     
     private let titleInputBottomLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.appColor
+        view.backgroundColor = Constants.Color.carnation
         return view
     }()
     
@@ -83,13 +83,13 @@ class TimeSetEditView: UIView {
     
     let sumOfTimersLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         return view
     }()
     
     let endOfTimerLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         return view
     }()
     
@@ -115,7 +115,7 @@ class TimeSetEditView: UIView {
     
     private let timerOptionLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = Constants.Color.black.cgColor
+        layer.strokeColor = Constants.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
     }()

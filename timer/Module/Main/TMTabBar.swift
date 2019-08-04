@@ -25,7 +25,7 @@ class TMTabBar: UIView {
     
     private let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.lightGray
+        view.backgroundColor = Constants.Color.silver
         return view
     }()
     

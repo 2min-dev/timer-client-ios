@@ -24,7 +24,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
-        view.backgroundColor = Constants.Color.black
+        view.backgroundColor = Constants.Color.codGray
 
         // Set constraint of subviews
         view.addAutolayoutSubview(self.timeLabel)
@@ -44,7 +44,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
 
     let indexLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.gray
+        view.textColor = Constants.Color.silver
         view.font = Constants.Font.ExtraBold.withSize(10.adjust())
         view.textAlignment = .center
         return view
@@ -130,8 +130,8 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         guard let reactor = reactor else { return }
         
         // Set time label color
-        containerView.backgroundColor = isSelected ? Constants.Color.black : Constants.Color.clear
-        timeLabel.textColor = isSelected ? Constants.Color.white : Constants.Color.black
+        containerView.backgroundColor = isSelected ? Constants.Color.codGray : Constants.Color.clear
+        timeLabel.textColor = isSelected ? Constants.Color.white : Constants.Color.codGray
         
         // Set option button visible
         optionButton.isHidden = !reactor.currentState.isOptionVisible || !isSelected

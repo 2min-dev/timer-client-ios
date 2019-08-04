@@ -44,15 +44,63 @@ enum Constants {
     }
     
     enum Color {
-        static let appColor: UIColor = UIColor(hex: "#F24150")
-        
         static let clear: UIColor = .clear
-        static let white: UIColor = .white
-        static let black: UIColor = UIColor(hex: "#0A0A0A")
-        static let gray: UIColor = UIColor(hex: "#969696")
-        static let lightGray: UIColor = UIColor(hex: "#C8C8C8")
-        static let lightLightGray: UIColor = UIColor(hex: "#FDFDFD")
-        static let lightLightLightGray: UIColor = UIColor(hex: "#F0F0F0")
+        
+        static let codGray: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "cod_gray")!
+            } else {
+                return UIColor(hex: "#0A0A0A")
+            }
+        }()
+
+        static let doveGray: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "dove_gray")!
+            } else {
+                return UIColor(hex: "#646464")
+            }
+        }()
+
+        static let silver: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "silver")!
+            } else {
+                return UIColor(hex: "#C8C8C8")
+            }
+        }()
+
+        static let gallery: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "gallery")!
+            } else {
+                return UIColor(hex: "#F0F0F0")
+            }
+        }()
+
+        static let white: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "white")!
+            } else {
+                return UIColor(hex: "#FFFFFF")
+            }
+        }()
+
+        static let carnation: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "carnation")!
+            } else {
+                return UIColor(hex: "#F24150")
+            }
+        }()
+
+        static let navyBlue: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "navyBlue")!
+            } else {
+                return UIColor(hex: "#020873")
+            }
+        }()
     }
     
     enum Locale {

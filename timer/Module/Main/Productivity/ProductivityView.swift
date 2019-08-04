@@ -40,7 +40,7 @@ class ProductivityView: UIView {
     lazy var timerInputView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 1.adjust()
-        view.layer.borderColor = Constants.Color.gray.cgColor
+        view.layer.borderColor = Constants.Color.silver.cgColor
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([timerLabel, timerClearButton])
@@ -61,14 +61,14 @@ class ProductivityView: UIView {
     let sumOfTimersLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         return view
     }()
     
     let endOfTimerLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         return view
     }()
     
@@ -116,7 +116,7 @@ class ProductivityView: UIView {
     let timeInputLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(24.adjust())
-        view.textColor = Constants.Color.lightGray
+        view.textColor = Constants.Color.silver
         view.textAlignment = .center
         view.isUserInteractionEnabled = false
         return view
@@ -135,15 +135,15 @@ class ProductivityView: UIView {
         let view = UIButton()
         let string = "productivity_button_hour_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
         return view
     }()
@@ -152,15 +152,15 @@ class ProductivityView: UIView {
         let view = UIButton()
         let string = "productivity_button_minute_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
         return view
     }()
@@ -169,15 +169,15 @@ class ProductivityView: UIView {
         let view = UIButton()
         let string = "productivity_button_second_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
         return view
     }()
@@ -196,12 +196,12 @@ class ProductivityView: UIView {
         
         let string = "productivity_button_timer_save_title".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
         
         return view
@@ -214,12 +214,12 @@ class ProductivityView: UIView {
         let string = "productivity_button_timer_start_title".localized
         
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.black,
+            .foregroundColor: Constants.Color.codGray,
             .font: Constants.Font.ExtraBold.withSize(20.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         
-        attributes[.foregroundColor] = Constants.Color.gray
+        attributes[.foregroundColor] = Constants.Color.silver
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .highlighted)
         
         return view
@@ -279,7 +279,7 @@ class ProductivityView: UIView {
 
     private let timerOptionLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = Constants.Color.black.cgColor
+        layer.strokeColor = Constants.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
     }()
