@@ -18,8 +18,8 @@ class ProductivityView: UIView {
     }
     
     // MARK: - view properties
-    let headerView: Header = {
-        let view = Header()
+    let headerView: CommonHeader = {
+        let view = CommonHeader()
         return view
     }()
     

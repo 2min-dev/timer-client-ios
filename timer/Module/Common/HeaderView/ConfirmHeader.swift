@@ -1,14 +1,14 @@
 //
-//  Header.swift
+//  ConfirmHeader.swift
 //  timer
 //
-//  Created by JSilver on 19/05/2019.
+//  Created by JSilver on 06/08/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 
-class Header: UIView {
+class ConfirmHeader: UIView {
     // MARK: - view properties
     
     // MARK: - properties
