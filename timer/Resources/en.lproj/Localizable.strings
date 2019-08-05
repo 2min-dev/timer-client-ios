@@ -51,5 +51,11 @@
 "time_set_expected_time_title" = "Exp ";
 "time_set_expected_time_format" = "Exp H:mm a";
 
+// MARK: - Alert
+"alert_warning_delete_time_set_title" = "Delete The Time Set";
+"alert_warning_delete_time_set_description" = "The Time set is deleted.\nAre you sure you want to delete it?";
+"alert_button_cancel" = "Cancel";
+"alert_button_yes" = "Yes";
+
 // MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";

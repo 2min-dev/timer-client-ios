@@ -84,32 +84,21 @@ class TimeSetEditView: UIView {
     let sumOfTimersLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
+        view.textAlignment = .center
         return view
     }()
     
     let endOfTimerLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
+        view.textAlignment = .center
         return view
     }()
     
-    private lazy var timeInfoView: UIView = {
-        let view = UIView()
-        
-        // Set constraint of subviews
-        view.addAutolayoutSubviews([sumOfTimersLabel, endOfTimerLabel])
-        sumOfTimersLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
-        endOfTimerLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
+    private lazy var timeInfoView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimerLabel])
+        view.axis = .horizontal
+        view.distribution = .fillEqually
         return view
     }()
     
@@ -149,7 +138,7 @@ class TimeSetEditView: UIView {
         timeInfoView.snp.makeConstraints { make in
             make.top.equalTo(titleInputView.snp.bottom).offset(10.adjust())
             make.centerX.equalTo(titleInputView)
-            make.width.equalTo(titleInputView)
+            make.width.equalTo(titleInputView).offset(15.adjust())
         }
         
         timerOptionView.snp.makeConstraints { make in
