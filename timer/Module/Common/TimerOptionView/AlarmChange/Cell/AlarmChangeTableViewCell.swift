@@ -32,35 +32,54 @@ class AlarmChangeTableViewCell: UITableViewCell {
         return view
     }()
     
-    private lazy var contentStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [playButton, nameLabel, checkImageView])
-        view.axis = .horizontal
+    private lazy var containerView: UIView = {
+        let view = UIView()
         
         // Set constraint of subviews
+        view.addAutolayoutSubviews([playButton, nameLabel, checkImageView])
         playButton.snp.makeConstraints { make in
-            make.width.equalTo(playButton.snp.height)
+            make.leading.equalToSuperview().inset(10.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(playButton.snp.width)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(playButton.snp.trailing).inset(2.adjust())
+            make.centerY.equalToSuperview()
         }
         
         checkImageView.snp.makeConstraints { make in
+            make.leading.equalTo(nameLabel.snp.trailing)
+            make.trailing.equalToSuperview().inset(10.adjust())
+            make.centerY.equalToSuperview()
             make.width.equalTo(36.adjust())
+            make.height.equalTo(checkImageView.snp.width)
         }
         
         return view
     }()
-    
-    // MARK: - properties
-    var disposeBag: DisposeBag = DisposeBag()
 
     // MARK: - constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
 
+        let divider = UIView()
+        divider.backgroundColor = Constants.Color.gallery
+        
         // Set constraint of subviews
-        contentView.addAutolayoutSubview(contentStackView)
-        contentStackView.snp.makeConstraints { make in
+        contentView.addAutolayoutSubviews([containerView, divider])
+        containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.height.equalTo(50.adjust())
+            make.height.equalTo(52.adjust())
+        }
+        
+        divider.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(1)
         }
     }
     

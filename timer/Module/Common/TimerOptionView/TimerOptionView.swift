@@ -15,6 +15,8 @@ class TimerOptionView: UIView {
     let commentTextView: UITextView = {
         let view = UITextView()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
+        view.textContainerInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 0, right: 0)
         // Disable auto correction (keyboard)
         view.autocorrectionType = .no
         return view
@@ -22,7 +24,8 @@ class TimerOptionView: UIView {
     
     let commentLengthLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Light.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
@@ -98,8 +101,18 @@ class TimerOptionView: UIView {
     private lazy var alarmSettingView: UIView = {
         let view = UIView()
         
+        let divider = UIView()
+        divider.backgroundColor = Constants.Color.gallery
+        
         // Set constraint of subviews
-        view.addAutolayoutSubviews([alarmIconImageView, alarmNameLabel, alarmApplyAllButton, alarmChangeButton])
+        view.addAutolayoutSubviews([divider, alarmIconImageView, alarmNameLabel, alarmApplyAllButton, alarmChangeButton])
+        divider.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(1.adjust())
+        }
+        
         alarmIconImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(5.adjust())
             make.centerY.equalToSuperview()
@@ -109,21 +122,21 @@ class TimerOptionView: UIView {
 
         alarmNameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalTo(alarmIconImageView.snp.trailing)
+            make.leading.equalTo(alarmIconImageView.snp.trailing).offset(5.adjust())
             make.trailing.equalTo(alarmApplyAllButton.snp.leading)
             make.bottom.equalToSuperview()
         }
 
         alarmApplyAllButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.trailing.equalTo(alarmChangeButton.snp.leading).offset(-10.adjust())
+            make.trailing.equalTo(alarmChangeButton.snp.leading).offset(-19.adjust())
             make.bottom.equalToSuperview()
             make.width.equalTo(alarmApplyAllButton.titleLabel!.sizeThatFits(.zero).width)
         }
 
         alarmChangeButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-10.adjust())
+            make.trailing.equalToSuperview().inset(14.adjust())
             make.bottom.equalToSuperview()
             make.width.equalTo(alarmChangeButton.titleLabel!.sizeThatFits(.zero).width)
         }
@@ -153,8 +166,18 @@ class TimerOptionView: UIView {
     private lazy var timerInfoView: UIView = {
         let view = UIView()
         
+        let divider = UIView()
+        divider.backgroundColor = Constants.Color.gallery
+        
         // Set constraint of subviews
-        view.addAutolayoutSubviews([timerIconImageView, titleLabel, deleteButton])
+        view.addAutolayoutSubviews([divider, timerIconImageView, titleLabel, deleteButton])
+        divider.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(1.adjust())
+        }
+        
         timerIconImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(5.adjust())
             make.centerY.equalToSuperview()
@@ -164,7 +187,7 @@ class TimerOptionView: UIView {
         
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalTo(timerIconImageView.snp.trailing)
+            make.leading.equalTo(timerIconImageView.snp.trailing).offset(5.adjust())
             make.trailing.equalTo(deleteButton.snp.leading)
             make.bottom.equalToSuperview()
         }
@@ -185,11 +208,11 @@ class TimerOptionView: UIView {
         
         // Set constraint of subviews
         alarmSettingView.snp.makeConstraints { make in
-            make.height.equalTo(50.adjust())
+            make.height.equalTo(52.adjust())
         }
         
         timerInfoView.snp.makeConstraints { make in
-            make.height.equalTo(50.adjust())
+            make.height.equalTo(52.adjust())
         }
         
         return view

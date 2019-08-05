@@ -44,6 +44,9 @@
 "timer_option_alarm_all_apply" = "All";
 "timer_option_alarm_change" = "Change";
 
+// MARK: - Alarm change
+"alarm_change_current_title_format" = "Cur : %@";
+
 // MARK: - Time set
 // MARK: Common
 "time_set_sum_of_all_timers_title" = "All ";

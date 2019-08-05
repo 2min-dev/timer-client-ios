@@ -44,6 +44,9 @@
 "timer_option_alarm_all_apply" = "전체 적용";
 "timer_option_alarm_change" = "변경";
 
+// MARK: - Alarm change
+"alarm_change_current_title_format" = "현재 : %@";
+
 // MARK: - Time set
 // MARK: Common
 "time_set_sum_of_all_timers_title" = "전체시간 ";

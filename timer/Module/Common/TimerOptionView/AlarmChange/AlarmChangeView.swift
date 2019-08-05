@@ -19,16 +19,36 @@ class AlarmChangeView: UIView {
     let currentAlarmLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
-    private lazy var headerStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [backButton, currentAlarmLabel])
-        view.axis = .horizontal
+    private lazy var headerView: UIView = {
+        let view = UIView()
+        
+        let divider = UIView()
+        divider.backgroundColor = Constants.Color.gallery
         
         // Set constraint of subviews
+        view.addAutolayoutSubviews([backButton, currentAlarmLabel, divider])
         backButton.snp.makeConstraints { make in
-            make.width.equalTo(backButton.snp.height)
+            make.leading.equalToSuperview().offset(7.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(24.adjust())
+            make.height.equalTo(backButton.snp.width)
+        }
+        
+        currentAlarmLabel.snp.makeConstraints { make in
+            make.leading.equalTo(backButton.snp.trailing).offset(13.adjust())
+            make.trailing.equalToSuperview().inset(13.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        divider.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(1)
         }
         
         return view
@@ -45,12 +65,12 @@ class AlarmChangeView: UIView {
     }()
     
     private lazy var contentStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [headerStackView, alarmTableView])
+        let view = UIStackView(arrangedSubviews: [headerView, alarmTableView])
         view.axis = .vertical
         
         // Set constraint of subviews
-        headerStackView.snp.makeConstraints { make in
-            make.height.equalTo(50.adjust())
+        headerView.snp.makeConstraints { make in
+            make.height.equalTo(52.adjust())
         }
         
         return view

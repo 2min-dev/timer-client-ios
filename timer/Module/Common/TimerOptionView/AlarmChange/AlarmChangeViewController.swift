@@ -71,7 +71,7 @@ class AlarmChangeViewController: BaseViewController, View {
         reactor.state
             .map { $0.alarm }
             .distinctUntilChanged()
-            .map { String(format: "현재 : %@", $0) }
+            .map { String(format: "alarm_change_current_title_format".localized, $0) }
             .bind(to: currentAlarmLabel.rx.text)
             .disposed(by: disposeBag)
         
