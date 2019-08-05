@@ -1,5 +1,5 @@
 //
-//  TimeSetEditView.swift
+//  TimeSetSaveView.swift
 //  timer
 //
 //  Created by JSilver on 31/07/2019.
@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TimeSetEditView: UIView {
+class TimeSetSaveView: UIView {
     // MARK: - view properties
     let headerView: Header = {
         let view = Header()

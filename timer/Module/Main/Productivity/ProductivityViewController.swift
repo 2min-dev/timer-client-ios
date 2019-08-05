@@ -431,7 +431,7 @@ class ProductivityViewController: BaseViewController, View {
         
         if index == FOOTER_BUTTON_SAVE {
             // Save -> Present time set save =
-            _ = coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))
+            _ = coordinator.present(for: .timeSetSave(reactor.timeSetInfo))
         } else if index == FOOTER_BUTTON_START {
             // Confirm -> Present time set start
             // TODO: Present time set start

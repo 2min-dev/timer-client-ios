@@ -1,5 +1,5 @@
 //
-//  TimeSetEditViewReactor.swift
+//  TimeSetSaveViewReactor.swift
 //  timer
 //
 //  Created by JSilver on 31/07/2019.
@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class TimeSetEditViewReactor: Reactor {
+class TimeSetSaveViewReactor: Reactor {
     static let MAX_TITLE_LENGTH = 20
     
     enum Action {
@@ -70,7 +70,7 @@ class TimeSetEditViewReactor: Reactor {
             return .just(.setTitle(""))
         case let .updateTitle(title):
             let length = title.lengthOfBytes(using: .utf8)
-            guard length <= TimeSetEditViewReactor.MAX_TITLE_LENGTH else { return .just(.setTitle(timeSetInfo.title)) }
+            guard length <= TimeSetSaveViewReactor.MAX_TITLE_LENGTH else { return .just(.setTitle(timeSetInfo.title)) }
             
             timeSetInfo.title = title
             return .just(.setTitle(title))

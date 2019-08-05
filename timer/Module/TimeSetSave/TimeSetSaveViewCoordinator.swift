@@ -1,5 +1,5 @@
 //
-//  TimeSetEditViewCoordinator.swift
+//  TimeSetSaveViewCoordinator.swift
 //  timer
 //
 //  Created by JSilver on 31/07/2019.
@@ -8,14 +8,14 @@
 
 import UIKit
 
-class TimeSetEditViewCoordinator: CoordinatorProtocol {
+class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum TimeSetEditRoute {
+    enum TimeSetSaveRoute {
         case timerOption
     }
     
     // MARK: - properties
-    weak var viewController: TimeSetEditViewController!
+    weak var viewController: TimeSetSaveViewController!
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
@@ -24,12 +24,12 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: TimeSetEditRoute) -> UIViewController {
+    func present(for route: TimeSetSaveRoute) -> UIViewController {
         let viewController = get(for: route)
         return viewController
     }
     
-    func get(for route: TimeSetEditRoute) -> UIViewController {
+    func get(for route: TimeSetSaveRoute) -> UIViewController {
         switch route {
         case .timerOption:
             let coordinator = TimerOptionViewCoordinator(provider: provider)

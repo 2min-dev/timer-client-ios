@@ -1,5 +1,5 @@
 //
-//  TimeSetEditViewController.swift
+//  TimeSetSaveViewController.swift
 //  timer
 //
 //  Created by JSilver on 31/07/2019.
@@ -10,33 +10,33 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TimeSetEditViewController: BaseViewController, View {
+class TimeSetSaveViewController: BaseViewController, View {
     // MARK: - constants
     private let FOOTER_BUTTON_CANCEL = 0
     private let FOOTER_BUTTON_CONFIRM = 1
     
     // MARK: - view properties
-    private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
+    private var timeSetSaveView: TimeSetSaveView { return view as! TimeSetSaveView }
     
-    private var titleTextField: UITextField { return timeSetEditView.titleTextField }
-    private var titleClearButton: UIButton { return timeSetEditView.titleClearButton }
-    private var titleHintLabel: UILabel { return timeSetEditView.titleHintLabel }
+    private var titleTextField: UITextField { return timeSetSaveView.titleTextField }
+    private var titleClearButton: UIButton { return timeSetSaveView.titleClearButton }
+    private var titleHintLabel: UILabel { return timeSetSaveView.titleHintLabel }
     
-    private var sumOfTimersLabel: UILabel { return timeSetEditView.sumOfTimersLabel}
-    private var endOfTimerLabel: UILabel { return timeSetEditView.endOfTimerLabel }
+    private var sumOfTimersLabel: UILabel { return timeSetSaveView.sumOfTimersLabel}
+    private var endOfTimerLabel: UILabel { return timeSetSaveView.endOfTimerLabel }
     
-    private var timerOptionView: UIView { return timeSetEditView.timerOptionView }
+    private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
     private var timerOptionViewController: TimerOptionViewController!
     
-    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetEditView.timerBadgeCollectionView }
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetSaveView.timerBadgeCollectionView }
     
-    private var footerView: Footer { return timeSetEditView.footerView }
+    private var footerView: Footer { return timeSetSaveView.footerView }
     
     // MARK: - properties
-    var coordinator: TimeSetEditViewCoordinator
+    var coordinator: TimeSetSaveViewCoordinator
     
     // MARK: - constructor
-    init(coordinator: TimeSetEditViewCoordinator) {
+    init(coordinator: TimeSetSaveViewCoordinator) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -47,7 +47,7 @@ class TimeSetEditViewController: BaseViewController, View {
     
     // MARK: - lifecycle
     override func loadView() {
-        view = TimeSetEditView()
+        view = TimeSetSaveView()
     }
     
     override func viewDidLoad() {
@@ -63,7 +63,7 @@ class TimeSetEditViewController: BaseViewController, View {
     }
     
     // MARK: - bine
-    func bind(reactor: TimeSetEditViewReactor) {
+    func bind(reactor: TimeSetSaveViewReactor) {
         // MARK: action
         rx.viewDidLoad
             .map { Reactor.Action.viewDidLoad }

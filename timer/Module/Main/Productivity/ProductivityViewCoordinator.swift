@@ -13,7 +13,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum ProductivityRoute {
         case timerOption
-        case timeSetEdit(TimeSetInfo)
+        case timeSetSave(TimeSetInfo)
     }
 
     // MARK: - properties
@@ -28,7 +28,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     func present(for route: ProductivityRoute) -> UIViewController {
         let viewController = get(for: route)
         switch route {
-        case .timeSetEdit(_):
+        case .timeSetSave(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         default:
             break
@@ -52,10 +52,10 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             navigationController.isNavigationBarHidden = true
             
             return navigationController
-        case let .timeSetEdit(timeSetInfo):
-            let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            let reactor = TimeSetEditViewReactor(timeSetInfo: timeSetInfo)
-            let viewController = TimeSetEditViewController(coordinator: coordinator)
+        case let .timeSetSave(timeSetInfo):
+            let coordinator = TimeSetSaveViewCoordinator(provider: provider)
+            let reactor = TimeSetSaveViewReactor(timeSetInfo: timeSetInfo)
+            let viewController = TimeSetSaveViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController
