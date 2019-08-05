@@ -1,5 +1,5 @@
 //
-//  SettingMenu.swift
+//  CommonTableItem.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct BaseTableItem {
+struct CommonTableItem {
     let title: String
 }

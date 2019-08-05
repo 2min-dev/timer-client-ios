@@ -1,5 +1,5 @@
 //
-//  BaseMenuSectionItem.swift
+//  CommonTableSection.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
@@ -8,13 +8,13 @@
 
 import RxDataSources
 
-struct BaseTableSection {
+struct CommonTableSection {
     let title: String
-    var items: [BaseTableItem]
+    var items: [CommonTableItem]
 }
 
-extension BaseTableSection: SectionModelType {
-    init(original: BaseTableSection, items: [BaseTableItem]) {
+extension CommonTableSection: SectionModelType {
+    init(original: CommonTableSection, items: [CommonTableItem]) {
         self = original
         self.items = items
     }

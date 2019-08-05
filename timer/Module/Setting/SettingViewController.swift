@@ -56,7 +56,7 @@ class SettingViewController: BaseViewController, View {
         // MARK: state
         reactor.state
             .map { $0.sections }
-            .bind(to: settingTableView.rx.items(dataSource: RxTableViewSectionedReloadDataSource<BaseTableSection>(configureCell: { (datasource, tableview, indexPath, item) in
+            .bind(to: settingTableView.rx.items(dataSource: RxTableViewSectionedReloadDataSource<CommonTableSection>(configureCell: { (datasource, tableview, indexPath, item) in
                 let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
                 cell.textLabel?.text = item.title
                 return cell
