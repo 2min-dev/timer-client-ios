@@ -79,6 +79,7 @@ class TimeSetEditViewController: BaseViewController, View {
         
         titleClearButton.rx.tap
             .map { Reactor.Action.clearTitle }
+            .do(onNext: { [weak self] _ in self?.titleTextField.becomeFirstResponder() })
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
 

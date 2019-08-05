@@ -62,6 +62,8 @@ class ProductivityView: UIView {
         let view = KeyPad()
         view.font = Constants.Font.Regular.withSize(30.adjust())
         view.foregroundColor = Constants.Color.codGray
+        
+        view.cancelButton.isHidden = true
         return view
     }()
     

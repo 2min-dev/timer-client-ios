@@ -134,7 +134,12 @@ class ProductivityViewController: BaseViewController, View {
         timerOptionVisibleSubject
             .distinctUntilChanged()
             .map { !$0 }
-            .do(onNext: { [weak self] in self?.popToTimerOptionMain(isTimerOptionVisible: !$0) })
+            .do(onNext: { [weak self] in
+                self?.popToTimerOptionMain(isTimerOptionVisible: !$0)
+                if $0 {
+                    self?.view.endEditing(true)
+                }
+            })
             .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
             .disposed(by: disposeBag)
     }

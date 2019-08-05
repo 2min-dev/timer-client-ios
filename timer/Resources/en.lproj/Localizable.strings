@@ -52,7 +52,7 @@
 "time_set_sum_of_all_timers_title" = "All ";
 "time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
 "time_set_expected_time_title" = "Exp ";
-"time_set_expected_time_format" = "Exp H:mm a";
+"time_set_expected_time_format" = "H:mm a";
 
 // MARK: - Alert
 "alert_warning_delete_time_set_title" = "Delete The Time Set";
