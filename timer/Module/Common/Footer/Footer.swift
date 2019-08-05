@@ -69,7 +69,7 @@ class Footer: UIView {
 extension Reactive where Base: Footer {
     var tap: ControlEvent<Int> {
         let source: Observable<Int> = .merge(base.buttons.enumerated().map { index, button in
-            button.rx.tap.debug().map { index }
+            button.rx.tap.map { index }
         })
         return ControlEvent(events: source)
     }

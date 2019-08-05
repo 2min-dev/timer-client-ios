@@ -113,7 +113,6 @@ class TimeSetEditViewController: BaseViewController, View {
         reactor.state
             .map { $0.title }
             .filter { [weak self] in $0 != self?.titleTextField.text }
-            .debug()
             .bind(to: titleTextField.rx.text)
             .disposed(by: disposeBag)
         
