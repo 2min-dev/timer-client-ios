@@ -21,6 +21,8 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
     
+    private var headerView: CommonHeader { return productivityView.headerView }
+    
     private var timerInputView: TimerInputView { return productivityView.timerInputView }
     private var timerClearButton: UIButton { return productivityView.timerInputView.timerClearButton }
     
@@ -146,6 +148,10 @@ class ProductivityViewController: BaseViewController, View {
     
     func bind(reactor: ProductivityViewReactor) {
         // MARK: action
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
+            .disposed(by: disposeBag)
+        
         timerClearButton.rx.tap
             .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
             .map { Reactor.Action.clearTimer }
@@ -424,6 +430,10 @@ class ProductivityViewController: BaseViewController, View {
         
         // Present alert view controller
         present(alert, animated: true)
+    }
+    
+    private func headerActionHandler(type: CommonHeader.ButtonType) {
+        // TODO: Present
     }
     
     private func footerActionHandler(index: Int) {

@@ -20,6 +20,8 @@ class ProductivityView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
+        view.buttonTypes = [.search, .history, .setting]
+        view.isBackButtonHidden = true
         return view
     }()
     
