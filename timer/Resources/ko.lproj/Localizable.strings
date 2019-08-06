@@ -12,12 +12,16 @@
 // MARK: - App String
 // MARK: - Tab
 "tab_button_home" = "홈";
-"tab_button_local_time_set" = "로컬 타임셋";
-"tab_button_shared_time_set" = "공유된 타임셋";
+"tab_button_my_time_set" = "마이 타임셋";
+"tab_button_shared_time_set" = "공유 타임셋";
 
 // MARK: - Keypad
 "keypad_cancel" = "취소";
 "keypad_delete" = "삭제";
+
+// MARK: - Header
+"header_button_cancel" = "취소";
+"header_button_confirm" = "완료";
 
 // MARK: - Footer
 "footer_button_cancel" = "취소";
@@ -28,6 +32,21 @@
 "footer_button_pause" = "일시정지";
 "footer_button_restart" = "재시작";
 "footer_button_edit" = "편집";
+
+// MARK: - Screen title
+"time_set_save_title" = "타임셋 저장";
+"time_set_edit_title" = "타임셋 편집";
+"my_time_set_title" = "마이 타임셋";
+"saved_time_set_title" = "저장된 타임셋 모두보기";
+"saved_time_set_management_title" = "저장한 타임셋 관리";
+"liked_time_set_title" = "즐겨찾는 타임셋 모두보기";
+"liked_time_set_management_title" = "즐겨찾는 타임셋 관리";
+"shared_time_set_title" = "공유 타임셋";
+"shared_time_set_more_title" = "공유 타임셋 더보기";
+"my_shared_time_set_title" = "내가 공유한 타임셋";
+"history_title" = "히스토리";
+"history_detail_title" = "히스토리 상세";
+"setting_title" = "설정";
 
 // MARK: - Productivity
 "productivity_button_hour_title" = "시";

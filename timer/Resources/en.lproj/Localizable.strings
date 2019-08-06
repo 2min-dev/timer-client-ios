@@ -12,12 +12,16 @@
 // MARK: - App String
 // MARK: - Tab
 "tab_button_home" = "HOME";
-"tab_button_local_time_set" = "LOCAL";
+"tab_button_my_time_set" = "MY";
 "tab_button_shared_time_set" = "SHARED";
 
 // MARK: - Keypad
 "keypad_cancel" = "Cancel";
 "keypad_delete" = "Delete";
+
+// MARK: - Header
+"header_button_cancel" = "Cancel";
+"header_button_confirm" = "Confirm";
 
 // MARK: - Footer
 "footer_button_cancel" = "Cancel";
@@ -28,6 +32,22 @@
 "footer_button_pause" = "Pause";
 "footer_button_restart" = "Restart";
 "footer_button_edit" = "Edit";
+
+// MARK: - Screen title
+"time_set_save_title" = "Time Set Save";
+"time_set_edit_title" = "Time Set Edit";
+"my_time_set_title" = "My Time Set";
+"saved_time_set_title" = "Saved Time Set";
+"saved_time_set_management_title" = "Saved Time Set Management";
+"liked_time_set_title" = "Liked Time Set";
+"liked_time_set_management_title" = "Liked Time Set Management";
+"shared_time_set_title" = "Shared Time Set";
+"shared_time_set_more_title" = "Shared Time Set More";
+"my_shared_time_set_title" = "My Shared Time Set";
+"history_title" = "History";
+"history_detail_title" = "History Detail";
+"setting_title" = "Setting";
+
 
 // MARK: - Productivity
 "productivity_button_hour_title" = "H";
