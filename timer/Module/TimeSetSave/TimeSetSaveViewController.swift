@@ -183,8 +183,9 @@ class TimeSetSaveViewController: BaseViewController, View {
             // Cancel -> Pop view controller
             navigationController?.popViewController(animated: true)
         } else if index == FOOTER_BUTTON_CONFIRM {
+            guard let reactor = reactor else { return }
             // Confirm -> Present time set detail
-            // TODO: Present time set detail
+            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetInfo))
         }
     }
     

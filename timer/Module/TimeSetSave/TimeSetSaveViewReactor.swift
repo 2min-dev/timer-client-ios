@@ -46,7 +46,7 @@ class TimeSetSaveViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let timeSetInfo: TimeSetInfo
+    let timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {

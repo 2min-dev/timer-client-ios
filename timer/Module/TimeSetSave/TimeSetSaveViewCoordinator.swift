@@ -12,6 +12,7 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum TimeSetSaveRoute {
         case timerOption
+        case timeSetDetail(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -26,6 +27,16 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     // MARK: - presentation
     func present(for route: TimeSetSaveRoute) -> UIViewController {
         let viewController = get(for: route)
+        switch route {
+        case .timeSetDetail(_):
+            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
+                break
+            }
+            let viewControllers = [rootViewController, viewController]
+            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+        default:
+            break
+        }
         return viewController
     }
     
@@ -44,6 +55,16 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
             navigationController.isNavigationBarHidden = true
             
             return navigationController
+        case let .timeSetDetail(timeSetInfo):
+            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
+            let reactor = TimeSetDetailViewReactor(timeSetInfo: timeSetInfo)
+            let viewController = TimeSetDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
         }
     }
 }
