@@ -68,8 +68,10 @@
 
 // MARK: - Time set
 // MARK: Common
+"time_set_sum_of_all_timers_full_title" = "전체 시간";
 "time_set_sum_of_all_timers_title" = "전체시간 ";
 "time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
+"time_set_expected_time_full_title" = "종료 예정";
 "time_set_expected_time_title" = "종료예정 ";
 "time_set_expected_time_format" = "H:mm a";
 

@@ -69,8 +69,10 @@
 
 // MARK: - Time set
 // MARK: Common
+"time_set_sum_of_all_timers_full_title" = "All Time";
 "time_set_sum_of_all_timers_title" = "All ";
 "time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
+"time_set_expected_time_full_title" = "End Exp ";
 "time_set_expected_time_title" = "Exp ";
 "time_set_expected_time_format" = "H:mm a";
 
