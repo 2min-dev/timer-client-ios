@@ -18,8 +18,6 @@ class TimeSetDetailView: UIView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        // MARK: Sample text, remove it
-        view.text = "내 타임셋"
         view.font = Constants.Font.ExtraBold.withSize(24.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -35,14 +33,12 @@ class TimeSetDetailView: UIView {
     
     let sumOfTimersLabel: UILabel = {
         let view = UILabel()
-        // MARK: Sample text, remove it
-        view.text = "00:01:00"
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
-    private let endTimeTitleLabel: UILabel = {
+    private let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
         view.text = "time_set_expected_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
@@ -50,10 +46,8 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let endTimeLabel: UILabel = {
+    let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        // MARK: Sample text, remove it
-        view.text = "9:42 AM"
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -79,11 +73,11 @@ class TimeSetDetailView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endTimeTitleLabel, endTimeLabel, plus1MinButton, loopButton, divider])
+        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, loopButton, divider])
         sumOfTimersTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
-            make.trailing.equalTo(endTimeTitleLabel)
+            make.trailing.equalTo(endOfTimeSetTitleLabel)
         }
         
         sumOfTimersLabel.snp.makeConstraints { make in
@@ -92,16 +86,16 @@ class TimeSetDetailView: UIView {
             make.bottom.equalTo(sumOfTimersTitleLabel)
         }
         
-        endTimeTitleLabel.snp.makeConstraints { make in
+        endOfTimeSetTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(sumOfTimersTitleLabel.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview().inset(16.adjust())
         }
         
-        endTimeLabel.snp.makeConstraints { make in
-            make.top.equalTo(endTimeTitleLabel)
-            make.leading.equalTo(endTimeTitleLabel.snp.trailing).offset(10.adjust())
-            make.bottom.equalTo(endTimeTitleLabel)
+        endOfTimeSetLabel.snp.makeConstraints { make in
+            make.top.equalTo(endOfTimeSetTitleLabel)
+            make.leading.equalTo(endOfTimeSetTitleLabel.snp.trailing).offset(10.adjust())
+            make.bottom.equalTo(endOfTimeSetTitleLabel)
         }
         
         plus1MinButton.snp.makeConstraints { make in
@@ -130,7 +124,7 @@ class TimeSetDetailView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView()
-//        view.setContentHuggingPriority(.required, for: .vertical)
+        view.anchorPoint = CGPoint(x: 60.adjust(), y: 0)
         return view
     }()
     
@@ -142,8 +136,6 @@ class TimeSetDetailView: UIView {
     
     let alarmLabel: UILabel = {
         let view = UILabel()
-        // MARK: Sample text, remove it
-        view.text = "기본음"
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -179,13 +171,12 @@ class TimeSetDetailView: UIView {
     
     let commentTextView: UITextView = {
         let view = UITextView()
-        // MARK: Sample text, remove it
-        view.text = "코멘트\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na"
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         // Remove padding
         view.textContainer.lineFragmentPadding = 0
         view.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        view.isEditable = false
         return view
     }()
     
