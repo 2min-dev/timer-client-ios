@@ -124,7 +124,8 @@ class TimeSetDetailView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView()
-        view.anchorPoint = CGPoint(x: 60.adjust(), y: 0)
+        view.layout?.axisPoint = CGPoint(x: 60.adjust(), y: 0)
+        view.layout?.axisAlign = .left
         return view
     }()
     

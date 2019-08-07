@@ -130,7 +130,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         guard let reactor = reactor else { return }
         
         // Set badge color
-        containerView.backgroundColor = isSelected ? Constants.Color.codGray : Constants.Color.clear
+        containerView.backgroundColor = isSelected ? Constants.Color.codGray : Constants.Color.white
         containerView.layer.borderColor = isSelected ? Constants.Color.clear.cgColor : Constants.Color.gallery.cgColor
         
         // Set time label color

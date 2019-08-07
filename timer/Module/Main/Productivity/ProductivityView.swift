@@ -128,7 +128,8 @@ class ProductivityView: UIView {
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         view.isAxisFixedPoint = true
-        view.anchorPoint = TimerBadgeCollectionView.centerAnchor
+        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+        view.layout?.axisAlign = .center
         return view
     }()
     
@@ -155,7 +156,7 @@ class ProductivityView: UIView {
         }
         
         keyPadView.snp.makeConstraints { make in
-            make.top.equalTo(timeInfoView.snp.bottom).offset(6.adjust())
+            make.top.equalTo(timerInputView.snp.bottom).offset(30.adjust())
             make.centerX.equalToSuperview()
             make.width.equalTo(270.adjust())
             make.height.equalTo(280.adjust())

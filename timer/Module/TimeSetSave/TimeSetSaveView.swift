@@ -119,12 +119,11 @@ class TimeSetSaveView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
-        view.isAxisFixedPoint = true
-        view.anchorPoint = TimerBadgeCollectionView.centerAnchor
+        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
         return view
     }()
     
-    private lazy var contentView: UIView = {
+    lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews

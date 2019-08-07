@@ -37,7 +37,7 @@ class TimerBadgeViewReactor: Reactor {
     init() {
         self.initialState = State(sections: [TimerBadgeSectionModel(model: Void(), items: [])],
                                   selectedIndexPath: nil,
-                                  shouldSectionReload: false)
+                                  shouldSectionReload: true)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -76,6 +76,8 @@ class TimerBadgeViewReactor: Reactor {
             state.sections = sections
             return state
         case let .setSelectedIndexPath(indexPath):
+            guard indexPath.row < state.sections[0].items.count else { return state }
+            
             if let previousIndexPath = state.selectedIndexPath {
                 state.sections[0].items[previousIndexPath.row].item?.action.onNext(.select(false))
             }
@@ -86,7 +88,7 @@ class TimerBadgeViewReactor: Reactor {
         case let .swapItem(at: sourceIndexPath, to: destinationIndexPath):
             state.sections[0].items.swapAt(sourceIndexPath.row, destinationIndexPath.row)
             
-            var items = state.sections[0].items
+            let items = state.sections[0].items
             items[sourceIndexPath.row].item?.action.onNext(.updateIndex(sourceIndexPath.row + 1))
             items[destinationIndexPath.row].item?.action.onNext(.updateIndex(destinationIndexPath.row + 1))
             
