@@ -11,7 +11,7 @@ import UIKit
 class TimeSetDetailViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum TimeSetDetailRoute {
-        
+        case empty
     }
     
     // MARK: - properties
@@ -24,12 +24,11 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: TimeSetDetailRoute) -> UIViewController {
-        let viewController = get(for: route)
-        return viewController
+    func present(for route: TimeSetDetailRoute) -> UIViewController? {
+        return get(for: route)
     }
     
-    func get(for route: TimeSetDetailRoute) -> UIViewController {
-        return UIViewController()
+    func get(for route: TimeSetDetailRoute) -> UIViewController? {
+        return nil
     }
 }

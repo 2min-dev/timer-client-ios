@@ -17,6 +17,6 @@ protocol CoordinatorProtocol: class {
     
     init(provider: ServiceProviderProtocol)
     
-    func present(for route: Route) -> UIViewController
-    func get(for route: Route) -> UIViewController
+    func present(for route: Route) -> UIViewController?
+    func get(for route: Route) -> UIViewController?
 }

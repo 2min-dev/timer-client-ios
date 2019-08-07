@@ -24,13 +24,11 @@ class SharedTimeSetViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: ShraedTimeSetRoute) -> UIViewController {
-        let viewController = get(for: route)
-        
-        return viewController
+    func present(for route: ShraedTimeSetRoute) -> UIViewController? {
+        return get(for: route)
     }
     
-    func get(for route: ShraedTimeSetRoute) -> UIViewController {
-        return UIViewController()
+    func get(for route: ShraedTimeSetRoute) -> UIViewController? {
+        return nil
     }
 }

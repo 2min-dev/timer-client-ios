@@ -25,13 +25,11 @@ class MainViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: MainRoute) -> UIViewController {
-        let viewController = get(for: route)
-        
-        return viewController
+    func present(for route: MainRoute) -> UIViewController? {
+        return get(for: route)
     }
     
-    func get(for route: MainRoute) -> UIViewController {
+    func get(for route: MainRoute) -> UIViewController? {
         switch route {
         case .productivity:
             let coordinator = ProductivityViewCoordinator(provider: provider)

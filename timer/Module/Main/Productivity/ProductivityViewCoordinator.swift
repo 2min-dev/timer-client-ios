@@ -25,8 +25,9 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: ProductivityRoute) -> UIViewController {
-        let viewController = get(for: route)
+    func present(for route: ProductivityRoute) -> UIViewController? {
+        guard let viewController = get(for: route) else { return nil }
+        
         switch route {
         case .timeSetSave(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
@@ -37,7 +38,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: ProductivityRoute) -> UIViewController {
+    func get(for route: ProductivityRoute) -> UIViewController? {
         switch route {
         case .timerOption:
             let coordinator = TimerOptionViewCoordinator(provider: provider)
@@ -54,7 +55,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             return navigationController
         case let .timeSetSave(timeSetInfo):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-            let reactor = TimeSetSaveViewReactor(timeSetInfo: timeSetInfo)
+            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timerService, timeSetInfo: timeSetInfo)
             let viewController = TimeSetSaveViewController(coordinator: coordinator)
             
             // DI
