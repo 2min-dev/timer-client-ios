@@ -37,7 +37,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let endOfTimerLabel: UILabel = {
+    let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
         view.textAlignment = .center
@@ -45,7 +45,7 @@ class ProductivityView: UIView {
     }()
     
     lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimerLabel])
+        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
         view.isHidden = true

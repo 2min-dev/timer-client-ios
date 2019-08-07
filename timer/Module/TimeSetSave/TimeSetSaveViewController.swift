@@ -25,7 +25,7 @@ class TimeSetSaveViewController: BaseViewController, View {
     private var titleHintLabel: UILabel { return timeSetSaveView.titleHintLabel }
     
     private var sumOfTimersLabel: UILabel { return timeSetSaveView.sumOfTimersLabel}
-    private var endOfTimerLabel: UILabel { return timeSetSaveView.endOfTimerLabel }
+    private var endOfTimeSetLabel: UILabel { return timeSetSaveView.endOfTimeSetLabel }
     
     private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
     private var timerOptionViewController: TimerOptionViewController!
@@ -72,6 +72,11 @@ class TimeSetSaveViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        headerView.rx.tap
+            .filter { $0 == .back }
+            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
+            .disposed(by: disposeBag)
+        
         titleTextField.rx.text
             .orEmpty
             .skipUntil(rx.viewWillAppear)
@@ -103,11 +108,6 @@ class TimeSetSaveViewController: BaseViewController, View {
         
         footerView.rx.tap
             .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0) })
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .filter { $0 == .back }
-            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -145,7 +145,7 @@ class TimeSetSaveViewController: BaseViewController, View {
                 self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
                                            info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
-            .bind(to: endOfTimerLabel.rx.attributedText)
+            .bind(to: endOfTimeSetLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // Timer badge view

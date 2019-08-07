@@ -28,7 +28,7 @@ class ProductivityViewController: BaseViewController, View {
     
     private var timeInfoView: UIView { return productivityView.timeInfoView }
     private var sumOfTimersLabel: UILabel { return productivityView.sumOfTimersLabel }
-    private var endOfTimerLabel: UILabel { return productivityView.endOfTimerLabel }
+    private var endOfTimeSetLabel: UILabel { return productivityView.endOfTimeSetLabel }
     private var timerInputLabel: UILabel { return productivityView.timeInputLabel }
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
@@ -254,7 +254,7 @@ class ProductivityViewController: BaseViewController, View {
                 self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
                                            info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
-            .bind(to: endOfTimerLabel.rx.attributedText)
+            .bind(to: endOfTimeSetLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // Time buttons
