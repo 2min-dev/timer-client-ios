@@ -31,7 +31,7 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
         switch route {
         case .timeSetDetail(_):
             guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
-                break
+                return nil
             }
             let viewControllers = [rootViewController, viewController]
             self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
@@ -57,10 +57,8 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
             
             return navigationController
         case let .timeSetDetail(timeSetInfo):
-            guard let copiedTimeSetInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
-            
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetInfo: copiedTimeSetInfo)
+            let reactor = TimeSetDetailViewReactor(timeSetInfo: timeSetInfo)
             let viewController = TimeSetDetailViewController(coordinator: coordinator)
             
             // DI

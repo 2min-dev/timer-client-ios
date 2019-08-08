@@ -67,6 +67,8 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         timerBadgeCollectionView.reorderableDelegate = self
         timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
             switch cellType {
@@ -89,8 +91,6 @@ class ProductivityViewController: BaseViewController, View {
             addChild(timerOptionNavigationController, in: timerOptionView)
             self.timerOptionViewController = timerOptionViewController
         }
-        
-        super.viewDidLoad()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -131,23 +131,29 @@ class ProductivityViewController: BaseViewController, View {
                     .disposed(by: self.disposeBag)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func bind(reactor: ProductivityViewReactor) {
+        // MARK: action
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // Timer option view visible
         timerOptionVisibleSubject
             .distinctUntilChanged()
             .map { !$0 }
             .do(onNext: { [weak self] in
-                self?.popToTimerOptionMain(isTimerOptionVisible: !$0)
                 if $0 {
+                    self?.timerOptionViewController.navigationController?.popViewController(animated: false)
                     self?.view.endEditing(true)
                 }
             })
             .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
             .disposed(by: disposeBag)
-    }
-    
-    func bind(reactor: ProductivityViewReactor) {
-        // MARK: action
+        
         headerView.rx.tap
             .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
@@ -246,10 +252,13 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         // End of time set
-        reactor.state
-            .map { $0.sumOfTimers }
-            .distinctUntilChanged()
-            .map { Date().addingTimeInterval($0) }
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.sumOfTimers }
+                .distinctUntilChanged(),
+            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+        )
+            .map { Date().addingTimeInterval($0.0) }
             .map { [weak self] in
                 self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
                                            info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
@@ -396,12 +405,6 @@ class ProductivityViewController: BaseViewController, View {
         timerBadgeCollectionView.isHidden = !canTimeSetStart
         // Show timer option footer view
         showFooterView(isShow: canTimeSetStart)
-    }
-    
-    /// Pop view controller to go to main option view
-    private func popToTimerOptionMain(isTimerOptionVisible: Bool) {
-        guard !isTimerOptionVisible else { return }
-        timerOptionViewController.navigationController?.popViewController(animated: false)
     }
     
     /// Show popup alert about warning to delete time set

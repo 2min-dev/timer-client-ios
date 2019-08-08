@@ -19,6 +19,7 @@ class TimeSetSaveViewController: BaseViewController, View {
     private var timeSetSaveView: TimeSetSaveView { return view as! TimeSetSaveView }
     
     private var headerView: CommonHeader { return timeSetSaveView.headerView }
+    private var contentView: UIView { return timeSetSaveView.contentView }
     
     private var titleTextField: UITextField { return timeSetSaveView.titleTextField }
     private var titleClearButton: UIButton { return timeSetSaveView.titleClearButton }
@@ -37,6 +38,8 @@ class TimeSetSaveViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: TimeSetSaveViewCoordinator
     
+    var isScrolling: Bool = false
+    
     // MARK: - constructor
     init(coordinator: TimeSetSaveViewCoordinator) {
         self.coordinator = coordinator
@@ -54,7 +57,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.layoutIfNeeded()
         
         // Add timer option view controller
         if let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
@@ -91,9 +93,19 @@ class TimeSetSaveViewController: BaseViewController, View {
             .disposed(by: disposeBag)
 
         timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.0, animated: true) })
-            .map { Reactor.Action.selectTimer(at: $0.0) }
+            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.0, animated: true) })
+            .disposed(by: disposeBag)
+        
+        timerBadgeCollectionView.rx.didScroll
+            .map { [weak self] in self?.getIndexPathFromScrolling() }
+            .filter { $0 != nil }
+            .map { Reactor.Action.selectTimer(at: $0!) }
             .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // Set `isScrolling` to `false`
+        timerBadgeCollectionView.rx.didEndScrollingAnimation
+            .subscribe(onNext: { [weak self] in self?.isScrolling = false })
             .disposed(by: disposeBag)
 
         timerOptionViewController.rx.alarmApplyAll
@@ -137,10 +149,13 @@ class TimeSetSaveViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         // End of time set
-        reactor.state
-            .map { $0.sumOfTimers }
-            .distinctUntilChanged()
-            .map { Date().addingTimeInterval($0) }
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.sumOfTimers }
+                .distinctUntilChanged(),
+            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+        )
+            .map { Date().addingTimeInterval($0.0) }
             .map { [weak self] in
                 self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
                                            info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
@@ -158,6 +173,7 @@ class TimeSetSaveViewController: BaseViewController, View {
         reactor.state
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
+            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0) })
             .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
@@ -175,6 +191,19 @@ class TimeSetSaveViewController: BaseViewController, View {
             .map { $0! }
             .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
             .disposed(by: disposeBag)
+        
+        // Time set saved
+        reactor.state
+            .map { $0.savedTimeSet }
+            .distinctUntilChanged { $0 === $1 }
+            .filter { $0 != nil }
+            .observeOn(MainScheduler.instance) // Ignore rx error
+            .subscribe(onNext: { [weak self] in
+                if self?.coordinator.present(for: .timeSetDetail($0!)) != nil {
+                    reactor.action.onNext(.complete)
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - private method
@@ -184,8 +213,8 @@ class TimeSetSaveViewController: BaseViewController, View {
             navigationController?.popViewController(animated: true)
         } else if index == FOOTER_BUTTON_CONFIRM {
             guard let reactor = reactor else { return }
-            // Confirm -> Present time set detail
-            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetInfo))
+            // Confirm -> Save time set
+            reactor.action.onNext(.saveTimeSet)
         }
     }
     
@@ -204,6 +233,24 @@ class TimeSetSaveViewController: BaseViewController, View {
         attributedString.append(title)
         attributedString.append(time)
         return attributedString
+    }
+    
+    /// Get index path from badge view scrolling
+    private func getIndexPathFromScrolling() -> IndexPath? {
+        guard let axisPoint = timerBadgeCollectionView.layout?.axisPoint else { return nil }
+        isScrolling = true // Set `isScrolling` to `true`
+
+        let frame = timerBadgeCollectionView.frame
+        let origin = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
+        let converted = self.contentView.convert(origin, to: timerBadgeCollectionView)
+        
+        return timerBadgeCollectionView.indexPathForItem(at: converted)
+    }
+    
+    /// Scroll to badge if can scroll
+    private func scrollToBadgeIfCan(at: IndexPath) {
+        guard !isScrolling else { return }
+        timerBadgeCollectionView.scrollToBadge(at: at, animated: true)
     }
     
     /// Show popup alert

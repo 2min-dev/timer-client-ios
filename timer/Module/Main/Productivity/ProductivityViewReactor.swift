@@ -22,6 +22,8 @@ class ProductivityViewReactor: Reactor {
     }
     
     enum Action {
+        case viewWillAppear
+        
         case clearTimeSet
         case clearTimer
         
@@ -82,7 +84,6 @@ class ProductivityViewReactor: Reactor {
         
         // Create default timer set and add default a timer
         self.timeSetInfo = TimeSetInfo()
-        self.timeSetInfo.timers.append(TimerInfo(title: "1 번째 타이머"))
  
         self.initialState = State(time: 0,
                                   timer: 0,
@@ -97,10 +98,24 @@ class ProductivityViewReactor: Reactor {
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewWillAppear:
+            var indexPath = currentState.selectedIndexPath
+            if  indexPath.row > timeSetInfo.timers.count - 1 {
+                // Reset index path if timer count less than current selected index path's row
+                indexPath = IndexPath(row: timeSetInfo.timers.count - 1, section: 0)
+            }
+            
+            let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
+            let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
+            let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[indexPath.row].endTime))
+            let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(timeSetInfo.timers.reduce(0) { $0 + $1.endTime }))
+            let setTime: Observable<Mutation> = .just(.setTime(0))
+            let sectionReload: Observable<Mutation> = .just(.sectionReload)
+
+            return .concat(setSelectedIndexPath, setTimers, setTimer, setSumOfTimers, setTime, sectionReload)
         case .clearTimeSet:
             // Clear time set
             timeSetInfo = TimeSetInfo()
-            timeSetInfo.timers.append(TimerInfo(title: "1 번째 타이머"))
             
             let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(IndexPath(row: 0, section: 0)))
             let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
@@ -147,7 +162,7 @@ class ProductivityViewReactor: Reactor {
         case .addTimer:
             // Create default a timer (set 0)
             let index = timeSetInfo.timers.count
-            let info = TimerInfo(title: "\(index + 1) 번째 타이머")
+            let info = TimerInfo(title: String(format: "timer_default_title".localized, index + 1))
             // Add timer
             timeSetInfo.timers.append(info)
             
@@ -201,7 +216,7 @@ class ProductivityViewReactor: Reactor {
             return .concat(setSelectedIndexPath, setTimer, setTime)
         case let .applyAlarm(alarm):
             timeSetInfo.timers.forEach { $0.alarm = alarm }
-            return .just(.setAlertMessage("알람이 전체 적용 되었습니다."))
+            return .just(.setAlertMessage("alert_alarm_all_apply_description".localized))
         }
     }
     
