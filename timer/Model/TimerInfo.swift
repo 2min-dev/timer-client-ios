@@ -9,7 +9,7 @@
 import Foundation
 
 /// The timer data present object
-class TimerInfo: Codable {
+class TimerInfo: Codable, NSCopying {
     /// The state of timer
     enum State: Int, Codable {
         case stop = 0
@@ -18,7 +18,7 @@ class TimerInfo: Codable {
         case end
     }
     
-    // MARK: properties
+    // MARK: - properties
     var title: String // The title of the timer
     var comment: String // The comment of the timer
     var alarm: String // The alarm name of the timer
@@ -26,7 +26,7 @@ class TimerInfo: Codable {
     var endTime: TimeInterval // Target end time interval of the timer
     var state: State // Current state of the timer
     
-    // MARK: constructor
+    // MARK: - constructor
     init(title: String, comment: String = "", alarm: String = "system", currentTime: TimeInterval = 0, endTime: TimeInterval = 0, state: State = .stop) {
         self.title = title
         self.comment = comment
@@ -34,5 +34,10 @@ class TimerInfo: Codable {
         self.currentTime = currentTime
         self.endTime = endTime
         self.state = state
+    }
+    
+    // MARK: - public method
+    func copy(with zone: NSZone? = nil) -> Any {
+        return TimerInfo(title: title, comment: comment, alarm: alarm, currentTime: currentTime, endTime: endTime, state: state)
     }
 }
