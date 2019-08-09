@@ -12,6 +12,7 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum TimeSetSaveRoute {
         case timerOption
+        case timeSetDetail(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -24,12 +25,23 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: TimeSetSaveRoute) -> UIViewController {
-        let viewController = get(for: route)
+    func present(for route: TimeSetSaveRoute) -> UIViewController? {
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .timeSetDetail(_):
+            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
+                return nil
+            }
+            let viewControllers = [rootViewController, viewController]
+            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+        default:
+            break
+        }
         return viewController
     }
     
-    func get(for route: TimeSetSaveRoute) -> UIViewController {
+    func get(for route: TimeSetSaveRoute) -> UIViewController? {
         switch route {
         case .timerOption:
             let coordinator = TimerOptionViewCoordinator(provider: provider)
@@ -44,6 +56,16 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
             navigationController.isNavigationBarHidden = true
             
             return navigationController
+        case let .timeSetDetail(timeSetInfo):
+            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
+            let reactor = TimeSetDetailViewReactor(timeSetInfo: timeSetInfo)
+            let viewController = TimeSetDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
         }
     }
 }

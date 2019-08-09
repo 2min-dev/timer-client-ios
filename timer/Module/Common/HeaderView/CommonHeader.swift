@@ -73,8 +73,12 @@ class CommonHeader: UIView {
     }
     var buttonTypes: [ButtonType] = [] {
         didSet {
-            // Remove all arranged subviews
-            buttonStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            // Remove all buttons
+            buttonStackView.arrangedSubviews.forEach {
+                $0.removeFromSuperview()
+                buttons[ButtonType(rawValue: $0.tag)!] = nil
+            }
+            
             // Add all header buttons
             buttonTypes.forEach {
                 let button = $0.button
@@ -84,13 +88,12 @@ class CommonHeader: UIView {
                 button.snp.makeConstraints { make in
                     make.width.equalTo(36.adjust())
                 }
+        
+                buttons[$0] = button
             }
         }
     }
-    var buttons: [UIButton] {
-        return buttonStackView.arrangedSubviews.compactMap { $0 as? UIButton }
-    }
-    
+    lazy var buttons: [ButtonType: UIButton] = [.back: backButton]
     var isBackButtonHidden: Bool = false {
         didSet { backButton.isHidden = isBackButtonHidden }
     }
@@ -146,15 +149,9 @@ class CommonHeader: UIView {
 
 extension Reactive where Base: CommonHeader {
     var tap: ControlEvent<Base.ButtonType> {
-        var tapButtons = base.buttons.map { button in
-            button.rx.tap
-                .flatMap { Observable<Base.ButtonType>.just(Base.ButtonType(rawValue: button.tag)!) }
-        }
-        tapButtons.append(
-            base.backButton.rx.tap
-                .flatMap { Observable<Base.ButtonType>.just(Base.ButtonType(rawValue: self.base.backButton.tag)!) })
-        
-        let source: Observable<Base.ButtonType> = .merge(tapButtons)
+        let source: Observable<Base.ButtonType> = .merge(base.buttons.values.map { button in
+            button.rx.tap.flatMap { Observable<Base.ButtonType>.just(Base.ButtonType(rawValue: button.tag)!) }
+        })
         return ControlEvent(events: source)
     }
 }

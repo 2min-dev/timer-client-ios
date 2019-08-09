@@ -24,8 +24,8 @@ class SettingViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: SettingRoute) -> UIViewController {
-        let viewController = get(for: route)
+    func present(for route: SettingRoute) -> UIViewController? {
+        guard let viewController = get(for: route) else { return nil }
         
         switch route {
         case .appInfo:
@@ -37,7 +37,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: SettingRoute) -> UIViewController {
+    func get(for route: SettingRoute) -> UIViewController? {
         switch route {
         case .appInfo:
             let coordinator = AppInfoCoordinator(provider: provider)

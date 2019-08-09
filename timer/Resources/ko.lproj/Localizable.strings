@@ -67,15 +67,21 @@
 "alarm_change_current_title_format" = "현재 : %@";
 
 // MARK: - Time set
-// MARK: Common
+"time_set_default_title" = "%d번째 생산성";
+"time_set_sum_of_all_timers_full_title" = "전체 시간";
 "time_set_sum_of_all_timers_title" = "전체시간 ";
 "time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
+"time_set_expected_time_full_title" = "종료 예정";
 "time_set_expected_time_title" = "종료예정 ";
 "time_set_expected_time_format" = "H:mm a";
+
+// MARK: - Timer
+"timer_default_title" = "%d번째 타이머";
 
 // MARK: - Alert
 "alert_warning_delete_time_set_title" = "타임셋 삭제";
 "alert_warning_delete_time_set_description" = "생성한 타임셋이 삭제됩니다.\n정말 삭제하시겠습니까?";
+"alert_alarm_all_apply_description" = "알람이 모든 타이머에 적용되었습니다.";
 "alert_button_cancel" = "취소";
 "alert_button_yes" = "네";
 

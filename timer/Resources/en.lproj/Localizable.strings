@@ -68,15 +68,21 @@
 "alarm_change_current_title_format" = "Cur : %@";
 
 // MARK: - Time set
-// MARK: Common
+"time_set_default_title" = "Time Set %d";
+"time_set_sum_of_all_timers_full_title" = "All Time";
 "time_set_sum_of_all_timers_title" = "All ";
 "time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
+"time_set_expected_time_full_title" = "End Exp ";
 "time_set_expected_time_title" = "Exp ";
 "time_set_expected_time_format" = "H:mm a";
+
+// MARK: - Timer
+"timer_default_title" = "Timer %d";
 
 // MARK: - Alert
 "alert_warning_delete_time_set_title" = "Delete The Time Set";
 "alert_warning_delete_time_set_description" = "The Time set is deleted.\nAre you sure you want to delete it?";
+"alert_alarm_all_apply_description" = "The alarm has been applied to all timers";
 "alert_button_cancel" = "Cancel";
 "alert_button_yes" = "Yes";
 

@@ -89,7 +89,7 @@ class TimeSetSaveView: UIView {
         return view
     }()
     
-    let endOfTimerLabel: UILabel = {
+    let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
         view.textAlignment = .center
@@ -97,7 +97,7 @@ class TimeSetSaveView: UIView {
     }()
     
     private lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimerLabel])
+        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
         return view
@@ -119,12 +119,11 @@ class TimeSetSaveView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
-        view.isAxisFixedPoint = true
-        view.anchorPoint = TimerBadgeCollectionView.centerAnchor
+        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
         return view
     }()
     
-    private lazy var contentView: UIView = {
+    lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews

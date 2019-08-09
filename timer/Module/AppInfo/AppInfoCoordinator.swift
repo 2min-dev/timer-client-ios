@@ -12,7 +12,7 @@ import UIKit
 class AppInfoCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum AppInfoRoute {
-        
+        case empty
     }
     
 	// MARK: - properties
@@ -24,13 +24,11 @@ class AppInfoCoordinator: CoordinatorProtocol {
 		self.provider = provider
 	}
 
-	func present(for route: AppInfoRoute) -> UIViewController {
-        let viewController = get(for: route)
-        
-        return viewController
+	func present(for route: AppInfoRoute) -> UIViewController? {
+        return get(for: route)
 	}
     
-    func get(for route: AppInfoRoute) -> UIViewController {
-        return UIViewController()
+    func get(for route: AppInfoRoute) -> UIViewController? {
+        return nil
     }
 } 

@@ -67,7 +67,7 @@ class MainViewController: UITabBarController {
         ]
         
         // Set view controllers
-        viewControllers = [coordinator.get(for: .local), coordinator.get(for: .productivity), coordinator.get(for: .share)]
+        viewControllers = [coordinator.get(for: .local), coordinator.get(for: .productivity), coordinator.get(for: .share)].compactMap { $0 }
         
         // Set tab bar view controller delegate for swipable
         delegate = self

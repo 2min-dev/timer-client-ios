@@ -28,7 +28,7 @@ class ProductivityViewController: BaseViewController, View {
     
     private var timeInfoView: UIView { return productivityView.timeInfoView }
     private var sumOfTimersLabel: UILabel { return productivityView.sumOfTimersLabel }
-    private var endOfTimerLabel: UILabel { return productivityView.endOfTimerLabel }
+    private var endOfTimeSetLabel: UILabel { return productivityView.endOfTimeSetLabel }
     private var timerInputLabel: UILabel { return productivityView.timeInputLabel }
     
     private var keyPadView: KeyPad { return productivityView.keyPadView }
@@ -41,7 +41,14 @@ class ProductivityViewController: BaseViewController, View {
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
     private var timerOptionView: UIView { return productivityView.timerOptionView }
-    private var timerOptionViewController: TimerOptionViewController!
+    private lazy var timerOptionViewController: TimerOptionViewController = {
+        guard let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
+            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController else { fatalError() }
+        
+        // Add timer option view controller
+        addChild(timerOptionNavigationController, in: timerOptionView)
+        return timerOptionViewController
+    }()
     
     private var footerView: Footer { return productivityView.footerView }
     
@@ -67,6 +74,8 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         timerBadgeCollectionView.reorderableDelegate = self
         timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
             switch cellType {
@@ -89,8 +98,6 @@ class ProductivityViewController: BaseViewController, View {
             addChild(timerOptionNavigationController, in: timerOptionView)
             self.timerOptionViewController = timerOptionViewController
         }
-        
-        super.viewDidLoad()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -137,8 +144,8 @@ class ProductivityViewController: BaseViewController, View {
             .distinctUntilChanged()
             .map { !$0 }
             .do(onNext: { [weak self] in
-                self?.popToTimerOptionMain(isTimerOptionVisible: !$0)
                 if $0 {
+                    self?.timerOptionViewController.navigationController?.popViewController(animated: false)
                     self?.view.endEditing(true)
                 }
             })
@@ -148,6 +155,12 @@ class ProductivityViewController: BaseViewController, View {
     
     func bind(reactor: ProductivityViewReactor) {
         // MARK: action
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         headerView.rx.tap
             .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
@@ -177,7 +190,6 @@ class ProductivityViewController: BaseViewController, View {
         
         timerBadgeCollectionView.rx.badgeSelected
             .do(onNext: { [weak self] in
-                self?.scrollToBadgeIfCan(at: $0.0, cellType: $0.1)
                 self?.setVisibleOfTimerOptionView(oldIndexPath: reactor.currentState.selectedIndexPath, newIndexPath: $0.0)
             })
             .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
@@ -246,15 +258,18 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         // End of time set
-        reactor.state
-            .map { $0.sumOfTimers }
-            .distinctUntilChanged()
-            .map { Date().addingTimeInterval($0) }
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.sumOfTimers }
+                .distinctUntilChanged(),
+            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+        )
+            .map { Date().addingTimeInterval($0.0) }
             .map { [weak self] in
                 self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
                                            info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
-            .bind(to: endOfTimerLabel.rx.attributedText)
+            .bind(to: endOfTimeSetLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // Time buttons
@@ -278,11 +293,12 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { [weak self] _ in !(self?.isBadgeMoving ?? false) }
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
             .do(onNext: { [weak self] in
-                self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true)
+                if !self!.isBadgeMoving {
+                    self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true)
+                }
                 self?.timerOptionVisibleSubject.accept(false)
             })
             .bind(to: timerBadgeCollectionView.rx.selected)
@@ -305,16 +321,6 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     // MARK: - private method
-    /// Scroll badge view if needed by time set action
-    private func scrollToBadgeIfCan(at indexPath: IndexPath, cellType: TimerBadgeCellType) {
-        switch cellType {
-        case .add:
-            break
-        default:
-            timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
-        }
-    }
-    
     /// Convert number key pad input to time value
     private func convertKeyToTime(key: KeyPad.Key) -> Int {
         guard var text = timerInputLabel.text else { return 0 }
@@ -349,6 +355,7 @@ class ProductivityViewController: BaseViewController, View {
     /// Toggle timer option view visible state
     private func setVisibleOfTimerOptionView(oldIndexPath: IndexPath, newIndexPath: IndexPath) {
         if oldIndexPath == newIndexPath {
+            timerBadgeCollectionView.scrollToBadge(at: newIndexPath, animated: true)
             timerOptionVisibleSubject.accept(!timerOptionVisibleSubject.value)
         } else {
             timerOptionVisibleSubject.accept(false)
@@ -396,12 +403,6 @@ class ProductivityViewController: BaseViewController, View {
         timerBadgeCollectionView.isHidden = !canTimeSetStart
         // Show timer option footer view
         showFooterView(isShow: canTimeSetStart)
-    }
-    
-    /// Pop view controller to go to main option view
-    private func popToTimerOptionMain(isTimerOptionVisible: Bool) {
-        guard !isTimerOptionVisible else { return }
-        timerOptionViewController.navigationController?.popViewController(animated: false)
     }
     
     /// Show popup alert about warning to delete time set

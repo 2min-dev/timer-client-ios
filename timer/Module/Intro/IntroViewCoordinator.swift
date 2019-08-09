@@ -24,8 +24,8 @@ class IntroViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: IntroRoute) -> UIViewController {
-        let viewController = get(for: route)
+    func present(for route: IntroRoute) -> UIViewController? {
+        guard let viewController = get(for: route) else { return nil }
         
         switch route {
         case .main:
@@ -36,7 +36,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: IntroRoute) -> UIViewController {
+    func get(for route: IntroRoute) -> UIViewController? {
         switch route {
         case .main:
             let coordinator = MainViewCoordinator(provider: provider)

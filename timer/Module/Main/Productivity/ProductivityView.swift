@@ -37,7 +37,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let endOfTimerLabel: UILabel = {
+    let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
         view.textAlignment = .center
@@ -45,7 +45,7 @@ class ProductivityView: UIView {
     }()
     
     lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimerLabel])
+        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
         view.isHidden = true
@@ -128,7 +128,8 @@ class ProductivityView: UIView {
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         view.isAxisFixedPoint = true
-        view.anchorPoint = TimerBadgeCollectionView.centerAnchor
+        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+        view.layout?.axisAlign = .center
         return view
     }()
     
@@ -155,7 +156,7 @@ class ProductivityView: UIView {
         }
         
         keyPadView.snp.makeConstraints { make in
-            make.top.equalTo(timeInfoView.snp.bottom).offset(6.adjust())
+            make.top.equalTo(timerInputView.snp.bottom).offset(30.adjust())
             make.centerX.equalToSuperview()
             make.width.equalTo(270.adjust())
             make.height.equalTo(280.adjust())

@@ -16,9 +16,6 @@ import JSReorderableCollectionView
 typealias TimerBadgeSectionModel = SectionModel<Void, TimerBadgeCellType>
 
 class TimerBadgeCollectionView: JSReorderableCollectionView, View {
-    // MARK: - constants
-    static let centerAnchor = CGPoint(x: -1, y: -1)
-    
     // MARK: - properties
     private lazy var _dataSource = RxCollectionViewSectionedReloadDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
         switch cellType {
@@ -46,8 +43,8 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
         return true
     }
 
-    // Timer badge anchor point
-    var anchorPoint = CGPoint(x: 0, y: 0)
+    // Timer badge flow layout
+    var layout: TimerBadgeCollectionViewFlowLayout?
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 0, height: 60.adjust())
@@ -57,42 +54,31 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
     
     // MARK: - constructor
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+        self.layout = layout as? TimerBadgeCollectionViewFlowLayout
         super.init(frame: frame, collectionViewLayout: layout)
         self.reactor = TimerBadgeViewReactor()
-    }
-    
-    convenience init(frame: CGRect) {
-        // Create collection view flow layout
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        // layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // self-sizing cell
-        layout.itemSize = CGSize(width: 108.adjust(), height: 60.adjust())
-        layout.minimumInteritemSpacing = 30.adjust()
-
-        self.init(frame: frame, collectionViewLayout: layout)
+        
+        // Set collection view properties
         backgroundColor = Constants.Color.clear
         showsHorizontalScrollIndicator = false
+        showsVerticalScrollIndicator = false
+        
+        // Set layout properties
+        self.layout?.scrollDirection = .horizontal
+        self.layout?.minimumInteritemSpacing = 30.adjust()
+        self.layout?.delegate = self
         
         // Register timer badge collection view reusable cell
         register(TimerBadgeCollectionViewCell.self, forCellWithReuseIdentifier: TimerBadgeCollectionViewCell.ReuseableIdentifier)
         register(TimerBadgeAddCollectionViewCell.self, forCellWithReuseIdentifier: TimerBadgeAddCollectionViewCell.ReuseableIdentifier)
-        
-        // Bind common view events
-        bind()
+    }
+    
+    convenience init(frame: CGRect) {
+        self.init(frame: frame, collectionViewLayout: TimerBadgeCollectionViewFlowLayout())
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - bind
-    func bind() {
-        rx.setDelegate(self).disposed(by: disposeBag)
-        
-        _ = rx.methodInvoked(#selector(layoutSubviews))
-            .filter { [weak self] _ in self?.bounds.width ?? 0 > 0 }
-            .first()
-            .subscribe { [weak self] _ in self?.scrollToBadge(at: IndexPath(row: 0, section: 0), animated: false) }
     }
     
     func bind(reactor: TimerBadgeViewReactor) {
@@ -132,75 +118,44 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
         }
     }
     
-    /// Animate that move cell to anchor point
+    /// Animate that move cell to axis point
     func scrollToBadge(at indexPath: IndexPath, animated: Bool) {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout,
+        guard let layout = collectionViewLayout as? TimerBadgeCollectionViewFlowLayout,
             let items = reactor?.currentState.sections[0].items,
             indexPath.row < items.count else { return }
-        
+
         let index = CGFloat(indexPath.row)
-        // Current cell offset in collection view
-        let cellOffset = index * layout.itemSize.width + index * layout.minimumInteritemSpacing
         // Get current cell size
         let cellSize = collectionView(self, layout: layout, sizeForItemAt: indexPath)
+        // Current cell offset in collection view
+        let cellOffset = index * cellSize.width + index * layout.minimumInteritemSpacing + layout.sectionInset.left
         
-        var diff = anchorPoint.x // Deference about between cell offset and anchor point
-        if anchorPoint == TimerBadgeCollectionView.centerAnchor {
-            diff = (bounds.width - cellSize.width) / 2
+        // Deference about between cell offset and axis point
+        var diff: CGFloat
+        switch layout.axisAlign {
+        case .left:
+            diff = layout.axisPoint.x
+        case .center:
+            diff = layout.axisPoint.x - cellSize.width / 2
+        case .right:
+            diff = layout.axisPoint.x - cellSize.width
         }
-        
-        // Animate scroll to anchor point
+
+        // Animate scroll to axis point
         setContentOffset(CGPoint(x: cellOffset - diff, y: 0), animated: animated)
     }
 }
 
-extension TimerBadgeCollectionView: UICollectionViewDelegate {
-    /// Set content inset of collection view to align center
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        // Ignore if display cell isn't first or last
-        guard indexPath.row == 0 || indexPath.row == collectionView.numberOfItems(inSection: 0) - 1 else { return }
-        let isFirst = indexPath.row == 0
-        
-        // Get content inset
-        let inset = calcInsetOfCollectionView(collectionView, cell: cell, anchorPoint: anchorPoint, isFirst: isFirst)
-        
-        // Set content inset to align center cell based on anchor point
-        var contentInset = collectionView.contentInset
-        if isFirst {
-            contentInset.left = inset
-        } else {
-            contentInset.right = inset
-        }
-        collectionView.contentInset = contentInset
-    }
-    
-    private func calcInsetOfCollectionView(_ collectionView: UICollectionView, cell: UICollectionViewCell, anchorPoint: CGPoint, isFirst: Bool) -> CGFloat {
-        if anchorPoint == TimerBadgeCollectionView.centerAnchor {
-            return collectionView.bounds.width / 2 - cell.bounds.width / 2
-        } else {
-            return isFirst ? anchorPoint.x : collectionView.bounds.width - (cell.bounds.width + anchorPoint.x)
-        }
-    }
-}
-
 extension TimerBadgeCollectionView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
-        return layout.minimumInteritemSpacing
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
         guard let reactor = reactor else { return .zero }
 
         let cellType = reactor.currentState.sections[0].items[indexPath.row]
         switch cellType {
         case .add:
-            var size = layout.itemSize
-            size.width = 50.adjust()
-            return size
+            return CGSize(width: 50.adjust(), height: 30.adjust())
         default:
-            return layout.itemSize
+            return CGSize(width: 108.adjust(), height: 60.adjust())
         }
     }
 }
@@ -270,6 +225,141 @@ enum TimerBadgeCellType {
             return reactor
         default:
             return nil
+        }
+    }
+}
+
+class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    // MARK: - constants
+    enum Axis {
+        static let center = CGPoint(x: -1, y: -1)
+    }
+    
+    enum Align {
+        case left
+        case center
+        case right
+    }
+    
+    // MARK: - properties
+    weak var delegate: UICollectionViewDelegateFlowLayout?
+    
+    private var attributesCache: [UICollectionViewLayoutAttributes] = []
+    private var _axisPoint: CGPoint = .zero
+    var axisPoint: CGPoint {
+        set { _axisPoint = newValue }
+        get { return _axisPoint == Axis.center ? CGPoint(x: (collectionView?.bounds.width ?? 0) / 2, y: _axisPoint.y) : _axisPoint }
+    }
+    var axisAlign: Align = .center
+    
+    private var contentSize: CGSize = .zero
+    override var collectionViewContentSize: CGSize {
+        return contentSize
+    }
+    
+    override func prepare() {
+        super.prepare()
+        guard let collectionView = collectionView, collectionView.numberOfSections > 0 else { return }
+
+        let count = collectionView.numberOfItems(inSection: 0)
+        // Init section inset
+        sectionInset = calcSectionInset(in: collectionView, section: 0)
+        // Add horizontal section left inset to content size
+        contentSize = CGSize(width: sectionInset.left, height: collectionView.bounds.height)
+        
+        var attributes: [UICollectionViewLayoutAttributes] = []
+        (0 ..< count).forEach {
+            let indexPath = IndexPath(row: $0, section: 0)
+            let itemSize = delegate?.collectionView?(collectionView,
+                                                    layout: self,
+                                                    sizeForItemAt: indexPath) ?? self.itemSize
+
+            let attribute = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+            attribute.frame = CGRect(x: contentSize.width,
+                                     y: (contentSize.height - itemSize.height) / 2,
+                                     width: itemSize.width,
+                                     height: itemSize.height)
+
+            attributes.append(attribute)
+            // Add item size to content width
+            contentSize.width += itemSize.width + ($0 < count - 1 ? minimumInteritemSpacing : 0)
+        }
+        // Add horizontal section right inset to content size
+        contentSize.width += sectionInset.right
+
+        attributesCache = attributes
+    }
+
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        return attributesCache.filter { $0.frame.intersects(rect) }
+    }
+
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        return attributesCache[indexPath.item]
+    }
+
+    override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
+        guard let collectionView = collectionView else { return .zero }
+
+        // Get layout attributes in target rect
+        let targetRect = CGRect(x: proposedContentOffset.x, y: proposedContentOffset.y, width: collectionView.frame.width, height: collectionView.frame.height)
+        guard let layoutAttributes = layoutAttributesForElements(in: targetRect) else { return .zero }
+
+        var offsetAdjustment = CGFloat.greatestFiniteMagnitude
+        // Calculate base axis point.
+        let axisX = proposedContentOffset.x + axisPoint.x
+        
+        // Calculate content offset adjustment between center of content offset and most closest item
+        layoutAttributes.forEach {
+            var diff: CGFloat
+            switch axisAlign {
+            case .left:
+                diff = $0.frame.origin.x - axisX
+            case .center:
+                diff = $0.center.x - axisX
+            case .right:
+                diff = $0.frame.origin.x + $0.bounds.width - axisX
+            }
+            
+            if diff.magnitude < offsetAdjustment.magnitude {
+                offsetAdjustment = diff
+            }
+        }
+        return CGPoint(x: proposedContentOffset.x + offsetAdjustment, y: proposedContentOffset.y)
+    }
+    
+    // MARK: - private method
+    private func calcSectionInset(in collectionView: UICollectionView, section: Int) -> UIEdgeInsets {
+        let count = collectionView.numberOfItems(inSection: section)
+        guard count > 0 else { return .zero }
+
+        let firstIndexPath = IndexPath(row: 0, section: section)
+        let lastIndexPath = IndexPath(row: count - 1, section: section)
+        
+        // Get first & last item size
+        let firstItem = delegate?.collectionView?(collectionView,
+                                                 layout: self,
+                                                 sizeForItemAt: firstIndexPath) ?? self.itemSize
+        let lastItem = delegate?.collectionView?(collectionView,
+                                                layout: self,
+                                                sizeForItemAt: lastIndexPath) ?? self.itemSize
+        
+        switch axisAlign {
+        case .left:
+            return UIEdgeInsets(top: 0,
+                                left: axisPoint.x,
+                                bottom: 0,
+                                right: collectionView.bounds.width - (axisPoint.x + lastItem.width))
+        case .center:
+            return UIEdgeInsets(top: 0,
+                                left: axisPoint.x - firstItem.width / 2,
+                                bottom: 0,
+                                right: axisPoint.x - lastItem.width / 2)
+        case .right:
+            return UIEdgeInsets(top: 0,
+                                left: axisPoint.x - firstItem.width,
+                                bottom: 0,
+                                right: collectionView.bounds.width - axisPoint.x)
         }
     }
 }

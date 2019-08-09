@@ -93,7 +93,7 @@ class SettingViewController: BaseViewController, View {
                 case .setting:
                     switch indexPath.row {
                     case 0:
-                        self.coordinator.present(for: .appInfo)
+                        _ = self.coordinator.present(for: .appInfo)
                     default:
                         Logger.error("not valid index path.")
                     }

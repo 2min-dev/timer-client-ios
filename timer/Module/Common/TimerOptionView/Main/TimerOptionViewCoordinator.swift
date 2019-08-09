@@ -24,8 +24,8 @@ class TimerOptionViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController {
-        let viewController = get(for: route)
+    func present(for route: Route) -> UIViewController? {
+        guard let viewController = get(for: route) else { return nil }
         
         switch route {
         case .alarmChange(_):
@@ -35,7 +35,7 @@ class TimerOptionViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: Route) -> UIViewController {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case let .alarmChange(alarm):
             let viewController = AlarmChangeViewController()

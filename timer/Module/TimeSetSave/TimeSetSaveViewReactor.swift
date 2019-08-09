@@ -21,12 +21,18 @@ class TimeSetSaveViewReactor: Reactor {
         case selectTimer(at: IndexPath)
         
         case applyAlarm(String)
+        
+        case saveTimeSet
+        case complete
     }
     
     enum Mutation {
         case setTitle(String)
+        case setHint(String)
         case removeTimer(at: Int)
         case setSelectedIndexPath(at: IndexPath)
+        
+        case setSavedTimeSet(info: TimeSetInfo)
         
         case setAlertMessage(String)
         case sectionReload
@@ -40,22 +46,27 @@ class TimeSetSaveViewReactor: Reactor {
         var timers: [TimerInfo]             // The timer list model of time set
         var selectedIndexPath: IndexPath    // Current selected timer index path
         
+        var savedTimeSet: TimeSetInfo?      // The saved time set
+        
         var alertMessage: String?           // Alert message
         var shouldSectionReload: Bool       // Need section reload
     }
     
     // MARK: - properties
     var initialState: State
-    private let timeSetInfo: TimeSetInfo
+    private let timeSetService: TimeSetServicePorotocol
+    let timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
-    init(timeSetInfo: TimeSetInfo) {
+    init(timeSetService: TimeSetServicePorotocol, timeSetInfo: TimeSetInfo) {
+        self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo
         self.initialState = State(title: timeSetInfo.title,
-                                  hint: "생산성",
+                                  hint: "",
                                   sumOfTimers: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                                   timers: timeSetInfo.timers,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
+                                  savedTimeSet: nil,
                                   alertMessage: nil,
                                   shouldSectionReload: true)
     }
@@ -64,8 +75,14 @@ class TimeSetSaveViewReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            // TODO: Set time set hint after get time set list
-            return .empty()
+            // Set hint after fetch time set list
+            let setHint: Observable<Mutation> = timeSetService.fetchTimeSets().asObservable()
+                .map { $0.count + 1 }
+                .map { String(format: "time_set_default_title".localized, $0) }
+                .flatMap { Observable.just(Mutation.setHint($0)) }
+            let sectionReload: Observable<Mutation> = .just(.sectionReload)
+            
+            return .concat(setHint, sectionReload)
         case .clearTitle:
             return .just(.setTitle(""))
         case let .updateTitle(title):
@@ -95,7 +112,18 @@ class TimeSetSaveViewReactor: Reactor {
             return .just(.setSelectedIndexPath(at: indexPath))
         case let .applyAlarm(alarm):
             timeSetInfo.timers.forEach { $0.alarm = alarm }
-            return .just(.setAlertMessage("알람이 전체 적용 되었습니다."))
+            return .just(.setAlertMessage("alert_alarm_all_apply_description".localized))
+        case .saveTimeSet:
+            if timeSetInfo.title.isEmpty {
+                timeSetInfo.title = currentState.hint
+            }
+            
+            return timeSetService.addTimeSet(info: timeSetInfo)
+                .asObservable()
+                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
+        case .complete:
+            timeSetInfo.clear()
+            return .empty()
         }
     }
     
@@ -108,11 +136,17 @@ class TimeSetSaveViewReactor: Reactor {
         case let .setTitle(title):
             state.title = title
             return state
+        case let .setHint(hint):
+            state.hint = hint
+            return state
         case let .removeTimer(at: index):
             state.timers.remove(at: index)
             return state
         case let .setSelectedIndexPath(at: indexPath):
             state.selectedIndexPath = indexPath
+            return state
+        case let .setSavedTimeSet(info: timeSetInfo):
+            state.savedTimeSet = timeSetInfo
             return state
         case let .setAlertMessage(message):
             state.alertMessage = message
