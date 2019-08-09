@@ -38,7 +38,7 @@ class TimeSetSaveViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: TimeSetSaveViewCoordinator
     
-    var isScrolling: Bool = false
+    private var isDragging: Bool = false
     
     // MARK: - constructor
     init(coordinator: TimeSetSaveViewCoordinator) {
@@ -93,19 +93,25 @@ class TimeSetSaveViewController: BaseViewController, View {
             .disposed(by: disposeBag)
 
         timerBadgeCollectionView.rx.badgeSelected
-            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.0, animated: true) })
+            .map { Reactor.Action.selectTimer(at: $0.0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // Timer badge collection view dragging
+        timerBadgeCollectionView.rx.willBeginDragging
+            .subscribe(onNext: { [weak self] in self?.isDragging = true })
+            .disposed(by: disposeBag)
+        
+        timerBadgeCollectionView.rx.didEndDecelerating
+            .subscribe(onNext: { [weak self] in self?.isDragging = false })
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.didScroll
+            .filter { [unowned self] in self.isDragging }
             .map { [weak self] in self?.getIndexPathFromScrolling() }
             .filter { $0 != nil }
             .map { Reactor.Action.selectTimer(at: $0!) }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        // Set `isScrolling` to `false`
-        timerBadgeCollectionView.rx.didEndScrollingAnimation
-            .subscribe(onNext: { [weak self] in self?.isScrolling = false })
             .disposed(by: disposeBag)
 
         timerOptionViewController.rx.alarmApplyAll
@@ -238,7 +244,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     /// Get index path from badge view scrolling
     private func getIndexPathFromScrolling() -> IndexPath? {
         guard let axisPoint = timerBadgeCollectionView.layout?.axisPoint else { return nil }
-        isScrolling = true // Set `isScrolling` to `true`
 
         let frame = timerBadgeCollectionView.frame
         let origin = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
@@ -249,7 +254,7 @@ class TimeSetSaveViewController: BaseViewController, View {
     
     /// Scroll to badge if can scroll
     private func scrollToBadgeIfCan(at: IndexPath) {
-        guard !isScrolling else { return }
+        guard !isDragging else { return }
         timerBadgeCollectionView.scrollToBadge(at: at, animated: true)
     }
     

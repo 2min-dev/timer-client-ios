@@ -63,7 +63,6 @@ class TimeSetDetailViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0.0, animated: true) })
             .map { Reactor.Action.selectTimer(at: $0.0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -131,6 +130,7 @@ class TimeSetDetailViewController: BaseViewController, View {
         reactor.state
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
+            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
             .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
