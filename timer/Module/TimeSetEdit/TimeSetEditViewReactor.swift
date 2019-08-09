@@ -10,6 +10,12 @@ import RxSwift
 import ReactorKit
 
 class TimeSetEditViewReactor: Reactor {
+    enum Time: Int {
+        case hour = 0
+        case minute
+        case second
+    }
+    
     enum Action {
         
     }
