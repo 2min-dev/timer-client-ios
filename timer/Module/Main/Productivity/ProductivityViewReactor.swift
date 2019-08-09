@@ -74,14 +74,10 @@ class ProductivityViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let timerService: TimeSetServicePorotocol
-    
     var timeSetInfo: TimeSetInfo // Empty timer set info
     
     // MARK: - constructor
-    init(timerService: TimeSetServicePorotocol) {
-        self.timerService = timerService
-        
+    init() {
         // Create default timer set and add default a timer
         self.timeSetInfo = TimeSetInfo()
  
