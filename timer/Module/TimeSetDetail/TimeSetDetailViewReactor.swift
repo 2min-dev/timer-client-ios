@@ -39,7 +39,7 @@ class TimeSetDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private var timeSetInfo: TimeSetInfo
+    var timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {
