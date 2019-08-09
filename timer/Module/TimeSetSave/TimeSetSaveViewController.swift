@@ -18,6 +18,8 @@ class TimeSetSaveViewController: BaseViewController, View {
     // MARK: - view properties
     private var timeSetSaveView: TimeSetSaveView { return view as! TimeSetSaveView }
     
+    private var headerView: CommonHeader { return timeSetSaveView.headerView }
+    
     private var titleTextField: UITextField { return timeSetSaveView.titleTextField }
     private var titleClearButton: UIButton { return timeSetSaveView.titleClearButton }
     private var titleHintLabel: UILabel { return timeSetSaveView.titleHintLabel }
@@ -101,6 +103,11 @@ class TimeSetSaveViewController: BaseViewController, View {
         
         footerView.rx.tap
             .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0) })
+            .disposed(by: disposeBag)
+        
+        headerView.rx.tap
+            .filter { $0 == .back }
+            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state

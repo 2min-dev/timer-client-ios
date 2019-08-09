@@ -12,8 +12,9 @@ import RxCocoa
 
 class TimeSetSaveView: UIView {
     // MARK: - view properties
-    let headerView: Header = {
-        let view = Header()
+    let headerView: CommonHeader = {
+        let view = CommonHeader()
+        view.title = "time_set_save_title".localized
         return view
     }()
     

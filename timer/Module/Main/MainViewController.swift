@@ -61,7 +61,7 @@ class MainViewController: UITabBarController {
         
         // Set tab bar items
         _tabBar.tabBarItems = [
-            TMTabBarItem(title: "tab_button_local_time_set".localized, icon: UIImage(named: "btn_tab_local")),
+            TMTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
             TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
             TMTabBarItem(title: "tab_button_shared_time_set".localized, icon: UIImage(named: "btn_tab_share"))
         ]
