@@ -24,87 +24,106 @@ class KeyPad: UIView {
         case nine
         case cancel
         case back
+        
+        static func == (value: Int, origin: Key) -> Bool {
+            return value == origin.rawValue
+        }
+        
+        static func != (value: Int, origin: Key) -> Bool {
+            return value != origin.rawValue
+        }
     }
     
     // MARK: - view properties
     let oneButton: UIButton = {
         let view = UIButton()
         view.tag = Key.one.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "1", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("1", for: .normal)
         return view
     }()
     
     let twoButton: UIButton = {
         let view = UIButton()
         view.tag = Key.two.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "2", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("2", for: .normal)
         return view
     }()
     
     let threeButton: UIButton = {
         let view = UIButton()
         view.tag = Key.three.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "3", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("3", for: .normal)
         return view
     }()
     
     let fourButton: UIButton = {
         let view = UIButton()
         view.tag = Key.four.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "4", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("4", for: .normal)
         return view
     }()
     
     let fiveButton: UIButton = {
         let view = UIButton()
         view.tag = Key.five.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "5", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("5", for: .normal)
         return view
     }()
     
     let sixButton: UIButton = {
         let view = UIButton()
         view.tag = Key.six.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "6", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("6", for: .normal)
         return view
     }()
     
     let sevenButton: UIButton = {
         let view = UIButton()
         view.tag = Key.seven.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "7", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("7", for: .normal)
         return view
     }()
     
     let eightButton: UIButton = {
         let view = UIButton()
         view.tag = Key.eight.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "8", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("8", for: .normal)
         return view
     }()
     
     let nineButton: UIButton = {
         let view = UIButton()
         view.tag = Key.nine.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "9", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("9", for: .normal)
         return view
     }()
     
     let zeroButton: UIButton = {
         let view = UIButton()
         view.tag = Key.zero.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "0", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("0", for: .normal)
         return view
     }()
     
     let cancelButton: UIButton = {
         let view = UIButton()
         view.tag = Key.cancel.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "X", attributes: nil), for: .normal)
+        view.setTitleColor(UIColor(hex: "#007AFF"), for: .normal)
+        view.setTitle("keypad_cancel".localized, for: .normal)
         return view
     }()
     
-    lazy var cancelWrapView: UIView = { [unowned self] in
+    private lazy var cancelWrapView: UIView = { [unowned self] in
         let view = UIView()
         // Set constraint of subviews
         view.addAutolayoutSubview(self.cancelButton)
@@ -118,11 +137,11 @@ class KeyPad: UIView {
     let backButton: UIButton = {
         let view = UIButton()
         view.tag = Key.back.rawValue
-        view.setAttributedTitle(NSAttributedString(string: "<", attributes: nil), for: .normal)
+        view.setImage(UIImage(named: "icon_keypad_delete")?.withRenderingMode(.alwaysTemplate), for: .normal)
         return view
     }()
     
-    lazy var baackWrapView: UIView = { [unowned self] in
+    private lazy var baackWrapView: UIView = { [unowned self] in
         let view = UIView()
         // Set constraint of subviews
         view.addAutolayoutSubview(self.backButton)
@@ -169,104 +188,75 @@ class KeyPad: UIView {
     }()
     
     // MARK: - properties
-    fileprivate lazy var keyPads: [UIButton] = [
-        self.oneButton,
-        self.twoButton,
-        self.threeButton,
-        self.fourButton,
-        self.fiveButton,
-        self.sixButton,
-        self.sevenButton,
-        self.eightButton,
-        self.nineButton,
-        self.zeroButton,
-        self.cancelButton,
-        self.backButton
+    fileprivate lazy var keys: [UIButton] = [
+        oneButton,
+        twoButton,
+        threeButton,
+        fourButton,
+        fiveButton,
+        sixButton,
+        sevenButton,
+        eightButton,
+        nineButton,
+        zeroButton,
+        cancelButton,
+        backButton
     ]
     
-    private var normalAttributes: [NSAttributedString.Key: Any] = [:] {
+    var foregroundColor: UIColor = UIColor(hex: "#007AFF") {
         didSet {
-            keyPads.forEach {
-                guard let string = $0.attributedTitle(for: .normal)?.string else { return }
-                $0.setAttributedTitle(NSAttributedString(string: string, attributes: normalAttributes), for: .normal)
+            keys.forEach {
+                $0.setTitleColor(foregroundColor, for: .normal)
+                $0.tintColor = foregroundColor
             }
-        }
-    }
-    
-    private var highlightAttributes: [NSAttributedString.Key: Any] = [:] {
-        didSet {
-            keyPads.forEach {
-                guard let string = $0.attributedTitle(for: .normal)?.string else { return }
-                $0.setAttributedTitle(NSAttributedString(string: string, attributes: highlightAttributes), for: .highlighted)
-            }
-        }
-    }
-    
-    var foregroundColor: UIColor = .black {
-        didSet {
-            normalAttributes[.foregroundColor] = foregroundColor
-        }
-    }
-    
-    var highlightColor: UIColor = .gray {
-        didSet {
-            highlightAttributes[.foregroundColor] = highlightColor
-        }
-    }
-    
-    var fontSize: CGFloat = 17 {
-        didSet {
-            normalAttributes[.font] = font.withSize(fontSize)
-            highlightAttributes[.font] = font.withSize(fontSize)
         }
     }
     
     var font: UIFont = UIFont.systemFont(ofSize: 17) {
         didSet {
-            normalAttributes[.font] = font.withSize(fontSize)
-            highlightAttributes[.font] = font.withSize(fontSize)
+            keys.forEach {
+                if $0.tag == Key.cancel {
+                    $0.titleLabel?.font = font.withSize(font.pointSize - 10)
+                } else {
+                    $0.titleLabel?.font = font
+                }
+            }
         }
     }
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        initProperty()
         
         addAutolayoutSubview(keyPadStackView)
         keyPadStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        
+        // Set target of keys
+        keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - private method
-    /// Initialize view properties
-    private func initProperty() {
-        normalAttributes = [
-            .foregroundColor: foregroundColor,
-            .font: font.withSize(fontSize)
-        ]
-        
-        highlightAttributes = normalAttributes
-        highlightAttributes[.foregroundColor] = highlightColor
-        
-        keyPads.forEach {
-            guard let string = $0.attributedTitle(for: .normal)?.string else { return }
-            
-            $0.setAttributedTitle(NSAttributedString(string: string, attributes: normalAttributes), for: .normal)
-            $0.setAttributedTitle(NSAttributedString(string: string, attributes: highlightAttributes), for: .highlighted)
-        }
+    // MARK: - selector
+    /// Animate key pad dumping when touched
+    @objc private func touchKey(sender: UIButton) {
+        let animation = CAKeyframeAnimation(keyPath: "transform.scale")
+        animation.values = [1, 1.2, 1]
+        animation.keyTimes = [0, 0.5, 1.0]
+        animation.duration = 0.2
+
+        sender.layer.add(animation, forKey: "touch")
     }
 }
 
 // MARK: - Extension
 extension Reactive where Base: KeyPad {
     var keyPadTap: ControlEvent<Base.Key> {
-        let source = Observable.merge(base.keyPads.map { keyPad in
+        let source = Observable.merge(base.keys.map { keyPad in
             keyPad.rx.tap
                 .flatMap { () -> Observable<Base.Key> in
                     guard let key = Base.Key(rawValue: keyPad.tag) else { return Observable.empty() }

@@ -10,22 +10,29 @@ import UIKit
 
 /// Route from one touch timer view
 class ProductivityViewCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum ProductivityRoute {
         case timerOption
+        case timeSetSave(TimeSetInfo)
     }
 
-    // MARK: properties
-    weak var rootViewController: ProductivityViewController!
+    // MARK: - properties
+    weak var viewController: ProductivityViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: ProductivityViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     func present(for route: ProductivityRoute) -> UIViewController {
         let viewController = get(for: route)
+        switch route {
+        case .timeSetSave(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+        default:
+            break
+        }
         
         return viewController
     }
@@ -33,16 +40,28 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     func get(for route: ProductivityRoute) -> UIViewController {
         switch route {
         case .timerOption:
-            let viewController = TimerOptionViewController()
+            let coordinator = TimerOptionViewCoordinator(provider: provider)
+            let reactor = TimerOptionViewReactor()
+            let viewController = TimerOptionViewController(coordinator: coordinator)
             
             // DI
-            viewController.reactor = TimerOptionViewReactor()
-            viewController.coordinator = TimerOptionViewCoordinator(provider: provider, rootViewController: viewController)
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
             
             let navigationController = UINavigationController(rootViewController: viewController)
             navigationController.isNavigationBarHidden = true
             
             return navigationController
+        case let .timeSetSave(timeSetInfo):
+            let coordinator = TimeSetSaveViewCoordinator(provider: provider)
+            let reactor = TimeSetSaveViewReactor(timeSetInfo: timeSetInfo)
+            let viewController = TimeSetSaveViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
         }
     }
 }

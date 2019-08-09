@@ -12,23 +12,43 @@ class AlarmChangeView: UIView {
     // MARK: - view properties
     let backButton: UIButton = {
         let view = UIButton()
-        view.backgroundColor = .yellow
+        view.setImage(UIImage(named: "btn_back"), for: .normal)
         return view
     }()
     
     let currentAlarmLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
-    private lazy var headerStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [backButton, currentAlarmLabel])
-        view.axis = .horizontal
+    private lazy var headerView: UIView = {
+        let view = UIView()
         
-        // Set constarint of subviews
+        let divider = UIView()
+        divider.backgroundColor = Constants.Color.gallery
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([backButton, currentAlarmLabel, divider])
         backButton.snp.makeConstraints { make in
-            make.width.equalTo(backButton.snp.height)
+            make.leading.equalToSuperview().offset(7.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(24.adjust())
+            make.height.equalTo(backButton.snp.width)
+        }
+        
+        currentAlarmLabel.snp.makeConstraints { make in
+            make.leading.equalTo(backButton.snp.trailing).offset(13.adjust())
+            make.trailing.equalToSuperview().inset(13.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        divider.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(1)
         }
         
         return view
@@ -45,12 +65,12 @@ class AlarmChangeView: UIView {
     }()
     
     private lazy var contentStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [headerStackView, alarmTableView])
+        let view = UIStackView(arrangedSubviews: [headerView, alarmTableView])
         view.axis = .vertical
         
-        // Set constarint of subviews
-        headerStackView.snp.makeConstraints { make in
-            make.height.equalTo(50.adjust())
+        // Set constraint of subviews
+        headerView.snp.makeConstraints { make in
+            make.height.equalTo(52.adjust())
         }
         
         return view
@@ -61,8 +81,8 @@ class AlarmChangeView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
+        // Set constraint of subviews
         addAutolayoutSubview(contentStackView)
-        // Set constarint of subviews
         contentStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

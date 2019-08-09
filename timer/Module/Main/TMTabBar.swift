@@ -25,7 +25,7 @@ class TMTabBar: UIView {
     
     private let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.lightGray
+        view.backgroundColor = Constants.Color.silver
         return view
     }()
     
@@ -167,14 +167,5 @@ class TMTabBar: UIView {
     @objc private func tabBarItemSelect(sender: UIButton) {
         _ = select(at: sender.tag, animated: true)
         delegate?.tabBar(self, didSelect: sender.tag)
-    }
-}
-
-extension Reactive where Base: TMTabBar {
-    var itemSelected: ControlEvent<Int> {
-        let source: Observable<Int> = .merge(base.tabBarItems.enumerated().map { index, tabBarItem in
-            tabBarItem.rx.tap.debug().map { index }
-        })
-        return ControlEvent(events: source)
     }
 }

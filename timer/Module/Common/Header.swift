@@ -28,6 +28,6 @@ class Header: UIView {
     
     // MARK: - lifecycle
     override func layoutSubviews() {
-        layer.border(edges: [.bottom], width: 1.adjust(), color: Constants.Color.gray)
+        layer.border(edges: [.bottom], width: 1.adjust(), color: Constants.Color.silver)
     }
 }

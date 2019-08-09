@@ -24,9 +24,10 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
-        view.backgroundColor = Constants.Color.black
+        view.backgroundColor = Constants.Color.codGray
+        view.layer.borderWidth = 1
 
-        // Set constarint of subviews
+        // Set constraint of subviews
         view.addAutolayoutSubview(self.timeLabel)
         timeLabel.snp.makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: 5.adjust(), left: 6.adjust(), bottom: 5.adjust(), right: 6.adjust()))
@@ -37,15 +38,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
 
     let optionButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_timer_more"), for: .normal)
-        view.contentVerticalAlignment = .bottom
+        view.setImage(UIImage(named: "btn_timer_detail"), for: .normal)
         return view
     }()
 
     let indexLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.gray
-        view.font = Constants.Font.ExtraBold.withSize(10.adjust())
+        view.textColor = Constants.Color.silver
+        view.font = Constants.Font.ExtraBold.withSize(12.adjust())
         view.textAlignment = .center
         return view
     }()
@@ -67,14 +67,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(containerView.snp.top).offset(-5.adjust())
+            make.bottom.equalTo(containerView.snp.top)
         }
         
         containerView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(24.adjust())
+            make.height.equalTo(30.adjust())
         }
         
         indexLabel.snp.makeConstraints { make in
@@ -90,8 +90,14 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     }
     
     // MARK: - lifecycle
-    override func draw(_ rect: CGRect) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
         containerView.layer.cornerRadius = containerView.bounds.height / 2
+    }
+    
+    override func prepareForReuse() {
+        setSelected(false)
+        disposeBag = DisposeBag()
     }
     
     // MARK: - reactor bind
@@ -109,11 +115,13 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         
         reactor.state
             .map { String($0.index) }
+            .distinctUntilChanged()
             .bind(to: indexLabel.rx.text)
             .disposed(by: disposeBag)
         
         reactor.state
             .map { $0.isSelected }
+            .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.setSelected($0) })
             .disposed(by: disposeBag)
     }
@@ -121,9 +129,15 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     private func setSelected(_ isSelected: Bool) {
         guard let reactor = reactor else { return }
         
+        // Set badge color
+        containerView.backgroundColor = isSelected ? Constants.Color.codGray : Constants.Color.clear
+        containerView.layer.borderColor = isSelected ? Constants.Color.clear.cgColor : Constants.Color.gallery.cgColor
+        
         // Set time label color
-        containerView.backgroundColor = isSelected ? Constants.Color.black : Constants.Color.clear
-        timeLabel.textColor = isSelected ? Constants.Color.white : Constants.Color.black
+        timeLabel.textColor = isSelected ? Constants.Color.gallery : Constants.Color.codGray
+        
+        // Set index label color
+        indexLabel.textColor = isSelected ? Constants.Color.codGray : Constants.Color.silver
         
         // Set option button visible
         optionButton.isHidden = !reactor.currentState.isOptionVisible || !isSelected

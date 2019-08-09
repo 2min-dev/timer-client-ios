@@ -28,7 +28,17 @@ class TimerOptionViewController: BaseViewController, View {
     private var alarmChangeViewController: AlarmChangeViewController!
     
     // MARK: - properties
-    var coordinator: TimerOptionViewCoordinator!
+    var coordinator: TimerOptionViewCoordinator
+    
+    // MARK: - constructor
+    init(coordinator: TimerOptionViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - lifecycle
     override func loadView() {
@@ -42,6 +52,11 @@ class TimerOptionViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimerOptionViewReactor) {
         // MARK: action
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         commentTextView.rx.text
             .orEmpty
             .map { Reactor.Action.updateComment($0) }
@@ -64,15 +79,7 @@ class TimerOptionViewController: BaseViewController, View {
         reactor.state
             .map { $0.comment }
             .filter { self.commentTextView.text != $0 }
-            .debug()
             .bind(to: commentTextView.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Comment hint
-        reactor.state
-            .map { !$0.comment.isEmpty }
-            .distinctUntilChanged()
-            .bind(to: commentHintLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
         // Comment length

@@ -16,17 +16,17 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     let addLabel: UILabel = {
         let view = UILabel()
         view.text = "+"
-        view.textColor = Constants.Color.white
-        view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
+        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.textAlignment = .center
         return view
     }()
     
     private lazy var containerView: UIView = { [unowned self] in
         let view = UIView()
-        view.backgroundColor = Constants.Color.black
+        view.backgroundColor = Constants.Color.gallery
         
-        // Set constarint of subviews
+        // Set constraint of subviews
         view.addAutolayoutSubview(self.addLabel)
         addLabel.snp.makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: 5.adjust(), left: 6.adjust(), bottom: 5.adjust(), right: 6.adjust()))
@@ -53,7 +53,7 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(24.adjust())
+            make.height.equalTo(30.adjust())
         }
     }
     
@@ -62,7 +62,12 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - lifecycle
-    override func draw(_ rect: CGRect) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
         containerView.layer.cornerRadius = containerView.bounds.height / 2
+    }
+    
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
     }
 }

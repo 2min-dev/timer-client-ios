@@ -10,18 +10,18 @@ import UIKit
 
 /// Route from setting view
 class SettingViewCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum SettingRoute {
         case appInfo
     }
     
-    // MARK: properties
-    weak var rootViewController: SettingViewController!
+    // MARK: - properties
+    weak var viewController: SettingViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: SettingViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     func present(for route: SettingRoute) -> UIViewController {
@@ -31,7 +31,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
         case .appInfo:
             Logger.verbose("presenting app info view controller.")
             // push view controller
-            rootViewController.navigationController?.pushViewController(viewController, animated: true)
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
         return viewController
@@ -40,11 +40,11 @@ class SettingViewCoordinator: CoordinatorProtocol {
     func get(for route: SettingRoute) -> UIViewController {
         switch route {
         case .appInfo:
-            let viewController = AppInfoViewController()
-            let coordinator = AppInfoCoordinator(provider: provider, rootViewController: viewController)
+            let coordinator = AppInfoCoordinator(provider: provider)
+            let viewController = AppInfoViewController(coordinator: coordinator)
             
             // DI
-            viewController.coordinator = coordinator
+            coordinator.viewController = viewController
             viewController.reactor = AppInfoViewReactor()
             
             return viewController

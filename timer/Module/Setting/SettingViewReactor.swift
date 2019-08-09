@@ -15,19 +15,20 @@ class SettingViewReactor: Reactor {
     }
     
     enum Mutation {
-        case setSections([BaseTableSection])
+        case setSections([CommonTableSection])
     }
     
     struct State {
-        var sections: [BaseTableSection]
+        var sections: [CommonTableSection]
     }
     
-    // MARK: properties
+    // MARK: - properties
     var initialState: State
     private let appService: AppServicePorotocol
     
     private var disposeBag = DisposeBag()
     
+    // MARK: - constructor
     init(appService: AppServicePorotocol) {
         self.initialState = State(sections: [])
         self.appService = appService
@@ -53,10 +54,10 @@ class SettingViewReactor: Reactor {
      * initialize setting menu
      * - returns: setting menu section list
      */
-    func initSettingMenus() -> Observable<[BaseTableSection]> {
+    func initSettingMenus() -> Observable<[CommonTableSection]> {
         // add default menu
-        var sections: [BaseTableSection] = []
-        sections.append(BaseTableSection(title: "설정", items: [BaseTableItem(title: "앱 정보")]))
+        var sections: [CommonTableSection] = []
+        sections.append(CommonTableSection(title: "설정", items: [CommonTableItem(title: "앱 정보")]))
     
         return .just(sections)
     }

@@ -29,4 +29,30 @@ extension UIColor {
             self.init(red: 0, green: 0, blue: 0, alpha: 1)
         }
     }
+    
+    static func + (origin: UIColor, value: Int) -> UIColor {
+        let red = CIColor(color: origin).red + CGFloat(value) / 255.0
+        let green = CIColor(color: origin).green + CGFloat(value) / 255.0
+        let blue = CIColor(color: origin).blue + CGFloat(value) / 255.0
+        
+        return self.init(
+            red: red > 1.0 ? 1.0 : red,
+            green: green > 1.0 ? 1.0 : green,
+            blue: blue > 1.0 ? 1.0 : blue,
+            alpha: CIColor(color: origin).alpha
+        )
+    }
+    
+    static func - (origin: UIColor, value: Int) -> UIColor {
+        let red = CIColor(color: origin).red - CGFloat(value) / 255.0
+        let green = CIColor(color: origin).green - CGFloat(value) / 255.0
+        let blue = CIColor(color: origin).blue - CGFloat(value) / 255.0
+        
+        return self.init(
+            red: red < 0 ? 0 : red,
+            green: green < 0 ? 0 : green,
+            blue: blue < 0 ? 0 : blue,
+            alpha: CIColor(color: origin).alpha
+        )
+    }
 }

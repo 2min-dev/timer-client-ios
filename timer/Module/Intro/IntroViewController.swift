@@ -12,13 +12,23 @@ import RxSwift
 import ReactorKit
 
 class IntroViewController: BaseViewController, View {
-    // MARK: view properties
+    // MARK: - view properties
     private var introView: IntroView { return view as! IntroView }
     
-    // MARK: properties
-    var coordinator: IntroViewCoordinator!
+    // MARK: - properties
+    var coordinator: IntroViewCoordinator
     
-    // MARK: ### lifecycle ###
+    // MARK: - constructor
+    init(coordinator: IntroViewCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - lifecycle
     override func loadView() {
         view = IntroView()
     }
@@ -31,8 +41,9 @@ class IntroViewController: BaseViewController, View {
         }
     }
     
-    // MARK: ### reactor bind ###
+    // MARK: - bind
     func bind(reactor: IntroViewReactor) {
+        // MARK: action
         reactor.action.onNext(.viewDidLoad)
         
         // MARK: state
@@ -40,9 +51,7 @@ class IntroViewController: BaseViewController, View {
             .map { $0.isDone }
             .filter { $0 }
             .distinctUntilChanged()
-            .subscribe({ [weak self] _ in
-                self?.coordinator.present(for: .main)
-            })
+            .subscribe({ [weak self] _ in _ = self?.coordinator.present(for: .main) })
             .disposed(by: disposeBag)
     }
     

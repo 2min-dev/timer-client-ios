@@ -10,18 +10,18 @@ import UIKit
 
 /// Route from intro view
 class IntroViewCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum IntroRoute {
         case main
     }
     
-    // MARK: properties
-    weak var rootViewController: IntroViewController!
+    // MARK: - properties
+    weak var viewController: IntroViewController!
     let provider: ServiceProviderProtocol
     
-    required init(provider: ServiceProviderProtocol, rootViewController: IntroViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
         self.provider = provider
-        self.rootViewController = rootViewController
     }
     
     func present(for route: IntroRoute) -> UIViewController {
@@ -30,7 +30,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
         switch route {
         case .main:
             // Present main view
-            rootViewController.navigationController?.viewControllers = [viewController]
+            self.viewController.navigationController?.viewControllers = [viewController]
         }
         
         return viewController
@@ -39,11 +39,11 @@ class IntroViewCoordinator: CoordinatorProtocol {
     func get(for route: IntroRoute) -> UIViewController {
         switch route {
         case .main:
-            let viewController = MainViewController()
-            let coordinator = MainViewCoordinator(provider: provider, rootViewController: viewController)
+            let coordinator = MainViewCoordinator(provider: provider)
+            let viewController = MainViewController(coordinator: coordinator)
             
             // DI
-            viewController.coordinator = coordinator
+            coordinator.viewController = viewController
             
             // set tab bar view controller initial index
             viewController.select(at: MainViewController.TabType.Productivity.rawValue, animated: false)

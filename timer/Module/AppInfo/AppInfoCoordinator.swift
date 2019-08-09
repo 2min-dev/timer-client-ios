@@ -10,18 +10,18 @@ import UIKit
 
 /// Route from app info view
 class AppInfoCoordinator: CoordinatorProtocol {
-     // MARK: route enumeration
+     // MARK: - route enumeration
     enum AppInfoRoute {
         
     }
     
-	// MARK: properties
-	weak var rootViewController: AppInfoViewController!
+	// MARK: - properties
+	weak var viewController: AppInfoViewController!
 	let provider: ServiceProviderProtocol
 
-    required init(provider: ServiceProviderProtocol, rootViewController: AppInfoViewController) {
+    // MARK: - constructor
+    required init(provider: ServiceProviderProtocol) {
 		self.provider = provider
-        self.rootViewController = rootViewController
 	}
 
 	func present(for route: AppInfoRoute) -> UIViewController {

@@ -8,7 +8,7 @@
 
 class TimeSetInfo: Codable {
     // MARK: properties
-    var name: String // Name of the timer set
+    var title: String // Name of the timer set
     var description: String // Description of the timer set
     
     var isLoop: Bool // Is timer loop of the time set
@@ -18,8 +18,8 @@ class TimeSetInfo: Codable {
     var timers: [TimerInfo] // Timer info list of the timer set
     
     // MARK: constructor
-    init(name: String, description: String, isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
-        self.name = name
+    init(title: String = "", description: String = "", isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
+        self.title = title
         self.description = description
         self.state = state
         self.timers = timers
