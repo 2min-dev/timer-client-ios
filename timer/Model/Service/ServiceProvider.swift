@@ -9,9 +9,11 @@
 protocol ServiceProviderProtocol: class {
     var appService: AppServicePorotocol { get }
     var timerService: TimeSetServicePorotocol { get }
+    var userDefaultService: UserDefaultServiceProtocol { get }
 }
 
 class ServiceProvider: ServiceProviderProtocol {
     lazy var appService: AppServicePorotocol = AppService()
     lazy var timerService: TimeSetServicePorotocol = TimeSetService()
+    lazy var userDefaultService: UserDefaultServiceProtocol = UserDefaultService()
 }

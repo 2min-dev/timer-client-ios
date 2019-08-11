@@ -26,28 +26,11 @@ class TimeSetService: TimeSetServicePorotocol {
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
-    private var timeSets: [TimeSetInfo]
+    private var timeSets: [TimeSetInfo] = []
     
     // MARK: - constructor
     init() {
-        // Create timer set mock
-        let timeSet = TimeSetInfo(title: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end", timers: [
-            TimerInfo(title: "First timer (5 sec)", endTime: 5),
-            TimerInfo(title: "Second timer (3 sec)", endTime: 3),
-            TimerInfo(title: "Third timer (5 sec)", endTime: 5)
-        ])
-    
-        let timeSet2 = TimeSetInfo(title: "Second Sample Timer set", description: "3 sec -> 5 sec -> end", timers: [
-            TimerInfo(title: "First timer (3 sec)", endTime: 3),
-            TimerInfo(title: "Second timer (5 sec)", endTime: 5)
-        ])
         
-        timeSets = [
-            timeSet,
-            timeSet2,
-            TimeSetInfo(title: "Empty timer set 1", description: ""),
-            TimeSetInfo(title: "Empty timer set 2", description: "")
-        ]
     }
     
     // MARK: - public method
