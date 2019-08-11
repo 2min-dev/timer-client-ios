@@ -181,7 +181,7 @@ extension Reactive where Base: TimerBadgeCollectionView {
     var selected: Binder<IndexPath> {
         return Binder(base.self) { _, indexPath in
             Observable.just(indexPath)
-                .map { Base.Reactor.Action.selectBadge($0) }
+                .map { Base.Reactor.Action.selectBadge(at: $0) }
                 .bind(to: self.base.reactor!.action)
                 .disposed(by: self.base.disposeBag)
         }

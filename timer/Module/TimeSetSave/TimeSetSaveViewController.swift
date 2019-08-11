@@ -69,8 +69,8 @@ class TimeSetSaveViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetSaveViewReactor) {
         // MARK: action
-        rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

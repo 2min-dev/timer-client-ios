@@ -147,9 +147,8 @@ class TimeSetEditViewReactor: Reactor {
             return state
         }
     }
-    
-    // MARK: - private method
-    // MARK: action
+
+    // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
         var indexPath = currentState.selectedIndexPath
         if  indexPath.row > timeSetInfo.timers.count - 1 {
