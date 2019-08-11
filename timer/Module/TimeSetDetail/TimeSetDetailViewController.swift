@@ -163,6 +163,7 @@ class TimeSetDetailViewController: BaseViewController, View {
             guard let reactor = reactor else { return }
             reactor.action.onNext(.toggleBookmark)
         case .home:
+            _ = coordinator.present(for: .home)
             break
         default:
             break

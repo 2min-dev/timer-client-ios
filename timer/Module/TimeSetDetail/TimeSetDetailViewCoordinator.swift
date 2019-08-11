@@ -11,6 +11,7 @@ import UIKit
 class TimeSetDetailViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum TimeSetDetailRoute {
+        case home
         case timeSetEdit(TimeSetInfo)
     }
     
@@ -28,14 +29,19 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
+        case .home:
+            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
         case .timeSetEdit(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
+        
         return viewController
     }
     
     func get(for route: TimeSetDetailRoute) -> UIViewController? {
         switch route {
+        case .home:
+            return self.viewController.navigationController?.viewControllers.first
         case let .timeSetEdit(timeSetInfo):
             guard let copiedTimeSetInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
             
