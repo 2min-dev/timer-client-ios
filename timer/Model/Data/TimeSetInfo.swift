@@ -10,6 +10,7 @@ import Foundation
 
 class TimeSetInfo: Codable, NSCopying {
     // MARK: - properties
+    let id: String?
     var title: String // Name of the timer set
     var description: String // Description of the timer set
     
@@ -20,7 +21,8 @@ class TimeSetInfo: Codable, NSCopying {
     var timers: [TimerInfo] // Timer info list of the timer set
     
     // MARK: - constructor
-    init(title: String = "", description: String = "", isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
+    init(id: String? = nil, title: String = "", description: String = "", isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
+        self.id = id
         self.title = title
         self.description = description
         self.state = state

@@ -67,6 +67,7 @@
 		F3A7940F22FDC0AC007D5D40 /* UserDefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */; };
 		F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */; };
 		F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */; };
+		F3C1270023000C42006D736A /* JSONCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C126FF23000C42006D736A /* JSONCodec.swift */; };
 		F3C1874A2261E66F00B2C644 /* CommonTableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C187492261E66F00B2C644 /* CommonTableItem.swift */; };
 		F3C1874C2261FB0900B2C644 /* CommonTableSeciton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874B2261FB0900B2C644 /* CommonTableSeciton.swift */; };
 		F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874D226204DF00B2C644 /* AppInfoViewController.swift */; };
@@ -223,6 +224,7 @@
 		F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultService.swift; sourceTree = "<group>"; };
 		F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarAnimator.swift; sourceTree = "<group>"; };
 		F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarInteractor.swift; sourceTree = "<group>"; };
+		F3C126FF23000C42006D736A /* JSONCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONCodec.swift; sourceTree = "<group>"; };
 		F3C187492261E66F00B2C644 /* CommonTableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTableItem.swift; sourceTree = "<group>"; };
 		F3C1874B2261FB0900B2C644 /* CommonTableSeciton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTableSeciton.swift; sourceTree = "<group>"; };
 		F3C1874D226204DF00B2C644 /* AppInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoViewController.swift; sourceTree = "<group>"; };
@@ -566,6 +568,20 @@
 			path = test;
 			sourceTree = "<group>";
 		};
+		F3C126FE23000BEA006D736A /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				F3C187492261E66F00B2C644 /* CommonTableItem.swift */,
+				F3C1874B2261FB0900B2C644 /* CommonTableSeciton.swift */,
+				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
+				F37041C8226B65550012EA16 /* TimerInfo.swift */,
+				F373CCD52265FA33007ECCA0 /* TMTimer.swift */,
+				F37041CC226C35B80012EA16 /* TimeSetInfo.swift */,
+				F37041CA226B81B00012EA16 /* TimeSet.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		F3CD184422F6167B008DB221 /* FooterView */ = {
 			isa = PBXGroup;
 			children = (
@@ -625,13 +641,10 @@
 		F3D1F79D225CBC1D006DC162 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				F3F65D7222CFAB7F009C667B /* Common */,
 				F3D1F7A2225CBCDC006DC162 /* Service */,
-				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
-				F37041C8226B65550012EA16 /* TimerInfo.swift */,
-				F373CCD52265FA33007ECCA0 /* TMTimer.swift */,
-				F37041CC226C35B80012EA16 /* TimeSetInfo.swift */,
-				F37041CA226B81B00012EA16 /* TimeSet.swift */,
+				F3C126FE23000BEA006D736A /* Data */,
+				F3C126FF23000C42006D736A /* JSONCodec.swift */,
+				F37AF0E522F8211800509F5F /* AlertBuilder.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -709,16 +722,6 @@
 				F3F342B5226751A300A226C0 /* Info.plist */,
 			);
 			path = widget;
-			sourceTree = "<group>";
-		};
-		F3F65D7222CFAB7F009C667B /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				F3C187492261E66F00B2C644 /* CommonTableItem.swift */,
-				F3C1874B2261FB0900B2C644 /* CommonTableSeciton.swift */,
-				F37AF0E522F8211800509F5F /* AlertBuilder.swift */,
-			);
-			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1002,6 +1005,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3C1270023000C42006D736A /* JSONCodec.swift in Sources */,
 				F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */,
 				F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */,
 				F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */,
