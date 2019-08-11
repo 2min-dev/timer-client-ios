@@ -204,11 +204,7 @@ class TimeSetSaveViewController: BaseViewController, View {
             .distinctUntilChanged { $0 === $1 }
             .filter { $0 != nil }
             .observeOn(MainScheduler.instance) // Ignore rx error
-            .subscribe(onNext: { [weak self] in
-                if self?.coordinator.present(for: .timeSetDetail($0!)) != nil {
-                    reactor.action.onNext(.complete)
-                }
-            })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
             .disposed(by: disposeBag)
     }
     

@@ -55,7 +55,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             return navigationController
         case let .timeSetSave(timeSetInfo):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timerService, timeSetInfo: timeSetInfo)
+            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
             let viewController = TimeSetSaveViewController(coordinator: coordinator)
             
             // DI

@@ -24,7 +24,6 @@ class TimeSetSaveViewReactor: Reactor {
         case applyAlarm(String)
         
         case saveTimeSet
-        case complete
     }
     
     enum Mutation {
@@ -55,11 +54,11 @@ class TimeSetSaveViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let timeSetService: TimeSetServicePorotocol
+    private let timeSetService: TimeSetServiceProtocol
     let timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServicePorotocol, timeSetInfo: TimeSetInfo) {
+    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo) {
         self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo
         self.initialState = State(title: timeSetInfo.title,
@@ -89,8 +88,6 @@ class TimeSetSaveViewReactor: Reactor {
             return actionApplyAlarm(alarm)
         case .saveTimeSet:
             return actionSaveTimeSet()
-        case .complete:
-            return actionComplete()
         }
     }
     
@@ -184,15 +181,14 @@ class TimeSetSaveViewReactor: Reactor {
             timeSetInfo.title = currentState.hint
         }
         
-        return timeSetService.addTimeSet(info: timeSetInfo)
-            .asObservable()
-            .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
+        if timeSetInfo.id == nil {
+            return timeSetService.createTimeSet(info: timeSetInfo)
+                .asObservable()
+                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
+        } else {
+            return timeSetService.updateTimeSet(info: timeSetInfo)
+                .asObservable()
+                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
+        }
     }
-    
-    private func actionComplete() -> Observable<Mutation> {
-        // Clear time set data
-        timeSetInfo.clear()
-        return .empty()
-    }
-    
 }

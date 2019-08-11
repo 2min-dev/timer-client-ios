@@ -46,6 +46,8 @@ class TimeSetEditViewReactor: Reactor {
         
         case setAlertMessage(String)
         case sectionReload
+        
+        case dismiss
     }
     
     struct State {
@@ -61,14 +63,18 @@ class TimeSetEditViewReactor: Reactor {
         
         var alertMessage: String?           // Alert message
         var shouldSectionReload: Bool       // Need section reload
+        
+        var shouldDismiss: Bool             // Need to dismiss view
     }
     
     // MARK: - properties
     var initialState: State
+    private let timeSetService: TimeSetServiceProtocol
     var timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
-    init(timeSetInfo: TimeSetInfo? = nil) {
+    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
+        self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo ?? TimeSetInfo()
         
         self.initialState = State(timer: 0,
@@ -78,7 +84,8 @@ class TimeSetEditViewReactor: Reactor {
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   canTimeSetStart: true,
                                   alertMessage: nil,
-                                  shouldSectionReload: true)
+                                  shouldSectionReload: true,
+                                  shouldDismiss: false)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -106,6 +113,21 @@ class TimeSetEditViewReactor: Reactor {
         case let .applyAlarm(alarm):
             return actionApplyAlarm(alarm)
         }
+    }
+    
+    private func mutate(timeSetEvent: TimeSetEvent) -> Observable<Mutation> {
+        switch timeSetEvent {
+        case .create:
+            return actionTimeSetCreate()
+        }
+    }
+    
+    func transform(mutation: Observable<TimeSetEditViewReactor.Mutation>) -> Observable<TimeSetEditViewReactor.Mutation> {
+        let timeSetEventMutation = timeSetService.event
+            .filter { $0 == .create }
+            .flatMap { [weak self] in self?.mutate(timeSetEvent: $0) ?? .empty() }
+        
+        return .merge(mutation, timeSetEventMutation)
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
@@ -144,6 +166,9 @@ class TimeSetEditViewReactor: Reactor {
             return state
         case .sectionReload:
             state.shouldSectionReload = true
+            return state
+        case .dismiss:
+            state.shouldDismiss = true
             return state
         }
     }
@@ -226,8 +251,10 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func actionDeleteTimeSet() -> Observable<Mutation> {
-        // TODO: time set delete
-        return .empty()
+        guard let id = timeSetInfo.id else { return .empty() }
+        return timeSetService.removeTimeSet(id: id)
+            .asObservable()
+            .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
     }
     
     private func actionAddTimer() -> Observable<Mutation> {
@@ -297,5 +324,11 @@ class TimeSetEditViewReactor: Reactor {
     private func actionApplyAlarm(_ alarm: String) -> Observable<Mutation> {
         timeSetInfo.timers.forEach { $0.alarm = alarm }
         return .just(.setAlertMessage("alert_alarm_all_apply_description".localized))
+    }
+    
+    private func actionTimeSetCreate() -> Observable<Mutation> {
+        guard timeSetInfo.id == nil else { return .empty() }
+        // If current time set info doesn't asigned id(It is createing new), clear time set info due to save the time set
+        return actionClearTimeSet()
     }
 }

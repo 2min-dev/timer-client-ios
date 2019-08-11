@@ -269,6 +269,13 @@ class TimeSetEditViewController: BaseViewController, View {
             .filter { $0 != nil }
             .subscribe(onNext: { [weak self] in self?.showAlert(message: $0!) })
             .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.shouldDismiss }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home) })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - action method
