@@ -16,7 +16,7 @@ protocol UserDefaultServiceProtocol {
     func string(_ key: UserDefaultService.Key) -> String?
 }
 
-class UserDefaultService: UserDefaultServiceProtocol {
+class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     enum Key: String {
         case timeSetId
         
@@ -28,8 +28,10 @@ class UserDefaultService: UserDefaultServiceProtocol {
         }
     }
     
+    // MARK: - properties
     private let userDefault = UserDefaults.standard
     
+    // MARK: - public method
     func set(_ value: Any, key: Key) {
         guard type(of: value) == key.type else { fatalError("You try to enter set value that doesn't match the type corresponding to the key value.") }
         userDefault.set(value, forKey: key.rawValue)

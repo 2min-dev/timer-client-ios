@@ -65,6 +65,7 @@
 		F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */; };
 		F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */; };
 		F3A7940F22FDC0AC007D5D40 /* UserDefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */; };
+		F3ADF67D230015CD00F0FC67 /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF67C230015CD00F0FC67 /* BaseService.swift */; };
 		F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */; };
 		F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */; };
 		F3C1270023000C42006D736A /* JSONCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C126FF23000C42006D736A /* JSONCodec.swift */; };
@@ -222,6 +223,7 @@
 		F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
 		F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
 		F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultService.swift; sourceTree = "<group>"; };
+		F3ADF67C230015CD00F0FC67 /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarAnimator.swift; sourceTree = "<group>"; };
 		F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarInteractor.swift; sourceTree = "<group>"; };
 		F3C126FF23000C42006D736A /* JSONCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONCodec.swift; sourceTree = "<group>"; };
@@ -653,6 +655,7 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
+				F3ADF67C230015CD00F0FC67 /* BaseService.swift */,
 				F3C18757226318DB00B2C644 /* AppService.swift */,
 				F373CCD32265F995007ECCA0 /* TimeSetService.swift */,
 				F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */,
@@ -1015,6 +1018,7 @@
 				F373CCD62265FA33007ECCA0 /* TMTimer.swift in Sources */,
 				F387AF3222F18215002ABDB6 /* TimeSetSaveViewController.swift in Sources */,
 				F3C18752226204F700B2C644 /* AppInfoCoordinator.swift in Sources */,
+				F3ADF67D230015CD00F0FC67 /* BaseService.swift in Sources */,
 				F3E0C0A022EA153B005D9FA4 /* AlarmChangeViewController.swift in Sources */,
 				F3F65D7422CFAC77009C667B /* SharedTimeSetViewController.swift in Sources */,
 				F3C1874C2261FB0900B2C644 /* CommonTableSeciton.swift in Sources */,

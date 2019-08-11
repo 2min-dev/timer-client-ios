@@ -16,13 +16,9 @@ protocol AppServicePorotocol {
     var event: PublishSubject<AppEvent> { get }
 }
 
-class AppService: AppServicePorotocol {
+class AppService: BaseService, AppServicePorotocol {
     // MARK: global state event
     var event: PublishSubject<AppEvent> = PublishSubject()
     
     // MARK: properties
-    
-    init() {
-    
-    }
 }
