@@ -66,6 +66,10 @@
 		F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */; };
 		F3A7940F22FDC0AC007D5D40 /* UserDefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */; };
 		F3ADF67D230015CD00F0FC67 /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF67C230015CD00F0FC67 /* BaseService.swift */; };
+		F3ADF6832300672800F0FC67 /* TimeSetProcessViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */; };
+		F3ADF6842300672800F0FC67 /* TimeSetProcessViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */; };
+		F3ADF6852300672800F0FC67 /* TimeSetProcessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */; };
+		F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */; };
 		F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */; };
 		F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */; };
 		F3C1270023000C42006D736A /* JSONCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C126FF23000C42006D736A /* JSONCodec.swift */; };
@@ -224,6 +228,10 @@
 		F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
 		F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultService.swift; sourceTree = "<group>"; };
 		F3ADF67C230015CD00F0FC67 /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
+		F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewCoordinator.swift; sourceTree = "<group>"; };
+		F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewReactor.swift; sourceTree = "<group>"; };
+		F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewController.swift; sourceTree = "<group>"; };
+		F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessView.swift; sourceTree = "<group>"; };
 		F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarAnimator.swift; sourceTree = "<group>"; };
 		F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarInteractor.swift; sourceTree = "<group>"; };
 		F3C126FF23000C42006D736A /* JSONCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONCodec.swift; sourceTree = "<group>"; };
@@ -417,6 +425,7 @@
 				F3CD207E22FD95CC0059E1BA /* TimeSetEdit */,
 				F387AF2B22F181FA002ABDB6 /* TimeSetSave */,
 				F38702B222F970D20099241C /* TimeSetDetail */,
+				F3ADF67E2300671400F0FC67 /* TimeSetProcess */,
 				F3735C9C22CFAA8200DC247C /* Setting */,
 				F3735C9D22CFAAA000DC247C /* AppInfo */,
 			);
@@ -568,6 +577,17 @@
 				F389657822759BAA0043E177 /* Info.plist */,
 			);
 			path = test;
+			sourceTree = "<group>";
+		};
+		F3ADF67E2300671400F0FC67 /* TimeSetProcess */ = {
+			isa = PBXGroup;
+			children = (
+				F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */,
+				F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */,
+				F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */,
+				F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */,
+			);
+			path = TimeSetProcess;
 			sourceTree = "<group>";
 		};
 		F3C126FE23000BEA006D736A /* Data */ = {
@@ -1039,6 +1059,7 @@
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
 				F3CD208422FD95E20059E1BA /* TimeSetEditViewReactor.swift in Sources */,
 				F3F65D7A22CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift in Sources */,
+				F3ADF6842300672800F0FC67 /* TimeSetProcessViewReactor.swift in Sources */,
 				F38702B922F970E80099241C /* TimeSetDetailViewController.swift in Sources */,
 				F302608D22EC87C300E3E431 /* AlarmChangeView.swift in Sources */,
 				F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */,
@@ -1047,7 +1068,9 @@
 				F3C1874E226204DF00B2C644 /* AppInfoViewController.swift in Sources */,
 				F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */,
 				F387AF3322F18215002ABDB6 /* TimeSetSaveView.swift in Sources */,
+				F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */,
 				F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */,
+				F3ADF6832300672800F0FC67 /* TimeSetProcessViewCoordinator.swift in Sources */,
 				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* LocalTimeSetViewCoordinator.swift in Sources */,
@@ -1090,6 +1113,7 @@
 				F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */,
 				F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */,
 				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,
+				F3ADF6852300672800F0FC67 /* TimeSetProcessViewController.swift in Sources */,
 				F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */,
 				F3CD184622F61776008DB221 /* FooterButton.swift in Sources */,
 				F3CD208322FD95E20059E1BA /* TimeSetEditViewCoordinator.swift in Sources */,
