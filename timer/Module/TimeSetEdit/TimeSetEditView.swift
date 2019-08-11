@@ -11,12 +11,6 @@ import RxSwift
 import RxCocoa
 
 class TimeSetEditView: UIView {
-    // MARK: - constants
-    enum TimerButtonType {
-        case save
-        case start
-    }
-    
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
@@ -48,7 +42,6 @@ class TimeSetEditView: UIView {
         let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
-        view.isHidden = true
         return view
     }()
     
@@ -60,68 +53,28 @@ class TimeSetEditView: UIView {
         return view
     }()
     
-    let keyPadView: KeyPad = {
-        let view = KeyPad()
+    let keyPadView: NumberKeyPad = {
+        let view = NumberKeyPad()
         view.font = Constants.Font.Regular.withSize(30.adjust())
         view.foregroundColor = Constants.Color.codGray
-        
         view.cancelButton.isHidden = true
+        
+        // Set key touch animation
+        view.keys.forEach {
+            $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
+        }
         return view
     }()
     
-    let hourButton: UIButton = {
-        let view = UIButton()
-        let string = "productivity_button_hour_title".localized
-        var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.codGray,
-            .font: Constants.Font.ExtraBold.withSize(20.adjust())
-        ]
-        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
+    let timeKeyView: TimeKeyView = {
+        let view = TimeKeyView()
+        view.font = Constants.Font.ExtraBold.withSize(20.adjust())
+        view.setTitleColor(normal: Constants.Color.codGray, disabled: Constants.Color.silver)
         
-        attributes[.foregroundColor] = Constants.Color.silver
-        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
-        
-        view.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
-        return view
-    }()
-    
-    let minuteButton: UIButton = {
-        let view = UIButton()
-        let string = "productivity_button_minute_title".localized
-        var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.codGray,
-            .font: Constants.Font.ExtraBold.withSize(20.adjust())
-        ]
-        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
-        
-        attributes[.foregroundColor] = Constants.Color.silver
-        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
-        
-        view.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
-        return view
-    }()
-    
-    let secondButton: UIButton = {
-        let view = UIButton()
-        let string = "productivity_button_second_title".localized
-        var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.codGray,
-            .font: Constants.Font.ExtraBold.withSize(20.adjust())
-        ]
-        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
-        
-        attributes[.foregroundColor] = Constants.Color.silver
-        view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .disabled)
-        
-        view.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
-        return view
-    }()
-    
-    lazy var timeButtonStackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [hourButton, minuteButton, secondButton])
-        view.axis = .horizontal
-        view.distribution = .fillEqually
-        view.isHidden = true
+        // Set key touch animation
+        view.keys.forEach {
+            $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
+        }
         return view
     }()
     
@@ -137,7 +90,7 @@ class TimeSetEditView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeButtonStackView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyView, timerBadgeCollectionView])
         timerInputView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -162,7 +115,7 @@ class TimeSetEditView: UIView {
             make.height.equalTo(280.adjust())
         }
         
-        timeButtonStackView.snp.makeConstraints { make in
+        timeKeyView.snp.makeConstraints { make in
             make.top.equalTo(keyPadView.snp.bottom)
             make.leading.equalTo(keyPadView)
             make.trailing.equalTo(keyPadView)
@@ -170,7 +123,7 @@ class TimeSetEditView: UIView {
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timeButtonStackView.snp.bottom)
+            make.top.equalTo(timeKeyView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -285,17 +238,5 @@ class TimeSetEditView: UIView {
         animation.duration = 0.2
 
         sender.layer.add(animation, forKey: "touch")
-    }
-}
-
-// MARK: - extension
-extension Reactive where Base: TimeSetEditView {
-    var timeKeyTap: ControlEvent<TimeSetEditViewReactor.Time> {
-        let hourObservable = base.hourButton.rx.tap.map { TimeSetEditViewReactor.Time.hour }
-        let minuteObservable = base.minuteButton.rx.tap.map { TimeSetEditViewReactor.Time.minute }
-        let secondObservable = base.secondButton.rx.tap.map { TimeSetEditViewReactor.Time.second }
-        
-        let source = Observable.merge(hourObservable, minuteObservable, secondObservable)
-        return ControlEvent(events: source)
     }
 }

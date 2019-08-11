@@ -11,7 +11,8 @@ import UIKit
 class TimeSetEditViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum TimeSetEditRoute {
-        case empty
+        case timerOption
+        case timeSetSave(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -25,13 +26,43 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: TimeSetEditRoute) -> UIViewController? {
-        return get(for: route)
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .timeSetSave(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+        default:
+            break
+        }
+        
+        return viewController
     }
     
     func get(for route: TimeSetEditRoute) -> UIViewController? {
-        return nil
+        switch route {
+        case .timerOption:
+            let coordinator = TimerOptionViewCoordinator(provider: provider)
+            let reactor = TimerOptionViewReactor()
+            let viewController = TimerOptionViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            let navigationController = UINavigationController(rootViewController: viewController)
+            navigationController.isNavigationBarHidden = true
+            
+            return navigationController
+        case let .timeSetSave(timeSetInfo):
+            let coordinator = TimeSetSaveViewCoordinator(provider: provider)
+            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timerService, timeSetInfo: timeSetInfo)
+            let viewController = TimeSetSaveViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        }
     }
-    
-    // MARK: - private method
-    // MARK: - public method
 }

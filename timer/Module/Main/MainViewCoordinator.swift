@@ -33,7 +33,7 @@ class MainViewCoordinator: CoordinatorProtocol {
         switch route {
         case .productivity:
             let coordinator = ProductivityViewCoordinator(provider: provider)
-            let reactor = ProductivityViewReactor()
+            let reactor = TimeSetEditViewReactor()
             let viewController = ProductivityViewController(coordinator: coordinator)
             
             // DI

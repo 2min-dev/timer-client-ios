@@ -80,12 +80,12 @@
 "timer_default_title" = "Timer %d";
 
 // MARK: - Alert
-"alert_warning_init_time_set_title" = "Initialize Time Set";
-"alert_warning_init_time_set_description" = "The time set will be initialized.\nAre you sure you want to initialize it?";
-"alert_warning_delete_time_set_title" = "Delete Time Set";
-"alert_warning_delete_time_set_description" = "Are you sure you want to delete it?";
-"alert_warning_cancel_time_set_edit_title" = "Cancel Time Set Edit";
-"alert_warning_cancel_time_set_edit_description" = "Editted time set info will disappear.\nAre you sure you want to back?";
+"alert_warning_time_set_init_title" = "Initialize Time Set";
+"alert_warning_time_set_init_description" = "The time set will be initialized.\nAre you sure you want to initialize it?";
+"alert_warning_time_set_delete_title" = "Delete Time Set";
+"alert_warning_time_set_delete_description" = "Are you sure you want to delete it?";
+"alert_warning_time_set_edit_cancel_title" = "Cancel Time Set Edit";
+"alert_warning_time_set_edit_cancel_description" = "Editted time set info will disappear.\nAre you sure you want to back?";
 "alert_alarm_all_apply_description" = "The alarm has been applied to all timers";
 "alert_button_cancel" = "Cancel";
 "alert_button_yes" = "Yes";

@@ -1,5 +1,5 @@
 //
-//  keyPad.swift
+//  NumberKeyPad.swift
 //  timer
 //
 //  Created by JSilver on 05/05/2019.
@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class KeyPad: UIView {
+class NumberKeyPad: UIView {
     enum Key: Int {
         case zero = 0
         case one
@@ -188,7 +188,7 @@ class KeyPad: UIView {
     }()
     
     // MARK: - properties
-    fileprivate lazy var keys: [UIButton] = [
+    lazy var keys: [UIButton] = [
         oneButton,
         twoButton,
         threeButton,
@@ -232,35 +232,21 @@ class KeyPad: UIView {
         keyPadStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
-        // Set target of keys
-        keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - selector
-    /// Animate key pad dumping when touched
-    @objc private func touchKey(sender: UIButton) {
-        let animation = CAKeyframeAnimation(keyPath: "transform.scale")
-        animation.values = [1, 1.2, 1]
-        animation.keyTimes = [0, 0.5, 1.0]
-        animation.duration = 0.2
-
-        sender.layer.add(animation, forKey: "touch")
-    }
 }
 
 // MARK: - Extension
-extension Reactive where Base: KeyPad {
+extension Reactive where Base: NumberKeyPad {
     var keyPadTap: ControlEvent<Base.Key> {
-        let source = Observable.merge(base.keys.map { keyPad in
-            keyPad.rx.tap
+        let source: Observable<Base.Key> = .merge(base.keys.map { key in
+            key.rx.tap
                 .flatMap { () -> Observable<Base.Key> in
-                    guard let key = Base.Key(rawValue: keyPad.tag) else { return Observable.empty() }
-                    return Observable.just(key)
+                    guard let key = Base.Key(rawValue: key.tag) else { return .empty() }
+                    return .just(key)
                 }
         })
         
