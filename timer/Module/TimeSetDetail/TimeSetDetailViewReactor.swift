@@ -86,14 +86,13 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionToggleBookmark() -> Observable<Mutation> {
+    private func actionToggleLoop() -> Observable<Mutation> {
         // Toggle time set loop option
         timeSetInfo.isLoop.toggle()
-        
         return .just(.setLoop(!currentState.isLoop))
     }
     
-    private func actionToggleLoop() -> Observable<Mutation> {
+    private func actionToggleBookmark() -> Observable<Mutation> {
         // TODO: Set bookmark in time set info
         return .just(.setBookmark(!currentState.isBookmark))
     }

@@ -93,6 +93,7 @@ class TimeSetSaveViewController: BaseViewController, View {
             .disposed(by: disposeBag)
 
         timerBadgeCollectionView.rx.badgeSelected
+            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0.0) })
             .map { Reactor.Action.selectTimer(at: $0.0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

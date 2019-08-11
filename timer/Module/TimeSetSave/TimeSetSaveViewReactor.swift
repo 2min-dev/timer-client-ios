@@ -123,13 +123,14 @@ class TimeSetSaveViewReactor: Reactor {
     
     // MAKR: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
-        // Set hint after fetch time set list
-        let setHint: Observable<Mutation> = timeSetService.fetchTimeSets().asObservable()
-            .map { $0.count + 1 }
-            .map { String(format: "time_set_default_title".localized, $0) }
-            .flatMap { Observable.just(Mutation.setHint($0)) }
-        
-        return .concat(setHint)
+        if timeSetInfo.title.isEmpty {
+            return timeSetService.fetchTimeSets().asObservable()
+                .map { $0.count + 1 }
+                .map { String(format: "time_set_default_title".localized, $0) }
+                .flatMap { Observable.just(Mutation.setHint($0)) }
+        } else {
+            return .just(.setHint(timeSetInfo.title))
+        }
     }
     
     private func actionClearTitle() -> Observable<Mutation> {

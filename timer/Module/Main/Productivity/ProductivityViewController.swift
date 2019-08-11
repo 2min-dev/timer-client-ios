@@ -249,7 +249,7 @@ class ProductivityViewController: BaseViewController, View {
         
         // Time info view
         reactor.state
-            .map { $0.time > 0 }
+            .map { $0.time > 0 || !$0.canTimeSetStart }
             .distinctUntilChanged()
             .bind(to: timeInfoView.rx.isHidden)
             .disposed(by: disposeBag)
