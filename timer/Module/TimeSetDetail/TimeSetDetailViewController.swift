@@ -151,7 +151,7 @@ class TimeSetDetailViewController: BaseViewController, View {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - priate method
+    // MARK: - action method
     /// Handle header button tap action according to button type
     private func headerActionHandler(type: CommonHeader.ButtonType) {
         switch type {
@@ -168,6 +168,7 @@ class TimeSetDetailViewController: BaseViewController, View {
             break
         }
     }
+    
     /// Handle footer button tap action according to button index
     private func footerActionHandler(index: Int) {
         guard let reactor = reactor else { return }
@@ -179,8 +180,6 @@ class TimeSetDetailViewController: BaseViewController, View {
             _ = coordinator.present(for: .timeSetProcess(reactor.timeSetInfo))
         }
     }
-    
-    // MARK: - public method
     
     deinit {
         Logger.verbose()

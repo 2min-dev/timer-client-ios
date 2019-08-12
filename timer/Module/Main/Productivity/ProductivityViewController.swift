@@ -207,7 +207,7 @@ class ProductivityViewController: BaseViewController, View {
         // MARK: state
         // Timer
         reactor.state
-            .map { $0.timer }
+            .map { $0.endTime }
             .distinctUntilChanged()
             .bind(to: timerInputView.rx.timer)
             .disposed(by: disposeBag)
@@ -265,7 +265,7 @@ class ProductivityViewController: BaseViewController, View {
         reactor.state
             .map { $0.time }
             .distinctUntilChanged()
-            .withLatestFrom(reactor.state.map { $0.timer }, resultSelector: { ($0, $1) })
+            .withLatestFrom(reactor.state.map { $0.endTime }, resultSelector: { ($0, $1) })
             .map { [unowned self] in self.getEnableTimeKey(from: $0.0, timer: $0.1) }
             .bind(to: timeKeyView.rx.enableKey)
             .disposed(by: disposeBag)
@@ -296,8 +296,7 @@ class ProductivityViewController: BaseViewController, View {
         
         // Timer option view
         reactor.state
-            .filter { $0.selectedIndexPath.row < $0.timers.count }
-            .map { $0.timers[$0.selectedIndexPath.row] }
+            .map { $0.timer }
             .distinctUntilChanged { $0 === $1 }
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)

@@ -11,8 +11,11 @@ import ReactorKit
 
 class TimerBadgeViewReactor: Reactor {
     enum Action {
+        /// Update timer list
         case updateTimers([TimerInfo], TimerBadgeCellType?)
+        /// Select badge
         case selectBadge(at: IndexPath)
+        /// Change badge position
         case moveBadge(at: IndexPath, to: IndexPath)
     }
     
@@ -20,14 +23,12 @@ class TimerBadgeViewReactor: Reactor {
         case setSections([TimerBadgeSectionModel])
         case setSelectedIndexPath(IndexPath)
         case swapItem(at: IndexPath, to: IndexPath)
-        
         case sectionReload
     }
     
     struct State {
         var sections: [TimerBadgeSectionModel]
         var selectedIndexPath: IndexPath?
-        
         var shouldSectionReload: Bool
     }
     

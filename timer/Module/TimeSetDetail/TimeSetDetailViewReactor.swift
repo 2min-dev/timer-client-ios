@@ -11,8 +11,11 @@ import ReactorKit
 
 class TimeSetDetailViewReactor: Reactor {
     enum Action {
+        /// Toggle time set bookmark
         case toggleBookmark
+        /// Toggle time set loop
         case toggleLoop
+        /// Select the timer
         case selectTimer(at: IndexPath)
     }
     
@@ -25,15 +28,12 @@ class TimeSetDetailViewReactor: Reactor {
     
     struct State {
         var isBookmark: Bool
-        
         let title: String
         let sumOfTimers: TimeInterval
         var isLoop: Bool
-        
         let timers: [TimerInfo]
-        var selectedIndexPath: IndexPath
         var timer: TimerInfo
-        
+        var selectedIndexPath: IndexPath
         var shouldSectionReload: Bool
     }
     
@@ -44,14 +44,14 @@ class TimeSetDetailViewReactor: Reactor {
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {
         self.timeSetInfo = timeSetInfo
-        // TODO: Time set info <- bookmark
-        self.initialState = State(isBookmark: false,
+        
+        self.initialState = State(isBookmark: timeSetInfo.isBookmark,
                                   title: timeSetInfo.title,
                                   sumOfTimers: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  isLoop: false,
+                                  isLoop: timeSetInfo.isLoop,
                                   timers: timeSetInfo.timers,
+                                  timer: timeSetInfo.timers.first!,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
-                                  timer: timeSetInfo.timers[0],
                                   shouldSectionReload: true)
     }
     
@@ -70,11 +70,11 @@ class TimeSetDetailViewReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
-        case let .setLoop(isLoop):
-            state.isLoop = isLoop
-            return state
         case let .setBookmark(isBookmark):
             state.isBookmark = isBookmark
+            return state
+        case let .setLoop(isLoop):
+            state.isLoop = isLoop
             return state
         case let .setTimer(at: index):
             state.timer = state.timers[index]
@@ -93,7 +93,8 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     private func actionToggleBookmark() -> Observable<Mutation> {
-        // TODO: Set bookmark in time set info
+        // Toggle time set bookmark
+        timeSetInfo.isBookmark.toggle()
         return .just(.setBookmark(!currentState.isBookmark))
     }
     

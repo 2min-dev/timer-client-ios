@@ -186,7 +186,7 @@ class TimeSetSaveViewController: BaseViewController, View {
         
         // Timer option view
         reactor.state
-            .map { $0.timers[$0.selectedIndexPath.row] }
+            .map { $0.timer }
             .distinctUntilChanged { $0 === $1 }
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
