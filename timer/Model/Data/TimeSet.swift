@@ -8,107 +8,120 @@
 
 import RxSwift
 
-// TODO: Check time set operation (190712)
 /// A class that manage a group of the timers
 class TimeSet: EventStreamProtocol {
     enum Event {
-        case changeState(TimerInfo.State)
+        case stateChanged(State)
+        case timerChanged(at: Int)
     }
+    
+    /// The state of timer
+    enum State: Int, Codable {
+        case stop = 0
+        case start
+        case pause
+        case end
+    }
+    
     // Event stream of the timer set
     var event: PublishSubject<TimeSet.Event> = PublishSubject()
     
     // MARK: - properties
     var info: TimeSetInfo // The model data of the timer set
+    var state: State = .stop {
+        didSet { event.onNext(.stateChanged(state)) }
+    }
     
-    private var timers: [TMTimer] // Timer list
-    private var currentTimerIndex: Int // Current executing timer index in the timer set
+    private var timer: TMTimer? // Current timer
+    private var currentIndex: Int = 0 {
+        didSet { event.onNext(.timerChanged(at: currentIndex)) }
+    }
     
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
     init(info: TimeSetInfo) {
         self.info = info
-
-        self.timers = info.timers.map { TMTimer(info: $0) }
-        self.currentTimerIndex = 0
-
-        // bind timers event
-        self.timers.forEach(bind(timer:))
-    }
-    
-    // MARK: - public method
-    /// Start the current timer
-    func startTimeSet(index: Int?) {
-        // Stop current executed timer
-        timers[currentTimerIndex].stopTimer()
-        if let index = index {
-            // Start specific timer of time set
-            currentTimerIndex = index
-            timers[index].startTimer()
-        } else {
-            // Restart current timer
-            timers[currentTimerIndex].startTimer()
-        }
-    }
-    
-    /// Pause current executing timer
-    func pauseTimeSet() {
-        timers[currentTimerIndex].pauseTimer()
-    }
-    
-    /// Stop timer set (initialize)
-    func stopTimeSet() {
-        // Stop all timers (init)
-        timers.forEach { $0.stopTimer() }
-        currentTimerIndex = 0
     }
     
     // MARK: - private method
-    /// Bind to timer's event stream
-    private func bind(timer: TMTimer) {
-        timer.event
-            .subscribe(onNext: { [weak self] event in  self?.receiveTimerEvent(event)})
-            .disposed(by: disposeBag)
-    }
-    
-    /// Process timer evenet when timer event received
-    private func receiveTimerEvent(_ event: TMTimer.Event) {
-        switch event {
-        case let .changeState(state):
-            // Set timer set state from timer's state
-            switch state {
-            case .start:
-                fallthrough
-            case .pause:
-                fallthrough
-            case .stop:
-                info.state = state
-                self.event.onNext(.changeState(info.state))
-            case .end:
-                if currentTimerIndex + 1 < timers.count {
-                    // Start next timer when current timer state be `end`
-                    Logger.debug("the next timer(\(currentTimerIndex + 1)) is starting.")
-                    currentTimerIndex += 1
-                    timers[currentTimerIndex].startTimer()
+    private func handleTimerStateChanged(state: TMTimer.State) {
+        switch state {
+        case .start:
+            self.state = .start
+        case .pause:
+            self.state = .pause
+        case .stop:
+            self.state = .stop
+        case .end:
+            if timer?.type == .some(.overtime) {
+                // End of overtime timer
+                self.state = .end
+            } else {
+                if currentIndex + 1 < info.timers.count {
+                    // Start next timer
+                    startTimeSet(at: currentIndex + 1)
                 } else {
-                    // Receive the last timer was ended
                     if info.isLoop {
-                        // Restart first timer of time set
-                        Logger.debug("the first timer is starting.")
-                        currentTimerIndex = 0
-                        timers.first?.startTimer()
+                        // Loop time set
+                        startTimeSet(at: 0)
                     } else {
-                        // Stop timer set when the last timer ended
-                        Logger.debug("the timer set was ended.")
-                        info.state = .end
-                        self.event.onNext(.changeState(info.state))
+                        // End of time set
+                        self.state = .end
                     }
                 }
             }
         }
     }
     
+    // MARK: - public method
+    /// Start the current timer
+    func startTimeSet(at index: Int? = nil) {
+        if let index = index {
+            timer?.stopTimer()
+            var timer: TMTimer
+            if index < info.timers.count {
+                // Restart time set from a specific timer
+                currentIndex = index
+                timer = TMTimer(info: info.timers[currentIndex])
+            } else {
+                // Start overtime timer
+                info.overtimer = TimerInfo(title: "초과 타이머")
+                timer = TMTimer(info: info.overtimer!, type: .overtime)
+            }
+
+            // Bind timer event
+            timer.event
+                .subscribe(onNext: { [weak self] event in
+                    switch event {
+                    case let .changeState(state):
+                        self?.handleTimerStateChanged(state: state)
+                    }
+                })
+                .disposed(by: disposeBag)
+            // Start the timer
+            timer.startTimer()
+            
+            self.timer = timer
+        } else {
+            // Restart timer
+            guard let timer = timer else { return }
+            timer.startTimer()
+        }
+    }
+    
+    /// Pause current executing timer
+    func pauseTimeSet() {
+        timer?.pauseTimer()
+    }
+    
+    /// Stop timer set
+    func stopTimeSet(isFinish: Bool = false) {
+        timer?.stopTimer(isFinish: isFinish)
+    }
+    
     deinit {
+        Logger.verbose()
         // dispose event stream when timer deinited
         event.on(.completed)
     }

@@ -19,10 +19,13 @@ protocol UserDefaultServiceProtocol {
 class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     enum Key: String {
         case timeSetId
+        case countdown
         
         var type: Any.Type {
             switch self {
             case .timeSetId:
+                return Int.self
+            case .countdown:
                 return Int.self
             }
         }
