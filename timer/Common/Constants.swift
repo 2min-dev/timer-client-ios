@@ -96,7 +96,7 @@ enum Constants {
 
         static let navyBlue: UIColor = {
             if #available(iOS 11.0, *) {
-                return UIColor(named: "navyBlue")!
+                return UIColor(named: "navy_blue")!
             } else {
                 return UIColor(hex: "#020873")
             }

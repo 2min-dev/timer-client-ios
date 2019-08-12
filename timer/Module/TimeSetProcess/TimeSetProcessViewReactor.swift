@@ -24,9 +24,14 @@ class TimeSetProcessViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let timeSetService: TimeSetServiceProtocol
+    private let timeSet: TimeSet
     
     // MARK: - constructor
-    init() {
+    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo) {
+        self.timeSetService = timeSetService
+        self.timeSet = TimeSet(info: timeSetInfo)
+        
         self.initialState = State()
     }
     

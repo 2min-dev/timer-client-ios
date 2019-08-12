@@ -13,6 +13,7 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
     enum TimeSetDetailRoute {
         case home
         case timeSetEdit(TimeSetInfo)
+        case timeSetProcess(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -33,6 +34,8 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             self.viewController.navigationController?.setViewControllers([viewController], animated: true)
         case .timeSetEdit(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
+        case .timeSetProcess(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
         return viewController
@@ -48,6 +51,18 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetEditViewCoordinator(provider: provider)
             let reactor = TimeSetEditViewReactor(timeSetService: provider.timeSetService, timeSetInfo: copiedTimeSetInfo)
             let viewController = TimeSetEditViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        case let .timeSetProcess(timeSetInfo):
+            guard let copiedTimeSetInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
+            
+            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
+            let reactor = TimeSetProcessViewReactor(timeSetService: provider.timeSetService, timeSetInfo: copiedTimeSetInfo)
+            let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

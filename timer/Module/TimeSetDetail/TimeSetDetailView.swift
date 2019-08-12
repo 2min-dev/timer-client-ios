@@ -209,13 +209,13 @@ class TimeSetDetailView: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubviews([titleLabel, timeSetInfoView, timerBadgeCollectionView, alarmView, commentView])
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().inset(35.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
             make.trailing.equalToSuperview().inset(10.adjust())
         }
 
         timeSetInfoView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(185.adjust())
+            make.top.equalToSuperview().inset(247.adjust())
             make.leading.equalTo(titleLabel)
             make.trailing.equalToSuperview()
         }
@@ -268,7 +268,7 @@ class TimeSetDetailView: UIView {
         }
         
         contentView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom).offset(35.adjust())
+            make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalTo(footerView.snp.top).offset(-10.adjust())
