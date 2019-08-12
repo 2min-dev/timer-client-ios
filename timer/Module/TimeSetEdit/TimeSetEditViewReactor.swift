@@ -195,14 +195,14 @@ class TimeSetEditViewReactor: Reactor {
         // Clear time set
         timeSetInfo = TimeSetInfo()
         
-        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(IndexPath(row: 0, section: 0)))
         let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
+        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(IndexPath(row: 0, section: 0)))
         let setTimer: Observable<Mutation> = .just(.setTimer(0))
         let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(0))
         let setTime: Observable<Mutation> = .just(.setTime(0))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setSelectedIndexPath, setTimers, setTimer, setSumOfTimers, setTime, sectionReload)
+        return .concat(setTimers, setSelectedIndexPath, setTimer, setSumOfTimers, setTime, sectionReload)
     }
     
     private func actionClearTimer() -> Observable<Mutation> {

@@ -296,6 +296,7 @@ class ProductivityViewController: BaseViewController, View {
         
         // Timer option view
         reactor.state
+            .filter { $0.selectedIndexPath.row < $0.timers.count }
             .map { $0.timers[$0.selectedIndexPath.row] }
             .distinctUntilChanged { $0 === $1 }
             .bind(to: timerOptionViewController.rx.timer)
