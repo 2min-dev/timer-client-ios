@@ -10,11 +10,14 @@ import RxSwift
 
 enum TimeSetEvent {
     case create
+    case update
+    case remove
 }
 
 protocol TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> { get }
-    
+    var runningTimeSet: TimeSet? { get set }
+
     func fetchTimeSets() -> Single<[TimeSetInfo]>
     func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
     func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
@@ -33,6 +36,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - properties
     private var timeSets: [TimeSetInfo] = []
+    var runningTimeSet: TimeSet? // Running time set
     
     // MARK: - public method
     /// Fetch timer set list
@@ -88,6 +92,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
+        .do(onSuccess: { _ in self.event.onNext(.update) })
     }
     
     /// Delete the timerset
@@ -105,5 +110,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
+        .do(onSuccess: { _ in self.event.onNext(.remove) })
     }
 }

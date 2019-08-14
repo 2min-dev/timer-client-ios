@@ -9,11 +9,13 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import AVFoundation
 
 /// the timer process object
 class TMTimer: EventStreamProtocol {
     enum Event {
         case changeState(State)
+        case changeTime(current: TimeInterval, end: TimeInterval)
     }
     
     /// The state of timer
@@ -51,7 +53,8 @@ class TMTimer: EventStreamProtocol {
     // MARK: - private method
     /// Update timer info when received timer tick
     private func updateTimer() {
-        info.currentTime += 0.5
+        info.currentTime += 0.1
+        event.onNext(.changeTime(current: info.currentTime, end: info.endTime))
         
         Logger.debug(#"the timer updated. "\#(info.title)" - \#(info.currentTime) / \#(info.endTime)"#)
         // End timer when current time interval of the timer is equal end time interval
@@ -60,13 +63,16 @@ class TMTimer: EventStreamProtocol {
         }
     }
     
+    private func playAlarm() {
+        AudioServicesPlaySystemSound(1005)
+    }
+    
     // MARK: - public method
     /// Fire the timer
     func startTimer() {
         disposeTimer?.dispose()
-        disposeTimer = Observable<Int>.timer(.milliseconds(500),
-                                             period: .milliseconds(500),
-                                             scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+        disposeTimer = Observable<Int>.interval(.milliseconds(100),
+                                                scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
             .subscribe(onNext: { [weak self] _ in self?.updateTimer() })
         
         state = .start
@@ -97,7 +103,13 @@ class TMTimer: EventStreamProtocol {
         disposeTimer.dispose()
         self.disposeTimer = nil
     
-        state = isFinish ? .end : .stop
+        if isFinish {
+            state = .end
+            playAlarm()
+        } else {
+            state = .stop
+        }
+        
     }
     
     deinit {

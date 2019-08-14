@@ -24,7 +24,25 @@ class AppService: BaseService, AppServicePorotocol {
     
     // MARK: properties
     
+    override init(provider: ServiceProviderProtocol) {
+        super.init(provider: provider)
+        
+        registerUserDefaultDomain()
+    }
+    
+    // MARK: - private method
+    private func registerUserDefaultDomain() {
+        provider.userDefaultService.register(defaults: [
+            .timeSetId: 1,
+            .countdown: 5
+        ])
+    }
+    
     // MARK: - public method
+    func setCountdown(_ countdown: Int) {
+        provider.userDefaultService.set(countdown, key: .countdown)
+    }
+    
     func getCountdown() -> Int {
         return provider.userDefaultService.integer(.countdown)
     }

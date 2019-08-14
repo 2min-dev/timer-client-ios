@@ -17,15 +17,22 @@ class TimeSetInfo: Codable, NSCopying {
     }
     
     // MARK: - properties
-    var id: String?
+    // Default information of the time set
+    var id: String?             // Identifier of the time set
     var title: String           // Name of the timer set
     var memo: String            // Description of the timer set
-    
     var isBookmark: Bool        // Is bookmark of the time set
-    var isLoop: Bool            // Is loop of the time set
     
+    // Operation option of the time set
+    var isRepeat: Bool          // Is repeat of the time set
+    
+    // History record properties of the time set
+    var startDate: Date?        // Start date of time set
+    var endDate: Date?          // End date of time set
+    var repeatCount: Int        // Repeat count of time set
     var state: State            // Current state of the time set
     
+    // Timers that makes up the time set
     var timers: [TimerInfo]     // Timer info list of the timer set
     var overtimer: TimerInfo?   // Timer for record overtime of time set
     
@@ -34,7 +41,10 @@ class TimeSetInfo: Codable, NSCopying {
          title: String = "",
          memo: String = "",
          isBookmark: Bool = false,
-         isLoop: Bool = false,
+         isRepeat: Bool = false,
+         startDate: Date? = nil,
+         endDate: Date? = nil,
+         repeatCount: Int = 0,
          state: State = .none,
          timers: [TimerInfo] = [],
          overtimer: TimerInfo? = nil) {
@@ -42,7 +52,10 @@ class TimeSetInfo: Codable, NSCopying {
         self.title = title
         self.memo = memo
         self.isBookmark = isBookmark
-        self.isLoop = isLoop
+        self.isRepeat = isRepeat
+        self.startDate = startDate
+        self.endDate = endDate
+        self.repeatCount = repeatCount
         self.state = state
         self.timers = timers
         self.overtimer = overtimer
@@ -60,7 +73,10 @@ class TimeSetInfo: Codable, NSCopying {
                            title: title,
                            memo: memo,
                            isBookmark: isBookmark,
-                           isLoop: isLoop,
+                           isRepeat: isRepeat,
+                           startDate: startDate,
+                           endDate: endDate,
+                           repeatCount: repeatCount,
                            state: state,
                            timers: timers.compactMap { $0.copy() as? TimerInfo },
                            overtimer: overtimer?.copy() as? TimerInfo)

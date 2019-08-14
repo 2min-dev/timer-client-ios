@@ -9,6 +9,8 @@
 import Foundation
 
 protocol UserDefaultServiceProtocol {
+    func register(defaults registrationDictionary: [UserDefaultService.Key: Any])
+    
     func set(_ value: Any, key: UserDefaultService.Key)
     func integer(_ key: UserDefaultService.Key) -> Int
     func double(_ key: UserDefaultService.Key) -> Double
@@ -35,6 +37,17 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     private let userDefault = UserDefaults.standard
     
     // MARK: - public method
+    func register(defaults registrationDictionary: [UserDefaultService.Key: Any]) {
+        var mappedDictionary: [String: Any] = [:]
+        registrationDictionary.forEach { key, value in
+            guard type(of: value) == key.type else { fatalError("You try to register value that doesn't match the type corresponding to the key value") }
+            
+            mappedDictionary[key.rawValue] = value
+        }
+        
+        userDefault.register(defaults: mappedDictionary)
+    }
+    
     func set(_ value: Any, key: Key) {
         guard type(of: value) == key.type else { fatalError("You try to enter set value that doesn't match the type corresponding to the key value.") }
         userDefault.set(value, forKey: key.rawValue)

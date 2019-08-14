@@ -13,6 +13,7 @@ class TimeSet: EventStreamProtocol {
     enum Event {
         case stateChanged(State)
         case timerChanged(at: Int)
+        case timeChanged(current: TimeInterval, end: TimeInterval)
     }
     
     /// The state of timer
@@ -62,8 +63,10 @@ class TimeSet: EventStreamProtocol {
                     // Start next timer
                     startTimeSet(at: currentIndex + 1)
                 } else {
-                    if info.isLoop {
-                        // Loop time set
+                    if info.isRepeat {
+                        // Repeat time set
+                        info.repeatCount += 1
+                        resetTimeSet()
                         startTimeSet(at: 0)
                     } else {
                         // End of time set
@@ -96,6 +99,8 @@ class TimeSet: EventStreamProtocol {
                     switch event {
                     case let .changeState(state):
                         self?.handleTimerStateChanged(state: state)
+                    case let .changeTime(current: currentTime, end: endTime):
+                        self?.event.onNext(.timeChanged(current: currentTime, end: endTime))
                     }
                 })
                 .disposed(by: disposeBag)
@@ -115,9 +120,15 @@ class TimeSet: EventStreamProtocol {
         timer?.pauseTimer()
     }
     
-    /// Stop timer set
+    /// Stop time set
     func stopTimeSet(isFinish: Bool = false) {
         timer?.stopTimer(isFinish: isFinish)
+    }
+    
+    /// Reset time set
+    func resetTimeSet() {
+        info.timers.forEach { $0.currentTime = 0 }
+        info.repeatCount = 0
     }
     
     deinit {
