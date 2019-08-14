@@ -14,22 +14,39 @@ class TimerOptionViewReactor: Reactor {
     static let MAX_COMMENT_LENGTH: Int = 50
     
     enum Action {
+        /// Update timer info when view will appear
         case viewWillAppear
-        case changeTimer(TimerInfo)
+        
+        /// Update timer info
+        case updateTimer(TimerInfo)
+        
+        /// Update comment of timer
         case updateComment(String)
+        
+        /// Update alarm of timer
         case updateAlarm(String)
     }
     
     enum Mutation {
+        /// Set title of timer
         case setTitle(String)
+        
+        /// Set comment of timer
         case setComment(String)
+        
+        /// Set alarm of timer
         case setAlarm(String)
     }
     
     struct State {
-        var title: String           // Title of the timer
-        var comment: String         // Comment of the timer
-        var alarm: String           // Alarm of the timer
+        /// Title of the timer
+        var title: String
+        
+        /// Comment of the timer
+        var comment: String
+        
+        /// Alarm of the timer
+        var alarm: String
     }
     
     // MARK: - properties
@@ -48,10 +65,13 @@ class TimerOptionViewReactor: Reactor {
         switch action {
         case .viewWillAppear:
             return actionViewWillAppear()
-        case let .changeTimer(timerInfo):
+            
+        case let .updateTimer(timerInfo):
             return actionChangeTimer(info: timerInfo)
+            
         case let .updateComment(comment):
             return actionUpdateComment(comment)
+            
         case let .updateAlarm(alarm):
             return actionUpdateAlarm(alarm)
         }
@@ -63,9 +83,11 @@ class TimerOptionViewReactor: Reactor {
         case let .setTitle(title):
             state.title = title
             return state
+            
         case let .setComment(comment):
             state.comment = comment
             return state
+            
         case let .setAlarm(alarm):
             state.alarm = alarm
             return state

@@ -188,6 +188,7 @@ class TimeSetSaveViewController: BaseViewController, View {
         reactor.state
             .map { $0.timer }
             .distinctUntilChanged { $0 === $1 }
+            .do(onNext: { [weak self] _ in self?.timerOptionViewController.navigationController?.popViewController(animated: true) })
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
         

@@ -13,22 +13,36 @@ class TimerBadgeViewReactor: Reactor {
     enum Action {
         /// Update timer list
         case updateTimers([TimerInfo], TimerBadgeCellType?)
+        
         /// Select badge
         case selectBadge(at: IndexPath)
+        
         /// Change badge position
         case moveBadge(at: IndexPath, to: IndexPath)
     }
     
     enum Mutation {
+        /// Set sections
         case setSections([TimerBadgeSectionModel])
+        
+        /// Set selected index path
         case setSelectedIndexPath(IndexPath)
+        
+        /// Swap the position of two items
         case swapItem(at: IndexPath, to: IndexPath)
+        
+        /// Set should section reload `ture`
         case sectionReload
     }
     
     struct State {
+        /// Sections of timer badge view
         var sections: [TimerBadgeSectionModel]
+        
+        /// Current selected index path
         var selectedIndexPath: IndexPath?
+        
+        /// Need section reload
         var shouldSectionReload: Bool
     }
     
@@ -45,8 +59,10 @@ class TimerBadgeViewReactor: Reactor {
         switch action {
         case let .updateTimers(timers, cell):
             return actionUpdateTimers(timers, extra: cell)
+            
         case let .selectBadge(at: indexPath):
             return actionSelectBadge(at: indexPath)
+            
         case let .moveBadge(at: sourceIndexPath, to: destinationIndexPath):
             return actionMoveBadge(at: sourceIndexPath, to: destinationIndexPath)
         }
@@ -60,6 +76,7 @@ class TimerBadgeViewReactor: Reactor {
         case let .setSections(sections):
             state.sections = sections
             return state
+            
         case let .setSelectedIndexPath(indexPath):
             guard indexPath.row < state.sections[0].items.count else { return state }
             
@@ -70,6 +87,7 @@ class TimerBadgeViewReactor: Reactor {
             
             state.selectedIndexPath = indexPath
             return state
+            
         case let .swapItem(at: sourceIndexPath, to: destinationIndexPath):
             state.sections[0].items.swapAt(sourceIndexPath.row, destinationIndexPath.row)
             
@@ -78,6 +96,7 @@ class TimerBadgeViewReactor: Reactor {
             items[destinationIndexPath.row].item?.action.onNext(.updateIndex(destinationIndexPath.row + 1))
             
             return state
+            
         case .sectionReload:
             state.shouldSectionReload = true
             return state

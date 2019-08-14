@@ -53,7 +53,7 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let loopButton: UIButton = {
+    let repeatButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
         view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
@@ -73,7 +73,7 @@ class TimeSetDetailView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, loopButton, divider])
+        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, repeatButton, divider])
         sumOfTimersTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
@@ -105,7 +105,7 @@ class TimeSetDetailView: UIView {
             make.height.equalTo(plus1MinButton.snp.width)
         }
 
-        loopButton.snp.makeConstraints { make in
+        repeatButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalTo(plus1MinButton.snp.leading).offset(-10.adjust())
             make.width.equalTo(36.adjust())

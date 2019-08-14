@@ -23,7 +23,7 @@ class TimeSetDetailViewController: BaseViewController, View {
     private var titleLabel: UILabel { return timeSetDetailView.titleLabel }
     private var sumOfTimersLabel: UILabel { return timeSetDetailView.sumOfTimersLabel }
     private var endOfTimeSetLabel: UILabel { return timeSetDetailView.endOfTimeSetLabel }
-    private var loopButton: UIButton { return timeSetDetailView.loopButton }
+    private var repeatButton: UIButton { return timeSetDetailView.repeatButton }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetDetailView.timerBadgeCollectionView }
     
@@ -57,8 +57,13 @@ class TimeSetDetailViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetDetailViewReactor) {
         // MARK: action
-        loopButton.rx.tap
-            .map { Reactor.Action.toggleLoop }
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        repeatButton.rx.tap
+            .map { Reactor.Action.toggleRepeat }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -113,11 +118,11 @@ class TimeSetDetailViewController: BaseViewController, View {
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Loop
+        // Repeat
         reactor.state
-            .map { $0.isLoop }
+            .map { $0.isRepeat }
             .distinctUntilChanged()
-            .bind(to: loopButton.rx.isSelected)
+            .bind(to: repeatButton.rx.isSelected)
             .disposed(by: disposeBag)
         
         // Timer badge view

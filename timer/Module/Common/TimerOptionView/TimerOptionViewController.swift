@@ -123,7 +123,7 @@ extension Reactive where Base: TimerOptionViewController {
     var timer: Binder<TimerInfo> {
         return Binder(base.self) { _, timerInfo in
             Observable.just(timerInfo)
-                .map { Base.Reactor.Action.changeTimer($0) }
+                .map { Base.Reactor.Action.updateTimer($0) }
                 .bind(to: self.base.reactor!.action)
                 .disposed(by: self.base.disposeBag)
         }
