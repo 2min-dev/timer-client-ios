@@ -131,4 +131,8 @@ class TimerBadgeViewReactor: Reactor {
     private func actionMoveBadge(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) -> Observable<Mutation> {
         return .just(.swapItem(at: sourceIndexPath, to: destinationIndexPath))
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }

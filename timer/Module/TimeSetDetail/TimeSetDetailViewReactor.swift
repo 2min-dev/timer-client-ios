@@ -17,7 +17,7 @@ class TimeSetDetailViewReactor: Reactor {
         /// Toggle time set bookmark
         case toggleBookmark
         
-        /// Toggle time set loop
+        /// Toggle time set repeat
         case toggleRepeat
         
         /// Select the timer
@@ -48,8 +48,8 @@ class TimeSetDetailViewReactor: Reactor {
         /// Title of time set
         let title: String
         
-        /// Sum of timers end time
-        let sumOfTimers: TimeInterval
+        /// All time of time set
+        let allTime: TimeInterval
         
         /// Time set repeat mark
         var isRepeat: Bool
@@ -77,7 +77,7 @@ class TimeSetDetailViewReactor: Reactor {
         
         self.initialState = State(isBookmark: self.timeSetInfo.isBookmark,
                                   title: self.timeSetInfo.title,
-                                  sumOfTimers: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                                  allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                                   isRepeat: self.timeSetInfo.isRepeat,
                                   timers: self.timeSetInfo.timers,
                                   timer: self.timeSetInfo.timers.first!,
@@ -135,7 +135,7 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     private func actiontoggleRepeat() -> Observable<Mutation> {
-        // Toggle time set loop option
+        // Toggle time set repeat option
         timeSetInfo.isRepeat.toggle()
         return .just(.setRepeat(!currentState.isRepeat))
     }
@@ -151,5 +151,9 @@ class TimeSetDetailViewReactor: Reactor {
         
         return .concat(.just(.setSelectedIndexPath(at: indexPath)),
                        .just(.setTimer(timeSetInfo.timers[indexPath.row])))
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

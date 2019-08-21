@@ -25,7 +25,7 @@ class TimeSetSaveViewController: BaseViewController, View {
     private var titleClearButton: UIButton { return timeSetSaveView.titleClearButton }
     private var titleHintLabel: UILabel { return timeSetSaveView.titleHintLabel }
     
-    private var sumOfTimersLabel: UILabel { return timeSetSaveView.sumOfTimersLabel}
+    private var allTimeLabel: UILabel { return timeSetSaveView.allTimeLabel}
     private var endOfTimeSetLabel: UILabel { return timeSetSaveView.endOfTimeSetLabel }
     
     private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
@@ -143,29 +143,28 @@ class TimeSetSaveViewController: BaseViewController, View {
             .bind(to: titleTextField.rx.text)
             .disposed(by: disposeBag)
         
-        // Sum of timers
+        // All time
         reactor.state
-            .map { $0.sumOfTimers }
+            .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
             .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_sum_of_all_timers_title".localized,
-                                           info: String(format: "time_set_sum_of_all_timers_format".localized, $0.0, $0.1, $0.2))
+                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
+                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
             }
-            .bind(to: sumOfTimersLabel.rx.attributedText)
+            .bind(to: allTimeLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // End of time set
         Observable.combineLatest(
             reactor.state
-                .map { $0.sumOfTimers }
+                .map { $0.allTime }
                 .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
-        )
+            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
             .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
-                                           info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
+                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
+                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
             .bind(to: endOfTimeSetLabel.rx.attributedText)
             .disposed(by: disposeBag)

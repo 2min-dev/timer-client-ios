@@ -67,14 +67,25 @@
 // MARK: - Alarm change
 "alarm_change_current_title_format" = "Cur : %@";
 
+// MARK: - Time set process
+"time_set_process_extra_time_format" = "+%dM";
+"time_set_process_memo_title" = "Memo";
+
+// MARK: - Time set badge
+"time_set_badge_type_countdown_format" = "%d sec before start";
+"time_set_badge_type_repeat_format" = "%d repetitions";
+"time_set_badge_type_cancel_title" = "Canceled";
+"time_set_badge_type_excess_title" = "Excessed";
+
 // MARK: - Time set
 "time_set_default_title" = "Time Set %d";
-"time_set_sum_of_all_timers_full_title" = "All Time";
-"time_set_sum_of_all_timers_title" = "All ";
-"time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
-"time_set_expected_time_full_title" = "End Exp ";
-"time_set_expected_time_title" = "Exp ";
-"time_set_expected_time_format" = "H:mm a";
+"time_set_time_format" = "%02d:%02d:%02d";
+"time_set_all_time_full_title" = "All Time";
+"time_set_all_time_title" = "All ";
+"time_set_all_time_format" = "%02d:%02d:%02d";
+"time_set_end_time_full_title" = "End Exp ";
+"time_set_end_time_title" = "Exp ";
+"time_set_end_time_format" = "H:mm a";
 
 // MARK: - Timer
 "timer_default_title" = "Timer %d";

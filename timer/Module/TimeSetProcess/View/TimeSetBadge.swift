@@ -13,27 +13,27 @@ import RxCocoa
 class TimeSetBadge: UIView {
     enum BadgeType {
         case countdown(time: Int)
-        case loop(count: Int)
+        case `repeat`(count: Int)
         case cancel
         case excess
         
         var text: String {
             switch self {
             case let .countdown(time: time):
-                return "시작 \(time)초 전"
-            case let .loop(count: count):
-                return "\(count)회 반복"
+                return String(format: "time_set_badge_type_countdown_format".localized, time)
+            case let .repeat(count: count):
+                return String(format: "time_set_badge_type_repeat_format".localized, count)
             case .cancel:
-                return "취소 타임셋"
+                return "time_set_badge_type_cancel_title".localized
             case .excess:
-                return "초과 타임셋"
+                return "time_set_badge_type_excess_title".localized
             }
         }
         
         var textColor: UIColor {
             switch self {
             case .countdown(time: _): fallthrough
-            case .loop(count: _):
+            case .repeat(count: _):
                 return Constants.Color.codGray
             case .cancel: fallthrough
             case .excess:
@@ -44,7 +44,7 @@ class TimeSetBadge: UIView {
         var backgroundColor: UIColor {
             switch self {
             case .countdown(time: _): fallthrough
-            case .loop(count: _):
+            case .repeat(count: _):
                 return Constants.Color.white
             case .cancel:
                 return Constants.Color.navyBlue
@@ -56,7 +56,7 @@ class TimeSetBadge: UIView {
         var borderWidth: CGFloat {
             switch self {
             case .countdown(time: _): fallthrough
-            case .loop(count: _):
+            case .repeat(count: _):
                 return 1
             default:
                 return 0
@@ -95,7 +95,7 @@ class TimeSetBadge: UIView {
     }
     
     override var intrinsicContentSize: CGSize {
-        var width = textLabel.sizeThatFits(bounds.size).width + 20
+        let width = textLabel.sizeThatFits(bounds.size).width + 20
         return CGSize(width: width > 80.adjust() ? width : 80.adjust(), height: 20.adjust())
     }
     
@@ -115,18 +115,20 @@ class TimeSetBadge: UIView {
     }
     
     // MARK: - public method
-    func setType(_ type: BadgeType) {
+    func setBadgeType(_ type: BadgeType) {
         textLabel.text = type.text
         textLabel.textColor = type.textColor
         containerView.backgroundColor = type.backgroundColor
         containerView.layer.borderWidth = type.borderWidth
+        
+        invalidateIntrinsicContentSize()
     }
 }
 
 extension Reactive where Base: TimeSetBadge {
     var type: Binder<Base.BadgeType> {
         return Binder(base.self) { _, type in
-            self.base.setType(type)
+            self.base.setBadgeType(type)
         }
     }
 }

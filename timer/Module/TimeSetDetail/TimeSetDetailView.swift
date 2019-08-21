@@ -23,15 +23,15 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    private let sumOfTimersTitleLabel: UILabel = {
+    private let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_sum_of_all_timers_full_title".localized
+        view.text = "time_set_all_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
-    let sumOfTimersLabel: UILabel = {
+    let allTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
@@ -40,7 +40,7 @@ class TimeSetDetailView: UIView {
     
     private let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_expected_time_full_title".localized
+        view.text = "time_set_end_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -62,7 +62,8 @@ class TimeSetDetailView: UIView {
     
     let plus1MinButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_plus_1min_disable"), for: .normal)
+        view.setImage(UIImage(named: "btn_plus_1min_disable"), for: .disabled)
+        view.isEnabled = false
         return view
     }()
     
@@ -73,21 +74,21 @@ class TimeSetDetailView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, repeatButton, divider])
-        sumOfTimersTitleLabel.snp.makeConstraints { make in
+        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, repeatButton, divider])
+        allTimeTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalTo(endOfTimeSetTitleLabel)
         }
         
-        sumOfTimersLabel.snp.makeConstraints { make in
-            make.top.equalTo(sumOfTimersTitleLabel)
-            make.leading.equalTo(sumOfTimersTitleLabel.snp.trailing).offset(10.adjust())
-            make.bottom.equalTo(sumOfTimersTitleLabel)
+        allTimeLabel.snp.makeConstraints { make in
+            make.top.equalTo(allTimeTitleLabel)
+            make.leading.equalTo(allTimeTitleLabel.snp.trailing).offset(10.adjust())
+            make.bottom.equalTo(allTimeTitleLabel)
         }
         
         endOfTimeSetTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(sumOfTimersTitleLabel.snp.bottom).offset(10.adjust())
+            make.top.equalTo(allTimeTitleLabel.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview().inset(16.adjust())
         }

@@ -27,7 +27,7 @@ class ProductivityViewController: BaseViewController, View {
     private var timerClearButton: UIButton { return productivityView.timerInputView.timerClearButton }
     
     private var timeInfoView: UIView { return productivityView.timeInfoView }
-    private var sumOfTimersLabel: UILabel { return productivityView.sumOfTimersLabel }
+    private var allTimeLabel: UILabel { return productivityView.allTimeLabel }
     private var endOfTimeSetLabel: UILabel { return productivityView.endOfTimeSetLabel }
     private var timerInputLabel: UILabel { return productivityView.timeInputLabel }
     
@@ -47,6 +47,8 @@ class ProductivityViewController: BaseViewController, View {
         return timerOptionViewController
     }()
     
+    private var saveButton: FooterButton { return productivityView.saveButton }
+    private var startButton: FooterButton { return productivityView.startButton }
     private var footerView: Footer { return productivityView.footerView }
     
     // MARK: - properties
@@ -200,8 +202,12 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        footerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0) })
+        saveButton.rx.tap
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetInfo)) })
+            .disposed(by: disposeBag)
+        
+        startButton.rx.tap
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -221,28 +227,28 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: timerInputLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Sum of timers
+        // All time
         reactor.state
-            .map { $0.sumOfTimers }
+            .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
             .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_sum_of_all_timers_title".localized,
-                                           info: String(format: "time_set_sum_of_all_timers_format".localized, $0.0, $0.1, $0.2))
+                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
+                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
             }
-            .bind(to: sumOfTimersLabel.rx.attributedText)
+            .bind(to: allTimeLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // End of time set
         Observable.combineLatest(
             reactor.state
-                .map { $0.sumOfTimers }
+                .map { $0.allTime }
                 .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
+            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
             .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
-                                           info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
+                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
+                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
             .bind(to: endOfTimeSetLabel.rx.attributedText)
             .disposed(by: disposeBag)
@@ -346,7 +352,7 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     /// Get base time (second) from key of time key view
-    private func getBaseTime(from key: TimeKeyView.Key) -> Int {
+    private func getBaseTime(from key: TimeKeyView.Key) -> TimeInterval {
         switch key {
         case .hour:
             return Constants.Time.hour
@@ -373,18 +379,6 @@ class ProductivityViewController: BaseViewController, View {
             return Reactor.Action.addTimer
         default:
             return Reactor.Action.selectTimer(at: indexPath)
-        }
-    }
-    
-    private func footerActionHandler(index: Int) {
-        guard let reactor = reactor else { return }
-        
-        if index == FOOTER_BUTTON_SAVE {
-            // Save -> Present time set save
-            _ = coordinator.present(for: .timeSetSave(reactor.timeSetInfo))
-        } else if index == FOOTER_BUTTON_START {
-            // Confirm -> Present time set start
-            // TODO: Present time set start
         }
     }
     
@@ -415,9 +409,9 @@ class ProductivityViewController: BaseViewController, View {
     
     /// Get enable time key from values of time & timer
     private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyView.Key {
-        if timer + TimeInterval(time * Constants.Time.minute) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
+        if timer + TimeInterval(time) * Constants.Time.minute > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .second
-        } else if timer + TimeInterval(time * Constants.Time.hour) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
+        } else if timer + TimeInterval(time) * Constants.Time.hour > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .minute
         } else {
             return .hour

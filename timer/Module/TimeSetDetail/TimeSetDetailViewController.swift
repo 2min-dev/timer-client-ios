@@ -21,7 +21,7 @@ class TimeSetDetailViewController: BaseViewController, View {
     private var headerView: CommonHeader { return timeSetDetailView.headerView }
     
     private var titleLabel: UILabel { return timeSetDetailView.titleLabel }
-    private var sumOfTimersLabel: UILabel { return timeSetDetailView.sumOfTimersLabel }
+    private var allTimeLabel: UILabel { return timeSetDetailView.allTimeLabel }
     private var endOfTimeSetLabel: UILabel { return timeSetDetailView.endOfTimeSetLabel }
     private var repeatButton: UIButton { return timeSetDetailView.repeatButton }
     
@@ -96,25 +96,24 @@ class TimeSetDetailViewController: BaseViewController, View {
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Sum of timers
+        // All time
         reactor.state
-            .map { $0.sumOfTimers }
+            .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { String(format: "time_set_sum_of_all_timers_format".localized, $0.0, $0.1, $0.2) }
-            .bind(to: sumOfTimersLabel.rx.text)
+            .map { String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: allTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
         // End of time set
         Observable.combineLatest(
             reactor.state
-                .map { $0.sumOfTimers }
+                .map { $0.allTime }
                 .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
-        )
+            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .observeOn(MainScheduler.instance)
             .map { Date().addingTimeInterval($0.0) }
-            .map { getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         

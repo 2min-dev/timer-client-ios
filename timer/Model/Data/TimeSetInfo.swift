@@ -9,11 +9,13 @@
 import Foundation
 
 class TimeSetInfo: Codable, NSCopying {
-    enum State: Int, Codable {
-        case none = 0
-        case finished
-        case canceled
-        case exceeded
+    enum EndState: Int, Codable {
+        /// The time set finished normally
+        case normal
+        /// The time set canceled
+        case cancel
+        /// The time set timed out
+        case excess
     }
     
     // MARK: - properties
@@ -30,11 +32,10 @@ class TimeSetInfo: Codable, NSCopying {
     var startDate: Date?        // Start date of time set
     var endDate: Date?          // End date of time set
     var repeatCount: Int        // Repeat count of time set
-    var state: State            // Current state of the time set
+    var endState: EndState?       // End state of time set
     
     // Timers that makes up the time set
     var timers: [TimerInfo]     // Timer info list of the timer set
-    var overtimer: TimerInfo?   // Timer for record overtime of time set
     
     // MARK: - constructor
     init(id: String? = nil,
@@ -45,7 +46,7 @@ class TimeSetInfo: Codable, NSCopying {
          startDate: Date? = nil,
          endDate: Date? = nil,
          repeatCount: Int = 0,
-         state: State = .none,
+         endState: EndState? = nil,
          timers: [TimerInfo] = [],
          overtimer: TimerInfo? = nil) {
         self.id = id
@@ -56,9 +57,8 @@ class TimeSetInfo: Codable, NSCopying {
         self.startDate = startDate
         self.endDate = endDate
         self.repeatCount = repeatCount
-        self.state = state
+        self.endState = endState
         self.timers = timers
-        self.overtimer = overtimer
         
         if self.timers.isEmpty {
             // Add a default timer if timers is empty
@@ -77,8 +77,7 @@ class TimeSetInfo: Codable, NSCopying {
                            startDate: startDate,
                            endDate: endDate,
                            repeatCount: repeatCount,
-                           state: state,
-                           timers: timers.compactMap { $0.copy() as? TimerInfo },
-                           overtimer: overtimer?.copy() as? TimerInfo)
+                           endState: endState,
+                           timers: timers.compactMap { $0.copy() as? TimerInfo })
     }
 }

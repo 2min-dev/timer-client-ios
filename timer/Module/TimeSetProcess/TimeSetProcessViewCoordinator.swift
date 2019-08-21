@@ -11,7 +11,7 @@ import UIKit
 class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
-        case empty
+        case home
     }
     
     // MARK: - properties
@@ -25,13 +25,20 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: Route) -> UIViewController? {
-        return get(for: route)
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .home:
+            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+        }
+        
+        return viewController
     }
     
     func get(for route: Route) -> UIViewController? {
-        return nil
+        switch route {
+        case .home:
+            return self.viewController.navigationController?.viewControllers.first
+        }
     }
-    
-    // MARK: - private method
-    // MARK: - public method
 }

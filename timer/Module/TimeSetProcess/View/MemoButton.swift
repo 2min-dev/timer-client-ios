@@ -13,7 +13,7 @@ class MemoButton: UIButton {
     private let textLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.text = "메모"
+        view.text = "time_set_process_memo_title".localized
         view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
         return view
@@ -35,7 +35,7 @@ class MemoButton: UIButton {
     // MARK: - properties
     
     override var intrinsicContentSize: CGSize {
-        var width = textLabel.sizeThatFits(bounds.size).width + 20
+        let width = textLabel.sizeThatFits(bounds.size).width + 20
         return CGSize(width: width > 42.adjust() ? width : 42.adjust(), height: 30.adjust())
     }
     
@@ -56,6 +56,7 @@ class MemoButton: UIButton {
     
     // MARK: - lifecycle
     override func layoutSubviews() {
+        super.layoutSubviews()
         roundCorners(view: containerView, byRoundingCorners: [.topRight, .bottomRight], cornerRadius: containerView.bounds.height / 2)
     }
 }

@@ -16,8 +16,12 @@ enum TimeSetEvent {
 
 protocol TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> { get }
-    var runningTimeSet: TimeSet? { get set }
+    
+    // Running time set
+    var runningTimeSetInfo: TimeSetInfo? { get }
+    var runningTimeSet: TimeSet? { get }
 
+    func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?)
     func fetchTimeSets() -> Single<[TimeSetInfo]>
     func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
     func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
@@ -36,9 +40,16 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - properties
     private var timeSets: [TimeSetInfo] = []
+    
+    var runningTimeSetInfo: TimeSetInfo? // Running time set original info
     var runningTimeSet: TimeSet? // Running time set
     
     // MARK: - public method
+    func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?) {
+        runningTimeSet = timeSet
+        runningTimeSetInfo = info
+    }
+    
     /// Fetch timer set list
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
         return Single.create { emitter in

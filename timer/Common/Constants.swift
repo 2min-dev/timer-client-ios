@@ -31,8 +31,8 @@ enum Constants {
     
     // second time
     enum Time {
-        static let hour: Int = 3600
-        static let minute: Int = 60
+        static let hour: TimeInterval = 3600
+        static let minute: TimeInterval = 60
     }
     
     // project font define

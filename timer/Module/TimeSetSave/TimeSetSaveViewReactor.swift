@@ -42,8 +42,8 @@ class TimeSetSaveViewReactor: Reactor {
         /// Set time set title hint
         case setHint(String)
         
-        /// Set sum of timers end time
-        case setSumOfTimers(TimeInterval)
+        /// Set all time of time set
+        case setAllTime(TimeInterval)
         
         /// Set current timer
         case setTimer(TimerInfo)
@@ -72,7 +72,7 @@ class TimeSetSaveViewReactor: Reactor {
         var hint: String
         
         /// The time that sum of all timers
-        var sumOfTimers: TimeInterval
+        var allTime: TimeInterval
         
         /// The timer list model of time set
         var timers: [TimerInfo]
@@ -105,7 +105,7 @@ class TimeSetSaveViewReactor: Reactor {
         
         self.initialState = State(title: timeSetInfo.title,
                                   hint: "",
-                                  sumOfTimers: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                                  allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                                   timers: timeSetInfo.timers,
                                   timer: timeSetInfo.timers.first!,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
@@ -154,8 +154,8 @@ class TimeSetSaveViewReactor: Reactor {
             state.hint = hint
             return state
             
-        case let .setSumOfTimers(timeInterval):
-            state.sumOfTimers = timeInterval
+        case let .setAllTime(timeInterval):
+            state.allTime = timeInterval
             return state
             
         case let .setTimer(timer):
@@ -229,10 +229,10 @@ class TimeSetSaveViewReactor: Reactor {
         let indexPath = IndexPath(row: index < timeSetInfo.timers.count ? index : index - 1, section: 0)
         let setSelectIndexPath = actionSelectTimer(at: indexPath)
         
-        let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(state.sumOfTimers - timer.endTime))
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - timer.endTime))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(removeTimer, setSelectIndexPath, setSumOfTimers, sectionReload)
+        return .concat(removeTimer, setSelectIndexPath, setAllTime, sectionReload)
     }
     
     private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {
@@ -264,5 +264,9 @@ class TimeSetSaveViewReactor: Reactor {
                 .asObservable()
                 .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

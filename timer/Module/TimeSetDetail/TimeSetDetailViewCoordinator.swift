@@ -58,10 +58,8 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             
             return viewController
         case let .timeSetProcess(timeSetInfo):
-            guard let copiedTimeSetInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
-            
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            let reactor = TimeSetProcessViewReactor(timeSetService: provider.timeSetService, timeSetInfo: copiedTimeSetInfo)
+            let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI

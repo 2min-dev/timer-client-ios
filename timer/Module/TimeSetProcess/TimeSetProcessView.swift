@@ -19,6 +19,7 @@ class TimeSetProcessView: UIView {
     let timeSetBadge: TimeSetBadge = {
         let view = TimeSetBadge()
         view.font = Constants.Font.Bold.withSize(10.adjust())
+        view.setBadgeType(.countdown(time: 0))
         return view
     }()
     
@@ -40,24 +41,31 @@ class TimeSetProcessView: UIView {
         return view
     }()
     
-    private let sumOfTimersTitleLabel: UILabel = {
+    private let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_sum_of_all_timers_full_title".localized
+        view.text = "time_set_all_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
-    let sumOfTimersLabel: UILabel = {
+    let allTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
+    let extraTimeLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.carnation
+        return view
+    }()
+    
     private let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_expected_time_full_title".localized
+        view.text = "time_set_end_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -70,7 +78,7 @@ class TimeSetProcessView: UIView {
         return view
     }()
     
-    let loopButton: UIButton = {
+    let repeatButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
         view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
@@ -80,6 +88,7 @@ class TimeSetProcessView: UIView {
     let plus1MinButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_plus_1min_enable"), for: .normal)
+        view.setImage(UIImage(named: "btn_plus_1min_disabled"), for: .disabled)
         return view
     }()
     
@@ -90,21 +99,26 @@ class TimeSetProcessView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, loopButton, divider])
-        sumOfTimersTitleLabel.snp.makeConstraints { make in
+        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, extraTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, repeatButton, divider])
+        allTimeTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalTo(endOfTimeSetTitleLabel)
         }
         
-        sumOfTimersLabel.snp.makeConstraints { make in
-            make.top.equalTo(sumOfTimersTitleLabel)
-            make.leading.equalTo(sumOfTimersTitleLabel.snp.trailing).offset(10.adjust())
-            make.bottom.equalTo(sumOfTimersTitleLabel)
+        allTimeLabel.snp.makeConstraints { make in
+            make.top.equalTo(allTimeTitleLabel)
+            make.leading.equalTo(allTimeTitleLabel.snp.trailing).offset(10.adjust())
+            make.bottom.equalTo(allTimeTitleLabel)
+        }
+        
+        extraTimeLabel.snp.makeConstraints { make in
+            make.leading.equalTo(allTimeLabel.snp.trailing).offset(5.adjust())
+            make.centerY.equalTo(allTimeLabel)
         }
         
         endOfTimeSetTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(sumOfTimersTitleLabel.snp.bottom).offset(10.adjust())
+            make.top.equalTo(allTimeTitleLabel.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview().inset(16.adjust())
         }
@@ -122,7 +136,7 @@ class TimeSetProcessView: UIView {
             make.height.equalTo(plus1MinButton.snp.width)
         }
 
-        loopButton.snp.makeConstraints { make in
+        repeatButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalTo(plus1MinButton.snp.leading).offset(-10.adjust())
             make.width.equalTo(36.adjust())
@@ -280,12 +294,29 @@ class TimeSetProcessView: UIView {
         return view
     }()
     
-    let footerView: Footer = {
+    let editButton: FooterButton = {
+        return FooterButton(title: "footer_button_edit".localized, type: .normal)
+    }()
+    
+    let startButton: FooterButton = {
+        return FooterButton(title: "footer_button_start".localized, type: .highlight)
+    }()
+    
+    let stopButton: FooterButton = {
+        return FooterButton(title: "footer_button_cancel".localized, type: .normal)
+    }()
+    
+    let pauseButton: FooterButton = {
+        return FooterButton(title: "footer_button_pause".localized, type: .highlight)
+    }()
+    
+    let restartButton: FooterButton = {
+        return FooterButton(title: "footer_button_restart".localized, type: .highlight)
+    }()
+    
+    lazy var footerView: Footer = {
         let view = Footer()
-        view.buttons = [
-            FooterButton(title: "footer_button_cancel".localized, type: .normal),
-            FooterButton(title: "footer_button_pause".localized, type: .highlight)
-        ]
+        view.buttons = [stopButton, pauseButton]
         return view
     }()
     

@@ -11,27 +11,35 @@ import Foundation
 /// The timer data present object
 class TimerInfo: Codable, NSCopying {
     // MARK: - properties
-    var title: String // The title of the timer
-    var comment: String // The comment of the timer
-    var alarm: String // The alarm name of the timer
-    var currentTime: TimeInterval // Current time interval of the timer
-    var endTime: TimeInterval // Target end time interval of the timer
+    var title: String               // The title of the timer
+    var comment: String             // The comment of the timer
+    var alarm: String               // The alarm name of the timer
+    var currentTime: TimeInterval   // Current time interval of the timer
+    var endTime: TimeInterval       // Target end time interval of the timer
+    var extraTime: TimeInterval     // Added extra time of the timer
     
     // MARK: - constructor
     init(title: String,
          comment: String = "",
          alarm: String = "system",
          currentTime: TimeInterval = 0,
-         endTime: TimeInterval = 0) {
+         endTime: TimeInterval = 0,
+         extraTime: TimeInterval = 0) {
         self.title = title
         self.comment = comment
         self.alarm = alarm
         self.currentTime = currentTime
         self.endTime = endTime
+        self.extraTime = extraTime
     }
     
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
-        return TimerInfo(title: title, comment: comment, alarm: alarm, currentTime: currentTime, endTime: endTime)
+        return TimerInfo(title: title,
+                         comment: comment,
+                         alarm: alarm,
+                         currentTime: currentTime,
+                         endTime: endTime,
+                         extraTime: extraTime)
     }
 }

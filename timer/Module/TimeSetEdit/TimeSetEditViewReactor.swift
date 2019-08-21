@@ -16,68 +16,124 @@ class TimeSetEditViewReactor: Reactor {
     enum Action {
         /// Update time set info when view will appear. because time set info can change other view
         case viewWillAppear
+        
         /// Clear time set
         case clearTimeSet
+        
         /// Clear timer
         case clearTimer
+        
         /// Update time input value
         case updateTime(Int)
+        
         /// Add time into current selected timer
-        case addTime(base: Int)
+        case addTime(base: TimeInterval)
+        
         /// Delete time set
         case deleteTimeSet
+        
         /// Add a timer into time set
         case addTimer
+        
         /// Delete a timer from time set
         case deleteTimer
+        
         /// Change timer position
         case moveTimer(at: IndexPath, to: IndexPath)
+        
         /// Select the timer
         case selectTimer(at: IndexPath)
+        
         /// Apply alarm to all timers
         case applyAlarm(String)
     }
     
     enum Mutation {
+        /// Set end time
         case setEndTime(TimeInterval)
-        case setSumOfTimers(TimeInterval)
+        
+        /// Set all time of time set
+        case setAllTime(TimeInterval)
+        
+        /// Set input time
         case setTime(Int)
+        
+        /// Set timers of time set
         case setTimers([TimerInfo])
-        case setTimer(at: Int)
+        
+        /// Set current timer
+        case setTimer(TimerInfo)
+        
+        /// Append a timer into time set
         case appendTimer(TimerInfo)
+        
+        /// Remove a timer from time set
         case removeTimer(at: Int)
+        
+        /// Swap the position of two timers
         case swapTimer(at: IndexPath, to: IndexPath)
+        
+        /// Set seected index path
         case setSelectedIndexPath(IndexPath)
+        
+        /// Set alert message
         case setAlertMessage(String)
+        
+        /// Set should section reload `true`
         case sectionReload
+        
+        /// Set should dismiss `true`
         case dismiss
     }
     
     struct State {
-        var endTime: TimeInterval           // The time of timer
-        var sumOfTimers: TimeInterval       // The time that sum of all timers
-        var time: Int                       // The time that user inputed
-        var timers: [TimerInfo]             // The timer list model of timer set
-        var timer: TimerInfo                // Current selected timer
-        var selectedIndexPath: IndexPath    // Current selected timer index path
-        var canTimeSetStart: Bool           // Can the time set start
-        var alertMessage: String?           // Alert message
-        var shouldSectionReload: Bool       // Need section reload
-        var shouldDismiss: Bool             // Need to dismiss view
+        /// The time of timer
+        var endTime: TimeInterval
+        
+        /// All time of time set
+        var allTime: TimeInterval
+        
+        /// The time that user inputed
+        var time: Int
+        
+        /// The timer list model of timer set
+        var timers: [TimerInfo]
+
+        /// Current selected timer
+        var timer: TimerInfo
+        
+        /// Current selected timer index path
+        var selectedIndexPath: IndexPath
+        
+        /// Can the time set start
+        var canTimeSetStart: Bool
+        
+        /// Alert message
+        var alertMessage: String?
+        
+        /// Need section reload
+        var shouldSectionReload: Bool
+        
+        /// Need to dismiss view
+        var shouldDismiss: Bool
     }
     
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
+    
+    private let id: String?
     var timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
         self.timeSetService = timeSetService
+        
+        self.id = timeSetInfo?.id
         self.timeSetInfo = timeSetInfo ?? TimeSetInfo()
         
         self.initialState = State(endTime: 0,
-                                  sumOfTimers: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                                  allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                                   time: 0,
                                   timers: self.timeSetInfo.timers,
                                   timer: self.timeSetInfo.timers.first!,
@@ -92,24 +148,34 @@ class TimeSetEditViewReactor: Reactor {
         switch action {
         case .viewWillAppear:
             return actionViewWillAppear()
+            
         case .clearTimeSet:
             return actionClearTimeSet()
+            
         case .clearTimer:
             return actionClearTimer()
+            
         case let .updateTime(time):
             return actionUpdateTime(time)
+            
         case let .addTime(base: time):
             return actionAddTime(base: time)
+            
         case .deleteTimeSet:
             return actionDeleteTimeSet()
+            
         case .addTimer:
             return actionAddTimer()
+            
         case .deleteTimer:
             return actionDeleteTimer()
+            
         case let .moveTimer(at: sourceIndexPath, to: destinationIndexPath):
             return actionMoveTimer(at: sourceIndexPath, to: destinationIndexPath)
+            
         case let .selectTimer(indexPath):
             return actionSelectTimer(at: indexPath)
+            
         case let .applyAlarm(alarm):
             return actionApplyAlarm(alarm)
         }
@@ -119,12 +185,13 @@ class TimeSetEditViewReactor: Reactor {
         switch timeSetEvent {
         case .create:
             return actionTimeSetCreate()
+        default:
+            return .empty()
         }
     }
     
     func transform(mutation: Observable<TimeSetEditViewReactor.Mutation>) -> Observable<TimeSetEditViewReactor.Mutation> {
         let timeSetEventMutation = timeSetService.event
-            .filter { $0 == .create }
             .flatMap { [weak self] in self?.mutate(timeSetEvent: $0) ?? .empty() }
         
         return .merge(mutation, timeSetEventMutation)
@@ -139,38 +206,48 @@ class TimeSetEditViewReactor: Reactor {
         case let .setEndTime(time):
             state.endTime = time
             return state
-        case let .setSumOfTimers(timeInterval):
-            state.sumOfTimers = timeInterval
-            state.canTimeSetStart = state.sumOfTimers > 0
+            
+        case let .setAllTime(timeInterval):
+            state.allTime = timeInterval
+            state.canTimeSetStart = state.allTime > 0
             return state
+            
         case let .setTime(time):
             state.time = time
             return state
+            
         case let .setTimers(timers):
             state.timers = timers
             return state
-        case let .setTimer(at: index):
-            guard index < state.timers.count else { return state }
-            state.timer = state.timers[index]
+            
+        case let .setTimer(timer):
+            state.timer = timer
             return state
+            
         case let .appendTimer(info):
             state.timers.append(info)
             return state
+            
         case let .removeTimer(at: index):
             state.timers.remove(at: index)
             return state
+            
         case let .swapTimer(at: sourceIndexPath, to: destinationIndexPth):
             state.timers.swapAt(sourceIndexPath.row, destinationIndexPth.row)
             return state
+            
         case let .setSelectedIndexPath(indexPath):
             state.selectedIndexPath = indexPath
             return state
+            
         case let .setAlertMessage(message):
             state.alertMessage = message
             return state
+            
         case .sectionReload:
             state.shouldSectionReload = true
             return state
+            
         case .dismiss:
             state.shouldDismiss = true
             return state
@@ -179,20 +256,20 @@ class TimeSetEditViewReactor: Reactor {
 
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
+        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
+        
         var indexPath = currentState.selectedIndexPath
-        if  indexPath.row > timeSetInfo.timers.count - 1 {
+        if  indexPath.row + 1 > timeSetInfo.timers.count {
             // Reset index path if timer count less than current selected index path's row
             indexPath = IndexPath(row: timeSetInfo.timers.count - 1, section: 0)
         }
-        
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
         let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: indexPath)
         
-        let sumOfTimers = timeSetInfo.timers.reduce(0) { $0 + $1.endTime }
-        let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(sumOfTimers))
+        let allTime = timeSetInfo.timers.reduce(0) { $0 + $1.endTime }
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(allTime))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setTimers, setSelectedIndexPath, setSumOfTimers, sectionReload)
+        return .concat(setTimers, setSelectedIndexPath, setAllTime, sectionReload)
     }
     
     private func actionClearTimeSet() -> Observable<Mutation> {
@@ -201,10 +278,10 @@ class TimeSetEditViewReactor: Reactor {
         
         let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
         let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: IndexPath(row: 0, section: 0))
-        let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(0))
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setTimers, setSelectedIndexPath, setSumOfTimers, sectionReload)
+        return .concat(setTimers, setSelectedIndexPath, setAllTime, sectionReload)
     }
     
     private func actionClearTimer() -> Observable<Mutation> {
@@ -214,11 +291,11 @@ class TimeSetEditViewReactor: Reactor {
         timeSetInfo.timers[state.selectedIndexPath.row].endTime = 0
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(0))
-        let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(state.sumOfTimers - state.endTime))
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.endTime))
         let setTime: Observable<Mutation> = .just(.setTime(0))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setSumOfTimers, setTime, sectionReload)
+        return .concat(setEndTime, setAllTime, setTime, sectionReload)
     }
     
     private func actionUpdateTime(_ time: Int) -> Observable<Mutation> {
@@ -226,17 +303,17 @@ class TimeSetEditViewReactor: Reactor {
         
         if state.endTime + TimeInterval(time) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             // Set to max time if input value exceeded limit
-            return .just(.setEndTime(TimeSetEditViewReactor.MAX_TIME_INTERVAL - state.endTime))
+            return .just(.setTime(Int(TimeSetEditViewReactor.MAX_TIME_INTERVAL - state.endTime)))
         } else {
             return .just(.setTime(time))
         }
     }
     
-    private func actionAddTime(base time: Int) -> Observable<Mutation> {
+    private func actionAddTime(base time: TimeInterval) -> Observable<Mutation> {
         let state = currentState
         
-        let sumOfTimers = state.sumOfTimers - state.endTime
-        var timeInterval = state.endTime + TimeInterval(state.time * time)
+        let allTime = state.allTime - state.endTime
+        var timeInterval = state.endTime + TimeInterval(state.time) * time
         if timeInterval > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
            // Set to max time if timer exceeded limit
            timeInterval = TimeSetEditViewReactor.MAX_TIME_INTERVAL
@@ -247,16 +324,15 @@ class TimeSetEditViewReactor: Reactor {
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(timeInterval))
         let setTime: Observable<Mutation> = .just(.setTime(0))
-        let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(sumOfTimers + timeInterval))
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(allTime + timeInterval))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setTime, setSumOfTimers, sectionReload)
+        return .concat(setEndTime, setTime, setAllTime, sectionReload)
     }
     
     private func actionDeleteTimeSet() -> Observable<Mutation> {
-        guard let id = timeSetInfo.id else { return .empty() }
-        return timeSetService.removeTimeSet(id: id)
-            .asObservable()
+        guard let id = id else { return .empty() }
+        return timeSetService.removeTimeSet(id: id).asObservable()
             .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
     }
     
@@ -292,10 +368,10 @@ class TimeSetEditViewReactor: Reactor {
         let indexPath = IndexPath(row: index < timeSetInfo.timers.count ? index : index - 1, section: 0)
         let setSelectIndexPath = actionSelectTimer(at: indexPath)
         
-        let setSumOfTimers: Observable<Mutation> = .just(.setSumOfTimers(state.sumOfTimers - timer.endTime))
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - timer.endTime))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(removeTimer, setSelectIndexPath, setSumOfTimers, sectionReload)
+        return .concat(removeTimer, setSelectIndexPath, setAllTime, sectionReload)
     }
     
     private func actionMoveTimer(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) -> Observable<Mutation> {
@@ -317,8 +393,10 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {
+        guard indexPath.row < timeSetInfo.timers.count else { return .empty() }
+        
         let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
-        let setTimer: Observable<Mutation> = .just(.setTimer(at: indexPath.row))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[indexPath.row]))
         let setEndTime: Observable<Mutation> = .just(.setEndTime(timeSetInfo.timers[indexPath.row].endTime))
         let setTime: Observable<Mutation> = .just(.setTime(0))
         
@@ -330,9 +408,12 @@ class TimeSetEditViewReactor: Reactor {
         return .just(.setAlertMessage("alert_alarm_all_apply_description".localized))
     }
     
-    private func actionTimeSetCreate() -> Observable<Mutation> {
-        guard timeSetInfo.id == nil else { return .empty() }
+    private func actionTimeSetCreate() -> Observable<Mutation> {       guard id == nil else { return .empty() }
         // If current time set info doesn't asigned id(It is createing new), clear time set info due to save the time set
         return actionClearTimeSet()
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

@@ -24,7 +24,7 @@ class TimeSetEditView: UIView {
         return view
     }()
     
-    let sumOfTimersLabel: UILabel = {
+    let allTimeLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
         view.textAlignment = .center
@@ -39,7 +39,7 @@ class TimeSetEditView: UIView {
     }()
     
     lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
+        let view = UIStackView(arrangedSubviews: [allTimeLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
         return view

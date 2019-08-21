@@ -24,7 +24,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let sumOfTimersLabel: UILabel = {
+    let allTimeLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
         view.textAlignment = .center
@@ -39,7 +39,7 @@ class ProductivityView: UIView {
     }()
     
     lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
+        let view = UIStackView(arrangedSubviews: [allTimeLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
         view.isHidden = true
@@ -147,11 +147,19 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let footerView: Footer = {
+    let saveButton: FooterButton = {
+        return FooterButton(title: "footer_button_save".localized, type: .normal)
+    }()
+    
+    let startButton: FooterButton = {
+        return FooterButton(title: "footer_button_start".localized, type: .highlight)
+    }()
+    
+    lazy var footerView: Footer = {
         let view = Footer()
         view.buttons = [
-            FooterButton(title: "footer_button_save".localized, type: .normal),
-            FooterButton(title: "footer_button_start".localized, type: .highlight)
+            saveButton,
+            startButton
         ]
         return view
     }()

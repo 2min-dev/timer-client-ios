@@ -127,4 +127,8 @@ class TimerOptionViewReactor: Reactor {
         timerInfo?.alarm = alarm
         return .just(.setAlarm(alarm))
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }
