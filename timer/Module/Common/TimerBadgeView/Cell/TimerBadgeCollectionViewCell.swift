@@ -16,8 +16,8 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.textColor = Constants.Color.white
         view.textAlignment = .center
         return view
     }()
@@ -44,8 +44,8 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
 
     let indexLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.silver
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.textColor = Constants.Color.silver
         view.textAlignment = .center
         return view
     }()

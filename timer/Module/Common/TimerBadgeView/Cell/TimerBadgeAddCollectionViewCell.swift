@@ -15,9 +15,9 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     // MARK: - view properties
     let addLabel: UILabel = {
         let view = UILabel()
-        view.text = "+"
-        view.textColor = Constants.Color.codGray
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.textColor = Constants.Color.codGray
+        view.text = "+"
         view.textAlignment = .center
         return view
     }()

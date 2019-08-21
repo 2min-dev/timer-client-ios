@@ -71,6 +71,7 @@ class TimerOptionView: UIView {
     let alarmNameLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
@@ -154,6 +155,7 @@ class TimerOptionView: UIView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
         

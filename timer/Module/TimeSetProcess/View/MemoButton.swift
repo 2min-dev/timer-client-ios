@@ -12,10 +12,10 @@ class MemoButton: UIButton {
     // MARK: - view properties
     private let textLabel: UILabel = {
         let view = UILabel()
-        view.textAlignment = .center
-        view.text = "time_set_process_memo_title".localized
-        view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.textColor = Constants.Color.white
+        view.text = "time_set_process_memo_title".localized
+        view.textAlignment = .center
         return view
     }()
     
