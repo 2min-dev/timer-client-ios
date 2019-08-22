@@ -86,8 +86,8 @@ class TimerOptionViewController: BaseViewController, View {
         reactor.state
             .map { $0.comment }
             .map { $0.lengthOfBytes(using: .utf8) }
-            .map { String(format: "timer_option_comment_bytes".localized, $0, TimerOptionViewReactor.MAX_COMMENT_LENGTH) }
             .distinctUntilChanged()
+            .map { String(format: "timer_option_comment_bytes_format".localized, $0, TimerOptionViewReactor.MAX_COMMENT_LENGTH) }
             .bind(to: commentLengthLabel.rx.text)
             .disposed(by: disposeBag)
         

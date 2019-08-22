@@ -31,6 +31,7 @@
 "footer_button_start" = "Start";
 "footer_button_pause" = "Pause";
 "footer_button_restart" = "Restart";
+"footer_button_excess" = "Excess Record";
 "footer_button_edit" = "Edit";
 
 // MARK: - Screen title
@@ -60,7 +61,7 @@
 
 // MARK: - Timer option
 "timer_option_comment_hint" = "You can typing comment";
-"timer_option_comment_bytes" = "%02d/%d bytes";
+"timer_option_comment_bytes_format" = "%02d/%d bytes";
 "timer_option_alarm_all_apply" = "All";
 "timer_option_alarm_change" = "Change";
 
@@ -80,12 +81,16 @@
 // MARK: - Time set
 "time_set_default_title" = "Time Set %d";
 "time_set_time_format" = "%02d:%02d:%02d";
+"time_set_end_title_format" = "%@ Ended";
+"time_set_end_info_format" = "%d/%d (%d repetations)";
 "time_set_all_time_full_title" = "All Time";
 "time_set_all_time_title" = "All ";
 "time_set_all_time_format" = "%02d:%02d:%02d";
 "time_set_end_time_full_title" = "End Exp ";
 "time_set_end_time_title" = "Exp ";
 "time_set_end_time_format" = "H:mm a";
+"time_set_memo_hint" = "Type memo about this time set.";
+"time_set_memo_bytes_format" = "%d/%d bytes";
 
 // MARK: - Timer
 "timer_default_title" = "Timer %d";

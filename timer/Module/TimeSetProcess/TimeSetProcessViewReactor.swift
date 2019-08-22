@@ -134,7 +134,7 @@ class TimeSetProcessViewReactor: Reactor {
     private let appService: AppServicePorotocol
     private var timeSetService: TimeSetServiceProtocol
     
-    private let timeSet: TimeSet // Running time set
+    let timeSet: TimeSet // Running time set
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
     // Countdown

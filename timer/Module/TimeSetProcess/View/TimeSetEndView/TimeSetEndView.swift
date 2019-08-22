@@ -8,8 +8,10 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
+import ReactorKit
 
-class TimeSetEndView: UIView {
+class TimeSetEndView: UIView, View {
     // MARK: - view properties
     let downButton: UIButton = {
         let view = UIButton()
@@ -48,10 +50,9 @@ class TimeSetEndView: UIView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
+        view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
-        view.text = "내 타임셋 종료"
         return view
     }()
     
@@ -59,8 +60,6 @@ class TimeSetEndView: UIView {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(50.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
-        view.text = "00:00:00"
         return view
     }()
     
@@ -70,12 +69,10 @@ class TimeSetEndView: UIView {
         return view
     }()
     
-    let timerLabel: UILabel = {
+    let endInfoLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(10.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: sample text. remove it
-        view.text = "2/2 (N회 반복)"
         return view
     }()
     
@@ -86,10 +83,11 @@ class TimeSetEndView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleLabel, timeLabel, timerIconImageView, timerLabel, divider])
+        view.addAutolayoutSubviews([titleLabel, timeLabel, timerIconImageView, endInfoLabel, divider])
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(12.adjust())
             make.leading.equalToSuperview()
+            make.trailing.equalTo(timerIconImageView.snp.leading)
         }
         
         timeLabel.snp.makeConstraints { make in
@@ -100,12 +98,12 @@ class TimeSetEndView: UIView {
         
         timerIconImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(2.adjust())
-            make.trailing.equalTo(timerLabel.snp.leading).offset(3.adjust())
+            make.trailing.equalTo(endInfoLabel.snp.leading).offset(3.adjust())
             make.width.equalTo(36.adjust())
             make.height.equalTo(timerIconImageView.snp.width)
         }
         
-        timerLabel.snp.makeConstraints { make in
+        endInfoLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(14.adjust())
             make.trailing.equalToSuperview().inset(20.adjust())
         }
@@ -135,8 +133,6 @@ class TimeSetEndView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
-        view.text = "0/1000 bytes"
         return view
     }()
     
@@ -144,8 +140,7 @@ class TimeSetEndView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.silver
-        // TODO: sample text. remove it
-        view.text = "메모를 입력하세요."
+        view.text = "time_set_memo_hint".localized
         return view
     }()
     
@@ -174,8 +169,24 @@ class TimeSetEndView: UIView {
         return view
     }()
     
+    let excessButton: FooterButton = {
+        return FooterButton(title: "footer_button_excess".localized, type: .normal)
+    }()
+    
+    let restartButton: FooterButton = {
+        return FooterButton(title: "footer_button_restart".localized, type: .highlight)
+    }()
+    
+    lazy var footerView: Footer = {
+        let view = Footer()
+        view.buttons = [excessButton, restartButton]
+        return view
+    }()
+    
+    private var dim: UIView?
+    
     // MARK: - properties
-    private var disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(frame: CGRect) {
@@ -192,7 +203,7 @@ class TimeSetEndView: UIView {
         backgroundColor = Constants.Color.white
         
         // Set constraint of subviews
-        addAutolayoutSubviews([headerView, timeSetInfoView, memoInputView])
+        addAutolayoutSubviews([headerView, timeSetInfoView, memoInputView, footerView])
         headerView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -213,12 +224,20 @@ class TimeSetEndView: UIView {
             make.height.equalTo(190.adjust())
         }
         
-        bind()
+        footerView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
     }
     
     convenience init(isShow: Bool) {
         self.init(frame: .zero)
-        show(isShow, animated: false)
+        isShow ? show() : dismiss()
+        
+        // Observe keyboard notification
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -239,26 +258,141 @@ class TimeSetEndView: UIView {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - public method
-    func show(_ isShow: Bool, animated: Bool) {
-        guard let keyWindow = UIApplication.shared.keyWindow else { return }
+    func bind(reactor: TimeSetEndViewReactor) {
+        // Rebind view. because dispose bag is reallocated when reactor was assigned each time
+        bind()
         
+        // MARK: action
+        memoTextView.rx.text
+            .orEmpty
+            .map { Reactor.Action.updateMemo($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // MARK: state
+        // Title
+        reactor.state
+            .map { $0.title }
+            .distinctUntilChanged()
+            .map { String(format: "time_set_end_title_format".localized, $0) }
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Time
+        reactor.state
+            .map { $0.runningTime }
+            .distinctUntilChanged()
+            .map { getTime(interval: $0) }
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: timeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // End info
+        reactor.state
+            .map { ($0.endIndex + 1, $0.timerCount, $0.repeatCount) }
+            .distinctUntilChanged { $0 == $1 }
+            .map { String(format: "time_set_end_info_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: endInfoLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Memo
+        reactor.state
+            .map { $0.memo }
+            .filter { [weak self] in self?.memoTextView.text != $0 }
+            .bind(to: memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Memo length
+        reactor.state
+            .map { $0.memo }
+            .map { $0.lengthOfBytes(using: .utf8) }
+            .distinctUntilChanged()
+            .map { String(format: "time_set_memo_bytes_format".localized, $0, TimeSetEndViewReactor.MAX_MEMO_LENGTH) }
+            .bind(to: memoLengthLabel.rx.text)
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - public method
+    /// Show time set end view (bottom - up slide)
+    func show(animated: Bool = false) {
+        guard let keyWindow = UIApplication.shared.keyWindow, let superview = superview else { return }
+        
+        // Create dim
+        dim = UIView(frame: superview.frame)
+        dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0)
+        // Insert dim view below end view
+        superview.insertSubview(dim!, belowSubview: self)
+        
+        // Calculate view position
         var frame = self.frame
-        if isShow {
-            frame.origin.y = 49.adjust()
-            if #available(iOS 11.0, *) {
-                frame.origin.y += keyWindow.safeAreaInsets.top
-            }
-        } else {
-            frame.origin.y = keyWindow.bounds.height
+        frame.origin.y = 49.adjust()
+        if #available(iOS 11.0, *) {
+            frame.origin.y += keyWindow.safeAreaInsets.top
         }
         
         if animated {
-            UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
-                self.frame = frame
-            }.startAnimation()
+            // Show with animation
+            let animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
+                self.dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8) // Dim animation
+                self.frame = frame // End view animation
+            }
+            
+            animator.startAnimation()
         } else {
             self.frame = frame
         }
+    }
+    
+    /// Dismiss time set end view (top - down slide)
+    func dismiss(animated: Bool = false) {
+        guard let keyWindow = UIApplication.shared.keyWindow else { return }
+        
+        // Calculate view position
+        var frame = self.frame
+        frame.origin.y = keyWindow.bounds.height
+        
+        if animated {
+            // Hide with animation
+            let animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
+                self.dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0) // Dim animation
+                self.frame = frame // End view animation
+            }
+            
+            animator.addCompletion {
+                if $0 == .end {
+                    // Remove dim when animation ended
+                    self.dim?.removeFromSuperview()
+                }
+            }
+            
+            animator.startAnimation()
+        } else {
+            self.frame = frame
+        }
+    }
+    
+    // MARK: - selector
+    @objc func keyboardWillShow(sender: Notification) {
+        memoInputView.snp.remakeConstraints { make in
+            make.top.equalTo(timeSetInfoView.snp.bottom)
+            make.leading.equalTo(timeSetInfoView)
+            make.trailing.equalToSuperview()
+            make.height.equalTo(190.adjust())
+        }
+    }
+    
+    @objc func keyboardWillHide(sender: Notification) {
+        memoInputView.snp.remakeConstraints { make in
+            make.top.equalTo(timeSetInfoView.snp.bottom)
+            make.leading.equalTo(timeSetInfoView)
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(footerView.snp.top).inset(-57.adjust())
+        }
+    }
+    
+    deinit {
+        // Remove notification observer
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }

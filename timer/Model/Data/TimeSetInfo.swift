@@ -20,22 +20,23 @@ class TimeSetInfo: Codable, NSCopying {
     
     // MARK: - properties
     // Default information of the time set
-    var id: String?             // Identifier of the time set
-    var title: String           // Name of the timer set
-    var memo: String            // Description of the timer set
-    var isBookmark: Bool        // Is bookmark of the time set
+    var id: String?               // Identifier of the time set
+    var title: String             // Name of the timer set
+    var memo: String              // Description of the timer set
+    var isBookmark: Bool          // Is bookmark of the time set
     
     // Operation option of the time set
-    var isRepeat: Bool          // Is repeat of the time set
+    var isRepeat: Bool            // Is repeat of the time set
     
     // History record properties of the time set
-    var startDate: Date?        // Start date of time set
-    var endDate: Date?          // End date of time set
-    var repeatCount: Int        // Repeat count of time set
+    var startDate: Date?          // Start date of time set
+    var endDate: Date?            // End date of time set
+    var repeatCount: Int          // Repeat count of time set
+    var runningTime: TimeInterval // All running time of time set
     var endState: EndState?       // End state of time set
     
     // Timers that makes up the time set
-    var timers: [TimerInfo]     // Timer info list of the timer set
+    var timers: [TimerInfo]       // Timer info list of the timer set
     
     // MARK: - constructor
     init(id: String? = nil,
@@ -46,6 +47,7 @@ class TimeSetInfo: Codable, NSCopying {
          startDate: Date? = nil,
          endDate: Date? = nil,
          repeatCount: Int = 0,
+         runningTime: TimeInterval = 0,
          endState: EndState? = nil,
          timers: [TimerInfo] = [],
          overtimer: TimerInfo? = nil) {
@@ -57,6 +59,7 @@ class TimeSetInfo: Codable, NSCopying {
         self.startDate = startDate
         self.endDate = endDate
         self.repeatCount = repeatCount
+        self.runningTime = runningTime
         self.endState = endState
         self.timers = timers
         
@@ -77,6 +80,7 @@ class TimeSetInfo: Codable, NSCopying {
                            startDate: startDate,
                            endDate: endDate,
                            repeatCount: repeatCount,
+                           runningTime: runningTime,
                            endState: endState,
                            timers: timers.compactMap { $0.copy() as? TimerInfo })
     }

@@ -39,6 +39,9 @@ class TimeSetProcessViewController: BaseViewController, View {
     private var restartButton: FooterButton { return timeSetProcessView.restartButton }
     private var footerView: Footer { return timeSetProcessView.footerView }
     
+    private var timeSetEndView: TimeSetEndView { return timeSetProcessView.timeSetEndView }
+    private var dimView: UIView?
+    
     // MARK: - properties
     var coordinator: TimeSetProcessViewCoordinator
     
@@ -60,6 +63,28 @@ class TimeSetProcessViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.setNeedsLayout()
+    }
+    
+    override func bind() {
+        timeSetEndView.closeButton.rx.tap
+            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
+            .disposed(by: disposeBag)
+        
+        timeSetEndView.excessButton.rx.tap
+            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
+            .subscribe(onNext: {
+                Logger.debug("Excess record")
+                // TODO: Excess record time set
+            })
+            .disposed(by: disposeBag)
+        
+        timeSetEndView.restartButton.rx.tap
+            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
+            .subscribe(onNext: {
+                Logger.debug("Restart")
+                // TODO: Restart time set
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - bine
@@ -147,7 +172,7 @@ class TimeSetProcessViewController: BaseViewController, View {
             .map { $0.time }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { String(format: "time_set_time_format".localized.localized, $0.0, $0.1, $0.2) }
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -211,13 +236,6 @@ class TimeSetProcessViewController: BaseViewController, View {
             .map { $0.timers }
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
-        
-//        reactor.state
-//            .filter { $0.shouldSectionReload }
-//            .map { $0.selectedIndexPath }
-//            .delay(.milliseconds(100), scheduler: MainScheduler.instance)
-//            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: false) })
-//            .disposed(by: disposeBag)
         
         reactor.state
             .map { $0.selectedIndexPath }
@@ -295,9 +313,13 @@ class TimeSetProcessViewController: BaseViewController, View {
         switch state {
         case .run:
             footerView.buttons = [stopButton, pauseButton]
+            plus1MinButton.isEnabled = false
             
         case .pause:
             footerView.buttons = [stopButton, restartButton]
+            
+        case .done:
+            plus1MinButton.isEnabled = true
             
         default:
             break
@@ -341,22 +363,24 @@ class TimeSetProcessViewController: BaseViewController, View {
     }
     
     // MARK: - private method
-    // Show time set end view
-    func showTimeSetEndView() {
-        // Create dim view
-        let dim = UIView(frame: UIScreen.main.bounds)
-        dim.backgroundColor = Constants.Color.codGray.withAlphaComponent(0)
+    /// Show time set end view
+    private func showTimeSetEndView() {
+        guard let reactor = reactor else { return }
         
-        let timeSetEndView = TimeSetEndView(isShow: false)
-        view.addSubview(dim)
-        view.addSubview(timeSetEndView)
+        // Inject reactor
+        timeSetEndView.reactor = TimeSetEndViewReactor(timeSet: reactor.timeSet)
         
-        let animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
-            dim.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8)
-        }
+        // Show view with animation
+        timeSetEndView.show(animated: true)
         
-        animator.startAnimation()
-        timeSetEndView.show(true, animated: true)
+        // Focus text view
+        timeSetEndView.memoTextView.becomeFirstResponder()
+    }
+    
+    /// Dismiss time set end view
+    private func dissmissTimeSetEndView() {
+        // Dismiss view with animation
+        timeSetEndView.dismiss(animated: true)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

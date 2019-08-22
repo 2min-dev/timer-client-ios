@@ -316,6 +316,11 @@ class TimeSetProcessView: UIView {
         return view
     }()
     
+    let timeSetEndView: TimeSetEndView = {
+        let view = TimeSetEndView(isShow: false)
+        return view
+    }()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -345,6 +350,9 @@ class TimeSetProcessView: UIView {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        // Add time set end view
+        addSubview(timeSetEndView)
     }
     
     required init?(coder aDecoder: NSCoder) {

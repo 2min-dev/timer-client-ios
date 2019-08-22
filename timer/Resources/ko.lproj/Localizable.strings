@@ -31,6 +31,7 @@
 "footer_button_start" = "시작";
 "footer_button_pause" = "일시정지";
 "footer_button_restart" = "재시작";
+"footer_button_excess" = "초과기록";
 "footer_button_edit" = "편집";
 
 // MARK: - Screen title
@@ -59,7 +60,7 @@
 
 // MARK: - Timer option
 "timer_option_comment_hint" = "코멘트를 입력하실 수 있어요.";
-"timer_option_comment_bytes" = "%02d/%d bytes";
+"timer_option_comment_bytes_format" = "%02d/%d bytes";
 "timer_option_alarm_all_apply" = "전체 적용";
 "timer_option_alarm_change" = "변경";
 
@@ -79,12 +80,16 @@
 // MARK: - Time set
 "time_set_default_title" = "%d번째 생산성";
 "time_set_time_format" = "%02d:%02d:%02d";
+"time_set_end_title_format" = "%@ 종료";
+"time_set_end_info_format" = "%d/%d (%d회 반복)";
 "time_set_all_time_full_title" = "전체 시간";
 "time_set_all_time_title" = "전체시간 ";
 "time_set_all_time_format" = "%02d:%02d:%02d";
 "time_set_end_time_full_title" = "종료 예정";
 "time_set_end_time_title" = "종료예정 ";
 "time_set_end_time_format" = "H:mm a";
+"time_set_memo_hint" = "메모를 입력하세요.";
+"time_set_memo_bytes_format" = "%d/%d bytes";
 
 // MARK: - Timer
 "timer_default_title" = "%d번째 타이머";

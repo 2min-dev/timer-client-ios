@@ -54,10 +54,13 @@ class TimeSet: EventStreamProtocol {
     // MARK: - private method
     /// Handle the timer event from current running timer
     private func handleTimerStateChanged(state: TMTimer.State) {
-        guard case .run(repeat: _) = self.state else { return }
-        
         switch state {
         case .end:
+            // Add current time of timer into time set for record all running time
+            info.runningTime += timer?.info.currentTime ?? 0
+            
+            // Process time set if it is running
+            guard case .run(repeat: _) = self.state else { return }
             if currentIndex + 1 < info.timers.count {
                 // Start next timer
                 start(at: currentIndex + 1)
