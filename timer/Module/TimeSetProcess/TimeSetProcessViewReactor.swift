@@ -183,7 +183,7 @@ class TimeSetProcessViewReactor: Reactor {
                                   isRepeat: self.timeSet.info.isRepeat,
                                   extraTime: extraTime,
                                   countdown: Int(self.countdown),
-                                  countdownState: self.countdown > 0 ? .stop : .done,
+                                  countdownState: self.timeSet.state == .initialize ? .stop : .done,
                                   timeSetState: self.timeSet.state,
                                   timers: self.timeSet.info.timers,
                                   timer: timer,
@@ -296,8 +296,15 @@ class TimeSetProcessViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
-        guard currentState.timeSetState == .initialize else { return .empty() }
-        return actionStartTimeSet(at: currentState.selectedIndexPath.row)
+        guard timeSet.state == .initialize else { return .empty() }
+        
+        let index = currentState.selectedIndexPath.row
+        return startCountdown()
+            .do(onNext: {
+                if case .setCountdownState(.done) = $0 {
+                    self.timeSet.start(at: index)
+                }
+            })
     }
     
     private func actionToggleBookmark() -> Observable<Mutation> {
@@ -317,30 +324,38 @@ class TimeSetProcessViewReactor: Reactor {
         let state = currentState
         
         if let index = index {
+            guard index < timeSet.info.timers.count else { return .empty() }
+            
+            if timeSet.state != .initialize {
+                // Ignore countdown if time set isn't init state
+                countdown = 0
+            }
+            
             // Restart at index after reset
             timeSet.reset()
-            countdown = TimeInterval(appService.getCountdown())
             
             let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(at: IndexPath(row: index, section: 0)))
+            let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.info.timers[index]))
             let setTime: Observable<Mutation> = .just(.setTime(timeSet.info.timers[index].endTime))
             let setExtraTime: Observable<Mutation> = .just(.setExtraTime(0))
-            let startedCountdown: Observable<Mutation> = startCountdown()
-                .do(onNext: { [weak self] in
+            let startedCountdown: Observable<Mutation> = startCountdown(reset: countdown > 0)
+                .do(onNext: {
                     if case .setCountdownState(.done) = $0 {
-                        self?.timeSet.start(at: index)
+                        self.timeSet.start(at: index)
                     }
                 })
             
-            return .concat(setSelectedIndexPath, setTime, setExtraTime, startedCountdown)
+            return .concat(setSelectedIndexPath, setTimer, setTime, setExtraTime, startedCountdown)
         } else {
             // Resume had been running time set or countdown
-            if state.countdown > 0 {
+            if timeSet.state == .initialize {
                 // Resume countdown
-                return startCountdown().do(onNext: {
-                    if case .setCountdownState(.done) = $0 {
-                        self.timeSet.start(at: state.selectedIndexPath.row)
-                    }
-                })
+                return startCountdown()
+                    .do(onNext: {
+                        if case .setCountdownState(.done) = $0 {
+                            self.timeSet.start(at: state.selectedIndexPath.row)
+                        }
+                    })
             } else {
                 // Resume time set
                 timeSet.start()
@@ -350,7 +365,7 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionPauseTimeSet() -> Observable<Mutation> {
-        if currentState.countdown > 0 {
+        if timeSet.state == .initialize {
             // Pause countdown
             disposableTimer?.dispose()
             return .just(.setCountdownState(.pause))
@@ -363,7 +378,7 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionStopTimeSet() -> Observable<Mutation> {
-        if currentState.countdown > 0 {
+        if timeSet.state == .initialize {
             // Dispose countdown & free time set
             disposableTimer?.dispose()
             timeSetService.setRunningTimeSet(nil, origin: nil)
@@ -424,12 +439,30 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     // MARK: - private method
-    private func startCountdown() -> Observable<Mutation> {
+    private func startCountdown(reset: Bool = false) -> Observable<Mutation> {
+        if reset {
+            countdown = TimeInterval(appService.getCountdown())
+        }
+
+        // Dispose countdown timer
+        disposableTimer?.dispose()
+        disposableTimer = nil
+        
         return .create { emitter in
+            guard self.countdown > 0 else {
+                emitter.onNext(.setCountdown(0))
+                emitter.onNext(.setCountdownState(.done))
+                
+                emitter.onCompleted()
+                return Disposables.create()
+            }
+            
+            var isCompleted = false
+            
             // Emit countdown is running
             emitter.onNext(.setCountdownState(.run))
             
-            self.disposableTimer?.dispose()
+            // Create new interval stream
             self.disposableTimer = Observable<Int>.interval(.milliseconds(100), scheduler: MainScheduler.instance)
                 .map { _ -> Int in
                     self.countdown = max(self.countdown - 0.1, 0)
@@ -444,13 +477,16 @@ class TimeSetProcessViewReactor: Reactor {
                         // Emit countdown was done
                         emitter.onNext(.setCountdownState(.done))
                         emitter.onCompleted()
-                        
+                        isCompleted = true
+
                         // Dispose countdown timer
                         self.disposableTimer?.dispose()
                         self.disposableTimer = nil
                     }
                 }, onDisposed: {
-                    emitter.onCompleted()
+                    if !isCompleted {
+                        emitter.onCompleted()
+                    }
                 })
             
             return Disposables.create()
