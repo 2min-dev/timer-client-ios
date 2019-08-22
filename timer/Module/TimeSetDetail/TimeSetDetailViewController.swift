@@ -30,7 +30,8 @@ class TimeSetDetailViewController: BaseViewController, View {
     private var alarmLabel: UILabel { return timeSetDetailView.alarmLabel }
     private var commentTextView: UITextView { return timeSetDetailView.commentTextView }
     
-    private var footerView: Footer { return timeSetDetailView.footerView }
+    private var editButton: FooterButton { return timeSetDetailView.editButton }
+    private var startButton: FooterButton { return timeSetDetailView.startButton }
     
     // MARK: - properties
     var coordinator: TimeSetDetailViewCoordinator
@@ -76,8 +77,15 @@ class TimeSetDetailViewController: BaseViewController, View {
             .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
             .disposed(by: disposeBag)
         
-        footerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0)})
+        editButton.rx.tap
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))})
+            .disposed(by: disposeBag)
+        
+        startButton.rx.tap
+            .withLatestFrom(reactor.state
+                .map { $0.selectedIndexPath.row }
+                .distinctUntilChanged())
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: $0)) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -170,18 +178,6 @@ class TimeSetDetailViewController: BaseViewController, View {
             _ = coordinator.present(for: .home)
         default:
             break
-        }
-    }
-    
-    /// Handle footer button tap action according to button index
-    private func footerActionHandler(index: Int) {
-        guard let reactor = reactor else { return }
-        if index == FOOTER_BUTTON_EDIT {
-            // Edit -> Present time set edit
-            _ = coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))
-        } else if index == FOOTER_BUTTON_START {
-            // Start -> Present time set precess
-            _ = coordinator.present(for: .timeSetProcess(reactor.timeSetInfo))
         }
     }
     

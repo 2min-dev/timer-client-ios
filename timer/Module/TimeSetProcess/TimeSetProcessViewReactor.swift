@@ -144,7 +144,8 @@ class TimeSetProcessViewReactor: Reactor {
     // MARK: - constructor
     init?(appService: AppServicePorotocol,
           timeSetService: TimeSetServiceProtocol,
-          timeSetInfo: TimeSetInfo? = nil) {
+          timeSetInfo: TimeSetInfo? = nil,
+          start index: Int) {
         self.appService = appService
         self.timeSetService = timeSetService
         
@@ -163,7 +164,6 @@ class TimeSetProcessViewReactor: Reactor {
         }
         
         // Get initial state
-        let index = self.timeSet.currentIndex
         let timer = self.timeSet.info.timers[index]
         let allTime = self.timeSet.info.timers.reduce(0) { $0 + $1.endTime }
         
@@ -187,7 +187,7 @@ class TimeSetProcessViewReactor: Reactor {
                                   timeSetState: self.timeSet.state,
                                   timers: self.timeSet.info.timers,
                                   timer: timer,
-                                  selectedIndexPath: IndexPath(row: self.timeSet.currentIndex, section: 0),
+                                  selectedIndexPath: IndexPath(row: index, section: 0),
                                   shouldSectionReload: true,
                                   shouldDismiss: false)
     }
@@ -297,7 +297,7 @@ class TimeSetProcessViewReactor: Reactor {
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
         guard currentState.timeSetState == .initialize else { return .empty() }
-        return actionStartTimeSet(at: timeSet.currentIndex)
+        return actionStartTimeSet(at: currentState.selectedIndexPath.row)
     }
     
     private func actionToggleBookmark() -> Observable<Mutation> {

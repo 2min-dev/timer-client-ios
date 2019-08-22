@@ -70,6 +70,14 @@ class TimeSetProcessViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // Init badge
+        rx.viewDidLayoutSubviews
+            .takeUntil(rx.viewDidAppear)
+            .subscribe(onNext: { [weak self] in
+                self?.timerBadgeCollectionView.scrollToBadge(at: reactor.currentState.selectedIndexPath, animated: false)
+            })
+            .disposed(by: disposeBag)
+        
         repeatButton.rx.tap
             .map { Reactor.Action.toggleRepeat }
             .bind(to: reactor.action)
@@ -204,6 +212,13 @@ class TimeSetProcessViewController: BaseViewController, View {
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
         
+//        reactor.state
+//            .filter { $0.shouldSectionReload }
+//            .map { $0.selectedIndexPath }
+//            .delay(.milliseconds(100), scheduler: MainScheduler.instance)
+//            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: false) })
+//            .disposed(by: disposeBag)
+        
         reactor.state
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
@@ -316,13 +331,36 @@ class TimeSetProcessViewController: BaseViewController, View {
                 timeSetBadge.isHidden = false
                 timeSetBadge.setBadgeType(.excess)
                 
-            default:
-                break
+            case .normal:
+                showTimeSetEndView()
             }
             
         default:
             break
         }
+    }
+    
+    // MARK: - private method
+    // Show time set end view
+    func showTimeSetEndView() {
+        // Create dim view
+        let dim = UIView(frame: UIScreen.main.bounds)
+        dim.backgroundColor = Constants.Color.codGray.withAlphaComponent(0)
+        
+        let timeSetEndView = TimeSetEndView(isShow: false)
+        view.addSubview(dim)
+        view.addSubview(timeSetEndView)
+        
+        let animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
+            dim.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8)
+        }
+        
+        animator.startAnimation()
+        timeSetEndView.show(true, animated: true)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
     
     deinit {

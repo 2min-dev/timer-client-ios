@@ -27,8 +27,6 @@ class TimeSetProcessView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
-        // MARK: sample text. remove it.
-        view.text = "내 타임셋"
         return view
     }()
     
@@ -36,8 +34,6 @@ class TimeSetProcessView: UIView {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(50.adjust())
         view.textColor = Constants.Color.codGray
-        // MARK: sample text. remove it.
-        view.text = "00:01:00"
         return view
     }()
     
@@ -325,6 +321,7 @@ class TimeSetProcessView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
+        // Set constraint of subviews
         addAutolayoutSubviews([headerView, contentView, footerView])
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {

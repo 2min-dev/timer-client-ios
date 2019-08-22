@@ -98,7 +98,7 @@ class TimeSet: EventStreamProtocol {
 
             // Bind timer event
             timer.event
-                .observeOn(MainScheduler.instance)
+                .observeOn(MainScheduler.asyncInstance)
                 .subscribe(onNext: { [weak self] in
                     switch $0 {
                     case let .stateChanged(state):

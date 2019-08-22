@@ -207,7 +207,7 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         startButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0)) })
             .disposed(by: disposeBag)
         
         // MARK: state
