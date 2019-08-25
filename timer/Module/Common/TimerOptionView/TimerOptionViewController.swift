@@ -121,10 +121,23 @@ class TimerOptionViewController: BaseViewController, View {
 extension Reactive where Base: TimerOptionViewController {
     // MARK: - binder
     var timer: Binder<TimerInfo> {
-        return Binder(base.self) { _, timerInfo in
-            Observable.just(timerInfo)
+        return Binder(base.self) { _, timer in
+            guard let reactor = self.base.reactor else { return }
+            
+            Observable.just(timer)
                 .map { Base.Reactor.Action.updateTimer($0) }
-                .bind(to: self.base.reactor!.action)
+                .bind(to: reactor.action)
+                .disposed(by: self.base.disposeBag)
+        }
+    }
+    
+    var title: Binder<String> {
+        return Binder(base.self) { _, title in
+            guard let reactor = self.base.reactor else { return }
+            
+            Observable.just(title)
+                .map { Base.Reactor.Action.updateTitle($0) }
+                .bind(to: reactor.action)
                 .disposed(by: self.base.disposeBag)
         }
     }

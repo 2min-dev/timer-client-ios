@@ -339,7 +339,7 @@ class TimeSetEditViewReactor: Reactor {
     private func actionAddTimer() -> Observable<Mutation> {
         // Create default a timer (set 0)
         let index = timeSetInfo.timers.count
-        let info = TimerInfo(title: String(format: "timer_default_title".localized, index + 1))
+        let info = TimerInfo()
         
         // Add a timer
         timeSetInfo.timers.append(info)

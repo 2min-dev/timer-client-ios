@@ -17,6 +17,9 @@ class TimerOptionViewReactor: Reactor {
         /// Update timer info when view will appear
         case viewWillAppear
         
+        /// Update title of timer
+        case updateTitle(String)
+        
         /// Update timer info
         case updateTimer(TimerInfo)
         
@@ -66,8 +69,11 @@ class TimerOptionViewReactor: Reactor {
         case .viewWillAppear:
             return actionViewWillAppear()
             
+        case let .updateTitle(title):
+            return actionUpdateTitle(title)
+            
         case let .updateTimer(timerInfo):
-            return actionChangeTimer(info: timerInfo)
+            return actionUpdateTimer(info: timerInfo)
             
         case let .updateComment(comment):
             return actionUpdateComment(comment)
@@ -79,6 +85,7 @@ class TimerOptionViewReactor: Reactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
+        
         switch mutation {
         case let .setTitle(title):
             state.title = title
@@ -97,14 +104,17 @@ class TimerOptionViewReactor: Reactor {
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
         guard let timerInfo = timerInfo else { return .empty() }
-        return actionChangeTimer(info: timerInfo)
+        return actionUpdateTimer(info: timerInfo)
     }
     
-    private func actionChangeTimer(info: TimerInfo) -> Observable<Mutation> {
+    private func actionUpdateTitle(_ title: String) -> Observable<Mutation> {
+        return .just(.setTitle(title))
+    }
+    
+    private func actionUpdateTimer(info: TimerInfo) -> Observable<Mutation> {
         // Change current timer
         timerInfo = info
-        return .concat(.just(.setTitle(info.title)),
-                       .just(.setComment(info.comment)),
+        return .concat(.just(.setComment(info.comment)),
                        .just(.setAlarm(info.alarm)))
     }
     

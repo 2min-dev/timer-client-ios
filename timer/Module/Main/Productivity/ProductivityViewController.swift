@@ -307,6 +307,13 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
         
+        reactor.state
+            .map { $0.selectedIndexPath.row + 1 }
+            .distinctUntilChanged()
+            .map { String(format: "timer_option_title_format".localized, $0) }
+            .bind(to: timerOptionViewController.rx.title)
+            .disposed(by: disposeBag)
+        
         // Alert
         reactor.state
             .map { $0.alertMessage }

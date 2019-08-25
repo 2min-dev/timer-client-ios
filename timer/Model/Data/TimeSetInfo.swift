@@ -65,8 +65,7 @@ class TimeSetInfo: Codable, NSCopying {
         
         if self.timers.isEmpty {
             // Add a default timer if timers is empty
-            let info = TimerInfo(title: String(format: "timer_default_title".localized, 1))
-            self.timers.append(info)
+            self.timers.append(TimerInfo())
         }
     }
     

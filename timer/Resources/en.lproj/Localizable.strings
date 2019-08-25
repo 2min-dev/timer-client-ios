@@ -56,6 +56,7 @@
 "productivity_button_second_title" = "S";
 
 // MARK: - Timer option
+"timer_option_title_format" = "Timer %d";
 "timer_option_alarm_all_apply" = "All";
 "timer_option_alarm_change" = "Change";
 
@@ -88,7 +89,6 @@
 "time_set_memo_excess_title" = "Exceeded the number of characters";
 
 // MARK: - Timer
-"timer_default_title" = "Timer %d";
 "timer_comment_hint" = "You can typing comment";
 "timer_comment_bytes_format" = "%02d/%d bytes";
 

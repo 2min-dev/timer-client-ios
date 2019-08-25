@@ -55,6 +55,7 @@
 "productivity_button_second_title" = "초";
 
 // MARK: - Timer option
+"timer_option_title_format" = "%d번째 타이머";
 "timer_option_alarm_all_apply" = "전체 적용";
 "timer_option_alarm_change" = "변경";
 
@@ -87,7 +88,6 @@
 "time_set_memo_excess_title" = "작성 가능한 글자 수 초과";
 
 // MARK: - Timer
-"timer_default_title" = "%d번째 타이머";
 "timer_comment_hint" = "코멘트를 입력하실 수 있어요.";
 "timer_comment_bytes_format" = "%02d/%d bytes";
 
