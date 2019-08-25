@@ -165,6 +165,8 @@ extension Reactive where Base: TimerBadgeCollectionView {
     // MARK: - binder
     var items: Binder<[TimerInfo]> {
         return Binder(base.self) { _, timers in
+            guard let reactor = self.base.reactor else { return }
+            
             Observable.just(timers)
                 .map {
                     if let extraCell = self.base.extraCell, self.base.shouldShowExtraCell(timers, extraCell) {
@@ -173,16 +175,18 @@ extension Reactive where Base: TimerBadgeCollectionView {
                     }
                     return Base.Reactor.Action.updateTimers($0, nil)
                 }
-                .bind(to: self.base.reactor!.action)
+                .bind(to: reactor.action)
                 .disposed(by: self.base.disposeBag)
         }
     }
     
     var selected: Binder<IndexPath> {
         return Binder(base.self) { _, indexPath in
+        guard let reactor = self.base.reactor else { return }
+            
             Observable.just(indexPath)
                 .map { Base.Reactor.Action.selectBadge(at: $0) }
-                .bind(to: self.base.reactor!.action)
+                .bind(to: reactor.action)
                 .disposed(by: self.base.disposeBag)
         }
     }
