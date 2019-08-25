@@ -166,7 +166,7 @@ class TimeSetEndView: UIView, View {
         memoLengthExcessLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalTo(memoLengthLabel.snp.leading).inset(-10.adjust())
-            make.center.equalTo(memoLengthLabel)
+            make.centerY.equalTo(memoLengthLabel)
         }
         
         memoLengthLabel.snp.makeConstraints { make in

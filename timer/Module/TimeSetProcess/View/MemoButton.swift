@@ -21,6 +21,7 @@ class MemoButton: UIButton {
     
     private lazy var containerView: UIView = {
         let view = UIView()
+        view.isUserInteractionEnabled = false
         view.backgroundColor = Constants.Color.navyBlue
     
         // Set constraint of subviews
