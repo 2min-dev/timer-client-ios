@@ -46,7 +46,7 @@ class AlarmChangeViewReactor: Reactor {
                                   shouldSectionReload: true)
     }
     
-    // MARK: - Mutation
+    // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:

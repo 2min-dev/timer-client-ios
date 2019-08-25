@@ -60,7 +60,7 @@ class TimerOptionViewReactor: Reactor {
                                   alarm: "")
     }
     
-    // MARK: - Mutation
+    // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewWillAppear:

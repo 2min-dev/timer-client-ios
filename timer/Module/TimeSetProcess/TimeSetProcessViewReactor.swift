@@ -196,7 +196,7 @@ class TimeSetProcessViewReactor: Reactor {
                                   shouldDismiss: false)
     }
     
-    // MARK: - Mutate
+    // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewWillAppear:
