@@ -48,7 +48,7 @@ class TimeSetEndView: UIView, View {
         return view
     }()
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(15.adjust())
@@ -56,7 +56,7 @@ class TimeSetEndView: UIView, View {
         return view
     }()
     
-    let timeLabel: UILabel = {
+    private let timeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(50.adjust())
         view.textColor = Constants.Color.codGray
@@ -118,7 +118,7 @@ class TimeSetEndView: UIView, View {
         return view
     }()
     
-    let memoTextView: UITextView = {
+    private let memoTextView: UITextView = {
         let view = UITextView()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
@@ -129,14 +129,22 @@ class TimeSetEndView: UIView, View {
         return view
     }()
     
-    let memoLengthLabel: UILabel = {
+    private let memoLengthExcessLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.textColor = Constants.Color.carnation
+        view.text = "time_set_memo_excess_title".localized
+        return view
+    }()
+    
+    private let memoLengthLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
-    let memoHintLabel: UILabel = {
+    private let memoHintLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.silver
@@ -148,11 +156,17 @@ class TimeSetEndView: UIView, View {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([memoTextView, memoLengthLabel, memoHintLabel])
+        view.addAutolayoutSubviews([memoTextView, memoLengthExcessLabel, memoLengthLabel, memoHintLabel])
         memoTextView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(20.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview().inset(20.adjust())
+        }
+        
+        memoLengthExcessLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalTo(memoLengthLabel.snp.leading).inset(-10.adjust())
+            make.center.equalTo(memoLengthLabel)
         }
         
         memoLengthLabel.snp.makeConstraints { make in
@@ -305,8 +319,9 @@ class TimeSetEndView: UIView, View {
         // Memo length
         reactor.state
             .map { $0.memo }
-            .map { $0.lengthOfBytes(using: .utf8) }
+            .map { $0.lengthOfBytes(using: .unicode) }
             .distinctUntilChanged()
+            .do(onNext: { [weak self] in self?.memoLengthExcessLabel.isHidden = $0 < TimeSetEndViewReactor.MAX_MEMO_LENGTH })
             .map { String(format: "time_set_memo_bytes_format".localized, $0, TimeSetEndViewReactor.MAX_MEMO_LENGTH) }
             .bind(to: memoLengthLabel.rx.text)
             .disposed(by: disposeBag)

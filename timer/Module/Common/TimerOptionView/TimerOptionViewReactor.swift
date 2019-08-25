@@ -111,7 +111,7 @@ class TimerOptionViewReactor: Reactor {
     private func actionUpdateComment(_ comment: String) -> Observable<Mutation> {
         // Update timer's comment
         guard let timerInfo = timerInfo else { return .empty() }
-        let length = comment.lengthOfBytes(using: .utf8)
+        let length = comment.lengthOfBytes(using: .utf16)
         
         guard length <= TimerOptionViewReactor.MAX_COMMENT_LENGTH else {
             return .just(.setComment(timerInfo.comment))

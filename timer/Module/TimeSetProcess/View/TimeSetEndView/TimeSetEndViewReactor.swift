@@ -79,7 +79,7 @@ class TimeSetEndViewReactor: Reactor {
     // MARK: - action method
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update timer's comment
-        let length = memo.lengthOfBytes(using: .utf8)
+        let length = memo.lengthOfBytes(using: .utf16)
         
         guard length <= TimeSetEndViewReactor.MAX_MEMO_LENGTH else {
             return .just(.setMemo(timeSet.info.memo))

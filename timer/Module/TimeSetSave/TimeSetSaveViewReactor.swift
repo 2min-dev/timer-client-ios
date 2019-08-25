@@ -204,7 +204,7 @@ class TimeSetSaveViewReactor: Reactor {
     }
     
     private func actionUpdateTitle(_ title: String) -> Observable<Mutation> {
-        let length = title.lengthOfBytes(using: .utf8)
+        let length = title.lengthOfBytes(using: .utf16)
         guard length <= TimeSetSaveViewReactor.MAX_TITLE_LENGTH else { return .just(.setTitle(timeSetInfo.title)) }
         
         // Update title

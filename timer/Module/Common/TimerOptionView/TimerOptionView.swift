@@ -33,7 +33,7 @@ class TimerOptionView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.silver
-        view.text = "timer_option_comment_hint".localized
+        view.text = "timer_comment_hint".localized
         return view
     }()
     
