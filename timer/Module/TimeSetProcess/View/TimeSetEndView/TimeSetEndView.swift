@@ -221,7 +221,7 @@ class TimeSetEndView: UIView, View {
             make.top.equalTo(timeSetInfoView.snp.bottom)
             make.leading.equalTo(timeSetInfoView)
             make.trailing.equalToSuperview()
-            make.height.equalTo(190.adjust())
+            make.bottom.equalTo(footerView.snp.top).inset(-57.adjust())
         }
         
         footerView.snp.makeConstraints { make in
@@ -373,20 +373,28 @@ class TimeSetEndView: UIView, View {
     
     // MARK: - selector
     @objc func keyboardWillShow(sender: Notification) {
-        memoInputView.snp.remakeConstraints { make in
-            make.top.equalTo(timeSetInfoView.snp.bottom)
-            make.leading.equalTo(timeSetInfoView)
-            make.trailing.equalToSuperview()
-            make.height.equalTo(190.adjust())
+        UIView.animate(withDuration: 0.3) {
+            self.memoInputView.snp.remakeConstraints { make in
+                make.top.equalTo(self.timeSetInfoView.snp.bottom)
+                make.leading.equalTo(self.timeSetInfoView)
+                make.trailing.equalToSuperview()
+                make.height.equalTo(190.adjust())
+            }
+            
+            self.layoutIfNeeded()
         }
     }
     
     @objc func keyboardWillHide(sender: Notification) {
-        memoInputView.snp.remakeConstraints { make in
-            make.top.equalTo(timeSetInfoView.snp.bottom)
-            make.leading.equalTo(timeSetInfoView)
-            make.trailing.equalToSuperview()
-            make.bottom.equalTo(footerView.snp.top).inset(-57.adjust())
+        UIView.animate(withDuration: 0.3) {
+            self.memoInputView.snp.remakeConstraints { make in
+                make.top.equalTo(self.timeSetInfoView.snp.bottom)
+                make.leading.equalTo(self.timeSetInfoView)
+                make.trailing.equalToSuperview()
+                make.bottom.equalTo(self.footerView.snp.top).inset(-57.adjust())
+            }
+            
+            self.layoutIfNeeded()
         }
     }
     

@@ -134,6 +134,7 @@ class TimeSetProcessViewReactor: Reactor {
     private let appService: AppServicePorotocol
     private var timeSetService: TimeSetServiceProtocol
     
+    let timeSetInfo: TimeSetInfo? // Original time set info
     let timeSet: TimeSet // Running time set
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
@@ -152,6 +153,7 @@ class TimeSetProcessViewReactor: Reactor {
         if let timeSetInfo = timeSetInfo {
             // Start time set from passed time set info parameter
             // Create will run time set from original time set info
+            self.timeSetInfo = timeSetInfo
             self.timeSet = TimeSet(info: timeSetInfo.copy() as! TimeSetInfo)
             
             // Set running time set inrto time set service
@@ -159,7 +161,9 @@ class TimeSetProcessViewReactor: Reactor {
         } else {
             // Present running time set from time set service
             // Fetch running time set from time set service
-            guard let timeSet = timeSetService.runningTimeSet else { return nil }
+            guard let timeSetInfo = timeSetService.runningTimeSetInfo,
+                let timeSet = timeSetService.runningTimeSet else { return nil }
+            self.timeSetInfo = timeSetInfo
             self.timeSet = timeSet
         }
         
@@ -308,7 +312,7 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionToggleBookmark() -> Observable<Mutation> {
-        guard let timeSetInfo = timeSetService.runningTimeSetInfo else { return .empty() }
+        guard let timeSetInfo = timeSetInfo else { return .empty() }
         // Toggle original time set bookmark
         timeSetInfo.isBookmark.toggle()
         return .just(.setBookmark(timeSetInfo.isBookmark))

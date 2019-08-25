@@ -32,8 +32,10 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
         switch route {
         case .home:
             self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            
         case .timeSetEdit(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            
         case .timeSetProcess(_, start: _):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
@@ -45,6 +47,7 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
         switch route {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
+            
         case let .timeSetEdit(timeSetInfo):
             guard let copiedTimeSetInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
             
@@ -57,6 +60,7 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             viewController.reactor = reactor
             
             return viewController
+            
         case let .timeSetProcess(timeSetInfo, start: index):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
             let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo, start: index)

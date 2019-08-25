@@ -80,9 +80,9 @@ class TimeSetProcessViewController: BaseViewController, View {
         
         timeSetEndView.restartButton.rx.tap
             .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
-            .subscribe(onNext: {
-                Logger.debug("Restart")
-                // TODO: Restart time set
+            .subscribe(onNext: { [weak self] in
+                guard let reactor = self?.reactor else { return }
+                _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0))
             })
             .disposed(by: disposeBag)
     }
@@ -123,8 +123,7 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         startButton.rx.tap
-            .map { Reactor.Action.startTimeSet(at: 0) }
-            .bind(to: reactor.action)
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0)) })
             .disposed(by: disposeBag)
         
         restartButton.rx.tap
@@ -372,9 +371,6 @@ class TimeSetProcessViewController: BaseViewController, View {
         
         // Show view with animation
         timeSetEndView.show(animated: true)
-        
-        // Focus text view
-        timeSetEndView.memoTextView.becomeFirstResponder()
     }
     
     /// Dismiss time set end view
