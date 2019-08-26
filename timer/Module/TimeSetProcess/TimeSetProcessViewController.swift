@@ -269,26 +269,33 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: disposeBag)
     }
     
-    func bind(timeSetEndView: TimeSetEndView) {
-        timeSetEndView.closeButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
-            .disposed(by: timeSetEndView.disposeBag)
+    func bind(view: TimeSetEndView, reactor: TimeSetEndViewReactor) {
+        guard let timeSet = self.reactor?.timeSet else { return }
+
+        rx.viewWillAppear
+            .map { TimeSetEndViewReactor.Action.updateMemo(timeSet.info.memo) }
+            .bind(to: reactor.action)
+            .disposed(by: view.disposeBag)
         
-        timeSetEndView.excessButton.rx.tap
+        view.closeButton.rx.tap
+            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
+            .disposed(by: view.disposeBag)
+        
+        view.excessButton.rx.tap
             .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
             .subscribe(onNext: {
                 Logger.debug("Excess record")
                 // TODO: Excess record time set
             })
-            .disposed(by: disposeBag)
+            .disposed(by: view.disposeBag)
         
-        timeSetEndView.restartButton.rx.tap
+        view.restartButton.rx.tap
             .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
             .subscribe(onNext: { [weak self] in
                 guard let reactor = self?.reactor else { return }
                 _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0))
             })
-            .disposed(by: disposeBag)
+            .disposed(by: view.disposeBag)
     }
     
     // MARK: - action method
@@ -384,7 +391,7 @@ class TimeSetProcessViewController: BaseViewController, View {
         
         // Add sub view and bind events
         view.addSubview(timeSetEndView)
-        bind(timeSetEndView: timeSetEndView)
+        bind(view: timeSetEndView, reactor: timeSetEndView.reactor!)
         
         // Show view with animation
         timeSetEndView.show(animated: true)

@@ -65,7 +65,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             
         case let .timeSetMemo(timeSet):
             let coordinator = TimeSetMemoViewCoordinator(provider: provider)
-            let reactor = TimeSetMemoViewReactor()
+            let reactor = TimeSetMemoViewReactor(timeSet: timeSet)
             let viewController = TimeSetMemoViewController(coordinator: coordinator)
             
             // DI

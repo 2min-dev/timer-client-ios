@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class TimeSetMemoView: UIView {
     // MARK: - view properties
@@ -16,7 +17,7 @@ class TimeSetMemoView: UIView {
         return view
     }()
     
-    private let titleLabel: UILabel = {
+    let titleLabel: UILabel = {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(15.adjust())
@@ -24,7 +25,7 @@ class TimeSetMemoView: UIView {
         return view
     }()
     
-    private let timeLabel: UILabel = {
+    let timeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(50.adjust())
         view.textColor = Constants.Color.codGray
@@ -60,7 +61,7 @@ class TimeSetMemoView: UIView {
         return view
     }()
     
-    private let memoTextView: UITextView = {
+    let memoTextView: UITextView = {
         let view = UITextView()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
@@ -71,7 +72,7 @@ class TimeSetMemoView: UIView {
         return view
     }()
     
-    private let memoLengthExcessLabel: UILabel = {
+    let memoLengthExcessLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.carnation
@@ -79,8 +80,9 @@ class TimeSetMemoView: UIView {
         return view
     }()
     
-    private let memoLengthLabel: UILabel = {
+    let memoLengthLabel: UILabel = {
         let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -137,16 +139,23 @@ class TimeSetMemoView: UIView {
         return FooterButton(title: "footer_button_restart".localized, type: .highlight)
     }()
     
-    lazy var footerView: Footer = {
+    private lazy var footerView: Footer = {
         let view = Footer()
         view.buttons = [cancelButton, pauseButton]
         return view
     }()
     
+    // MARK: - properties
+    private var disposeBag = DisposeBag()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
+        
+        // Observe keyboard notification
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         // Set constraint of subviews
         addAutolayoutSubviews([headerView, timeSetInfoView, memoInputView, footerView])
@@ -170,7 +179,7 @@ class TimeSetMemoView: UIView {
             make.top.equalTo(timeSetInfoView.snp.bottom)
             make.leading.equalTo(timeSetInfoView)
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(footerView.snp.top).inset(-57.adjust())
+            make.bottom.equalTo(footerView.snp.top).inset(-56.adjust())
         }
         
         footerView.snp.makeConstraints { make in
@@ -178,9 +187,46 @@ class TimeSetMemoView: UIView {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        bind()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - bind
+    private func bind() {
+        memoTextView.rx.text
+            .map { !$0!.isEmpty }
+            .bind(to: memoHintLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - selector
+    @objc func keyboardWillShow(sender: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.memoInputView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.footerView.snp.top).inset(-194.adjust())
+            }
+            
+            self.layoutIfNeeded()
+        }
+    }
+    
+    @objc func keyboardWillHide(sender: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.memoInputView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.footerView.snp.top).inset(-56.adjust())
+            }
+            
+            self.layoutIfNeeded()
+        }
+    }
+    
+    deinit {
+        // Remove notification observer
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }

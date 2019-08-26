@@ -10,10 +10,11 @@ import RxSwift
 import ReactorKit
 
 class TimeSetEndViewReactor: Reactor {
-    // MARK:- Constants
+    // MARK: - Constants
     static let MAX_MEMO_LENGTH = 1000
     
     enum Action {
+        /// Update memo of current time set
         case updateMemo(String)
     }
     
@@ -78,7 +79,7 @@ class TimeSetEndViewReactor: Reactor {
     
     // MARK: - action method
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
-        // Update timer's comment
+        // Update time set's memo
         let length = memo.lengthOfBytes(using: .utf16)
         
         guard length <= TimeSetEndViewReactor.MAX_MEMO_LENGTH else {
