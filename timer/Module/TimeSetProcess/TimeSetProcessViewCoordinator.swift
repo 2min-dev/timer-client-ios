@@ -13,7 +13,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     enum Route {
         case home
         case timeSetProcess(TimeSetInfo?, start: Int)
-        case timeSetMemo(TimeSet)
+        case timeSetMemo(TimeSet, origin: TimeSetInfo)
     }
     
     // MARK: - properties
@@ -63,9 +63,9 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case let .timeSetMemo(timeSet):
+        case let .timeSetMemo(timeSet, origin: info):
             let coordinator = TimeSetMemoViewCoordinator(provider: provider)
-            let reactor = TimeSetMemoViewReactor(timeSet: timeSet)
+            let reactor = TimeSetMemoViewReactor(timeSet: timeSet, origin: info)
             let viewController = TimeSetMemoViewController(coordinator: coordinator)
             
             // DI

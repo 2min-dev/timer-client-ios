@@ -14,6 +14,8 @@ class TimeSetMemoViewController: BaseViewController, View {
     // MARK: - view properties
     private var timeSetMemoView: TimeSetMemoView { return view as! TimeSetMemoView }
     
+    private var headerView: CommonHeader { return timeSetMemoView.headerView }
+    
     private var titleLabel: UILabel { return timeSetMemoView.titleLabel }
     private var timeLabel: UILabel { return timeSetMemoView.timeLabel }
     
@@ -50,6 +52,10 @@ class TimeSetMemoViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetMemoViewReactor) {
         // MARK: action
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
+            .disposed(by: disposeBag)
+            
         memoTextView.rx.text
             .orEmpty
             .filter { !$0.isEmpty }
@@ -58,6 +64,14 @@ class TimeSetMemoViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Bookmark
+        reactor.state
+            .map { $0.isBookmark }
+            .distinctUntilChanged()
+            .filter { [weak self] _ in self?.headerView.buttons[.bookmark] != nil }
+            .bind(to: headerView.buttons[.bookmark]!.rx.isSelected)
+            .disposed(by: disposeBag)
+        
         // Title
         reactor.state
             .map { $0.title }
@@ -90,6 +104,24 @@ class TimeSetMemoViewController: BaseViewController, View {
             .map { String(format: "time_set_memo_bytes_format".localized, $0, TimeSetEndViewReactor.MAX_MEMO_LENGTH) }
             .bind(to: memoLengthLabel.rx.text)
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    private func headerActionHandler(type: CommonHeader.ButtonType) {
+        switch type {
+        case .back:
+            navigationController?.popViewController(animated: true)
+        case .share:
+            break
+        case .bookmark:
+            guard let reactor = reactor else { return }
+            reactor.action.onNext(.toggleBookmark)
+        case .home:
+            _ = coordinator.present(for: .home)
+        default:
+            break
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

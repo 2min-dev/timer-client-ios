@@ -87,6 +87,10 @@ class TimeSetProcessViewController: BaseViewController, View {
             })
             .disposed(by: disposeBag)
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
+            .disposed(by: disposeBag)
+        
         repeatButton.rx.tap
             .map { Reactor.Action.toggleRepeat }
             .bind(to: reactor.action)
@@ -103,11 +107,10 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         memoButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet)) })
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
+            .subscribe(onNext: { [weak self] in
+                guard let timeSetInfo = reactor.timeSetInfo else { return }
+                _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: timeSetInfo))
+            })
             .disposed(by: disposeBag)
         
         startButton.rx.tap

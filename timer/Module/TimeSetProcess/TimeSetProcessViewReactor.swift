@@ -300,15 +300,21 @@ class TimeSetProcessViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
-        guard timeSet.state == .initialize else { return .empty() }
+        guard let timeSetInfo = timeSetInfo else { return .empty() }
         
-        let index = currentState.selectedIndexPath.row
-        return startCountdown()
-            .do(onNext: {
-                if case .setCountdownState(.done) = $0 {
-                    self.timeSet.start(at: index)
-                }
-            })
+        let setBookmark: Observable<Mutation> = .just(.setBookmark(timeSetInfo.isBookmark))
+        var startedCountdown: Observable<Mutation> = .empty()
+        if timeSet.state == .initialize {
+            let index = currentState.selectedIndexPath.row
+            startedCountdown = startCountdown()
+                .do(onNext: {
+                    if case .setCountdownState(.done) = $0 {
+                        self.timeSet.start(at: index)
+                    }
+                })
+        }
+        
+        return .concat(setBookmark, startedCountdown)
     }
     
     private func actionToggleBookmark() -> Observable<Mutation> {

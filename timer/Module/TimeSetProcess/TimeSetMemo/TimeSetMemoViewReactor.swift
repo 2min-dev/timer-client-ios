@@ -16,6 +16,9 @@ class TimeSetMemoViewReactor: Reactor {
     enum Action {
         /// Update memo of current time set
         case updateMemo(String)
+        
+        /// Toggle the time set bookmark
+        case toggleBookmark
     }
     
     enum Mutation {
@@ -24,6 +27,9 @@ class TimeSetMemoViewReactor: Reactor {
         
         /// Set remainted time of time set
         case setRemainedTime(TimeInterval)
+        
+        /// Set time set bookmark
+        case setBookmark(Bool)
     }
     
     struct State {
@@ -35,29 +41,35 @@ class TimeSetMemoViewReactor: Reactor {
         
         /// Memo of time set
         var memo: String
+        
+        /// Bookmark setting value of time set
+        var isBookmark: Bool
     }
     
     // MARK: - properties
     var initialState: State
     
-    private let timeSet: TimeSet
-    private var remainedTime: TimeInterval
+    private let timeSetInfo: TimeSetInfo? // Original time set info
+    private let timeSet: TimeSet // Running time set
+    private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
     // MARK: - constructor
-    init(timeSet: TimeSet) {
+    init(timeSet: TimeSet, origin info: TimeSetInfo) {
+        self.timeSetInfo = info
         self.timeSet = timeSet
 
-        let index = self.timeSet.currentIndex
-        self.remainedTime = self.timeSet.info.timers.enumerated()
+        let index = timeSet.currentIndex
+        self.remainedTime = timeSet.info.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.endTime }
         
-        let timer = self.timeSet.info.timers[index]
+        let timer = timeSet.info.timers[index]
         let remainedTime = self.remainedTime + (timer.endTime + timer.extraTime - timer.currentTime)
         
-        self.initialState = State(title: self.timeSet.info.title,
+        self.initialState = State(title: timeSet.info.title,
                                   remainedTime: remainedTime,
-                                  memo: self.timeSet.info.memo)
+                                  memo: timeSet.info.memo,
+                                  isBookmark: info.isBookmark)
     }
     
     // MARK: - mutation
@@ -65,6 +77,9 @@ class TimeSetMemoViewReactor: Reactor {
         switch action {
         case let .updateMemo(memo):
             return actionUpdateMemo(memo)
+            
+        case .toggleBookmark:
+            return actionToggleBookmark()
         }
     }
     
@@ -99,6 +114,10 @@ class TimeSetMemoViewReactor: Reactor {
         case let .setRemainedTime(remainedTime):
             state.remainedTime = remainedTime
             return state
+            
+        case let .setBookmark(isBookmark):
+            state.isBookmark = isBookmark
+            return state
         }
     }
     
@@ -114,6 +133,13 @@ class TimeSetMemoViewReactor: Reactor {
         timeSet.info.memo = memo
         
         return .just(.setMemo(memo))
+    }
+    
+    private func actionToggleBookmark() -> Observable<Mutation> {
+        guard let timeSetInfo = timeSetInfo else { return .empty() }
+        // Toggle original time set bookmark
+        timeSetInfo.isBookmark.toggle()
+        return .just(.setBookmark(timeSetInfo.isBookmark))
     }
     
     private func actionTimeSetTimerChanged(_ timer: TimerInfo, at index: Int) -> Observable<Mutation> {
