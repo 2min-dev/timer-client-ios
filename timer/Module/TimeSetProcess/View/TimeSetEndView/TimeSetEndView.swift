@@ -71,6 +71,7 @@ class TimeSetEndView: UIView, View {
     
     let endInfoLabel: UILabel = {
         let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(10.adjust())
         view.textColor = Constants.Color.doveGray
         return view
@@ -139,6 +140,7 @@ class TimeSetEndView: UIView, View {
     
     private let memoLengthLabel: UILabel = {
         let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -235,7 +237,7 @@ class TimeSetEndView: UIView, View {
             make.top.equalTo(timeSetInfoView.snp.bottom)
             make.leading.equalTo(timeSetInfoView)
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(footerView.snp.top).inset(-57.adjust())
+            make.bottom.equalTo(footerView.snp.top).inset(-56.adjust())
         }
         
         footerView.snp.makeConstraints { make in
@@ -279,6 +281,7 @@ class TimeSetEndView: UIView, View {
         // MARK: action
         memoTextView.rx.text
             .orEmpty
+            .filter { !$0.isEmpty }
             .map { Reactor.Action.updateMemo($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -354,6 +357,7 @@ class TimeSetEndView: UIView, View {
             
             animator.startAnimation()
         } else {
+            dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8)
             self.frame = frame
         }
     }
@@ -377,11 +381,13 @@ class TimeSetEndView: UIView, View {
                 if $0 == .end {
                     // Remove dim when animation ended
                     self.dim?.removeFromSuperview()
+                    self.removeFromSuperview()
                 }
             }
             
             animator.startAnimation()
         } else {
+            dim?.removeFromSuperview()
             self.frame = frame
         }
     }
@@ -389,11 +395,8 @@ class TimeSetEndView: UIView, View {
     // MARK: - selector
     @objc func keyboardWillShow(sender: Notification) {
         UIView.animate(withDuration: 0.3) {
-            self.memoInputView.snp.remakeConstraints { make in
-                make.top.equalTo(self.timeSetInfoView.snp.bottom)
-                make.leading.equalTo(self.timeSetInfoView)
-                make.trailing.equalToSuperview()
-                make.height.equalTo(190.adjust())
+            self.memoInputView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.footerView.snp.top).inset(-194.adjust())
             }
             
             self.layoutIfNeeded()
@@ -402,11 +405,8 @@ class TimeSetEndView: UIView, View {
     
     @objc func keyboardWillHide(sender: Notification) {
         UIView.animate(withDuration: 0.3) {
-            self.memoInputView.snp.remakeConstraints { make in
-                make.top.equalTo(self.timeSetInfoView.snp.bottom)
-                make.leading.equalTo(self.timeSetInfoView)
-                make.trailing.equalToSuperview()
-                make.bottom.equalTo(self.footerView.snp.top).inset(-57.adjust())
+            self.memoInputView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.footerView.snp.top).inset(-56.adjust())
             }
             
             self.layoutIfNeeded()

@@ -39,8 +39,7 @@ class TimeSetProcessViewController: BaseViewController, View {
     private var restartButton: FooterButton { return timeSetProcessView.restartButton }
     private var footerView: Footer { return timeSetProcessView.footerView }
     
-    private var timeSetEndView: TimeSetEndView { return timeSetProcessView.timeSetEndView }
-    private var dimView: UIView?
+    private var timeSetEndView: TimeSetEndView?
     
     // MARK: - properties
     var coordinator: TimeSetProcessViewCoordinator
@@ -65,26 +64,11 @@ class TimeSetProcessViewController: BaseViewController, View {
         view.setNeedsLayout()
     }
     
-    override func bind() {
-        timeSetEndView.closeButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
-            .disposed(by: disposeBag)
-        
-        timeSetEndView.excessButton.rx.tap
-            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
-            .subscribe(onNext: {
-                Logger.debug("Excess record")
-                // TODO: Excess record time set
-            })
-            .disposed(by: disposeBag)
-        
-        timeSetEndView.restartButton.rx.tap
-            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
-            .subscribe(onNext: { [weak self] in
-                guard let reactor = self?.reactor else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0))
-            })
-            .disposed(by: disposeBag)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Redraw layout when time set process view will appear.
+        // because autolayout calucation was ignored by pop'in from memo view in this casse
+        timeSetEndView?.layoutIfNeeded()
     }
     
     // MARK: - bine
@@ -285,6 +269,28 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: disposeBag)
     }
     
+    func bind(timeSetEndView: TimeSetEndView) {
+        timeSetEndView.closeButton.rx.tap
+            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
+            .disposed(by: timeSetEndView.disposeBag)
+        
+        timeSetEndView.excessButton.rx.tap
+            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
+            .subscribe(onNext: {
+                Logger.debug("Excess record")
+                // TODO: Excess record time set
+            })
+            .disposed(by: disposeBag)
+        
+        timeSetEndView.restartButton.rx.tap
+            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
+            .subscribe(onNext: { [weak self] in
+                guard let reactor = self?.reactor else { return }
+                _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0))
+            })
+            .disposed(by: disposeBag)
+    }
+    
     // MARK: - action method
     /// Handle header button tap action according to button type
     private func headerActionHandler(type: CommonHeader.ButtonType) {
@@ -370,17 +376,27 @@ class TimeSetProcessViewController: BaseViewController, View {
     private func showTimeSetEndView() {
         guard let reactor = reactor else { return }
         
+        // Create time set end view
+        let timeSetEndView = TimeSetEndView(isShow: false)
+        
         // Inject reactor
         timeSetEndView.reactor = TimeSetEndViewReactor(timeSet: reactor.timeSet)
         
+        // Add sub view and bind events
+        view.addSubview(timeSetEndView)
+        bind(timeSetEndView: timeSetEndView)
+        
         // Show view with animation
         timeSetEndView.show(animated: true)
+        
+        self.timeSetEndView = timeSetEndView
     }
     
     /// Dismiss time set end view
     private func dissmissTimeSetEndView() {
         // Dismiss view with animation
-        timeSetEndView.dismiss(animated: true)
+        timeSetEndView?.dismiss(animated: true)
+        timeSetEndView = nil
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
