@@ -69,6 +69,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             viewController.reactor = reactor
             
             return viewController
+            
         case let .timeSetProcess(timeSetInfo, start: index):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
             let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo, start: index)

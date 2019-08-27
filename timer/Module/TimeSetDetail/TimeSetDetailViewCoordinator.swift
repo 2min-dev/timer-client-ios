@@ -37,7 +37,11 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
             
         case .timeSetProcess(_, start: _):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
+                return nil
+            }
+            let viewControllers = [rootViewController, viewController]
+            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
         }
         
         return viewController
