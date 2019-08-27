@@ -207,7 +207,9 @@ class ProductivityViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         startButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0)) })
+            .do(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0)) })
+            .map { Reactor.Action.clearTimeSet }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -466,7 +468,7 @@ class ProductivityViewController: BaseViewController, View {
                                  message: "alert_warning_time_set_init_description".localized)
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
-                reactor.action.onNext(.clearTimeSet)
+                reactor.action.onNext(.clearTimers)
             })
             .build()
         // Present warning alert view controller

@@ -435,7 +435,7 @@ class TimeSetEditViewController: BaseViewController, View {
                                  message: "alert_warning_time_set_init_description".localized)
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
-                reactor.action.onNext(.clearTimeSet)
+                reactor.action.onNext(.clearTimers)
             })
             .build()
         // Present warning alert view controller
