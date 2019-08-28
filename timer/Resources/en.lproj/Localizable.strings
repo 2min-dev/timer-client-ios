@@ -73,6 +73,12 @@
 "time_set_badge_type_cancel_title" = "Canceled";
 "time_set_badge_type_excess_title" = "Excessed";
 
+// MARK: - Time set popup
+"time_set_popup_timer_end_title_format" = "Timer %d End";
+"time_set_popup_timer_end_info_format" = "%d/%d";
+"time_set_popup_time_set_repeat_title" = "Repeat Time Set End";
+"time_set_popup_time_set_repeat_info_format" = "%d repetations";
+
 // MARK: - Time set
 "time_set_default_title" = "Time Set %d";
 "time_set_time_format" = "%02d:%02d:%02d";

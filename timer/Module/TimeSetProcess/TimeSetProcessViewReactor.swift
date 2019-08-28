@@ -419,7 +419,7 @@ class TimeSetProcessViewReactor: Reactor {
     private func actionTimeSetStateChanged(_ state: TimeSet.State) -> Observable<Mutation> {
         var setExtraTime: Observable<Mutation> = .empty()
         switch state {
-        case .stop:
+        case .stop(repeat: _):
             setExtraTime = .just(.setExtraTime(0))
             
         case .end(detail: _):

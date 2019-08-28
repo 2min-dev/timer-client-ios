@@ -19,8 +19,8 @@ class TimeSet: EventStreamProtocol {
     /// The state of timer
     enum State: Equatable {
         case initialize
-        case stop
-        case run(repeat: Int)
+        case stop(repeat: Int)
+        case run
         case pause
         case end(detail: TimeSetInfo.EndState)
     }
@@ -60,16 +60,15 @@ class TimeSet: EventStreamProtocol {
             info.runningTime += timer?.info.currentTime ?? 0
             
             // Process time set if it is running
-            guard case .run(repeat: _) = self.state else { return }
+            guard self.state == .run else { return }
             if currentIndex + 1 < info.timers.count {
                 // Start next timer
                 start(at: currentIndex + 1)
             } else {
                 if info.isRepeat {
                     // Repeat time set
-                    reset(withState: false)
-                    
                     info.repeatCount += 1
+                    reset(withState: false)
                     start(at: 0)
                 } else {
                     // End of time set
@@ -118,7 +117,7 @@ class TimeSet: EventStreamProtocol {
             timer = currentTimer
         }
         
-        self.state = .run(repeat: self.info.repeatCount)
+        self.state = .run
         timer.start()
         
         self.timer = timer
@@ -146,7 +145,7 @@ class TimeSet: EventStreamProtocol {
         guard state != .initialize else { return }
         
         // Reset all timer status
-        state = withState ? .initialize : .stop
+        state = withState ? .initialize : .stop(repeat: self.info.repeatCount)
         timer?.reset()
         timer = nil
         

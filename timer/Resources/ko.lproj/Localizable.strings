@@ -72,6 +72,12 @@
 "time_set_badge_type_cancel_title" = "취소 타임셋";
 "time_set_badge_type_excess_title" = "초과 타임셋";
 
+// MARK: - Time set popup
+"time_set_popup_timer_end_title_format" = "%d번째 타이머 종료";
+"time_set_popup_timer_end_info_format" = "%d/%d";
+"time_set_popup_time_set_repeat_title" = "반복 타임셋 종료";
+"time_set_popup_time_set_repeat_info_format" = "%d회 반복";
+
 // MARK: - Time set
 "time_set_default_title" = "%d번째 생산성";
 "time_set_time_format" = "%02d:%02d:%02d";

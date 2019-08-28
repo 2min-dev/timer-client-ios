@@ -39,10 +39,13 @@ class TimeSetProcessViewController: BaseViewController, View {
     private var restartButton: FooterButton { return timeSetProcessView.restartButton }
     private var footerView: Footer { return timeSetProcessView.footerView }
     
+    private var timeSetPopup: TimeSetPopup?
     private var timeSetEndView: TimeSetEndView?
     
     // MARK: - properties
     var coordinator: TimeSetProcessViewCoordinator
+    
+    private var popupDisposeBag = DisposeBag()
     
     // MARK: - constructor
     init(coordinator: TimeSetProcessViewCoordinator) {
@@ -82,9 +85,7 @@ class TimeSetProcessViewController: BaseViewController, View {
         // Init badge
         rx.viewDidLayoutSubviews
             .takeUntil(rx.viewDidAppear)
-            .subscribe(onNext: { [weak self] in
-                self?.timerBadgeCollectionView.scrollToBadge(at: reactor.currentState.selectedIndexPath, animated: false)
-            })
+            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: reactor.currentState.selectedIndexPath, animated: false) })
             .disposed(by: disposeBag)
         
         headerView.rx.tap
@@ -249,6 +250,16 @@ class TimeSetProcessViewController: BaseViewController, View {
             .map { $0.comment }
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
+
+        reactor.state
+            .map { $0.selectedIndexPath }
+            .distinctUntilChanged()
+            .withLatestFrom(reactor.state.map { ($0.timers.count, $0.timeSetState) }, resultSelector: { ($0.row, $1.0, $1.1) })
+            .filter { $2 == .run }
+            .subscribe(onNext: { [weak self] in
+                self?.showTimeSetPopup(title: String(format: "time_set_popup_timer_end_title_format".localized, $0.0),
+                                       subtitle: String(format: "time_set_popup_timer_end_info_format".localized, $0.0, $0.1)) })
+            .disposed(by: disposeBag)
         
         reactor.state
             .map { $0.timeSetState }
@@ -272,33 +283,44 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: disposeBag)
     }
     
-    func bind(view: TimeSetEndView, reactor: TimeSetEndViewReactor) {
+    func bind(popup: TimeSetPopup) {
+        Observable<Int>.interval(.seconds(10), scheduler: MainScheduler.instance)
+            .take(1)
+            .subscribe(onNext: { [weak self] _ in self?.dismissTimeSetPopup() })
+            .disposed(by: popupDisposeBag)
+        
+        popup.confirmButton.rx.tap
+            .subscribe(onNext: { [weak self] in self?.dismissTimeSetPopup() })
+            .disposed(by: popupDisposeBag)
+    }
+    
+    func bind(endView: TimeSetEndView, reactor: TimeSetEndViewReactor) {
         guard let timeSet = self.reactor?.timeSet else { return }
 
         rx.viewWillAppear
             .map { TimeSetEndViewReactor.Action.updateMemo(timeSet.info.memo) }
             .bind(to: reactor.action)
-            .disposed(by: view.disposeBag)
+            .disposed(by: endView.disposeBag)
         
-        view.closeButton.rx.tap
+        endView.closeButton.rx.tap
             .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
-            .disposed(by: view.disposeBag)
+            .disposed(by: endView.disposeBag)
         
-        view.excessButton.rx.tap
+        endView.excessButton.rx.tap
             .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
             .subscribe(onNext: {
                 Logger.debug("Excess record")
                 // TODO: Excess record time set
             })
-            .disposed(by: view.disposeBag)
+            .disposed(by: endView.disposeBag)
         
-        view.restartButton.rx.tap
+        endView.restartButton.rx.tap
             .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
             .subscribe(onNext: { [weak self] in
                 guard let reactor = self?.reactor else { return }
                 _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0))
             })
-            .disposed(by: view.disposeBag)
+            .disposed(by: endView.disposeBag)
     }
     
     // MARK: - action method
@@ -351,11 +373,17 @@ class TimeSetProcessViewController: BaseViewController, View {
         case .initialize:
             footerView.buttons = [stopButton, pauseButton]
             
-        case let .run(repeat: count):
-            footerView.buttons = [stopButton, pauseButton]
-            
+        case let .stop(repeat: count):
             timeSetBadge.isHidden = count == 0 ? true : false
             timeSetBadge.setBadgeType(.repeat(count: count))
+            
+            if count > 0 {
+                showTimeSetPopup(title: "time_set_popup_time_set_repeat_title".localized,
+                                 subtitle: String(format: "time_set_popup_time_set_repeat_info_format".localized, count))
+            }
+            
+        case .run:
+            footerView.buttons = [stopButton, pauseButton]
             
         case .pause:
             footerView.buttons = [stopButton, restartButton]
@@ -382,6 +410,38 @@ class TimeSetProcessViewController: BaseViewController, View {
     }
     
     // MARK: - private method
+    /// Show timer & time set info popup
+    private func showTimeSetPopup(title: String, subtitle: String) {
+        // Dispose previous event stream
+        popupDisposeBag = DisposeBag()
+        
+        // Create popup view
+        let timeSetPopup = TimeSetPopup(origin: CGPoint(x: 0, y: UIScreen.main.bounds.height))
+        timeSetPopup.frame.origin.x = (view.bounds.width - timeSetPopup.frame.width) / 2
+        
+        // Set properties
+        timeSetPopup.title = title
+        timeSetPopup.subtitle = subtitle
+        
+        // Add subview & binding
+        view.addSubview(timeSetPopup)
+        bind(popup: timeSetPopup)
+
+        // Start show animation
+        timeSetPopup.show {
+            // Remove previous popup if it exist still
+            self.timeSetPopup?.removeFromSuperview()
+            self.timeSetPopup = timeSetPopup
+        }
+    }
+    
+    /// Dismiss timer & time set info popup
+    private func dismissTimeSetPopup() {
+        // Dismiss view with animation
+        self.timeSetPopup?.dismiss()
+        self.timeSetPopup = nil
+    }
+    
     /// Show time set end view
     private func showTimeSetEndView() {
         guard let reactor = reactor else { return }
@@ -394,7 +454,7 @@ class TimeSetProcessViewController: BaseViewController, View {
         
         // Add sub view and bind events
         view.addSubview(timeSetEndView)
-        bind(view: timeSetEndView, reactor: timeSetEndView.reactor!)
+        bind(endView: timeSetEndView, reactor: timeSetEndView.reactor!)
         
         // Show view with animation
         timeSetEndView.show(animated: true)
