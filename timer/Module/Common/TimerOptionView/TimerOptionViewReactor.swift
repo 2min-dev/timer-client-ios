@@ -11,7 +11,7 @@ import ReactorKit
 
 class TimerOptionViewReactor: Reactor {
     // MARK: - constants
-    static let MAX_COMMENT_LENGTH: Int = 50
+    static let MAX_COMMENT_LENGTH: Int = 200
     
     enum Action {
         /// Update timer info when view will appear
