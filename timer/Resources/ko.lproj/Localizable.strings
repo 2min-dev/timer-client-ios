@@ -72,6 +72,11 @@
 "time_set_badge_type_cancel_title" = "취소 타임셋";
 "time_set_badge_type_excess_title" = "초과 타임셋";
 
+// MARK: - Time set alert
+"time_set_alert_timer_start_title_format" = "%d번째 타이머부터 시작하시겠어요?";
+"time_set_alert_cancel_title" = "타임셋을 취소한 이유를\n기록해보세요! :)";
+"time_set_alert_excess_title" = "시간이 더 필요했던 이유를\n기록해보세요! :)";
+
 // MARK: - Time set popup
 "time_set_popup_timer_end_title_format" = "%d번째 타이머 종료";
 "time_set_popup_timer_end_info_format" = "%d/%d";

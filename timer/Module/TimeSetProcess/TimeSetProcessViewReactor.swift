@@ -31,6 +31,9 @@ class TimeSetProcessViewReactor: Reactor {
         /// Toggle the time set repeat option
         case toggleRepeat
         
+        /// Select timer at index
+        case selectTimer(at: Int)
+        
         /// Start the time set
         case startTimeSet(at: Int?)
         
@@ -208,6 +211,9 @@ class TimeSetProcessViewReactor: Reactor {
         case .toggleRepeat:
             return actionToggleRepeat()
             
+        case let .selectTimer(at: index):
+            return actionSelectTimer(at: index)
+            
         case let .startTimeSet(at: index):
             return actionStartTimeSet(at: index)
             
@@ -330,6 +336,15 @@ class TimeSetProcessViewReactor: Reactor {
         return .just(.setRepeat(timeSet.info.isRepeat))
     }
     
+    private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
+        guard index < timeSet.info.timers.count else { return .empty() }
+        
+        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(at: IndexPath(row: index, section: 0)))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.info.timers[index]))
+        
+        return .concat(setSelectedIndexPath, setTimer)
+    }
+    
     private func actionStartTimeSet(at index: Int?) -> Observable<Mutation> {
         let state = currentState
         
@@ -344,8 +359,7 @@ class TimeSetProcessViewReactor: Reactor {
             // Restart at index after reset
             timeSet.reset()
             
-            let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(at: IndexPath(row: index, section: 0)))
-            let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.info.timers[index]))
+            let selectTimer: Observable<Mutation> = actionSelectTimer(at: index)
             let setTime: Observable<Mutation> = .just(.setTime(timeSet.info.timers[index].endTime))
             let setExtraTime: Observable<Mutation> = .just(.setExtraTime(0))
             let startedCountdown: Observable<Mutation> = startCountdown(reset: countdown > 0)
@@ -355,7 +369,7 @@ class TimeSetProcessViewReactor: Reactor {
                     }
                 })
             
-            return .concat(setSelectedIndexPath, setTimer, setTime, setExtraTime, startedCountdown)
+            return .concat(selectTimer, setTime, setExtraTime, startedCountdown)
         } else {
             // Resume had been running time set or countdown
             if timeSet.state == .initialize {
@@ -438,8 +452,7 @@ class TimeSetProcessViewReactor: Reactor {
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.endTime }
         
-        return .concat(.just(.setSelectedIndexPath(at: IndexPath(row: index, section: 0))),
-                       .just(.setTimer(timer)),
+        return .concat(actionSelectTimer(at: index),
                        .just(.setRemainedTime(remainedTime + timer.endTime)))
     }
     

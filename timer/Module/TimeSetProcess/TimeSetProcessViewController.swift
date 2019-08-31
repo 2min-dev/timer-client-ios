@@ -40,12 +40,17 @@ class TimeSetProcessViewController: BaseViewController, View {
     private var footerView: Footer { return timeSetProcessView.footerView }
     
     private var timeSetPopup: TimeSetPopup?
+    private var timeSetAlert: TimeSetAlert? {
+        didSet { timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil }
+    }
     private var timeSetEndView: TimeSetEndView?
     
     // MARK: - properties
     var coordinator: TimeSetProcessViewCoordinator
     
+    // Dispose bags
     private var popupDisposeBag = DisposeBag()
+    private var alertDisposeBag = DisposeBag()
     
     // MARK: - constructor
     init(coordinator: TimeSetProcessViewCoordinator) {
@@ -103,8 +108,11 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.badgeSelected
-            .map { Reactor.Action.startTimeSet(at: $0.0.row) }
-            .bind(to: reactor.action)
+            .withLatestFrom(reactor.state.map { $0.timeSetState }, resultSelector: { ($0, $1) })
+            .subscribe(onNext: { [weak self]  in
+                let ((indexPath, _), state) = $0
+                self?.badgeSelect(at: indexPath, withTimeSetState: state)
+            })
             .disposed(by: disposeBag)
         
         memoButton.rx.tap
@@ -231,7 +239,7 @@ class TimeSetProcessViewController: BaseViewController, View {
         reactor.state
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0) })
             .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
@@ -284,6 +292,9 @@ class TimeSetProcessViewController: BaseViewController, View {
     }
     
     func bind(popup: TimeSetPopup) {
+        // Dispose previous event stream
+        popupDisposeBag = DisposeBag()
+        
         Observable<Int>.interval(.seconds(10), scheduler: MainScheduler.instance)
             .take(1)
             .subscribe(onNext: { [weak self] _ in self?.dismissTimeSetPopup() })
@@ -292,6 +303,25 @@ class TimeSetProcessViewController: BaseViewController, View {
         popup.confirmButton.rx.tap
             .subscribe(onNext: { [weak self] in self?.dismissTimeSetPopup() })
             .disposed(by: popupDisposeBag)
+    }
+    
+    func bind(alert: TimeSetAlert, confirmHandler: @escaping () -> Void) {
+        alertDisposeBag = DisposeBag()
+
+        alert.cancelButton.rx.tap
+            .subscribe(onNext: { [weak self, weak alert] in
+                alert?.removeFromSuperview()
+                self?.timeSetAlert = nil
+            })
+            .disposed(by: alertDisposeBag)
+        
+        alert.confirmButton.rx.tap
+            .subscribe(onNext: { [weak self, weak alert] in
+                alert?.removeFromSuperview()
+                self?.timeSetAlert = nil
+                confirmHandler()
+            })
+            .disposed(by: alertDisposeBag)
     }
     
     func bind(endView: TimeSetEndView, reactor: TimeSetEndViewReactor) {
@@ -303,6 +333,7 @@ class TimeSetProcessViewController: BaseViewController, View {
             .disposed(by: endView.disposeBag)
         
         endView.closeButton.rx.tap
+            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
             .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
             .disposed(by: endView.disposeBag)
         
@@ -324,6 +355,23 @@ class TimeSetProcessViewController: BaseViewController, View {
     }
     
     // MARK: - action method
+    /// Handle badge select action with time set state
+    private func badgeSelect(at indexPath: IndexPath, withTimeSetState state: TimeSet.State) {
+        switch state {
+        case .initialize: fallthrough
+        case .run:
+            timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+            showTimerStartAlert(at: indexPath)
+            
+        case .end(detail: _):
+            guard let reactor = reactor else { return }
+            reactor.action.onNext(.selectTimer(at: indexPath.row))
+            
+        default:
+            return
+        }
+    }
+    
     /// Handle header button tap action according to button type
     private func headerActionHandler(type: CommonHeader.ButtonType) {
         switch type {
@@ -341,7 +389,43 @@ class TimeSetProcessViewController: BaseViewController, View {
         }
     }
     
+    /// Timer bage view scroll to selected badge if can
+    private func scrollToBadgeIfCan(at indexPath: IndexPath) {
+        guard timeSetAlert == nil else { return }
+        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+    }
+    
+    /// Show start timer with selected index alert
+    private func showTimerStartAlert(at indexPath: IndexPath) {
+        guard let layout = timerBadgeCollectionView.layout else { return }
+        
+        // Create alert & binding
+        let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))
+        bind(alert: timeSetAlert) { [weak self] in
+            guard let reactor = self?.reactor else { return }
+            reactor.action.onNext(.startTimeSet(at: indexPath.row))
+        }
+        
+        // Get selected cell size
+        let cellSize = timerBadgeCollectionView.collectionView(timerBadgeCollectionView,
+                                                               layout: layout,
+                                                               sizeForItemAt: indexPath)
+        let revisedXPos = layout.axisPoint.x + cellSize.width / 2 - timeSetAlert.tailPosition.x
+        let revisedYPos = 15.adjust() + timeSetAlert.tailSize.height // Half of badge height (30 / 2)
+        
+        // Set constraint of alert
+        view.addAutolayoutSubview(timeSetAlert)
+        timeSetAlert.snp.makeConstraints { make in
+            make.leading.equalTo(timerBadgeCollectionView).offset(revisedXPos)
+            make.bottom.equalTo(timerBadgeCollectionView.snp.centerY).inset(-revisedYPos)
+        }
+        
+        self.timeSetAlert?.removeFromSuperview()
+        self.timeSetAlert = timeSetAlert
+    }
+    
     // MARK: - state method
+    /// Get is time set ended
     private func isTimeSetEnd(state: TimeSet.State) -> Bool {
         if case .end(detail: _) = state {
             return true
@@ -350,11 +434,13 @@ class TimeSetProcessViewController: BaseViewController, View {
         }
     }
     
+    /// Update layout by countdown state
     private func updateLayoutByCountdownState(_ state: TimeSetProcessViewReactor.CountdownState) {
         switch state {
         case .run:
             footerView.buttons = [stopButton, pauseButton]
             plus1MinButton.isEnabled = false
+            timeSetBadge.isHidden = false
             
         case .pause:
             footerView.buttons = [stopButton, restartButton]
@@ -369,9 +455,12 @@ class TimeSetProcessViewController: BaseViewController, View {
     
     /// Update layout by current state of time set
     private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
+        UIApplication.shared.isIdleTimerDisabled = false
+        
         switch state {
         case .initialize:
             footerView.buttons = [stopButton, pauseButton]
+            timeSetBadge.isHidden = true
             
         case let .stop(repeat: count):
             timeSetBadge.isHidden = count == 0 ? true : false
@@ -384,6 +473,8 @@ class TimeSetProcessViewController: BaseViewController, View {
             
         case .run:
             footerView.buttons = [stopButton, pauseButton]
+            // Prevent screen off when timer running
+            UIApplication.shared.isIdleTimerDisabled = true
             
         case .pause:
             footerView.buttons = [stopButton, restartButton]
@@ -396,25 +487,48 @@ class TimeSetProcessViewController: BaseViewController, View {
                 timeSetBadge.isHidden = false
                 timeSetBadge.setBadgeType(.cancel)
                 
+                showTimeSetCancelAlert()
+                
             case .excess:
                 timeSetBadge.isHidden = false
                 timeSetBadge.setBadgeType(.excess)
                 
             case .normal:
+                timeSetAlert?.removeFromSuperview()
+                timeSetAlert = nil
+                
                 showTimeSetEndView()
             }
-            
-        default:
-            break
         }
     }
     
     // MARK: - private method
+    /// Show time set canceled alert
+    private func showTimeSetCancelAlert() {
+        // Create alert & binding
+        let timeSetAlert = TimeSetAlert(text: "time_set_alert_cancel_title".localized)
+        bind(alert: timeSetAlert) { [weak self] in
+            guard let timeSet = self?.reactor?.timeSet,
+                let timeSetInfo = self?.reactor?.timeSetInfo else { return }
+            _ = self?.coordinator.present(for: .timeSetMemo(timeSet, origin: timeSetInfo))
+        }
+        
+        let revisedXPos = timeSetAlert.tailPosition.x - 8.adjust()
+        let revisedYPos = timeSetAlert.tailSize.height
+        
+        // Set constraint of alert
+        view.addAutolayoutSubview(timeSetAlert)
+        timeSetAlert.snp.makeConstraints { make in
+            make.leading.equalTo(memoButton.snp.centerX).inset(-revisedXPos)
+            make.bottom.equalTo(memoButton.snp.top).inset(-revisedYPos)
+        }
+        
+        self.timeSetAlert?.removeFromSuperview()
+        self.timeSetAlert = timeSetAlert
+    }
+    
     /// Show timer & time set info popup
     private func showTimeSetPopup(title: String, subtitle: String) {
-        // Dispose previous event stream
-        popupDisposeBag = DisposeBag()
-        
         // Create popup view
         let timeSetPopup = TimeSetPopup(origin: CGPoint(x: 0, y: UIScreen.main.bounds.height))
         timeSetPopup.frame.origin.x = (view.bounds.width - timeSetPopup.frame.width) / 2

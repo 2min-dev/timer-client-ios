@@ -73,6 +73,11 @@
 "time_set_badge_type_cancel_title" = "Canceled";
 "time_set_badge_type_excess_title" = "Excessed";
 
+// MARK: - Time set alert
+"time_set_alert_timer_start_title_format" = "Do you want to start\nwith %d timer?";
+"time_set_alert_cancel_title" = "Note why you canceled\nthe time set! :)";
+"time_set_alert_excess_title" = "Note why you needed\nmore time! :)";
+
 // MARK: - Time set popup
 "time_set_popup_timer_end_title_format" = "Timer %d End";
 "time_set_popup_timer_end_info_format" = "%d/%d";

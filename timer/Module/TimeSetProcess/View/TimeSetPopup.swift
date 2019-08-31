@@ -15,8 +15,6 @@ class TimeSetPopup: UIView {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
-        view.text = "1번째 타이머 종료"
         return view
     }()
     
@@ -32,8 +30,6 @@ class TimeSetPopup: UIView {
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(10.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: sample text. remove it
-        view.text = "1/3"
         return view
     }()
     
@@ -115,7 +111,7 @@ class TimeSetPopup: UIView {
         super.init(frame: frame)
         
         // Set constraint of subviews
-        addSubview(containerView)
+        addAutolayoutSubview(containerView)
         containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
