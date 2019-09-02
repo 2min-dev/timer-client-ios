@@ -306,9 +306,9 @@ class TimeSetEndView: UIView, View {
         
         // End info
         reactor.state
-            .map { ($0.endIndex + 1, $0.timerCount, $0.repeatCount) }
+            .map { ($0.endIndex, $0.timerCount, $0.repeatCount) }
             .distinctUntilChanged { $0 == $1 }
-            .map { String(format: "time_set_end_info_format".localized, $0.0, $0.1, $0.2) }
+            .map { [weak self] in self?.getTimeSetInfoString(index: $0.0, count: $0.1, repeatCount: $0.2) }
             .bind(to: endInfoLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -328,6 +328,16 @@ class TimeSetEndView: UIView, View {
             .map { String(format: "time_set_memo_bytes_format".localized, $0, TimeSetEndViewReactor.MAX_MEMO_LENGTH) }
             .bind(to: memoLengthLabel.rx.text)
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - state method
+    private func getTimeSetInfoString(index: Int, count: Int, repeatCount: Int) -> String {
+        var string = String(format: "time_set_floating_timer_end_info_format".localized, index + 1, count)
+        if repeatCount > 0 {
+            string += String(format: " " + "time_set_floating_time_set_repeat_info_format".localized, repeatCount)
+        }
+        
+        return string
     }
     
     // MARK: - public method

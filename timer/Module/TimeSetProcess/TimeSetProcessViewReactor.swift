@@ -110,7 +110,7 @@ class TimeSetProcessViewReactor: Reactor {
         /// Current countdown state
         var countdownState: CountdownState
         
-        /// Current state of time st
+        /// Current state of time set
         var timeSetState: TimeSet.State
         
         /// All timers info of time set

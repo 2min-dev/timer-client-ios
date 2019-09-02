@@ -85,11 +85,14 @@
 "time_set_popup_time_set_repeat_title" = "Repeat Time Set End";
 "time_set_popup_time_set_repeat_info_format" = "%d repetations";
 
+// MARK: - Time set floating view
+"time_set_floating_timer_end_info_format" = "%d/%d";
+"time_set_floating_time_set_repeat_info_format" = "(%d repetations)";
+
 // MARK: - Time set
 "time_set_default_title" = "Time Set %d";
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ Ended";
-"time_set_end_info_format" = "%d/%d (%d repetations)";
 "time_set_all_time_full_title" = "All Time";
 "time_set_all_time_title" = "All ";
 "time_set_all_time_format" = "%02d:%02d:%02d";

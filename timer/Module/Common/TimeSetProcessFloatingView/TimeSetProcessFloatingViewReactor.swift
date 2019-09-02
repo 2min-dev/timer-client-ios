@@ -24,6 +24,12 @@ class TimeSetProcessFloatingViewReactor: Reactor {
     enum Mutation {
         /// Set remainted time of time set
         case setRemainedTime(TimeInterval)
+        
+        /// Set current timer index of time set
+        case setCurrentIndex(Int)
+        
+        /// Set current state of time set
+        case setTimeSetState(TimeSet.State)
     }
     
     struct State {
@@ -32,6 +38,12 @@ class TimeSetProcessFloatingViewReactor: Reactor {
         
         /// Remained time of time set
         var remainedTime: TimeInterval
+        
+        /// Current timer index of time set
+        var currentIndex: Int
+        
+        /// Count of timers
+        let count: Int
         
         /// Current state of time set
         var timeSetState: TimeSet.State
@@ -57,7 +69,11 @@ class TimeSetProcessFloatingViewReactor: Reactor {
         let timer = timeSet.info.timers[index]
         let remainedTime = self.remainedTime + (timer.endTime + timer.extraTime - timer.currentTime)
         
-        self.initialState = State(title: timeSet.info.title, remainedTime: remainedTime, timeSetState: timeSet.state)
+        self.initialState = State(title: self.timeSet.info.title,
+                                  remainedTime: remainedTime,
+                                  currentIndex: self.timeSet.currentIndex,
+                                  count: self.timeSet.info.timers.count,
+                                  timeSetState: self.timeSet.state)
     }
     
     // MARK: - mutation
@@ -76,14 +92,14 @@ class TimeSetProcessFloatingViewReactor: Reactor {
     
     func mutate(timeSetEvent: TimeSet.Event) -> Observable<Mutation> {
         switch timeSetEvent {
+        case let .stateChanged(state):
+            return actionTimeSetStateChanged(state)
+            
         case let .timerChanged(timer, at: index):
             return actionTimeSetTimerChanged(timer, at: index)
             
         case let .timeChanged(current: currentTime, end: endTime):
             return actionTimeSetTimeChanged(current: currentTime, end: endTime)
-            
-        default:
-            return .empty()
         }
     }
     
@@ -114,13 +130,19 @@ class TimeSetProcessFloatingViewReactor: Reactor {
         return .empty()
     }
     
+    // MARK: - Time set action method
+    private func actionTimeSetStateChanged(_ state: TimeSet.State) -> Observable<Mutation> {
+        return .just(.setTimeSetState(state))
+    }
+    
     private func actionTimeSetTimerChanged(_ timer: TimerInfo, at index: Int) -> Observable<Mutation> {
         // Calculate remained time
         remainedTime = timeSet.info.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.endTime }
         
-        return .just(.setRemainedTime(remainedTime + timer.endTime))
+        return .concat(.just(.setCurrentIndex(index)),
+                       .just(.setRemainedTime(remainedTime + timer.endTime)))
     }
     
     private func actionTimeSetTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {

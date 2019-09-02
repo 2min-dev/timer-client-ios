@@ -96,7 +96,7 @@ class TimeSetMemoViewReactor: Reactor {
         }
     }
     
-    func transform(mutation: Observable<TimeSetMemoViewReactor.Mutation>) -> Observable<TimeSetMemoViewReactor.Mutation> {
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
         let timeSetEventMutation = timeSet.event
             .flatMap { [weak self] in self?.mutate(timeSetEvent: $0) ?? .empty() }
         

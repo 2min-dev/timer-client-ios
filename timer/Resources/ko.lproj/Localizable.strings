@@ -84,11 +84,14 @@
 "time_set_popup_time_set_repeat_title" = "반복 타임셋 종료";
 "time_set_popup_time_set_repeat_info_format" = "%d회 반복";
 
+// MARK: - Time set floating view
+"time_set_floating_timer_end_info_format" = "%d/%d";
+"time_set_floating_time_set_repeat_info_format" = "(%d회 반복)";
+
 // MARK: - Time set
 "time_set_default_title" = "%d번째 생산성";
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ 종료";
-"time_set_end_info_format" = "%d/%d (%d회 반복)";
 "time_set_all_time_full_title" = "전체 시간";
 "time_set_all_time_title" = "전체시간 ";
 "time_set_all_time_format" = "%02d:%02d:%02d";

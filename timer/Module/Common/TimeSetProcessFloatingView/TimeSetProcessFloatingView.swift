@@ -122,5 +122,65 @@ class TimeSetProcessFloatingView: UIView, View {
         // MARK: action
         
         // MARK: state
+        // Title
+        reactor.state
+            .map { $0.title }
+            .distinctUntilChanged()
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Remained time
+        reactor.state
+            .map { $0.remainedTime }
+            .distinctUntilChanged()
+            .map { getTime(interval: $0) }
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: timeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Subtitle
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.currentIndex }
+                .distinctUntilChanged(),
+            reactor.state
+                .map { $0.count }
+                .distinctUntilChanged(),
+            reactor.state
+                .map { $0.timeSetState }
+                .distinctUntilChanged())
+            .map { [weak self] in self?.getTimeSetInfoString(index: $0.0 + 1, count: $0.1, state: $0.2) }
+            .bind(to: subtitleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Play button
+        reactor.state
+            .map { $0.timeSetState }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in self?.updatePlayButtonByState($0) })
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - state method
+    private func getTimeSetInfoString(index: Int, count: Int, state: TimeSet.State) -> String {
+        var string = String(format: "time_set_floating_timer_end_info_format".localized, index + 1, count)
+        if case let .stop(repeat: count) = state {
+            string += String(format: " " + "time_set_floating_time_set_repeat_info_format", count)
+        }
+        
+        return string
+    }
+    
+    private func updatePlayButtonByState(_ state: TimeSet.State) {
+        switch state {
+        case .run(detail: _):
+            playButton.isSelected = true
+            
+        case .pause:
+            playButton.isSelected = false
+            
+        default:
+            break
+        }
     }
 }
