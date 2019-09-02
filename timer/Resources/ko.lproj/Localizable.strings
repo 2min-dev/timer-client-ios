@@ -25,13 +25,14 @@
 
 // MARK: - Footer
 "footer_button_cancel" = "취소";
+"footer_button_quit" = "종료";
 "footer_button_confirm" = "완료";
 "footer_button_next" = "다음";
 "footer_button_save" = "저장";
 "footer_button_start" = "시작";
 "footer_button_pause" = "일시정지";
 "footer_button_restart" = "재시작";
-"footer_button_excess" = "초과기록";
+"footer_button_overtime" = "초과기록";
 "footer_button_edit" = "편집";
 
 // MARK: - Screen title
@@ -70,12 +71,12 @@
 "time_set_badge_type_countdown_format" = "시작 %d초 전";
 "time_set_badge_type_repeat_format" = "%d회 반복";
 "time_set_badge_type_cancel_title" = "취소 타임셋";
-"time_set_badge_type_excess_title" = "초과 타임셋";
+"time_set_badge_type_overtime_title" = "초과 타임셋";
 
 // MARK: - Time set alert
 "time_set_alert_timer_start_title_format" = "%d번째 타이머부터 시작하시겠어요?";
 "time_set_alert_cancel_title" = "타임셋을 취소한 이유를\n기록해보세요! :)";
-"time_set_alert_excess_title" = "시간이 더 필요했던 이유를\n기록해보세요! :)";
+"time_set_alert_overtime_title" = "시간이 더 필요했던 이유를\n기록해보세요! :)";
 
 // MARK: - Time set popup
 "time_set_popup_timer_end_title_format" = "%d번째 타이머 종료";
@@ -94,6 +95,7 @@
 "time_set_end_time_full_title" = "종료 예정";
 "time_set_end_time_title" = "종료예정 ";
 "time_set_end_time_format" = "H:mm a";
+"time_set_add_time_title" = "+1분";
 "time_set_memo_hint" = "메모를 입력하세요.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "작성 가능한 글자 수 초과";

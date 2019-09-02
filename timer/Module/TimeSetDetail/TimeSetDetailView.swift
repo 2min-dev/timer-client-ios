@@ -60,9 +60,12 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let plus1MinButton: UIButton = {
+    private let addTimeButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_plus_1min_disable"), for: .disabled)
+        view.titleLabel?.font = Constants.Font.Bold.withSize(12.adjust())
+        view.setTitleColor(Constants.Color.codGray, for: .normal)
+        view.setTitleColor(Constants.Color.silver, for: .disabled)
+        view.setTitle("time_set_add_time_title".localized, for: .normal)
         view.isEnabled = false
         return view
     }()
@@ -74,7 +77,7 @@ class TimeSetDetailView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, repeatButton, divider])
+        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, addTimeButton, repeatButton, divider])
         allTimeTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
@@ -99,18 +102,18 @@ class TimeSetDetailView: UIView {
             make.bottom.equalTo(endOfTimeSetTitleLabel)
         }
         
-        plus1MinButton.snp.makeConstraints { make in
+        addTimeButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalToSuperview().inset(10.adjust())
             make.width.equalTo(36.adjust())
-            make.height.equalTo(plus1MinButton.snp.width)
+            make.height.equalTo(addTimeButton.snp.width)
         }
 
         repeatButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.trailing.equalTo(plus1MinButton.snp.leading).offset(-10.adjust())
+            make.trailing.equalTo(addTimeButton.snp.leading).offset(-10.adjust())
             make.width.equalTo(36.adjust())
-            make.height.equalTo(plus1MinButton.snp.width)
+            make.height.equalTo(addTimeButton.snp.width)
         }
 
         divider.snp.makeConstraints { make in

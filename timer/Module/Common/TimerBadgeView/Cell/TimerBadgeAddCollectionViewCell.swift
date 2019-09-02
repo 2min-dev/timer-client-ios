@@ -10,8 +10,6 @@ import UIKit
 import RxSwift
 
 class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
-    static let ReuseableIdentifier = "TimerBadgeAddCollectionViewCell"
-    
     // MARK: - view properties
     let addLabel: UILabel = {
         let view = UILabel()

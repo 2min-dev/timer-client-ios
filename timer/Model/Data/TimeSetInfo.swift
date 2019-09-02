@@ -14,8 +14,8 @@ class TimeSetInfo: Codable, NSCopying {
         case normal
         /// The time set canceled
         case cancel
-        /// The time set timed out
-        case excess
+        /// The time set oevrtime recorded
+        case overtime
     }
     
     // MARK: - properties
@@ -37,6 +37,7 @@ class TimeSetInfo: Codable, NSCopying {
     
     // Timers that makes up the time set
     var timers: [TimerInfo]       // Timer info list of the timer set
+    var overtimer: TimerInfo?      // Timer info about overtime record of time set
     
     // MARK: - constructor
     init(id: String? = nil,
@@ -62,6 +63,7 @@ class TimeSetInfo: Codable, NSCopying {
         self.runningTime = runningTime
         self.endState = endState
         self.timers = timers
+        self.overtimer = overtimer
         
         if self.timers.isEmpty {
             // Add a default timer if timers is empty
@@ -81,6 +83,7 @@ class TimeSetInfo: Codable, NSCopying {
                            repeatCount: repeatCount,
                            runningTime: runningTime,
                            endState: endState,
-                           timers: timers.compactMap { $0.copy() as? TimerInfo })
+                           timers: timers.compactMap { $0.copy() as? TimerInfo },
+                           overtimer: overtimer)
     }
 }

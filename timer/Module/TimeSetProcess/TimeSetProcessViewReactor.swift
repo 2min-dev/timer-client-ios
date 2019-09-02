@@ -14,9 +14,9 @@ class TimeSetProcessViewReactor: Reactor {
     static let MAX_EXTRA_TIME: TimeInterval = TimeInterval(99 * Constants.Time.minute)
     
     /// Countdown timer state
-    enum CountdownState {
+    enum CountdownState: Equatable {
         case stop
-        case run
+        case run(countdown: Int)
         case pause
         case done
     }
@@ -36,6 +36,9 @@ class TimeSetProcessViewReactor: Reactor {
         
         /// Start the time set
         case startTimeSet(at: Int?)
+        
+        /// Start overtime record of time set
+        case startOvertimeRecord
         
         /// Pause the time set
         case pauseTimeSet
@@ -62,9 +65,6 @@ class TimeSetProcessViewReactor: Reactor {
         
         /// Add extra time into current timer
         case setExtraTime(TimeInterval)
-        
-        /// Set countdown seconds
-        case setCountdown(Int)
         
         /// Set current countdown state
         case setCountdownState(CountdownState)
@@ -106,9 +106,6 @@ class TimeSetProcessViewReactor: Reactor {
         
         /// Sum of all added extra time
         var extraTime: TimeInterval
-        
-        /// Countdown before time set start
-        var countdown: Int
         
         /// Current countdown state
         var countdownState: CountdownState
@@ -170,17 +167,16 @@ class TimeSetProcessViewReactor: Reactor {
             self.timeSet = timeSet
         }
         
-        // Get initial state
-        let timer = self.timeSet.info.timers[index]
-        let allTime = self.timeSet.info.timers.reduce(0) { $0 + $1.endTime }
-        
+        self.countdown = self.timeSet.state == .initialize ? TimeInterval(self.appService.getCountdown()) : 0
         self.remainedTime = self.timeSet.info.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.endTime }
+        
+        // Get initial state
+        let timer = self.timeSet.info.timers[index]
+        let allTime = self.timeSet.info.timers.reduce(0) { $0 + $1.endTime }
         let remainedTime = self.remainedTime + (timer.endTime + timer.extraTime - timer.currentTime)
         let extraTime = self.timeSet.info.timers.reduce(0) { $0 + $1.extraTime }
-        
-        self.countdown = self.timeSet.state == .initialize ? TimeInterval(self.appService.getCountdown()) : 0
         
         self.initialState = State(title: self.timeSet.info.title,
                                   time: timer.endTime,
@@ -189,7 +185,6 @@ class TimeSetProcessViewReactor: Reactor {
                                   isBookmark: self.timeSet.info.isBookmark,
                                   isRepeat: self.timeSet.info.isRepeat,
                                   extraTime: extraTime,
-                                  countdown: Int(self.countdown),
                                   countdownState: self.timeSet.state == .initialize ? .stop : .done,
                                   timeSetState: self.timeSet.state,
                                   timers: self.timeSet.info.timers,
@@ -216,6 +211,9 @@ class TimeSetProcessViewReactor: Reactor {
             
         case let .startTimeSet(at: index):
             return actionStartTimeSet(at: index)
+            
+        case .startOvertimeRecord:
+            return actionStartOvertimeRecord()
             
         case .pauseTimeSet:
             return actionPauseTimeSet()
@@ -272,10 +270,6 @@ class TimeSetProcessViewReactor: Reactor {
             
         case let .setExtraTime(extraTime):
             state.extraTime = extraTime
-            return state
-                
-        case let .setCountdown(time):
-            state.countdown = time
             return state
             
         case let .setCountdownState(countdownState):
@@ -388,6 +382,11 @@ class TimeSetProcessViewReactor: Reactor {
         }
     }
     
+    private func actionStartOvertimeRecord() -> Observable<Mutation> {
+        timeSet.startOvertime()
+        return .empty()
+    }
+    
     private func actionPauseTimeSet() -> Observable<Mutation> {
         if timeSet.state == .initialize {
             // Pause countdown
@@ -457,7 +456,7 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionTimeSetTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {
-        return .concat(.just(.setTime(end - floor(current))),
+        return .concat(.just(.setTime(abs(end - floor(current)))),
                        .just(.setRemainedTime(remainedTime + end - current)))
     }
     
@@ -473,7 +472,6 @@ class TimeSetProcessViewReactor: Reactor {
         
         return .create { emitter in
             guard self.countdown > 0 else {
-                emitter.onNext(.setCountdown(0))
                 emitter.onNext(.setCountdownState(.done))
                 
                 emitter.onCompleted()
@@ -483,7 +481,7 @@ class TimeSetProcessViewReactor: Reactor {
             var isCompleted = false
             
             // Emit countdown is running
-            emitter.onNext(.setCountdownState(.run))
+            emitter.onNext(.setCountdownState(.run(countdown: Int(ceil(self.countdown)))))
             
             // Create new interval stream
             self.disposableTimer = Observable<Int>.interval(.milliseconds(100), scheduler: MainScheduler.instance)
@@ -494,7 +492,7 @@ class TimeSetProcessViewReactor: Reactor {
                 .distinctUntilChanged()
                 .subscribe(onNext: {
                     // Emit countdown
-                    emitter.onNext(.setCountdown($0))
+                    emitter.onNext(.setCountdownState(.run(countdown: $0)))
                     
                     if $0 == 0 {
                         // Emit countdown was done

@@ -23,7 +23,7 @@ class AlarmChangeViewController: BaseViewController, View {
     
     // MAKR: - properties
     private let dataSource = RxTableViewSectionedReloadDataSource<AlarmSectionModel>(configureCell: { _, tableView, indexPath, alarm -> AlarmChangeTableViewCell in
-        let cell = tableView.dequeueReusableCell(withIdentifier: AlarmChangeTableViewCell.ReuseableIdentifier, for: indexPath) as! AlarmChangeTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: AlarmChangeTableViewCell.name, for: indexPath) as! AlarmChangeTableViewCell
         cell.nameLabel.text = alarm
         return cell
     })

@@ -15,7 +15,7 @@ class TimeSetBadge: UIView {
         case countdown(time: Int)
         case `repeat`(count: Int)
         case cancel
-        case excess
+        case overtime
         
         var text: String {
             switch self {
@@ -25,8 +25,8 @@ class TimeSetBadge: UIView {
                 return String(format: "time_set_badge_type_repeat_format".localized, count)
             case .cancel:
                 return "time_set_badge_type_cancel_title".localized
-            case .excess:
-                return "time_set_badge_type_excess_title".localized
+            case .overtime:
+                return "time_set_badge_type_overtime_title".localized
             }
         }
         
@@ -36,7 +36,7 @@ class TimeSetBadge: UIView {
             case .repeat(count: _):
                 return Constants.Color.codGray
             case .cancel: fallthrough
-            case .excess:
+            case .overtime:
                 return Constants.Color.white
             }
         }
@@ -48,7 +48,7 @@ class TimeSetBadge: UIView {
                 return Constants.Color.white
             case .cancel:
                 return Constants.Color.navyBlue
-            case .excess:
+            case .overtime:
                 return Constants.Color.carnation
             }
         }

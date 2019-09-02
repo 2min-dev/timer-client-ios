@@ -185,8 +185,8 @@ class TimeSetEndView: UIView, View {
         return view
     }()
     
-    let excessButton: FooterButton = {
-        return FooterButton(title: "footer_button_excess".localized, type: .normal)
+    let overtimeButton: FooterButton = {
+        return FooterButton(title: "footer_button_overtime".localized, type: .normal)
     }()
     
     let restartButton: FooterButton = {
@@ -195,7 +195,7 @@ class TimeSetEndView: UIView, View {
     
     lazy var footerView: Footer = {
         let view = Footer()
-        view.buttons = [excessButton, restartButton]
+        view.buttons = [overtimeButton, restartButton]
         return view
     }()
     

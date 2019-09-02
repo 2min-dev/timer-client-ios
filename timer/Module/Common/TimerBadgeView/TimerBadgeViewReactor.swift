@@ -19,6 +19,9 @@ class TimerBadgeViewReactor: Reactor {
         
         /// Change badge position
         case moveBadge(at: IndexPath, to: IndexPath)
+        
+        /// Refresh section
+        case refresh
     }
     
     enum Mutation {
@@ -65,6 +68,9 @@ class TimerBadgeViewReactor: Reactor {
             
         case let .moveBadge(at: sourceIndexPath, to: destinationIndexPath):
             return actionMoveBadge(at: sourceIndexPath, to: destinationIndexPath)
+            
+        case .refresh:
+            return .just(.sectionReload)
         }
     }
     

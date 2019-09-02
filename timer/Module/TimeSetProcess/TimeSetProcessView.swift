@@ -78,13 +78,16 @@ class TimeSetProcessView: UIView {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
         view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
+        view.setImage(UIImage(named: "btn_repeat_disable"), for: .disabled)
         return view
     }()
     
-    let plus1MinButton: UIButton = {
+    let addTimeButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_plus_1min_enable"), for: .normal)
-        view.setImage(UIImage(named: "btn_plus_1min_disabled"), for: .disabled)
+        view.titleLabel?.font = Constants.Font.Bold.withSize(12.adjust())
+        view.setTitleColor(Constants.Color.codGray, for: .normal)
+        view.setTitleColor(Constants.Color.silver, for: .disabled)
+        view.setTitle("time_set_add_time_title".localized, for: .normal)
         return view
     }()
     
@@ -95,7 +98,7 @@ class TimeSetProcessView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, extraTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, repeatButton, divider])
+        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, extraTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, addTimeButton, repeatButton, divider])
         allTimeTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
@@ -125,18 +128,18 @@ class TimeSetProcessView: UIView {
             make.bottom.equalTo(endOfTimeSetTitleLabel)
         }
         
-        plus1MinButton.snp.makeConstraints { make in
+        addTimeButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalToSuperview().inset(10.adjust())
             make.width.equalTo(36.adjust())
-            make.height.equalTo(plus1MinButton.snp.width)
+            make.height.equalTo(addTimeButton.snp.width)
         }
 
         repeatButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.trailing.equalTo(plus1MinButton.snp.leading).offset(-10.adjust())
+            make.trailing.equalTo(addTimeButton.snp.leading).offset(-10.adjust())
             make.width.equalTo(36.adjust())
-            make.height.equalTo(plus1MinButton.snp.width)
+            make.height.equalTo(addTimeButton.snp.width)
         }
 
         divider.snp.makeConstraints { make in
@@ -163,7 +166,8 @@ class TimeSetProcessView: UIView {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_sound")
+        view.image = UIImage(named: "icon_sound")?.withRenderingMode(.alwaysTemplate)
+        view.tintColor = Constants.Color.codGray
         return view
     }()
     
@@ -198,7 +202,8 @@ class TimeSetProcessView: UIView {
     
     private let commentIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_comment")
+        view.image = UIImage(named: "icon_comment")?.withRenderingMode(.alwaysTemplate)
+        view.tintColor = Constants.Color.codGray
         return view
     }()
     
@@ -302,6 +307,10 @@ class TimeSetProcessView: UIView {
         return FooterButton(title: "footer_button_cancel".localized, type: .normal)
     }()
     
+    let quitButton: FooterButton = {
+        return FooterButton(title: "footer_button_quit".localized, type: .normal)
+    }()
+    
     let pauseButton: FooterButton = {
         return FooterButton(title: "footer_button_pause".localized, type: .highlight)
     }()
@@ -349,5 +358,34 @@ class TimeSetProcessView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - public method
+    /// Set layout enable/disable
+    func setEnable(_ isEnabled: Bool) {
+        // Set color of view by type
+        func setColor(view: UIView) {
+            if let imageView = view as? UIImageView {
+                imageView.tintColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
+            } else if let button = view as? UIButton {
+                button.isEnabled = isEnabled
+            } else if let label = view as? UILabel {
+                label.textColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
+            } else if let textView = view as? UITextView {
+                textView.textColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
+            } else {
+                view.backgroundColor = isEnabled ? Constants.Color.codGray : Constants.Color.gallery
+            }
+        }
+        
+        timeSetInfoView.subviews.forEach { setColor(view: $0) }
+        alarmView.subviews.forEach { setColor(view: $0) }
+        commentView.subviews.forEach { setColor(view: $0) }
+        
+        // Set add time button title color
+        addTimeButton.titleLabel?.textColor = isEnabled ? Constants.Color.carnation : Constants.Color.silver
+        
+        timerBadgeCollectionView.isEnabled = isEnabled
+        memoButton.isEnabled = isEnabled
     }
 }

@@ -16,11 +16,17 @@ class TimeSet: EventStreamProtocol {
         case timeChanged(current: TimeInterval, end: TimeInterval)
     }
     
+    /// The state of time set running
+    enum RunState {
+        case normal
+        case overtime
+    }
+    
     /// The state of timer
     enum State: Equatable {
         case initialize
         case stop(repeat: Int)
-        case run
+        case run(detail: RunState)
         case pause
         case end(detail: TimeSetInfo.EndState)
     }
@@ -52,6 +58,36 @@ class TimeSet: EventStreamProtocol {
     }
     
     // MARK: - private method
+    private func createTimer(at index: Int? = nil) -> TMTimer {
+        var timer: TMTimer
+        if let index = index {
+            // Create normal timer
+            timer = TMTimer(info: info.timers[index])
+        } else {
+            // Create overtimer
+            let overtimer = TimerInfo()
+            info.overtimer = overtimer
+            
+            timer = TMTimer(info: overtimer, type: .overtime)
+        }
+
+        // Bind timer event
+        timer.event
+            .observeOn(MainScheduler.asyncInstance)
+            .subscribe(onNext: { [weak self] in
+                switch $0 {
+                case let .stateChanged(state):
+                    self?.handleTimerStateChanged(state: state)
+                    
+                case let .timeChanged(current: currentTime, end: endTime):
+                    self?.event.onNext(.timeChanged(current: currentTime, end: endTime))
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        return timer
+    }
+    
     /// Handle the timer event from current running timer
     private func handleTimerStateChanged(state: TMTimer.State) {
         switch state {
@@ -60,7 +96,7 @@ class TimeSet: EventStreamProtocol {
             info.runningTime += timer?.info.currentTime ?? 0
             
             // Process time set if it is running
-            guard self.state == .run else { return }
+            guard self.state == .run(detail: .normal) else { return }
             if currentIndex + 1 < info.timers.count {
                 // Start next timer
                 start(at: currentIndex + 1)
@@ -73,7 +109,6 @@ class TimeSet: EventStreamProtocol {
                 } else {
                     // End of time set
                     self.state = .end(detail: .normal)
-                    
                 }
             }
             
@@ -90,37 +125,30 @@ class TimeSet: EventStreamProtocol {
             return
         }
         
-        let timer: TMTimer
         if let index = index {
             // Start new timer
             guard index < info.timers.count else { return }
-            
             currentIndex = index
-            timer = TMTimer(info: info.timers[index])
-
-            // Bind timer event
-            timer.event
-                .observeOn(MainScheduler.asyncInstance)
-                .subscribe(onNext: { [weak self] in
-                    switch $0 {
-                    case let .stateChanged(state):
-                        self?.handleTimerStateChanged(state: state)
-                        
-                    case let .timeChanged(current: currentTime, end: endTime):
-                        self?.event.onNext(.timeChanged(current: currentTime, end: endTime))
-                    }
-                })
-                .disposed(by: disposeBag)
-        } else {
-            guard let currentTimer = self.timer else { return }
-            // Restart timer
-            timer = currentTimer
+            
+            timer = createTimer(at: index)
         }
         
-        self.state = .run
-        timer.start()
+        // Return timer not exist
+        guard timer != nil else { return }
         
-        self.timer = timer
+        state = .run(detail: info.overtimer == nil ? .normal : .overtime)
+        timer?.start()
+    }
+    
+    /// Start overtime timer and start record
+    func startOvertime() {
+        guard state == .end(detail: .normal) else { return }
+        
+        // Create overtime timer
+        timer = createTimer()
+        
+        state = .run(detail: .overtime)
+        timer?.start()
     }
     
     /// Pause current running timer
@@ -135,7 +163,7 @@ class TimeSet: EventStreamProtocol {
     
     /// Stop the time set
     func stop() {
-        state = .end(detail: .cancel)
+        state = .end(detail: info.overtimer == nil ? .cancel : .overtime)
         timer?.stop()
         timer = nil
     }

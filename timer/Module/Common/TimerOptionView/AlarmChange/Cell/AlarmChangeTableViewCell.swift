@@ -10,8 +10,6 @@ import UIKit
 import RxSwift
 
 class AlarmChangeTableViewCell: UITableViewCell {
-    static let ReuseableIdentifier = "AlarmChangeTableViewCell"
-    
     // MARK: - view properties
     private let playButton: UIButton = {
         let view = UIButton()

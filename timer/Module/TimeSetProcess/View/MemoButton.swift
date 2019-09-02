@@ -34,6 +34,12 @@ class MemoButton: UIButton {
     }()
     
     // MARK: - properties
+    override var isEnabled: Bool {
+        didSet {
+            containerView.backgroundColor = isEnabled ? Constants.Color.navyBlue : Constants.Color.gallery
+            textLabel.textColor = isEnabled ? Constants.Color.white : Constants.Color.silver
+        }
+    }
     
     override var intrinsicContentSize: CGSize {
         let width = textLabel.sizeThatFits(bounds.size).width + 20
