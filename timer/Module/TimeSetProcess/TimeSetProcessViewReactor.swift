@@ -134,19 +134,19 @@ class TimeSetProcessViewReactor: Reactor {
     private let appService: AppServicePorotocol
     private var timeSetService: TimeSetServiceProtocol
     
-    let timeSetInfo: TimeSetInfo? // Original time set info
+    let timeSetInfo: TimeSetInfo // Original time set info
     let timeSet: TimeSet // Running time set
-    private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
-    // Countdown
     private var countdown: TimeInterval // Current countdown time
     private var disposableTimer: Disposable? // Countdown disposable timer
+    
+    private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
     // MARK: - constructor
     init?(appService: AppServicePorotocol,
           timeSetService: TimeSetServiceProtocol,
           timeSetInfo: TimeSetInfo? = nil,
-          start index: Int) {
+          start index: Int = 0) {
         self.appService = appService
         self.timeSetService = timeSetService
         
@@ -163,6 +163,7 @@ class TimeSetProcessViewReactor: Reactor {
             // Fetch running time set from time set service
             guard let timeSetInfo = timeSetService.runningTimeSetInfo,
                 let timeSet = timeSetService.runningTimeSet else { return nil }
+            
             self.timeSetInfo = timeSetInfo
             self.timeSet = timeSet
         }
@@ -300,8 +301,6 @@ class TimeSetProcessViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
-        guard let timeSetInfo = timeSetInfo else { return .empty() }
-        
         let setBookmark: Observable<Mutation> = .just(.setBookmark(timeSetInfo.isBookmark))
         var startedCountdown: Observable<Mutation> = .empty()
         if timeSet.state == .initialize {
@@ -318,7 +317,6 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionToggleBookmark() -> Observable<Mutation> {
-        guard let timeSetInfo = timeSetInfo else { return .empty() }
         // Toggle original time set bookmark
         timeSetInfo.isBookmark.toggle()
         return .just(.setBookmark(timeSetInfo.isBookmark))

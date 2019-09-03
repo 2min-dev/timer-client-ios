@@ -116,13 +116,12 @@ class TimeSetProcessViewController: BaseViewController, View {
         
         memoButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                guard let timeSetInfo = reactor.timeSetInfo else { return }
-                _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: timeSetInfo))
+                _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: reactor.timeSetInfo))
             })
             .disposed(by: disposeBag)
         
         startButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
             .disposed(by: disposeBag)
         
         restartButton.rx.tap
@@ -340,7 +339,7 @@ class TimeSetProcessViewController: BaseViewController, View {
             .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
             .subscribe(onNext: { [weak self] in
                 guard let reactor = self?.reactor else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: 0))
+                _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo))
             })
             .disposed(by: endView.disposeBag)
     }

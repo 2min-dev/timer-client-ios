@@ -14,7 +14,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     enum ProductivityRoute {
         case timerOption
         case timeSetSave(TimeSetInfo)
-        case timeSetProcess(TimeSetInfo, start: Int)
+        case timeSetProcess(TimeSetInfo?)
     }
 
     // MARK: - properties
@@ -33,7 +33,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         case .timeSetSave(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
             
-        case .timeSetProcess(_, start: _):
+        case .timeSetProcess(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
             
         default:
@@ -70,9 +70,9 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case let .timeSetProcess(timeSetInfo, start: index):
+        case let .timeSetProcess(timeSetInfo):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo, start: index)
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI
