@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 import ReactorKit
 
 class TimeSetProcessFloatingView: UIView, View {
@@ -16,18 +17,14 @@ class TimeSetProcessFloatingView: UIView, View {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text, remove it
-        view.text = "타임셋 명"
         return view
     }()
     
-    private let timeLabel: UILabel = {
+    let timeLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text, remove it
-        view.text = "00:00:00"
         return view
     }()
     
@@ -43,8 +40,6 @@ class TimeSetProcessFloatingView: UIView, View {
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(10.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: sample text, remove it
-        view.text = "N/M (P회 반복)"
         return view
     }()
     
@@ -55,7 +50,7 @@ class TimeSetProcessFloatingView: UIView, View {
         return view
     }()
     
-    private let closeButton: UIButton = {
+    let closeButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_clear"), for: .normal)
         return view
@@ -81,8 +76,8 @@ class TimeSetProcessFloatingView: UIView, View {
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5.adjust())
             make.leading.equalTo(titleLabel)
+            make.bottom.equalToSuperview().inset(12.adjust())
         }
         
         timerIconImageView.snp.makeConstraints { make in
@@ -111,15 +106,24 @@ class TimeSetProcessFloatingView: UIView, View {
             make.width.equalTo(36.adjust())
             make.height.equalTo(closeButton.snp.width)
         }
+        
+        // Add tap gesture recognizer
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler(gesture:)))
+        addGestureRecognizer(tapGesture)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - bind
+    // MARK: - bine
     func bind(reactor: TimeSetProcessFloatingViewReactor) {
         // MARK: action
+        
+        playButton.rx.tap
+            .map { [unowned self] in self.mapTimeSetActionFromPlayButton(self.playButton) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // MARK: state
         // Title
@@ -147,9 +151,9 @@ class TimeSetProcessFloatingView: UIView, View {
                 .map { $0.count }
                 .distinctUntilChanged(),
             reactor.state
-                .map { $0.timeSetState }
+                .map { $0.repeatCount }
                 .distinctUntilChanged())
-            .map { [weak self] in self?.getTimeSetInfoString(index: $0.0 + 1, count: $0.1, state: $0.2) }
+            .map { [weak self] in self?.getTimeSetInfoString(index: $0.0, count: $0.1, repeatCount: $0.2) }
             .bind(to: subtitleLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -161,16 +165,27 @@ class TimeSetProcessFloatingView: UIView, View {
             .disposed(by: disposeBag)
     }
     
+    // MARK: - action method
+    private func mapTimeSetActionFromPlayButton(_ button: UIButton) -> TimeSetProcessFloatingViewReactor.Action {
+        if button.isSelected {
+            return Reactor.Action.pauseTimeSet
+        } else {
+            return Reactor.Action.startTimeSet
+        }
+    }
+    
     // MARK: - state method
-    private func getTimeSetInfoString(index: Int, count: Int, state: TimeSet.State) -> String {
+    /// Get time set process info string
+    private func getTimeSetInfoString(index: Int, count: Int, repeatCount: Int) -> String {
         var string = String(format: "time_set_floating_timer_end_info_format".localized, index + 1, count)
-        if case let .stop(repeat: count) = state {
-            string += String(format: " " + "time_set_floating_time_set_repeat_info_format", count)
+        if repeatCount > 0 {
+            string += String(format: " " + "time_set_floating_time_set_repeat_info_format".localized, repeatCount)
         }
         
         return string
     }
     
+    /// Update play/pause button state by time set state
     private func updatePlayButtonByState(_ state: TimeSet.State) {
         switch state {
         case .run(detail: _):
@@ -182,5 +197,16 @@ class TimeSetProcessFloatingView: UIView, View {
         default:
             break
         }
+    }
+    
+    // MARK: - selector
+    @objc fileprivate func tapHandler(gesture: UITapGestureRecognizer) {
+        
+    }
+}
+
+extension Reactive where Base: TimeSetProcessFloatingView {
+    var tap: ControlEvent<Void> {
+        return ControlEvent(events: methodInvoked(#selector(base.tapHandler(gesture:))).map { _ in Void() })
     }
 }

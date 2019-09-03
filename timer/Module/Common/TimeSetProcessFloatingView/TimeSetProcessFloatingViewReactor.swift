@@ -28,6 +28,9 @@ class TimeSetProcessFloatingViewReactor: Reactor {
         /// Set current timer index of time set
         case setCurrentIndex(Int)
         
+        /// Set repeat count of time set
+        case setRepeatCount(Int)
+        
         /// Set current state of time set
         case setTimeSetState(TimeSet.State)
     }
@@ -45,20 +48,21 @@ class TimeSetProcessFloatingViewReactor: Reactor {
         /// Count of timers
         let count: Int
         
+        /// Repeated count of time set
+        var repeatCount: Int
+        
         /// Current state of time set
         var timeSetState: TimeSet.State
     }
     
     // MARK: - properties
     var initialState: State
-    private var timeSetService: TimeSetServiceProtocol
     
     private var timeSet: TimeSet // Running time set
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSet: TimeSet) {
-        self.timeSetService = timeSetService
+    init(timeSet: TimeSet) {
         self.timeSet = timeSet
         
         let index = timeSet.currentIndex
@@ -71,8 +75,9 @@ class TimeSetProcessFloatingViewReactor: Reactor {
         
         self.initialState = State(title: self.timeSet.info.title,
                                   remainedTime: remainedTime,
-                                  currentIndex: self.timeSet.currentIndex,
+                                  currentIndex: index,
                                   count: self.timeSet.info.timers.count,
+                                  repeatCount: self.timeSet.info.repeatCount,
                                   timeSetState: self.timeSet.state)
     }
     
@@ -111,7 +116,25 @@ class TimeSetProcessFloatingViewReactor: Reactor {
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        return state
+        var state = state
+        
+        switch mutation {
+        case let .setRemainedTime(time):
+            state.remainedTime = time
+            return state
+            
+        case let .setCurrentIndex(index):
+            state.currentIndex = index
+            return state
+            
+        case let .setRepeatCount(count):
+            state.repeatCount = count
+            return state
+            
+        case let .setTimeSetState(timeSetState):
+            state.timeSetState = timeSetState
+            return state
+        }
     }
     
     // MARK: - action method
@@ -132,7 +155,21 @@ class TimeSetProcessFloatingViewReactor: Reactor {
     
     // MARK: - Time set action method
     private func actionTimeSetStateChanged(_ state: TimeSet.State) -> Observable<Mutation> {
-        return .just(.setTimeSetState(state))
+        let setTimeSetState: Observable<Mutation> = .just(.setTimeSetState(state))
+        var setRepeatCount: Observable<Mutation> = .empty()
+        
+        switch state {
+        case .initialize:
+            setRepeatCount = .just(.setRepeatCount(0))
+            
+        case let .stop(repeat: count):
+            setRepeatCount = .just(.setRepeatCount(count))
+            
+        default:
+            break
+        }
+        
+        return .concat(setTimeSetState, setRepeatCount)
     }
     
     private func actionTimeSetTimerChanged(_ timer: TimerInfo, at index: Int) -> Observable<Mutation> {
@@ -146,6 +183,6 @@ class TimeSetProcessFloatingViewReactor: Reactor {
     }
     
     private func actionTimeSetTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {
-        return .just(.setRemainedTime(remainedTime + (end - floor(current))))
+        return .just(.setRemainedTime(abs(remainedTime + (end - floor(current)))))
     }
 }
