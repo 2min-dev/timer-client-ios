@@ -8,8 +8,9 @@
 
 import UIKit
 import RxSwift
+import ReactorKit
 
-class MainViewController: UITabBarController {
+class MainViewController: UITabBarController, View {
     // MARK: - constants
     enum TabType: Int {
         case LocalTimeSet = 0
@@ -20,8 +21,13 @@ class MainViewController: UITabBarController {
     // MARK: - view properties
     let _tabBar: TMTabBar = {
         let view = TMTabBar()
-        view.tintColor = Constants.Color.carnation
+        view.tabBarItems = [
+            TMTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
+            TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
+            TMTabBarItem(title: "tab_button_shared_time_set".localized, icon: UIImage(named: "btn_tab_share"))
+        ]
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.tintColor = Constants.Color.carnation
         return view
     }()
     
@@ -34,8 +40,15 @@ class MainViewController: UITabBarController {
         didSet { panGestureRecognizer.isEnabled = swipeEnable }
     }
     
+    private var timeSetProcessFloatingView: TimeSetProcessFloatingView? {
+        didSet { oldValue?.removeFromSuperview() }
+    }
+    
     var coordinator: MainViewCoordinator
+    
+    // Dispose bags
     var disposeBag = DisposeBag()
+    private var floatingViewDisposeBag = DisposeBag()
     
     init(coordinator: MainViewCoordinator) {
         self.coordinator = coordinator
@@ -49,34 +62,81 @@ class MainViewController: UITabBarController {
     // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.Color.white
-        tabBar.isHidden = true
-        
-        view.addAutolayoutSubview(_tabBar)
-        _tabBar.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
-        // Set tab bar items
-        _tabBar.tabBarItems = [
-            TMTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
-            TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
-            TMTabBarItem(title: "tab_button_shared_time_set".localized, icon: UIImage(named: "btn_tab_share"))
-        ]
+        initLayout()
         
         // Set view controllers
-        viewControllers = [coordinator.get(for: .local), coordinator.get(for: .productivity), coordinator.get(for: .share)].compactMap { $0 }
+        viewControllers = [coordinator.get(for: .local),
+                           coordinator.get(for: .productivity),
+                           coordinator.get(for: .share)]
+            .compactMap { $0 }
         
         // Set tab bar view controller delegate for swipable
         delegate = self
         _tabBar.delegate = self
         
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(gestureHandler(gesture:)))
-        panGestureRecognizer.delegate = self
-        
         view.addGestureRecognizer(panGestureRecognizer)
+    }
+    
+    // MARK: - bind
+    func bind(reactor: MainViewReactor) {
+        // MARK: action
+        // MARK: state
+        reactor.state
+            .map { $0.runningTimeSet }
+            .subscribe(onNext: { [weak self] in
+                if let timeSet = $0 {
+                    self?.showTimeSetProcessFloatingView(timeSet: timeSet)
+                } else {
+                    self?.timeSetProcessFloatingView = nil
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+
+    private func bind(floatingView: TimeSetProcessFloatingView) {
+        floatingViewDisposeBag = DisposeBag()
+        
+        floatingView.rx.tap
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess) })
+            .disposed(by: floatingViewDisposeBag)
+    }
+    
+    // MARK: - state method
+    /// Show time set process floating view
+    private func showTimeSetProcessFloatingView(timeSet: TimeSet) {
+        // Create time set process floating view
+        let timeSetProcessFloatingView = TimeSetProcessFloatingView()
+        
+        // Inject reactor
+        timeSetProcessFloatingView.reactor = TimeSetProcessFloatingViewReactor(timeSet: timeSet)
+        
+        // Bind evnets
+        bind(floatingView: timeSetProcessFloatingView)
+        
+        // Set constraints of subview
+        view.addAutolayoutSubview(timeSetProcessFloatingView)
+        timeSetProcessFloatingView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(_tabBar.snp.top)
+        }
+        
+        self.timeSetProcessFloatingView = timeSetProcessFloatingView
+    }
+    
+    // MARK: - private method
+    private func initLayout() {
+        view.backgroundColor = Constants.Color.white
+        tabBar.isHidden = true
+        
+        // Set constraints of subviews
+        view.addAutolayoutSubview(_tabBar)
+        _tabBar.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
     }
     
     // MARK: - public method
@@ -142,15 +202,5 @@ extension MainViewController: UITabBarControllerDelegate {
 extension MainViewController: TMTabBarDelegate {
     func tabBar(_ tabBar: TMTabBar, didSelect index: Int) {
         selectedViewController = viewControllers?[index]
-    }
-}
-
-// TODO: ?? not used maybe
-extension MainViewController: UIGestureRecognizerDelegate {
-    // Return gesture recognizer interpert touch event only tab view controller is single
-    // * non single view like navigation controller or etc *
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard let currentViewController = selectedViewController as? UINavigationController else { return true }
-        return currentViewController.viewControllers.count > 1 ? false : true
     }
 }
