@@ -186,9 +186,8 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func mutate(timeSetEvent: TimeSetEvent) -> Observable<Mutation> {
-        Logger.debug(Thread.isMainThread)
         switch timeSetEvent {
-        case .create:
+        case .created:
             return actionTimeSetCreate()
             
         default:

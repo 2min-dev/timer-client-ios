@@ -9,9 +9,10 @@
 import RxSwift
 
 enum TimeSetEvent {
-    case create
-    case update
-    case remove
+    case timeSetChanged(TimeSet?)
+    case created
+    case updated
+    case removed
 }
 
 protocol TimeSetServiceProtocol {
@@ -30,19 +31,18 @@ protocol TimeSetServiceProtocol {
 
 /// A service class that manage the application's timers
 class TimeSetService: BaseService, TimeSetServiceProtocol {
-    enum TimeSetError: Error {
-        case notExist
-        case unknown
-    }
-    
     // MARK: - global state event
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
     private var timeSets: [TimeSetInfo] = []
     
-    var runningTimeSetInfo: TimeSetInfo? // Running time set original info
-    var runningTimeSet: TimeSet? // Running time set
+    // Running time set original info
+    var runningTimeSetInfo: TimeSetInfo?
+    // Running time set
+    var runningTimeSet: TimeSet? {
+        didSet { event.onNext(.timeSetChanged(runningTimeSet)) }
+    }
     
     // MARK: - public method
     func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?) {
@@ -79,7 +79,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
-        .do(onSuccess: { _ in self.event.onNext(.create) })
+        .do(onSuccess: { _ in self.event.onNext(.created) })
     }
     
     // Update the time set
@@ -103,7 +103,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
-        .do(onSuccess: { _ in self.event.onNext(.update) })
+        .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
     
     /// Delete the timerset
@@ -121,6 +121,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
-        .do(onSuccess: { _ in self.event.onNext(.remove) })
+        .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
 }
