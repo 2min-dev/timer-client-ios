@@ -102,10 +102,6 @@ class TimeSetPopup: UIView {
         get { return subtitleLabel.text }
     }
     
-    override var intrinsicContentSize: CGSize {
-        return CGSize(width: 330.adjust(), height: 60.adjust())
-    }
-    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -128,9 +124,9 @@ class TimeSetPopup: UIView {
     // MARK: - public method
     func show(completeion: (() -> Void)? = nil) {
         guard let keyWindow = UIApplication.shared.keyWindow else { return }
-        var frame = self.frame
         
         // Calculate destination position
+        var frame = self.frame
         frame.origin.y -= frame.height + 14.adjust()
         if #available(iOS 11.0, *) {
             frame.origin.y -= keyWindow.safeAreaInsets.bottom
@@ -153,9 +149,9 @@ class TimeSetPopup: UIView {
     
     func dismiss(completeion: (() -> Void)? = nil) {
         guard let keyWindow = UIApplication.shared.keyWindow else { return }
-        var frame = self.frame
         
         // Calculate destination position
+        var frame = self.frame
         frame.origin.y = keyWindow.bounds.height
         
         // Create animator

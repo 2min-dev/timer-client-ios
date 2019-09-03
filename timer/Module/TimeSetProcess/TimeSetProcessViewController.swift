@@ -40,14 +40,22 @@ class TimeSetProcessViewController: BaseViewController, View {
     private var restartButton: FooterButton { return timeSetProcessView.restartButton }
     private var footerView: Footer { return timeSetProcessView.footerView }
     
-    private var timeSetPopup: TimeSetPopup?
+    private var timeSetPopup: TimeSetPopup? {
+        didSet { oldValue?.removeFromSuperview() }
+    }
     private var timeSetAlert: TimeSetAlert? {
         didSet {
             oldValue?.removeFromSuperview()
             timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil
         }
     }
-    private var timeSetEndView: TimeSetEndView?
+    private var timeSetEndView: TimeSetEndView? {
+        didSet {
+            oldValue?.dismiss(animated: false) {
+                oldValue?.removeFromSuperview()
+            }
+        }
+   }
     
     // MARK: - properties
     var coordinator: TimeSetProcessViewCoordinator
@@ -214,6 +222,16 @@ class TimeSetProcessViewController: BaseViewController, View {
             .bind(to: repeatButton.rx.isSelected)
             .disposed(by: disposeBag)
         
+        // Time set badge
+        reactor.state
+            .map { $0.repeatCount }
+            .distinctUntilChanged()
+            .do(onNext: { [weak self] in self?.timeSetBadge.isHidden = $0 == 0 })
+            .filter { $0 > 0 }
+            .map { TimeSetBadge.BadgeType.repeat(count: $0) }
+            .bind(to: timeSetBadge.rx.type)
+            .disposed(by: disposeBag)
+        
         // Add time
         reactor.state
             .map { $0.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME }
@@ -255,6 +273,7 @@ class TimeSetProcessViewController: BaseViewController, View {
         reactor.state
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
+            .skipUntil(rx.viewWillAppear)
             .withLatestFrom(reactor.state.map { ($0.timers.count, $0.timeSetState) }, resultSelector: { ($0.row, $1.0, $1.1) })
             .filter { $2 == .run(detail: .normal) }
             .subscribe(onNext: { [weak self] in
@@ -262,11 +281,15 @@ class TimeSetProcessViewController: BaseViewController, View {
                                        subtitle: String(format: "time_set_popup_timer_end_info_format".localized, $0.0, $0.1)) })
             .disposed(by: disposeBag)
         
-        reactor.state
-            .map { $0.timeSetState }
-            .distinctUntilChanged()
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.timeSetState }
+                .distinctUntilChanged(),
+            rx.viewWillAppear
+                .take(1))
+            .map { $0.0 }
             .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0) })
-            .disposed(by: disposeBag)
+            .disposed(by: self.disposeBag)
         
         reactor.state
             .map { $0.countdownState }
@@ -300,15 +323,13 @@ class TimeSetProcessViewController: BaseViewController, View {
         alertDisposeBag = DisposeBag()
 
         alert.cancelButton.rx.tap
-            .subscribe(onNext: { [weak self, weak alert] in
-                alert?.removeFromSuperview()
+            .subscribe(onNext: { [weak self] in
                 self?.timeSetAlert = nil
             })
             .disposed(by: alertDisposeBag)
         
         alert.confirmButton.rx.tap
-            .subscribe(onNext: { [weak self, weak alert] in
-                alert?.removeFromSuperview()
+            .subscribe(onNext: { [weak self] in
                 self?.timeSetAlert = nil
                 confirmHandler()
             })
@@ -442,16 +463,13 @@ class TimeSetProcessViewController: BaseViewController, View {
     /// Update layout by current state of time set
     private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
         UIApplication.shared.isIdleTimerDisabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch state {
         case .initialize:
             addTimeButton.isEnabled = false
 
         case let .stop(repeat: count):
-            // Set repeat badge
-            timeSetBadge.isHidden = count == 0
-            timeSetBadge.setBadgeType(.repeat(count: count))
-            
             if count > 0 {
                 // Show time set repeat popup
                 showTimeSetPopup(title: "time_set_popup_time_set_repeat_title".localized,
@@ -468,6 +486,9 @@ class TimeSetProcessViewController: BaseViewController, View {
                 
                 addTimeButton.isEnabled = true
             } else {
+                // Set disable that navigation controller pop gesture recognizer during overtime recording
+                navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+                
                 // Running overtime recording
                 footerView.buttons = [quitButton, pauseButton]
                 
@@ -548,10 +569,8 @@ class TimeSetProcessViewController: BaseViewController, View {
         view.addSubview(timeSetPopup)
         bind(popup: timeSetPopup)
 
-        // Start show animation
+        // Show view with animation
         timeSetPopup.show {
-            // Remove previous popup if it exist still
-            self.timeSetPopup?.removeFromSuperview()
             self.timeSetPopup = timeSetPopup
         }
     }
@@ -559,16 +578,17 @@ class TimeSetProcessViewController: BaseViewController, View {
     /// Dismiss timer & time set info popup
     private func dismissTimeSetPopup() {
         // Dismiss view with animation
-        self.timeSetPopup?.dismiss()
-        self.timeSetPopup = nil
+        timeSetPopup?.dismiss {
+            self.timeSetPopup = nil
+        }
     }
     
     /// Show time set end view
     private func showTimeSetEndView() {
-        guard let reactor = reactor else { return }
+        guard let reactor = reactor, timeSetEndView == nil else { return }
         
         // Create time set end view
-        let timeSetEndView = TimeSetEndView(isShow: false)
+        let timeSetEndView = TimeSetEndView()
         
         // Inject reactor
         timeSetEndView.reactor = TimeSetEndViewReactor(timeSet: reactor.timeSet)
@@ -578,16 +598,17 @@ class TimeSetProcessViewController: BaseViewController, View {
         bind(endView: timeSetEndView, reactor: timeSetEndView.reactor!)
         
         // Show view with animation
-        timeSetEndView.show(animated: true)
-        
-        self.timeSetEndView = timeSetEndView
+        timeSetEndView.show {
+            self.timeSetEndView = timeSetEndView
+        }
     }
     
     /// Dismiss time set end view
     private func dissmissTimeSetEndView() {
         // Dismiss view with animation
-        timeSetEndView?.dismiss(animated: true)
-        timeSetEndView = nil
+        timeSetEndView?.dismiss(animated: true) {
+            self.timeSetEndView = nil
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

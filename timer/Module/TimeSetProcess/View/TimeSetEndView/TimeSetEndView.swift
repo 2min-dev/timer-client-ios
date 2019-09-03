@@ -213,6 +213,8 @@ class TimeSetEndView: UIView, View {
             if #available(iOS 11.0, *) {
                 frame.size.height -= keyWindow.safeAreaInsets.top
             }
+            // Set view position
+            frame.origin = CGPoint(x: 0, y: keyWindow.bounds.height)
         }
         
         super.init(frame: frame)
@@ -245,11 +247,6 @@ class TimeSetEndView: UIView, View {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-    }
-    
-    convenience init(isShow: Bool) {
-        self.init(frame: .zero)
-        isShow ? show() : dismiss()
         
         // Observe keyboard notification
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -342,9 +339,8 @@ class TimeSetEndView: UIView, View {
     
     // MARK: - public method
     /// Show time set end view (bottom - up slide)
-    func show(animated: Bool = false) {
-        guard let keyWindow = UIApplication.shared.keyWindow, let superview = superview else { return }
-        
+    func show(completion: (() -> Void)? = nil) {
+        guard let superview = superview else { return }
         // Create dim
         dim = UIView(frame: superview.frame)
         dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0)
@@ -353,32 +349,28 @@ class TimeSetEndView: UIView, View {
         
         // Calculate view position
         var frame = self.frame
-        frame.origin.y = 49.adjust()
-        if #available(iOS 11.0, *) {
-            frame.origin.y += keyWindow.safeAreaInsets.top
+        frame.origin.y -= frame.height
+        
+        // Show with animation
+        let animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
+            self.dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8) // Dim animation
+            self.frame = frame // End view animation
         }
         
-        if animated {
-            // Show with animation
-            let animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
-                self.dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8) // Dim animation
-                self.frame = frame // End view animation
+        animator.addCompletion {
+            if $0 == .end {
+                completion?()
             }
-            
-            animator.startAnimation()
-        } else {
-            dim?.backgroundColor = Constants.Color.codGray.withAlphaComponent(0.8)
-            self.frame = frame
         }
+        
+        animator.startAnimation()
     }
     
     /// Dismiss time set end view (top - down slide)
-    func dismiss(animated: Bool = false) {
-        guard let keyWindow = UIApplication.shared.keyWindow else { return }
-        
+    func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
         // Calculate view position
         var frame = self.frame
-        frame.origin.y = keyWindow.bounds.height
+        frame.origin.y += frame.height
         
         if animated {
             // Hide with animation
@@ -391,14 +383,15 @@ class TimeSetEndView: UIView, View {
                 if $0 == .end {
                     // Remove dim when animation ended
                     self.dim?.removeFromSuperview()
-                    self.removeFromSuperview()
+                    completion?()
                 }
             }
             
             animator.startAnimation()
         } else {
             dim?.removeFromSuperview()
-            self.frame = frame
+            self.frame = frame // End view animation
+            completion?()
         }
     }
     

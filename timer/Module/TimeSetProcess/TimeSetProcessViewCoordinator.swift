@@ -10,7 +10,7 @@ import UIKit
 
 class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum Route {
+    enum TimeSetProcessRoute {
         case home
         case timeSetProcess(TimeSetInfo)
         case timeSetMemo(TimeSet, origin: TimeSetInfo)
@@ -26,8 +26,10 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: TimeSetProcessRoute) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
+        // Set enable that navigation controller pop gesture recognizer before present
+        self.viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch route {
         case .home:
@@ -47,7 +49,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: TimeSetProcessRoute) -> UIViewController? {
         switch route {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
