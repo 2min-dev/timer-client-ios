@@ -19,6 +19,7 @@ class CommonHeader: UIView {
         case search
         case bookmark
         case share
+        case delete
         
         var button: UIButton {
             let button = UIButton()
@@ -40,6 +41,8 @@ class CommonHeader: UIView {
                 button.setImage(UIImage(named: "btn_bookmark_on"), for: .selected)
             case .share:
                 button.setImage(UIImage(named: "btn_share"), for: .normal)
+            case .delete:
+                button.setImage(UIImage(named: "btn_delete"), for: .normal)
             }
             
             return button

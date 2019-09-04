@@ -1,43 +1,42 @@
 //
-//  ProductivityViewController.swift
+//  TimeSetEditViewController.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 09/08/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import RxSwift
 import RxCocoa
 import ReactorKit
-import RxDataSources
 import JSReorderableCollectionView
 
-class ProductivityViewController: BaseViewController, View {
+class TimeSetEditViewController: BaseViewController, View {
     // MARK: - constants
     private let MAX_TIMER_COUNT: Int = 10
-    private let FOOTER_BUTTON_SAVE: Int = 0
-    private let FOOTER_BUTTON_START: Int = 1
+    private let FOOTER_BUTTON_CANCEL: Int = 0
+    private let FOOTER_BUTTON_NEXT: Int = 1
     
     // MARK: - view properties
-    private var productivityView: ProductivityView { return view as! ProductivityView }
+    private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
-    private var headerView: CommonHeader { return productivityView.headerView }
+    private var headerView: CommonHeader { return timeSetEditView.headerView }
     
-    private var timerInputView: TimerInputView { return productivityView.timerInputView }
-    private var timerClearButton: UIButton { return productivityView.timerInputView.timerClearButton }
+    private var timerInputView: TimerInputView { return timeSetEditView.timerInputView }
+    private var timerClearButton: UIButton { return timeSetEditView.timerInputView.timerClearButton }
     
-    private var timeInfoView: UIView { return productivityView.timeInfoView }
-    private var sumOfTimersLabel: UILabel { return productivityView.sumOfTimersLabel }
-    private var endOfTimeSetLabel: UILabel { return productivityView.endOfTimeSetLabel }
-    private var timerInputLabel: UILabel { return productivityView.timeInputLabel }
+    private var timeInfoView: UIView { return timeSetEditView.timeInfoView }
+    private var sumOfTimersLabel: UILabel { return timeSetEditView.sumOfTimersLabel }
+    private var endOfTimeSetLabel: UILabel { return timeSetEditView.endOfTimeSetLabel }
+    private var timerInputLabel: UILabel { return timeSetEditView.timeInputLabel }
     
-    private var keyPadView: NumberKeyPad { return productivityView.keyPadView }
+    private var keyPadView: NumberKeyPad { return timeSetEditView.keyPadView }
     
-    private var timeKeyView: TimeKeyView { return productivityView.timeKeyView }
+    private var timeKeyView: TimeKeyView { return timeSetEditView.timeKeyView }
     
-    private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetEditView.timerBadgeCollectionView }
     
-    private var timerOptionView: UIView { return productivityView.timerOptionView }
+    private var timerOptionView: UIView { return timeSetEditView.timerOptionView }
     private lazy var timerOptionViewController: TimerOptionViewController = {
         guard let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
             let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController else { fatalError() }
@@ -47,16 +46,16 @@ class ProductivityViewController: BaseViewController, View {
         return timerOptionViewController
     }()
     
-    private var footerView: Footer { return productivityView.footerView }
+    private var footerView: Footer { return timeSetEditView.footerView }
     
     // MARK: - properties
     private var isBadgeMoving: Bool = false
     private var timerOptionVisibleSubject: BehaviorRelay = BehaviorRelay(value: false)
     
-    var coordinator: ProductivityViewCoordinator
+    var coordinator: TimeSetEditViewCoordinator
     
     // MARK: - constructor
-    init(coordinator: ProductivityViewCoordinator) {
+    init(coordinator: TimeSetEditViewCoordinator) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -67,7 +66,7 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: - lifecycle
     override func loadView() {
-        view = ProductivityView()
+        view = TimeSetEditView()
     }
     
     override func viewDidLoad() {
@@ -97,45 +96,8 @@ class ProductivityViewController: BaseViewController, View {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        // Add footer view when view did appear because footer view should remove after will appear due to animation (add view)
-        addFooterView()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        // Remove footer view when view controller disappeared
-        showFooterView(isShow: false) {
-            self.footerView.removeFromSuperview()
-        }
-    }
-    
     // MARK: - bind
     override func bind() {
-        rx.viewDidAppear // For get super view controller
-            .take(1)
-            .subscribe(onNext: { [unowned self] in
-                // Bind navigation controller event & tab bar controller event
-                self.navigationController?.rx.didShow
-                    .skip(1) // Skip until did finished drawing of tab bar controller
-                    .filter { [unowned self] in
-                        ($0.viewController as? UITabBarController)?.selectedViewController == self
-                    }
-                    .subscribe(onNext: { [unowned self] viewController, animated in
-                        self.showFooterView(isShow: self.reactor?.currentState.canTimeSetStart ?? false)
-                    })
-                    .disposed(by: self.disposeBag)
-                
-                self.tabBarController?.rx.didSelect
-                    .filter { [unowned self] in
-                        $0 == self
-                    }
-                    .subscribe(onNext: { [unowned self] viewController in
-                        self.showFooterView(isShow: self.reactor?.currentState.canTimeSetStart ?? false)
-                    })
-                    .disposed(by: self.disposeBag)
-            })
-            .disposed(by: disposeBag)
-        
         // Timer option view visible
         timerOptionVisibleSubject
             .distinctUntilChanged()
@@ -249,7 +211,7 @@ class ProductivityViewController: BaseViewController, View {
         
         // Time info view
         reactor.state
-            .map { $0.time > 0 || !$0.canTimeSetStart }
+            .map { $0.time > 0 }
             .distinctUntilChanged()
             .bind(to: timeInfoView.rx.isHidden)
             .disposed(by: disposeBag)
@@ -268,13 +230,6 @@ class ProductivityViewController: BaseViewController, View {
             .withLatestFrom(reactor.state.map { $0.timer }, resultSelector: { ($0, $1) })
             .map { [unowned self] in self.getEnableTimeKey(from: $0.0, timer: $0.1) }
             .bind(to: timeKeyView.rx.enableKey)
-            .disposed(by: disposeBag)
-        
-        // View state (timer badge view & footer view visible)
-        reactor.state
-            .map { $0.canTimeSetStart }
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] in self?.setViewStateFrom(canTimeSetStart: $0) })
             .disposed(by: disposeBag)
         
         // Timer badge view
@@ -301,27 +256,35 @@ class ProductivityViewController: BaseViewController, View {
             .bind(to: timerOptionViewController.rx.timer)
             .disposed(by: disposeBag)
         
+        // Next footer button
+        reactor.state
+            .map { $0.canTimeSetStart }
+            .distinctUntilChanged()
+            .bind(to: footerView.buttons[FOOTER_BUTTON_NEXT].rx.isEnabled)
+            .disposed(by: disposeBag)
+        
         // Alert
         reactor.state
             .map { $0.alertMessage }
             .filter { $0 != nil }
-            .map { $0! }
-            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
+            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0!) })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.shouldDismiss }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home) })
             .disposed(by: disposeBag)
     }
-
+    
     // MARK: - action method
     private func headerActionHandler(type: CommonHeader.ButtonType) {
         switch type {
-        case .search:
-            // TODO: Present search view
-            break
-        case .history:
-            // TODO: Present history view
-            break
-        case .setting:
-            // TODO: Present setting view
-            break
+        case .back:
+            showBackWarningAlert()
+        case .delete:
+            showTimeSetDeleteWarningAlert()
         default:
             break
         }
@@ -379,12 +342,12 @@ class ProductivityViewController: BaseViewController, View {
     private func footerActionHandler(index: Int) {
         guard let reactor = reactor else { return }
         
-        if index == FOOTER_BUTTON_SAVE {
-            // Save -> Present time set save
+        if index == FOOTER_BUTTON_CANCEL {
+            // Cancel -> Pop view controller (alert)
+            showBackWarningAlert()
+        } else if index == FOOTER_BUTTON_NEXT {
+            // Next -> Present time set save
             _ = coordinator.present(for: .timeSetSave(reactor.timeSetInfo))
-        } else if index == FOOTER_BUTTON_START {
-            // Confirm -> Present time set start
-            // TODO: Present time set start
         }
     }
     
@@ -430,19 +393,6 @@ class ProductivityViewController: BaseViewController, View {
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
     }
     
-    /// Show/Hide view according to `canTimeSetStart` value
-    private func setViewStateFrom(canTimeSetStart: Bool) {
-        // Prevent tab bar swipe gesture
-        if let tabBarController = tabBarController as? MainViewController {
-            tabBarController.swipeEnable = !canTimeSetStart
-        }
-        
-        // Show created timers
-        timerBadgeCollectionView.isHidden = !canTimeSetStart
-        // Show timer option footer view
-        showFooterView(isShow: canTimeSetStart)
-    }
-    
     /// Show popup alert
     private func showAlert(message: String) {
         let alert = AlertBuilder(message: message).build()
@@ -457,6 +407,19 @@ class ProductivityViewController: BaseViewController, View {
     }
     
     // MARK: - private method
+    /// Show end of time set edit warning alert
+    private func showBackWarningAlert() {
+        let alert = AlertBuilder(title: "alert_warning_time_set_edit_cancel_title".localized,
+                                 message: "alert_warning_time_set_edit_cancel_description".localized)
+            .addAction(title: "alert_button_cancel".localized, style: .cancel)
+            .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
+                self.navigationController?.popViewController(animated: true)
+            })
+            .build()
+        // Present warning alert view controller
+        present(alert, animated: true)
+    }
+    
     /// Show popup alert about warning to init time set
     private func showTimeSetInitWarningAlert() {
         guard let reactor = reactor else { return }
@@ -472,38 +435,19 @@ class ProductivityViewController: BaseViewController, View {
         present(alert, animated: true)
     }
     
-    /// Add footer view into tab bar controller's view to show top of the tab bar hierarchy
-    private func addFooterView() {
-        guard let tabBarController = tabBarController else { return }
-        tabBarController.view.addSubview(footerView)
+    /// Show  time set delete warning alert
+    private func showTimeSetDeleteWarningAlert() {
+        guard let reactor = reactor else { return }
         
-        let tabBar = tabBarController.tabBar
-        var frame = tabBar.frame
-        
-        frame.size.height = tabBar.bounds.height + 10.adjust()
-        // Positioning out of screen
-        frame.origin.y += frame.height
-        footerView.frame = frame
-    }
-    
-    /// Show footer view (save & add & start)
-    private func showFooterView(isShow: Bool, completion: (() -> Void)? = nil) {
-        guard let tabBar = tabBarController?.tabBar, footerView.superview != nil else { return }
-        
-        var frame = footerView.frame
-        frame.origin.y = isShow ? tabBar.frame.maxY - frame.height : tabBar.frame.minY + tabBar.frame.height
-        
-        let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeIn, animations: {
-            self.footerView.frame = frame
-        })
-        
-        animator.addCompletion({ position in
-            if position == .end {
-                completion?()
-            }
-        })
-        
-        animator.startAnimation()
+        let alert = AlertBuilder(title: "alert_warning_time_set_delete_title".localized,
+                                 message: "alert_warning_time_set_delete_description".localized)
+            .addAction(title: "alert_button_cancel".localized, style: .cancel)
+            .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
+                reactor.action.onNext(.deleteTimeSet)
+            })
+            .build()
+        // Present warning alert view controller
+        present(alert, animated: true)
     }
     
     // MARK: - selector
@@ -532,7 +476,7 @@ class ProductivityViewController: BaseViewController, View {
     }
 }
 
-extension ProductivityViewController: JSReorderableCollectionViewDelegate {
+extension TimeSetEditViewController: JSReorderableCollectionViewDelegate {
     func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         guard let reactor = reactor, indexPath.row < reactor.currentState.timers.count else { return false }
         return true

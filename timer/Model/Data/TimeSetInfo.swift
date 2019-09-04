@@ -10,6 +10,7 @@ import Foundation
 
 class TimeSetInfo: Codable, NSCopying {
     // MARK: - properties
+    var id: String?
     var title: String // Name of the timer set
     var description: String // Description of the timer set
     
@@ -20,7 +21,8 @@ class TimeSetInfo: Codable, NSCopying {
     var timers: [TimerInfo] // Timer info list of the timer set
     
     // MARK: - constructor
-    init(title: String = "", description: String = "", isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
+    init(id: String? = nil, title: String = "", description: String = "", isLoop: Bool = false, state: TimerInfo.State = .stop, timers: [TimerInfo] = []) {
+        self.id = id
         self.title = title
         self.description = description
         self.state = state
@@ -34,15 +36,6 @@ class TimeSetInfo: Codable, NSCopying {
     
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
-        return TimeSetInfo(title: title, description: description, isLoop: isLoop, state: state, timers: timers.compactMap { $0.copy() as? TimerInfo })
-    }
-    
-    /// Clear time set info
-    func clear() {
-        title = ""
-        description = ""
-        isLoop = false
-        state = .stop
-        timers = [TimerInfo(title: String(format: "timer_default_title".localized, 1))]
+        return TimeSetInfo(id: id, title: title, description: description, isLoop: isLoop, state: state, timers: timers.compactMap { $0.copy() as? TimerInfo })
     }
 }

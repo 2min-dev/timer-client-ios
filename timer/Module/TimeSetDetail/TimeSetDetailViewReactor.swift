@@ -39,7 +39,7 @@ class TimeSetDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private var timeSetInfo: TimeSetInfo
+    var timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {
@@ -59,15 +59,11 @@ class TimeSetDetailViewReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .toggleLoop:
-            timeSetInfo.isLoop.toggle()
-            return .just(.setLoop(!currentState.isLoop))
+            return actionToggleLoop()
         case .toggleBookmark:
-            // TODO: Set bookmark in time set info
-            return .just(.setBookmark(!currentState.isBookmark))
+            return actionToggleBookmark()
         case let .selectTimer(at: indexPath):
-            let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(at: indexPath))
-            let setTimer: Observable<Mutation> = .just(.setTimer(at: indexPath.row))
-            return .concat(setSelectedIndexPath, setTimer)
+            return actionSelectTimer(at: indexPath)
         }
     }
     
@@ -89,6 +85,20 @@ class TimeSetDetailViewReactor: Reactor {
         }
     }
     
-    // MARK: - priate method
-    // MARK: - public method
+    // MARK: - action method
+    private func actionToggleLoop() -> Observable<Mutation> {
+        // Toggle time set loop option
+        timeSetInfo.isLoop.toggle()
+        return .just(.setLoop(!currentState.isLoop))
+    }
+    
+    private func actionToggleBookmark() -> Observable<Mutation> {
+        // TODO: Set bookmark in time set info
+        return .just(.setBookmark(!currentState.isBookmark))
+    }
+    
+    private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {
+        return .concat(.just(.setSelectedIndexPath(at: indexPath)),
+                       .just(.setTimer(at: indexPath.row)))
+    }
 }

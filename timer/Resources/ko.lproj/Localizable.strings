@@ -79,8 +79,12 @@
 "timer_default_title" = "%d번째 타이머";
 
 // MARK: - Alert
-"alert_warning_delete_time_set_title" = "타임셋 삭제";
-"alert_warning_delete_time_set_description" = "생성한 타임셋이 삭제됩니다.\n정말 삭제하시겠습니까?";
+"alert_warning_time_set_init_title" = "타임셋 초기화";
+"alert_warning_time_set_init_description" = "생성한 타임셋이 사라집니다.\n정말 취소하시겠습니까?";
+"alert_warning_time_set_delete_title" = "타임셋 삭제";
+"alert_warning_time_set_delete_description" = "정말 삭제하시겠습니까?";
+"alert_warning_time_set_edit_cancel_title" = "타임셋 편집 취소";
+"alert_warning_time_set_edit_cancel_description" = "입력하신 정보가 사라집니다.\n정말 돌아가시겠습니까?";
 "alert_alarm_all_apply_description" = "알람이 모든 타이머에 적용되었습니다.";
 "alert_button_cancel" = "취소";
 "alert_button_yes" = "네";

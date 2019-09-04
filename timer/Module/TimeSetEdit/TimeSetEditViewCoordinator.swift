@@ -1,23 +1,23 @@
 //
-//  ProductivityViewCoordinator.swift
+//  TimeSetEditViewCoordinator.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 09/08/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 
-/// Route from one touch timer view
-class ProductivityViewCoordinator: CoordinatorProtocol {
-     // MARK: - route enumeration
-    enum ProductivityRoute {
+class TimeSetEditViewCoordinator: CoordinatorProtocol {
+    // MARK: - route enumeration
+    enum TimeSetEditRoute {
+        case home
         case timerOption
         case timeSetSave(TimeSetInfo)
     }
-
+    
     // MARK: - properties
-    weak var viewController: ProductivityViewController!
+    weak var viewController: TimeSetEditViewController!
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
@@ -25,10 +25,13 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: ProductivityRoute) -> UIViewController? {
+    // MARK: - presentation
+    func present(for route: TimeSetEditRoute) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
+        case .home:
+            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
         case .timeSetSave(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         default:
@@ -38,8 +41,10 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: ProductivityRoute) -> UIViewController? {
+    func get(for route: TimeSetEditRoute) -> UIViewController? {
         switch route {
+        case .home:
+            return self.viewController.navigationController?.viewControllers.first
         case .timerOption:
             let coordinator = TimerOptionViewCoordinator(provider: provider)
             let reactor = TimerOptionViewReactor()

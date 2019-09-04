@@ -9,46 +9,30 @@
 import RxSwift
 
 enum TimeSetEvent {
-    
+    case create
 }
 
-protocol TimeSetServicePorotocol {
+protocol TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> { get }
     
     func fetchTimeSets() -> Single<[TimeSetInfo]>
-    func addTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
-    func removeTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    func removeTimeSet(id: String) -> Single<TimeSetInfo>
 }
 
 /// A service class that manage the application's timers
-class TimeSetService: TimeSetServicePorotocol {
-    // MARK: global state event
+class TimeSetService: BaseService, TimeSetServiceProtocol {
+    enum TimeSetError: Error {
+        case notExist
+        case unknown
+    }
+    
+    // MARK: - global state event
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
-    private var timeSets: [TimeSetInfo]
-    
-    // MARK: - constructor
-    init() {
-        // Create timer set mock
-        let timeSet = TimeSetInfo(title: "First Sample Timer set", description: "5 sec -> 3 sec -> 5 sec -> end", timers: [
-            TimerInfo(title: "First timer (5 sec)", endTime: 5),
-            TimerInfo(title: "Second timer (3 sec)", endTime: 3),
-            TimerInfo(title: "Third timer (5 sec)", endTime: 5)
-        ])
-    
-        let timeSet2 = TimeSetInfo(title: "Second Sample Timer set", description: "3 sec -> 5 sec -> end", timers: [
-            TimerInfo(title: "First timer (3 sec)", endTime: 3),
-            TimerInfo(title: "Second timer (5 sec)", endTime: 5)
-        ])
-        
-        timeSets = [
-            timeSet,
-            timeSet2,
-            TimeSetInfo(title: "Empty timer set 1", description: ""),
-            TimeSetInfo(title: "Empty timer set 2", description: "")
-        ]
-    }
+    private var timeSets: [TimeSetInfo] = []
     
     // MARK: - public method
     /// Fetch timer set list
@@ -59,38 +43,66 @@ class TimeSetService: TimeSetServicePorotocol {
         }
     }
     
-    /// Create a timer set
-    func addTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+    /// Create a time set
+    func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
         return Single.create { emitter in
             guard let timeSet = info.copy() as? TimeSetInfo else {
-                emitter(.error(RxError.unknown))
+                emitter(.error(TimeSetError.unknown))
+                return Disposables.create()
+            }
+            // Create time set id
+            let id = self.provider.userDefaultService.integer(.timeSetId)
+            self.provider.userDefaultService.set(id + 1, key: .timeSetId)
+            
+            // Set id into time set and add time set
+            timeSet.id = String(id)
+            self.timeSets.append(timeSet)
+            
+            Logger.info("Time set created.")
+            _ = JSONCodec.encode(timeSet)
+            
+            emitter(.success(timeSet))
+            return Disposables.create()
+        }
+        .do(onSuccess: { _ in self.event.onNext(.create) })
+    }
+    
+    // Update the time set
+    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+        return Single.create { emitter in
+            guard let timeSet = info.copy() as? TimeSetInfo, let id = info.id else {
+                emitter(.error(TimeSetError.unknown))
                 return Disposables.create()
             }
 
-            if let index = self.timeSets.firstIndex(where: { $0 === info }) {
-                // Already exist time set
-                self.timeSets[index] = timeSet
-            } else {
-                // New time set
-                self.timeSets.append(timeSet)
+            guard let index = self.timeSets.firstIndex(where: { $0.id == id }) else {
+                emitter(.error(TimeSetError.notExist))
+                return Disposables.create()
             }
-            emitter(.success(timeSet))
+            // Update time set
+            self.timeSets[index] = timeSet
             
+            Logger.info("Time set updated.")
+            _ = JSONCodec.encode(timeSet)
+            
+            emitter(.success(timeSet))
             return Disposables.create()
         }
     }
     
-    /// Delete the timer set
-    func removeTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+    /// Delete the timerset
+    func removeTimeSet(id: String) -> Single<TimeSetInfo> {
         return Single.create { emitter in
-            guard let index = self.timeSets.firstIndex(where: { $0 === info }) else {
-                emitter(.error(RxError.unknown))
+            guard let index = self.timeSets.firstIndex(where: { $0.id == id }) else {
+                emitter(.error(TimeSetError.notExist))
                 return Disposables.create()
             }
-
+            // Remove time set
             let timeSet = self.timeSets.remove(at: index)
-            emitter(.success(timeSet))
             
+            Logger.info("Time set deleted.")
+            
+            emitter(.success(timeSet))
             return Disposables.create()
         }
     }

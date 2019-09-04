@@ -39,9 +39,9 @@ class FooterButton: UIButton {
     override var isEnabled: Bool {
         didSet {
             if isEnabled {
-                backgroundColor = Constants.Color.gallery
-            } else {
                 backgroundColor = type.backgroundColor
+            } else {
+                backgroundColor = Constants.Color.gallery
             }
         }
     }

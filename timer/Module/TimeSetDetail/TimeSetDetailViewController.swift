@@ -163,6 +163,7 @@ class TimeSetDetailViewController: BaseViewController, View {
             guard let reactor = reactor else { return }
             reactor.action.onNext(.toggleBookmark)
         case .home:
+            _ = coordinator.present(for: .home)
             break
         default:
             break
@@ -172,7 +173,8 @@ class TimeSetDetailViewController: BaseViewController, View {
     private func footerActionHandler(index: Int) {
         if index == FOOTER_BUTTON_EDIT {
             // Edit -> Present time set edit
-            // TODO: Present time set edit
+            guard let reactor = reactor else { return }
+            _ = coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))
         } else if index == FOOTER_BUTTON_START {
             // Start -> Present time set precess
             // TODO: Present time set precess

@@ -69,8 +69,8 @@ class TimeSetSaveViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetSaveViewReactor) {
         // MARK: action
-        rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -93,6 +93,7 @@ class TimeSetSaveViewController: BaseViewController, View {
             .disposed(by: disposeBag)
 
         timerBadgeCollectionView.rx.badgeSelected
+            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0.0) })
             .map { Reactor.Action.selectTimer(at: $0.0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -204,11 +205,7 @@ class TimeSetSaveViewController: BaseViewController, View {
             .distinctUntilChanged { $0 === $1 }
             .filter { $0 != nil }
             .observeOn(MainScheduler.instance) // Ignore rx error
-            .subscribe(onNext: { [weak self] in
-                if self?.coordinator.present(for: .timeSetDetail($0!)) != nil {
-                    reactor.action.onNext(.complete)
-                }
-            })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
             .disposed(by: disposeBag)
     }
     

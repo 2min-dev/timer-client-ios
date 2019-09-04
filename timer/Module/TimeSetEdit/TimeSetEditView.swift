@@ -1,8 +1,8 @@
 //
-//  ProductivityView.swift
+//  TimeSetEditView.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 09/08/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
@@ -10,12 +10,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class ProductivityView: UIView {
+class TimeSetEditView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
-        view.buttonTypes = [.search, .history, .setting]
-        view.isBackButtonHidden = true
+        view.title = "time_set_edit_title".localized
+        view.buttonTypes = [.delete]
         return view
     }()
     
@@ -42,7 +42,6 @@ class ProductivityView: UIView {
         let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
-        view.isHidden = true
         return view
     }()
     
@@ -150,8 +149,8 @@ class ProductivityView: UIView {
     let footerView: Footer = {
         let view = Footer()
         view.buttons = [
-            FooterButton(title: "footer_button_save".localized, type: .normal),
-            FooterButton(title: "footer_button_start".localized, type: .highlight)
+            FooterButton(title: "footer_button_cancel".localized, type: .normal),
+            FooterButton(title: "footer_button_next".localized, type: .highlight)
         ]
         return view
     }()
@@ -161,7 +160,7 @@ class ProductivityView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        addAutolayoutSubviews([headerView, contentView, timerOptionView])
+        addAutolayoutSubviews([headerView, contentView, timerOptionView, footerView])
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
@@ -176,7 +175,7 @@ class ProductivityView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(footerView.snp.top)
         }
         
         timerOptionView.snp.makeConstraints { make in
@@ -184,6 +183,12 @@ class ProductivityView: UIView {
             make.centerX.equalToSuperview()
             make.width.equalTo(250.adjust())
             make.height.equalTo(271.adjust())
+        }
+        
+        footerView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     
