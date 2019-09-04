@@ -23,15 +23,15 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    private let sumOfTimersTitleLabel: UILabel = {
+    private let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_sum_of_all_timers_full_title".localized
+        view.text = "time_set_all_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
-    let sumOfTimersLabel: UILabel = {
+    let allTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
@@ -40,7 +40,7 @@ class TimeSetDetailView: UIView {
     
     private let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_expected_time_full_title".localized
+        view.text = "time_set_end_time_full_title".localized
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
@@ -53,16 +53,20 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let loopButton: UIButton = {
+    let repeatButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
         view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
         return view
     }()
     
-    let plus1MinButton: UIButton = {
+    private let addTimeButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_plus_1min_disable"), for: .normal)
+        view.titleLabel?.font = Constants.Font.Bold.withSize(12.adjust())
+        view.setTitleColor(Constants.Color.codGray, for: .normal)
+        view.setTitleColor(Constants.Color.silver, for: .disabled)
+        view.setTitle("time_set_add_time_title".localized, for: .normal)
+        view.isEnabled = false
         return view
     }()
     
@@ -73,21 +77,21 @@ class TimeSetDetailView: UIView {
         divider.backgroundColor = Constants.Color.codGray
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([sumOfTimersTitleLabel, sumOfTimersLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, plus1MinButton, loopButton, divider])
-        sumOfTimersTitleLabel.snp.makeConstraints { make in
+        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, addTimeButton, repeatButton, divider])
+        allTimeTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(11.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalTo(endOfTimeSetTitleLabel)
         }
         
-        sumOfTimersLabel.snp.makeConstraints { make in
-            make.top.equalTo(sumOfTimersTitleLabel)
-            make.leading.equalTo(sumOfTimersTitleLabel.snp.trailing).offset(10.adjust())
-            make.bottom.equalTo(sumOfTimersTitleLabel)
+        allTimeLabel.snp.makeConstraints { make in
+            make.top.equalTo(allTimeTitleLabel)
+            make.leading.equalTo(allTimeTitleLabel.snp.trailing).offset(10.adjust())
+            make.bottom.equalTo(allTimeTitleLabel)
         }
         
         endOfTimeSetTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(sumOfTimersTitleLabel.snp.bottom).offset(10.adjust())
+            make.top.equalTo(allTimeTitleLabel.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview().inset(16.adjust())
         }
@@ -98,18 +102,18 @@ class TimeSetDetailView: UIView {
             make.bottom.equalTo(endOfTimeSetTitleLabel)
         }
         
-        plus1MinButton.snp.makeConstraints { make in
+        addTimeButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalToSuperview().inset(10.adjust())
             make.width.equalTo(36.adjust())
-            make.height.equalTo(plus1MinButton.snp.width)
+            make.height.equalTo(addTimeButton.snp.width)
         }
 
-        loopButton.snp.makeConstraints { make in
+        repeatButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.trailing.equalTo(plus1MinButton.snp.leading).offset(-10.adjust())
+            make.trailing.equalTo(addTimeButton.snp.leading).offset(-10.adjust())
             make.width.equalTo(36.adjust())
-            make.height.equalTo(plus1MinButton.snp.width)
+            make.height.equalTo(addTimeButton.snp.width)
         }
 
         divider.snp.makeConstraints { make in
@@ -209,13 +213,13 @@ class TimeSetDetailView: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubviews([titleLabel, timeSetInfoView, timerBadgeCollectionView, alarmView, commentView])
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().inset(35.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
             make.trailing.equalToSuperview().inset(10.adjust())
         }
 
         timeSetInfoView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(185.adjust())
+            make.top.equalToSuperview().inset(247.adjust())
             make.leading.equalTo(titleLabel)
             make.trailing.equalToSuperview()
         }
@@ -242,12 +246,17 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let footerView: Footer = {
+    let editButton: FooterButton = {
+        return FooterButton(title: "footer_button_edit".localized, type: .normal)
+    }()
+    
+    let startButton: FooterButton = {
+        return FooterButton(title: "footer_button_start".localized, type: .highlight)
+    }()
+    
+    private lazy var footerView: Footer = {
         let view = Footer()
-        view.buttons = [
-            FooterButton(title: "footer_button_edit".localized, type: .normal),
-            FooterButton(title: "footer_button_start".localized, type: .highlight)
-        ]
+        view.buttons = [editButton, startButton]
         return view
     }()
     
@@ -268,7 +277,7 @@ class TimeSetDetailView: UIView {
         }
         
         contentView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom).offset(35.adjust())
+            make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalTo(footerView.snp.top).offset(-10.adjust())

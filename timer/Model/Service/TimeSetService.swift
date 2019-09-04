@@ -9,12 +9,20 @@
 import RxSwift
 
 enum TimeSetEvent {
-    case create
+    case timeSetChanged(TimeSet?)
+    case created
+    case updated
+    case removed
 }
 
 protocol TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> { get }
     
+    // Running time set
+    var runningTimeSetInfo: TimeSetInfo? { get }
+    var runningTimeSet: TimeSet? { get }
+
+    func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?)
     func fetchTimeSets() -> Single<[TimeSetInfo]>
     func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
     func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
@@ -23,18 +31,25 @@ protocol TimeSetServiceProtocol {
 
 /// A service class that manage the application's timers
 class TimeSetService: BaseService, TimeSetServiceProtocol {
-    enum TimeSetError: Error {
-        case notExist
-        case unknown
-    }
-    
     // MARK: - global state event
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
     private var timeSets: [TimeSetInfo] = []
     
+    // Running time set original info
+    var runningTimeSetInfo: TimeSetInfo?
+    // Running time set
+    var runningTimeSet: TimeSet? {
+        didSet { event.onNext(.timeSetChanged(runningTimeSet)) }
+    }
+    
     // MARK: - public method
+    func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?) {
+        runningTimeSet = timeSet
+        runningTimeSetInfo = info
+    }
+    
     /// Fetch timer set list
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
         return Single.create { emitter in
@@ -64,7 +79,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
-        .do(onSuccess: { _ in self.event.onNext(.create) })
+        .do(onSuccess: { _ in self.event.onNext(.created) })
     }
     
     // Update the time set
@@ -88,6 +103,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
+        .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
     
     /// Delete the timerset
@@ -105,5 +121,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             emitter(.success(timeSet))
             return Disposables.create()
         }
+        .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
 }

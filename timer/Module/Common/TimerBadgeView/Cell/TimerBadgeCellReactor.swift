@@ -11,44 +11,70 @@ import ReactorKit
 
 class TimerBadgeCellReactor: Reactor {
     enum Action {
+        /// Update badge index
         case updateIndex(Int)
+        
+        /// Update badge time
         case updateTime(TimeInterval)
+        
+        /// Select badge
         case select(Bool)
-        case updateOptionVisible(Bool)
+        
+        /// Enable  badge
+        case enable(Bool)
     }
     
     enum Mutation {
+        /// Set badge index
         case setIndex(Int)
-        case setTime(TimeInterval)
-        case setSelected(Bool)
-        case setIsOptionVisible(Bool)
         
+        /// Set badge time
+        case setTime(TimeInterval)
+        
+        /// Set badge is selected
+        case setSelected(Bool)
+        
+        /// Set badge is enabled
+        case setEnabled(Bool)
     }
     
     struct State {
+        /// Index of badge
         var index: Int
+        
+        /// time of timer
         var time: TimeInterval
+        
+        /// Enable state of badge
+        var isEnabled: Bool
+        
+        /// Selected state of badge
         var isSelected: Bool
-        var isOptionVisible: Bool
     }
     
     // MARK: - properties
     var initialState: State
     
-    init(info: TimerInfo, index: Int, isSelected: Bool = false, isOptionVisible: Bool = true) {
-        self.initialState = State(index: index, time: info.endTime, isSelected: isSelected, isOptionVisible: isOptionVisible)
+    init(info: TimerInfo, index: Int, isEnabled: Bool = true, isSelected: Bool = false) {
+        self.initialState = State(index: index,
+                                  time: info.endTime,
+                                  isEnabled: isEnabled,
+                                  isSelected: isSelected)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case let .updateIndex(index):
             return .just(.setIndex(index))
+            
         case let .updateTime(time):
             return .just(.setTime(time))
+            
         case let .select(isSelected):
             return .just(.setSelected(isSelected))
-        case let .updateOptionVisible(isOptionVisible):
-            return .just(.setIsOptionVisible(isOptionVisible))
+            
+        case let .enable(isEnabled):
+            return .just(.setEnabled(isEnabled))
         }
     }
     
@@ -58,14 +84,17 @@ class TimerBadgeCellReactor: Reactor {
         case let .setIndex(index):
             state.index = index
             return state
+            
         case let .setTime(time):
             state.time = time
             return state
+            
         case let .setSelected(isSelected):
             state.isSelected = isSelected
             return state
-        case let .setIsOptionVisible(isOptionVisible):
-            state.isOptionVisible = isOptionVisible
+            
+        case let .setEnabled(isEnabled):
+            state.isEnabled = isEnabled
             return state
         }
     }

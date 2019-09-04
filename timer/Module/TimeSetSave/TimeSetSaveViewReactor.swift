@@ -13,43 +13,84 @@ class TimeSetSaveViewReactor: Reactor {
     static let MAX_TITLE_LENGTH = 20
     
     enum Action {
+        /// Set title hint from time set list data when view will appear
         case viewWillAppear
         
+        /// Clear title text
         case clearTitle
+        
+        /// Update title text
         case updateTitle(String)
         
+        /// Delete current selected timer
         case deleteTimer
+        
+        /// Select timer
         case selectTimer(at: IndexPath)
         
+        /// Apply alarm to all timers
         case applyAlarm(String)
         
+        /// Save time set
         case saveTimeSet
     }
     
     enum Mutation {
+        /// Set time set title
         case setTitle(String)
+        
+        /// Set time set title hint
         case setHint(String)
+        
+        /// Set all time of time set
+        case setAllTime(TimeInterval)
+        
+        /// Set current timer
+        case setTimer(TimerInfo)
+        
+        /// Remove a timer from time set
         case removeTimer(at: Int)
+        
+        /// Set selected index path
         case setSelectedIndexPath(at: IndexPath)
         
+        /// Set saved time set info
         case setSavedTimeSet(info: TimeSetInfo)
         
+        /// Set alert message
         case setAlertMessage(String)
+        
+        /// Set should section reload `true`
         case sectionReload
     }
     
     struct State {
-        var title: String                   // Title of time set
-        var hint: String                    // Title hint of time set
-        let sumOfTimers: TimeInterval       // The time that sum of all timers
+        /// Title of time set
+        var title: String
         
-        var timers: [TimerInfo]             // The timer list model of time set
-        var selectedIndexPath: IndexPath    // Current selected timer index path
+        /// Title hint of time set
+        var hint: String
         
-        var savedTimeSet: TimeSetInfo?      // The saved time set
+        /// The time that sum of all timers
+        var allTime: TimeInterval
         
-        var alertMessage: String?           // Alert message
-        var shouldSectionReload: Bool       // Need section reload
+        /// The timer list model of time set
+        var timers: [TimerInfo]
+        
+        /// Current selected timer
+        var timer: TimerInfo
+        
+        /// Current selected timer index path
+        var selectedIndexPath: IndexPath
+        
+        /// The saved time set
+        var savedTimeSet: TimeSetInfo?
+        
+        /// Alert message
+        var alertMessage: String?
+        
+        /// Need section reload
+        var shouldSectionReload: Bool
     }
     
     // MARK: - properties
@@ -61,31 +102,39 @@ class TimeSetSaveViewReactor: Reactor {
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo) {
         self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo
+        
         self.initialState = State(title: timeSetInfo.title,
                                   hint: "",
-                                  sumOfTimers: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                                  allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                                   timers: timeSetInfo.timers,
+                                  timer: timeSetInfo.timers.first!,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   savedTimeSet: nil,
                                   alertMessage: nil,
                                   shouldSectionReload: true)
     }
     
-    // MARK: - Mutation
+    // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewWillAppear:
             return actionViewWillAppear()
+            
         case .clearTitle:
             return actionClearTitle()
+            
         case let .updateTitle(title):
             return actionUpdateTitle(title)
+            
         case .deleteTimer:
             return actionDeleteTimer()
+            
         case let .selectTimer(at: indexPath):
             return actionSelectTimer(at: indexPath)
+            
         case let .applyAlarm(alarm):
             return actionApplyAlarm(alarm)
+            
         case .saveTimeSet:
             return actionSaveTimeSet()
         }
@@ -100,21 +149,35 @@ class TimeSetSaveViewReactor: Reactor {
         case let .setTitle(title):
             state.title = title
             return state
+            
         case let .setHint(hint):
             state.hint = hint
             return state
+            
+        case let .setAllTime(timeInterval):
+            state.allTime = timeInterval
+            return state
+            
+        case let .setTimer(timer):
+            state.timer = timer
+            return state
+            
         case let .removeTimer(at: index):
             state.timers.remove(at: index)
             return state
+            
         case let .setSelectedIndexPath(at: indexPath):
             state.selectedIndexPath = indexPath
             return state
+            
         case let .setSavedTimeSet(info: timeSetInfo):
             state.savedTimeSet = timeSetInfo
             return state
+            
         case let .setAlertMessage(message):
             state.alertMessage = message
             return state
+            
         case .sectionReload:
             state.shouldSectionReload = true
             return state
@@ -123,6 +186,7 @@ class TimeSetSaveViewReactor: Reactor {
     
     // MAKR: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
+        // Set hint
         if timeSetInfo.title.isEmpty {
             return timeSetService.fetchTimeSets().asObservable()
                 .map { $0.count + 1 }
@@ -134,41 +198,48 @@ class TimeSetSaveViewReactor: Reactor {
     }
     
     private func actionClearTitle() -> Observable<Mutation> {
+        // Clear titile
+        timeSetInfo.title = ""
         return .just(.setTitle(""))
     }
     
     private func actionUpdateTitle(_ title: String) -> Observable<Mutation> {
-        let length = title.lengthOfBytes(using: .utf8)
+        let length = title.lengthOfBytes(using: .utf16)
         guard length <= TimeSetSaveViewReactor.MAX_TITLE_LENGTH else { return .just(.setTitle(timeSetInfo.title)) }
         
         // Update title
         timeSetInfo.title = title
-        
         return .just(.setTitle(title))
     }
     
     private func actionDeleteTimer() -> Observable<Mutation> {
-        let index = currentState.selectedIndexPath.row
-        guard index > 0 else { return .empty() }
+        let state = currentState
         
-        // Remove timer
-        timeSetInfo.timers.remove(at: index)
-        
-        var setSelectIndexPath: Observable<Mutation> = actionSelectTimer(at: currentState.selectedIndexPath)
-        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        if index == timeSetInfo.timers.count {
-            // Last timer deleted
-            let indexPath = IndexPath(row: index - 1, section: 0)
-            setSelectIndexPath = actionSelectTimer(at: indexPath)
+        let index = state.selectedIndexPath.row
+        guard index > 0 else {
+            // Ignore delete first timer action
+            return .empty()
         }
         
-        return .concat(setSelectIndexPath, removeTimer, sectionReload)
+        // Remove timer
+        let timer = timeSetInfo.timers.remove(at: index)
+        
+        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
+        // Set index path
+        let indexPath = IndexPath(row: index < timeSetInfo.timers.count ? index : index - 1, section: 0)
+        let setSelectIndexPath = actionSelectTimer(at: indexPath)
+        
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - timer.endTime))
+        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        
+        return .concat(removeTimer, setSelectIndexPath, setAllTime, sectionReload)
     }
     
     private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {
-        return .just(.setSelectedIndexPath(at: indexPath))
+        guard indexPath.row < timeSetInfo.timers.count else { return .empty() }
+
+        return .concat(.just(.setSelectedIndexPath(at: indexPath)),
+                       .just(.setTimer(timeSetInfo.timers[indexPath.row])))
     }
     
     private func actionApplyAlarm(_ alarm: String) -> Observable<Mutation> {
@@ -183,13 +254,19 @@ class TimeSetSaveViewReactor: Reactor {
         }
         
         if timeSetInfo.id == nil {
+            // Create time set
             return timeSetService.createTimeSet(info: timeSetInfo)
                 .asObservable()
                 .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
         } else {
+            // Update time set
             return timeSetService.updateTimeSet(info: timeSetInfo)
                 .asObservable()
                 .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

@@ -26,7 +26,7 @@ class TimeSetEditViewController: BaseViewController, View {
     private var timerClearButton: UIButton { return timeSetEditView.timerInputView.timerClearButton }
     
     private var timeInfoView: UIView { return timeSetEditView.timeInfoView }
-    private var sumOfTimersLabel: UILabel { return timeSetEditView.sumOfTimersLabel }
+    private var allTimeLabel: UILabel { return timeSetEditView.allTimeLabel }
     private var endOfTimeSetLabel: UILabel { return timeSetEditView.endOfTimeSetLabel }
     private var timerInputLabel: UILabel { return timeSetEditView.timeInputLabel }
     
@@ -169,7 +169,7 @@ class TimeSetEditViewController: BaseViewController, View {
         // MARK: state
         // Timer
         reactor.state
-            .map { $0.timer }
+            .map { $0.endTime }
             .distinctUntilChanged()
             .bind(to: timerInputView.rx.timer)
             .disposed(by: disposeBag)
@@ -183,28 +183,28 @@ class TimeSetEditViewController: BaseViewController, View {
             .bind(to: timerInputLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Sum of timers
+        // All time
         reactor.state
-            .map { $0.sumOfTimers }
+            .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
             .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_sum_of_all_timers_title".localized,
-                                           info: String(format: "time_set_sum_of_all_timers_format".localized, $0.0, $0.1, $0.2))
+                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
+                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
             }
-            .bind(to: sumOfTimersLabel.rx.attributedText)
+            .bind(to: allTimeLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // End of time set
         Observable.combineLatest(
             reactor.state
-                .map { $0.sumOfTimers }
+                .map { $0.allTime }
                 .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
+            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
             .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_expected_time_title".localized,
-                                           info: getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
+                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
+                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
             .bind(to: endOfTimeSetLabel.rx.attributedText)
             .disposed(by: disposeBag)
@@ -227,7 +227,7 @@ class TimeSetEditViewController: BaseViewController, View {
         reactor.state
             .map { $0.time }
             .distinctUntilChanged()
-            .withLatestFrom(reactor.state.map { $0.timer }, resultSelector: { ($0, $1) })
+            .withLatestFrom(reactor.state.map { $0.endTime }, resultSelector: { ($0, $1) })
             .map { [unowned self] in self.getEnableTimeKey(from: $0.0, timer: $0.1) }
             .bind(to: timeKeyView.rx.enableKey)
             .disposed(by: disposeBag)
@@ -251,9 +251,16 @@ class TimeSetEditViewController: BaseViewController, View {
         
         // Timer option view
         reactor.state
-            .map { $0.timers[$0.selectedIndexPath.row] }
+            .map { $0.timer }
             .distinctUntilChanged { $0 === $1 }
             .bind(to: timerOptionViewController.rx.timer)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedIndexPath.row + 1 }
+            .distinctUntilChanged()
+            .map { String(format: "timer_option_title_format".localized, $0) }
+            .bind(to: timerOptionViewController.rx.title)
             .disposed(by: disposeBag)
         
         // Next footer button
@@ -309,7 +316,7 @@ class TimeSetEditViewController: BaseViewController, View {
     }
     
     /// Get base time (second) from key of time key view
-    private func getBaseTime(from key: TimeKeyView.Key) -> Int {
+    private func getBaseTime(from key: TimeKeyView.Key) -> TimeInterval {
         switch key {
         case .hour:
             return Constants.Time.hour
@@ -378,9 +385,9 @@ class TimeSetEditViewController: BaseViewController, View {
     
     /// Get enable time key from values of time & timer
     private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyView.Key {
-        if timer + TimeInterval(time * Constants.Time.minute) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
+        if timer + TimeInterval(time) * Constants.Time.minute > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .second
-        } else if timer + TimeInterval(time * Constants.Time.hour) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
+        } else if timer + TimeInterval(time) * Constants.Time.hour > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .minute
         } else {
             return .hour
@@ -428,7 +435,7 @@ class TimeSetEditViewController: BaseViewController, View {
                                  message: "alert_warning_time_set_init_description".localized)
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
-                reactor.action.onNext(.clearTimeSet)
+                reactor.action.onNext(.clearTimers)
             })
             .build()
         // Present warning alert view controller

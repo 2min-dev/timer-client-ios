@@ -21,16 +21,17 @@ class TimeSetDetailViewController: BaseViewController, View {
     private var headerView: CommonHeader { return timeSetDetailView.headerView }
     
     private var titleLabel: UILabel { return timeSetDetailView.titleLabel }
-    private var sumOfTimersLabel: UILabel { return timeSetDetailView.sumOfTimersLabel }
+    private var allTimeLabel: UILabel { return timeSetDetailView.allTimeLabel }
     private var endOfTimeSetLabel: UILabel { return timeSetDetailView.endOfTimeSetLabel }
-    private var loopButton: UIButton { return timeSetDetailView.loopButton }
+    private var repeatButton: UIButton { return timeSetDetailView.repeatButton }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetDetailView.timerBadgeCollectionView }
     
     private var alarmLabel: UILabel { return timeSetDetailView.alarmLabel }
     private var commentTextView: UITextView { return timeSetDetailView.commentTextView }
     
-    private var footerView: Footer { return timeSetDetailView.footerView }
+    private var editButton: FooterButton { return timeSetDetailView.editButton }
+    private var startButton: FooterButton { return timeSetDetailView.startButton }
     
     // MARK: - properties
     var coordinator: TimeSetDetailViewCoordinator
@@ -57,8 +58,13 @@ class TimeSetDetailViewController: BaseViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetDetailViewReactor) {
         // MARK: action
-        loopButton.rx.tap
-            .map { Reactor.Action.toggleLoop }
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        repeatButton.rx.tap
+            .map { Reactor.Action.toggleRepeat }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -71,8 +77,15 @@ class TimeSetDetailViewController: BaseViewController, View {
             .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
             .disposed(by: disposeBag)
         
-        footerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0)})
+        editButton.rx.tap
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))})
+            .disposed(by: disposeBag)
+        
+        startButton.rx.tap
+            .withLatestFrom(reactor.state
+                .map { $0.selectedIndexPath.row }
+                .distinctUntilChanged())
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: $0)) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -91,33 +104,32 @@ class TimeSetDetailViewController: BaseViewController, View {
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Sum of timers
+        // All time
         reactor.state
-            .map { $0.sumOfTimers }
+            .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { String(format: "time_set_sum_of_all_timers_format".localized, $0.0, $0.1, $0.2) }
-            .bind(to: sumOfTimersLabel.rx.text)
+            .map { String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: allTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
         // End of time set
         Observable.combineLatest(
             reactor.state
-                .map { $0.sumOfTimers }
+                .map { $0.allTime }
                 .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: RxTimeInterval.seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
-        )
+            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .observeOn(MainScheduler.instance)
             .map { Date().addingTimeInterval($0.0) }
-            .map { getDateString(format: "time_set_expected_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Loop
+        // Repeat
         reactor.state
-            .map { $0.isLoop }
+            .map { $0.isRepeat }
             .distinctUntilChanged()
-            .bind(to: loopButton.rx.isSelected)
+            .bind(to: repeatButton.rx.isSelected)
             .disposed(by: disposeBag)
         
         // Timer badge view
@@ -151,7 +163,7 @@ class TimeSetDetailViewController: BaseViewController, View {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - priate method
+    // MARK: - action method
     /// Handle header button tap action according to button type
     private func headerActionHandler(type: CommonHeader.ButtonType) {
         switch type {
@@ -164,24 +176,10 @@ class TimeSetDetailViewController: BaseViewController, View {
             reactor.action.onNext(.toggleBookmark)
         case .home:
             _ = coordinator.present(for: .home)
-            break
         default:
             break
         }
     }
-    /// Handle footer button tap action according to button index
-    private func footerActionHandler(index: Int) {
-        if index == FOOTER_BUTTON_EDIT {
-            // Edit -> Present time set edit
-            guard let reactor = reactor else { return }
-            _ = coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))
-        } else if index == FOOTER_BUTTON_START {
-            // Start -> Present time set precess
-            // TODO: Present time set precess
-        }
-    }
-    
-    // MARK: - public method
     
     deinit {
         Logger.verbose()

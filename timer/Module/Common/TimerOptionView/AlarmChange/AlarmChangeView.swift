@@ -59,7 +59,7 @@ class AlarmChangeView: UIView {
         view.separatorStyle = .none
         
         // Register alarm cell
-        view.register(AlarmChangeTableViewCell.self, forCellReuseIdentifier: AlarmChangeTableViewCell.ReuseableIdentifier)
+        view.register(AlarmChangeTableViewCell.self, forCellReuseIdentifier: AlarmChangeTableViewCell.name)
         
         return view
     }()

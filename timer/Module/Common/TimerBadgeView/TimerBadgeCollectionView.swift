@@ -20,22 +20,27 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
     private lazy var _dataSource = RxCollectionViewSectionedReloadDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
         switch cellType {
         case let .regular(reactor):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.ReuseableIdentifier, for: indexPath) as! TimerBadgeCollectionViewCell
             // Send action into reactor for initialize state
-            reactor.action.onNext(.updateOptionVisible(self.isOptionButtonVisible))
+            reactor.action.onNext(.enable(self.isEnabled))
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as! TimerBadgeCollectionViewCell
             cell.reactor = reactor
             
             return cell
         case .add:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.ReuseableIdentifier, for: indexPath)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.name, for: indexPath)
             // Invalidated layout
             cell.layoutIfNeeded()
             return cell
         }
     })
     
-    // Timer badge option button visible/hidden
-    var isOptionButtonVisible = true
+    var isEnabled: Bool = true {
+        didSet {
+            isUserInteractionEnabled = isEnabled
+            reactor?.action.onNext(.refresh)
+        }
+    }
     
     // Timer badge extra cell config
     fileprivate var extraCell: TimerBadgeCellType?
@@ -69,8 +74,8 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
         self.layout?.delegate = self
         
         // Register timer badge collection view reusable cell
-        register(TimerBadgeCollectionViewCell.self, forCellWithReuseIdentifier: TimerBadgeCollectionViewCell.ReuseableIdentifier)
-        register(TimerBadgeAddCollectionViewCell.self, forCellWithReuseIdentifier: TimerBadgeAddCollectionViewCell.ReuseableIdentifier)
+        register(TimerBadgeCollectionViewCell.self, forCellWithReuseIdentifier: TimerBadgeCollectionViewCell.name)
+        register(TimerBadgeAddCollectionViewCell.self, forCellWithReuseIdentifier: TimerBadgeAddCollectionViewCell.name)
     }
     
     convenience init(frame: CGRect) {
@@ -165,6 +170,8 @@ extension Reactive where Base: TimerBadgeCollectionView {
     // MARK: - binder
     var items: Binder<[TimerInfo]> {
         return Binder(base.self) { _, timers in
+            guard let reactor = self.base.reactor else { return }
+            
             Observable.just(timers)
                 .map {
                     if let extraCell = self.base.extraCell, self.base.shouldShowExtraCell(timers, extraCell) {
@@ -173,16 +180,18 @@ extension Reactive where Base: TimerBadgeCollectionView {
                     }
                     return Base.Reactor.Action.updateTimers($0, nil)
                 }
-                .bind(to: self.base.reactor!.action)
+                .bind(to: reactor.action)
                 .disposed(by: self.base.disposeBag)
         }
     }
     
     var selected: Binder<IndexPath> {
         return Binder(base.self) { _, indexPath in
+        guard let reactor = self.base.reactor else { return }
+            
             Observable.just(indexPath)
                 .map { Base.Reactor.Action.selectBadge(at: $0) }
-                .bind(to: self.base.reactor!.action)
+                .bind(to: reactor.action)
                 .disposed(by: self.base.disposeBag)
         }
     }

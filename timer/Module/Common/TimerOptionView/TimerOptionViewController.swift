@@ -85,9 +85,9 @@ class TimerOptionViewController: BaseViewController, View {
         // Comment length
         reactor.state
             .map { $0.comment }
-            .map { $0.lengthOfBytes(using: .utf8) }
-            .map { String(format: "timer_option_comment_bytes".localized, $0, TimerOptionViewReactor.MAX_COMMENT_LENGTH) }
+            .map { $0.lengthOfBytes(using: .utf16) }
             .distinctUntilChanged()
+            .map { String(format: "timer_comment_bytes_format".localized, $0, TimerOptionViewReactor.MAX_COMMENT_LENGTH) }
             .bind(to: commentLengthLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -121,10 +121,23 @@ class TimerOptionViewController: BaseViewController, View {
 extension Reactive where Base: TimerOptionViewController {
     // MARK: - binder
     var timer: Binder<TimerInfo> {
-        return Binder(base.self) { _, timerInfo in
-            Observable.just(timerInfo)
-                .map { Base.Reactor.Action.changeTimer($0) }
-                .bind(to: self.base.reactor!.action)
+        return Binder(base.self) { _, timer in
+            guard let reactor = self.base.reactor else { return }
+            
+            Observable.just(timer)
+                .map { Base.Reactor.Action.updateTimer($0) }
+                .bind(to: reactor.action)
+                .disposed(by: self.base.disposeBag)
+        }
+    }
+    
+    var title: Binder<String> {
+        return Binder(base.self) { _, title in
+            guard let reactor = self.base.reactor else { return }
+            
+            Observable.just(title)
+                .map { Base.Reactor.Action.updateTitle($0) }
+                .bind(to: reactor.action)
                 .disposed(by: self.base.disposeBag)
         }
     }

@@ -33,7 +33,7 @@ class TimerOptionView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.silver
-        view.text = "timer_option_comment_hint".localized
+        view.text = "timer_comment_hint".localized
         return view
     }()
     
@@ -71,6 +71,7 @@ class TimerOptionView: UIView {
     let alarmNameLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
@@ -154,6 +155,7 @@ class TimerOptionView: UIView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
         

@@ -24,7 +24,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let sumOfTimersLabel: UILabel = {
+    let allTimeLabel: UILabel = {
         let view = UILabel()
         view.textColor = Constants.Color.silver
         view.textAlignment = .center
@@ -39,7 +39,7 @@ class ProductivityView: UIView {
     }()
     
     lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [sumOfTimersLabel, endOfTimeSetLabel])
+        let view = UIStackView(arrangedSubviews: [allTimeLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
         view.isHidden = true
@@ -134,6 +134,7 @@ class ProductivityView: UIView {
 
     private let timerOptionLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
+        layer.fillColor = Constants.Color.white.cgColor
         layer.strokeColor = Constants.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
@@ -147,11 +148,19 @@ class ProductivityView: UIView {
         return view
     }()
     
-    let footerView: Footer = {
+    let saveButton: FooterButton = {
+        return FooterButton(title: "footer_button_save".localized, type: .normal)
+    }()
+    
+    let startButton: FooterButton = {
+        return FooterButton(title: "footer_button_start".localized, type: .highlight)
+    }()
+    
+    lazy var footerView: Footer = {
         let view = Footer()
         view.buttons = [
-            FooterButton(title: "footer_button_save".localized, type: .normal),
-            FooterButton(title: "footer_button_start".localized, type: .highlight)
+            saveButton,
+            startButton
         ]
         return view
     }()
@@ -196,11 +205,15 @@ class ProductivityView: UIView {
         super.layoutSubviews()
         // Update timer option layer frame
         timerOptionLayer.frame = CGRect(x: 0, y: 0, width: timerOptionView.bounds.width, height: timerOptionView.bounds.height)
-        timerOptionLayer.path = drawTimerOptionLayer(frame: timerOptionView.frame)
+        
+    }
+    
+    override func draw(_ rect: CGRect) {
+        timerOptionLayer.path = drawTimerOptionLayer(frame: timerOptionView.frame).cgPath
     }
     
     // MARK: - private method
-    private func drawTimerOptionLayer(frame: CGRect) -> CGPath {
+    private func drawTimerOptionLayer(frame: CGRect) -> UIBezierPath {
         let tailSize = CGSize(width: 13.adjust(), height: 8.adjust())
         
         let edgePoints: [CGPoint] = [
@@ -216,12 +229,10 @@ class ProductivityView: UIView {
         // Move starting point
         let path = UIBezierPath()
         path.move(to: CGPoint(x: -0.5, y: -0.5))
-        edgePoints.forEach {
-            path.addLine(to: $0)
-            path.move(to: $0)
-        }
+        // Draw path
+        edgePoints.forEach { path.addLine(to: $0) }
         
-        return path.cgPath
+        return path
     }
     
     // MARK: - selector

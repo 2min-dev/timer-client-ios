@@ -11,13 +11,11 @@ import RxSwift
 import ReactorKit
 
 class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
-    static let ReuseableIdentifier = "TimerBadgeCollectionViewCell"
-    
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.white
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.textColor = Constants.Color.white
         view.textAlignment = .center
         return view
     }()
@@ -38,19 +36,22 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
 
     let optionButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_timer_detail"), for: .normal)
+        view.setImage(UIImage(named: "btn_timer_detail_enable"), for: .normal)
+        view.setImage(UIImage(named: "btn_timer_detail_disable"), for: .disabled)
         return view
     }()
 
     let indexLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.silver
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.textColor = Constants.Color.silver
         view.textAlignment = .center
         return view
     }()
     
     // MARK: - properties
+    private var isEnabled: Bool = true
+    
     var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
@@ -100,7 +101,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         disposeBag = DisposeBag()
     }
     
-    // MARK: - reactor bind
+    // MARK: - bind
     func bind(reactor: TimerBadgeCellReactor) {
         // MARK: action
         
@@ -120,26 +121,49 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .map { $0.isEnabled }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in self?.setEnabled($0) })
+            .disposed(by: disposeBag)
+        
+        reactor.state
             .map { $0.isSelected }
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.setSelected($0) })
             .disposed(by: disposeBag)
     }
     
-    private func setSelected(_ isSelected: Bool) {
-        guard let reactor = reactor else { return }
+    // MARK: - private method
+    private func setEnabled(_ isEnabled: Bool) {
+        self.isEnabled = isEnabled
         
         // Set badge color
-        containerView.backgroundColor = isSelected ? Constants.Color.codGray : Constants.Color.white
+        containerView.backgroundColor = isSelected ? (isEnabled ? Constants.Color.codGray : Constants.Color.gallery) : Constants.Color.white
+        
+        // Set time label color
+        timeLabel.textColor = isEnabled ? (isSelected ? Constants.Color.white : Constants.Color.codGray) : Constants.Color.silver
+        
+        // Set index label color
+        indexLabel.textColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
+        
+        // Set option button enabled
+        optionButton.isEnabled = isEnabled
+    }
+    
+    private func setSelected(_ isSelected: Bool) {
+        self.isSelected = isSelected
+        
+        // Set badge color
+        containerView.backgroundColor = isSelected ? (isEnabled ? Constants.Color.codGray : Constants.Color.gallery) : Constants.Color.white
         containerView.layer.borderColor = isSelected ? Constants.Color.clear.cgColor : Constants.Color.gallery.cgColor
         
         // Set time label color
-        timeLabel.textColor = isSelected ? Constants.Color.gallery : Constants.Color.codGray
+        timeLabel.textColor = isEnabled ? (isSelected ? Constants.Color.white : Constants.Color.codGray) : Constants.Color.silver
         
         // Set index label color
-        indexLabel.textColor = isSelected ? Constants.Color.codGray : Constants.Color.silver
+        indexLabel.textColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
         
         // Set option button visible
-        optionButton.isHidden = !reactor.currentState.isOptionVisible || !isSelected
+        optionButton.isHidden = !isSelected
     }
 }

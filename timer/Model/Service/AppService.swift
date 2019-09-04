@@ -14,6 +14,8 @@ enum AppEvent {
 
 protocol AppServicePorotocol {
     var event: PublishSubject<AppEvent> { get }
+    
+    func getCountdown() -> Int
 }
 
 class AppService: BaseService, AppServicePorotocol {
@@ -21,4 +23,27 @@ class AppService: BaseService, AppServicePorotocol {
     var event: PublishSubject<AppEvent> = PublishSubject()
     
     // MARK: properties
+    
+    override init(provider: ServiceProviderProtocol) {
+        super.init(provider: provider)
+        
+        registerUserDefaultDomain()
+    }
+    
+    // MARK: - private method
+    private func registerUserDefaultDomain() {
+        provider.userDefaultService.register(defaults: [
+            .timeSetId: 1,
+            .countdown: 5
+        ])
+    }
+    
+    // MARK: - public method
+    func setCountdown(_ countdown: Int) {
+        provider.userDefaultService.set(countdown, key: .countdown)
+    }
+    
+    func getCountdown() -> Int {
+        return provider.userDefaultService.integer(.countdown)
+    }
 }

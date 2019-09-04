@@ -25,12 +25,14 @@
 
 // MARK: - Footer
 "footer_button_cancel" = "Cancel";
+"footer_button_quit" = "Quit";
 "footer_button_confirm" = "Confirm";
 "footer_button_next" = "Next";
 "footer_button_save" = "Save";
 "footer_button_start" = "Start";
 "footer_button_pause" = "Pause";
 "footer_button_restart" = "Restart";
+"footer_button_overtime" = "Overtime Record";
 "footer_button_edit" = "Edit";
 
 // MARK: - Screen title
@@ -54,30 +56,57 @@
 "productivity_button_minute_title" = "M";
 "productivity_button_second_title" = "S";
 
-"productivity_button_timer_save_title" = "Save";
-"productivity_button_timer_add_title" = "+";
-"productivity_button_timer_start_title" = "Start";
-
 // MARK: - Timer option
-"timer_option_comment_hint" = "You can typing comment";
-"timer_option_comment_bytes" = "%02d/%d bytes";
+"timer_option_title_format" = "Timer %d";
 "timer_option_alarm_all_apply" = "All";
 "timer_option_alarm_change" = "Change";
 
 // MARK: - Alarm change
 "alarm_change_current_title_format" = "Cur : %@";
 
+// MARK: - Time set process
+"time_set_process_extra_time_format" = "+%dM";
+"time_set_process_memo_title" = "Memo";
+
+// MARK: - Time set badge
+"time_set_badge_type_countdown_format" = "%d sec before start";
+"time_set_badge_type_repeat_format" = "%d repetitions";
+"time_set_badge_type_cancel_title" = "Canceled";
+"time_set_badge_type_overtime_title" = "Overtimed";
+
+// MARK: - Time set alert
+"time_set_alert_timer_start_title_format" = "Do you want to start\nwith %d timer?";
+"time_set_alert_cancel_title" = "Note why you canceled\nthe time set! :)";
+"time_set_alert_overtime_title" = "Note why you needed\nmore time! :)";
+
+// MARK: - Time set popup
+"time_set_popup_timer_end_title_format" = "Timer %d End";
+"time_set_popup_timer_end_info_format" = "%d/%d";
+"time_set_popup_time_set_repeat_title" = "Repeat Time Set End";
+"time_set_popup_time_set_repeat_info_format" = "%d repetations";
+
+// MARK: - Time set floating view
+"time_set_floating_timer_end_info_format" = "%d/%d";
+"time_set_floating_time_set_repeat_info_format" = "(%d repetations)";
+
 // MARK: - Time set
 "time_set_default_title" = "Time Set %d";
-"time_set_sum_of_all_timers_full_title" = "All Time";
-"time_set_sum_of_all_timers_title" = "All ";
-"time_set_sum_of_all_timers_format" = "%02d:%02d:%02d";
-"time_set_expected_time_full_title" = "End Exp ";
-"time_set_expected_time_title" = "Exp ";
-"time_set_expected_time_format" = "H:mm a";
+"time_set_time_format" = "%02d:%02d:%02d";
+"time_set_end_title_format" = "%@ Ended";
+"time_set_all_time_full_title" = "All Time";
+"time_set_all_time_title" = "All ";
+"time_set_all_time_format" = "%02d:%02d:%02d";
+"time_set_end_time_full_title" = "End Exp ";
+"time_set_end_time_title" = "Exp ";
+"time_set_end_time_format" = "H:mm a";
+"time_set_add_time_title" = "+1M";
+"time_set_memo_hint" = "Type memo about this time set.";
+"time_set_memo_bytes_format" = "%d/%d bytes";
+"time_set_memo_excess_title" = "Exceeded the number of characters";
 
 // MARK: - Timer
-"timer_default_title" = "Timer %d";
+"timer_comment_hint" = "You can typing comment";
+"timer_comment_bytes_format" = "%02d/%d bytes";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "Initialize Time Set";

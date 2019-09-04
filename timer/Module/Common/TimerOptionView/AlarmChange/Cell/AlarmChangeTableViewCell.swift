@@ -10,8 +10,6 @@ import UIKit
 import RxSwift
 
 class AlarmChangeTableViewCell: UITableViewCell {
-    static let ReuseableIdentifier = "AlarmChangeTableViewCell"
-    
     // MARK: - view properties
     private let playButton: UIButton = {
         let view = UIButton()
@@ -22,6 +20,7 @@ class AlarmChangeTableViewCell: UITableViewCell {
     let nameLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
         return view
     }()
     

@@ -31,8 +31,8 @@ enum Constants {
     
     // second time
     enum Time {
-        static let hour: Int = 3600
-        static let minute: Int = 60
+        static let hour: TimeInterval = 3600
+        static let minute: TimeInterval = 60
     }
     
     // project font define
@@ -96,7 +96,7 @@ enum Constants {
 
         static let navyBlue: UIColor = {
             if #available(iOS 11.0, *) {
-                return UIColor(named: "navyBlue")!
+                return UIColor(named: "navy_blue")!
             } else {
                 return UIColor(hex: "#020873")
             }

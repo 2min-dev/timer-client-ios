@@ -9,11 +9,26 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import AVFoundation
 
 /// the timer process object
 class TMTimer: EventStreamProtocol {
     enum Event {
-        case changeState(TimerInfo.State)
+        case stateChanged(State)
+        case timeChanged(current: TimeInterval, end: TimeInterval)
+    }
+    
+    /// The state of timer
+    enum State: Int, Codable {
+        case stop = 0
+        case run
+        case pause
+        case end
+    }
+    
+    enum RecordType: Int, Codable {
+        case regular = 0
+        case overtime
     }
     
     // Event stream of the timer
@@ -21,86 +36,95 @@ class TMTimer: EventStreamProtocol {
     
     // MARK: - properties
     var info: TimerInfo // The model data of the timer
-    private var timer: Timer? // A object of the timer
+    let type: RecordType // Recode type of the timer
     
-    // MARK: - constructor
-    init(info: TimerInfo) {
-        self.info = info
+    // The timer state
+    var state: State = .stop {
+        didSet { event.onNext(.stateChanged(state)) }
     }
     
-    // MARK: - selector
+    private var disposableTimer: Disposable?
+    
+    // MARK: - constructor
+    init(info: TimerInfo, type: RecordType = .regular) {
+        self.info = info
+        self.type = type
+    }
+    
+    // MARK: - private method
     /// Update timer info when received timer tick
-    private func updateTimer(_ timer: Timer) {
-        info.currentTime += 1
+    private func update() {
+        info.currentTime += 0.1
+        event.onNext(.timeChanged(current: info.currentTime, end: info.endTime + info.extraTime))
         
-        Logger.debug(#"the timer updated. "\#(info.title)" - \#(info.currentTime) / \#(info.endTime)"#)
         // End timer when current time interval of the timer is equal end time interval
-        if info.currentTime == info.endTime {
-            endTimer()
+        if type != .overtime && info.currentTime >= info.endTime + info.extraTime {
+            end()
         }
+    }
+    
+    /// Transfer state to `End`
+    private func end() {
+        disposableTimer?.dispose()
+        disposableTimer = nil
+        
+        info.currentTime = info.endTime + info.extraTime
+        state = .end
+        
+        playAlarm()
+    }
+    
+    private func playAlarm() {
+        AudioServicesPlaySystemSound(1005)
     }
     
     // MARK: - public method
     /// Fire the timer
-    func startTimer() {
-        // Invalidate timer
-        timer?.invalidate()
-        // Scheduled timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: updateTimer(_ :))
-        timer?.tolerance = 0.1
+    func start() {
+        disposableTimer?.dispose()
+        disposableTimer = Observable<Int>.interval(.milliseconds(100),
+                                                scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+            .subscribe(onNext: { [weak self] _ in self?.update() })
         
-        info.state = .start
-        // Send state changed event
-        event.onNext(.changeState(info.state))
+        state = .run
     }
     
     /// Pause the timer
-    func pauseTimer() {
-        if let timer = timer {
-            // Remove timer
-            // Invalidate timer to remove from run loop
-            timer.invalidate()
-            self.timer = nil
-            
-            info.state = .pause
-            // Send state changed event
-            event.onNext(.changeState(info.state))
-        } else {
-            Logger.error("Can't pause the timer because the timer object is nil.")
+    func pause() {
+        guard let disposableTimer = disposableTimer else {
+            Logger.debug("Can't pause the timer because the timer isn't running.")
+            return
         }
+        // Dispose timer subscription
+        disposableTimer.dispose()
+        self.disposableTimer = nil
+    
+        state = .pause
     }
     
     /// Stop the timer
-    func stopTimer() {
-        if let timer = timer {
-            timer.invalidate()
-            self.timer = nil
-        }
-    
-        info.currentTime = 0
+    func stop() {
+        // Dispose timer subscription
+        disposableTimer?.dispose()
+        disposableTimer = nil
         
-        info.state = .stop
-        // Send state changed event
-        event.onNext(.changeState(info.state))
+        state = .end
     }
     
-    /// End the timer
-    private func endTimer() {
-        if let timer = timer {
-            timer.invalidate()
-            self.timer = nil
+    /// Reset the timer
+    func reset() {
+        // Dispose timer subscription
+        disposableTimer?.dispose()
+        disposableTimer = nil
         
-            info.currentTime = info.endTime
-            
-            info.state = .end
-            // Send state changed event
-            event.onNext(.changeState(info.state))
-        } else {
-            Logger.error("Can't end the timer because the timer object is nil.")
-        }
+        state = .stop
+        
+        info.currentTime = 0
+        info.extraTime = 0
     }
     
     deinit {
+        Logger.verbose()
         // dispose event stream when timer deinited
         event.on(.completed)
     }
