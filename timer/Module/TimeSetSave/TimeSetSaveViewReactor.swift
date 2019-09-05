@@ -103,10 +103,10 @@ class TimeSetSaveViewReactor: Reactor {
         self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo
         
-        self.initialState = State(title: timeSetInfo.title,
+        initialState = State(title: timeSetInfo.title,
                                   hint: "",
                                   allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  timers: timeSetInfo.timers,
+                                  timers: timeSetInfo.timers.toArray(),
                                   timer: timeSetInfo.timers.first!,
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   savedTimeSet: nil,
@@ -222,14 +222,14 @@ class TimeSetSaveViewReactor: Reactor {
         }
         
         // Remove timer
-        let timer = timeSetInfo.timers.remove(at: index)
+        timeSetInfo.timers.remove(at: index)
         
-        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
         // Set index path
         let indexPath = IndexPath(row: index < timeSetInfo.timers.count ? index : index - 1, section: 0)
-        let setSelectIndexPath = actionSelectTimer(at: indexPath)
         
-        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - timer.endTime))
+        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
+        let setSelectIndexPath: Observable<Mutation> = actionSelectTimer(at: indexPath)
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.timers[index].endTime))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
         return .concat(removeTimer, setSelectIndexPath, setAllTime, sectionReload)

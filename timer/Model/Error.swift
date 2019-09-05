@@ -6,7 +6,14 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+enum DatabaseError: Error {
+    case initialize
+    case transaction
+    case notFound
+    case unknown
+}
+
 enum TimeSetError: Error {
-    case notExist
+    case notFound
     case unknown
 }

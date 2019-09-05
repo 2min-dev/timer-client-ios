@@ -173,28 +173,28 @@ class TimeSetProcessViewReactor: Reactor {
             index = timeSet.currentIndex
         }
         
-        self.countdown = self.timeSet.state == .initialize ? TimeInterval(self.appService.getCountdown()) : 0
-        self.remainedTime = self.timeSet.info.timers.enumerated()
+        countdown = timeSet.state == .initialize ? TimeInterval(self.appService.getCountdown()) : 0
+        remainedTime = timeSet.info.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.endTime }
         
         // Get initial state
-        let timer = self.timeSet.info.timers[index]
-        let allTime = self.timeSet.info.timers.reduce(0) { $0 + $1.endTime }
+        let timer = timeSet.info.timers[index]
+        let allTime = timeSet.info.timers.reduce(0) { $0 + $1.endTime }
         let remainedTime = self.remainedTime + (timer.endTime + timer.extraTime - timer.currentTime)
-        let extraTime = self.timeSet.info.timers.reduce(0) { $0 + $1.extraTime }
+        let extraTime = timeSet.info.timers.reduce(0) { $0 + $1.extraTime }
         
-        self.initialState = State(title: self.timeSet.info.title,
+        initialState = State(title: timeSet.info.title,
                                   time: timer.endTime - floor(timer.currentTime),
                                   allTime: allTime,
                                   remainedTime: remainedTime,
-                                  isBookmark: self.timeSet.info.isBookmark,
-                                  isRepeat: self.timeSet.info.isRepeat,
-                                  repeatCount: self.timeSet.info.repeatCount,
+                                  isBookmark: timeSet.info.isBookmark,
+                                  isRepeat: timeSet.info.isRepeat,
+                                  repeatCount: timeSet.info.repeatCount,
                                   extraTime: extraTime,
-                                  countdownState: self.timeSet.state == .initialize ? .stop : .done,
-                                  timeSetState: self.timeSet.state,
-                                  timers: self.timeSet.info.timers,
+                                  countdownState: timeSet.state == .initialize ? .stop : .done,
+                                  timeSetState: timeSet.state,
+                                  timers: timeSet.info.timers.toArray(),
                                   timer: timer,
                                   selectedIndexPath: IndexPath(row: index, section: 0),
                                   shouldSectionReload: true,

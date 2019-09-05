@@ -8,12 +8,14 @@
 
 protocol ServiceProviderProtocol: class {
     var appService: AppServicePorotocol { get }
-    var timeSetService: TimeSetServiceProtocol { get }
     var userDefaultService: UserDefaultServiceProtocol { get }
+    var databaseService: DatabaseServiceProtocol { get }
+    var timeSetService: TimeSetServiceProtocol { get }
 }
 
 class ServiceProvider: ServiceProviderProtocol {
     lazy var appService: AppServicePorotocol = AppService(provider: self)
     lazy var userDefaultService: UserDefaultServiceProtocol = UserDefaultService(provider: self)
+    lazy var databaseService: DatabaseServiceProtocol = RealmService(provider: self)
     lazy var timeSetService: TimeSetServiceProtocol = TimeSetService(provider: self)
 }
