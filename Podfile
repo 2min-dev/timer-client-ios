@@ -18,10 +18,10 @@ target 'timer' do
   pod 'SnapKit', '~> 4.0.0'
 
   # Alamofire
-  pod 'Alamofire'
+  pod 'Alamofire', `~> 4.9.0`
 
   # Realm
-  # pod 'RealmSwift'
+  pod 'RealmSwift', '~> 3.17.3'
   
   # SwiftLint
   pod 'SwiftLint'
