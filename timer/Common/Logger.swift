@@ -15,38 +15,42 @@ class Logger {
         SwiftyBeaver.addDestination(console)
     }
     
-    static func verbose(_ message: Any = "", file: String = #file, function: String = #function, line: Int = #line) {
+    static func verbose(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
-        SwiftyBeaver.verbose("\(className).\(function):\(line) \(message)")
+        let tag = tag.isEmpty ? tag : "[\(tag)] "
+        SwiftyBeaver.verbose("\(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
-    static func debug(_ message: Any = "", file: String = #file, function: String = #function, line: Int = #line) {
+    static func debug(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
-        SwiftyBeaver.debug("\(className).\(function):\(line) \(message)")
+        let tag = tag.isEmpty ? tag : "[\(tag)] "
+        SwiftyBeaver.debug("\(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
-    static func info(_ message: Any = "", file: String = #file, function: String = #function, line: Int = #line) {
+    static func info(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
-        SwiftyBeaver.info("\(className).\(function):\(line) \(message)")
+        let tag = tag.isEmpty ? tag : "[\(tag)] "
+        SwiftyBeaver.info("\(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
-    static func warning(_ message: Any = "", file: String = #file, function: String = #function, line: Int = #line) {
+    static func warning(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
-        SwiftyBeaver.warning("\(className).\(function):\(line) \(message)")
+        let tag = tag.isEmpty ? tag : "[\(tag)] "
+        SwiftyBeaver.warning("\(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
-    static func error(_ message: Any = "", file: String = #file, function: String = #function, line: Int = #line) {
+    static func error(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
-        SwiftyBeaver.error("\(className).\(function):\(line) \(message)")
+        SwiftyBeaver.error("\(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
 }
