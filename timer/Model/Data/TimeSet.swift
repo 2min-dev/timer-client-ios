@@ -185,7 +185,7 @@ class TimeSet: EventStreamProtocol {
         if withState {
             // Time set reset to initialization status
             info.repeatCount = 0
-            info.endState = nil
+            info.endState = .none
         }
     }
     

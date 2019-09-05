@@ -526,6 +526,9 @@ class TimeSetProcessViewController: BaseViewController, View {
             case .overtime:
                 // Show time set memo induce alert
                 showTimeSetMemoAlert(text: "time_set_alert_overtime_title".localized)
+                
+            default:
+                break
             }
         }
     }

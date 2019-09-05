@@ -7,22 +7,21 @@
 //
 
 import Foundation
+import RealmSwift
 
 /// The timer data present object
-class TimerInfo: Codable, NSCopying {
+class TimerInfo: Object, Codable, NSCopying {
     // MARK: - properties
-    var comment: String             // The comment of the timer
-    var alarm: String               // The alarm name of the timer
-    var currentTime: TimeInterval   // Current time interval of the timer
-    var endTime: TimeInterval       // Target end time interval of the timer
-    var extraTime: TimeInterval     // Added extra time of the timer
+    @objc dynamic var comment: String = ""              // The comment of the timer
+    @objc dynamic var alarm: String = ""                // The alarm name of the timer
+    @objc dynamic var currentTime: TimeInterval = 0     // Current time interval of the timer
+    @objc dynamic var endTime: TimeInterval = 0         // Target end time interval of the timer
+    @objc dynamic var extraTime: TimeInterval = 0       // Added extra time of the timer
     
     // MARK: - constructor
-    init(comment: String = "",
-         alarm: String = "system",
-         currentTime: TimeInterval = 0,
-         endTime: TimeInterval = 0,
-         extraTime: TimeInterval = 0) {
+    convenience init(comment: String, alarm: String, currentTime: TimeInterval, endTime: TimeInterval, extraTime: TimeInterval) {
+        self.init()
+        
         self.comment = comment
         self.alarm = alarm
         self.currentTime = currentTime
@@ -32,10 +31,6 @@ class TimerInfo: Codable, NSCopying {
     
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
-        return TimerInfo(comment: comment,
-                         alarm: alarm,
-                         currentTime: currentTime,
-                         endTime: endTime,
-                         extraTime: extraTime)
+        return TimerInfo(comment: comment, alarm: alarm, currentTime: currentTime, endTime: endTime, extraTime: extraTime)
     }
 }

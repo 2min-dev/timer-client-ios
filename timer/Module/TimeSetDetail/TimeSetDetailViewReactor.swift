@@ -75,12 +75,12 @@ class TimeSetDetailViewReactor: Reactor {
     init(timeSetInfo: TimeSetInfo) {
         self.timeSetInfo = timeSetInfo
         
-        self.initialState = State(isBookmark: self.timeSetInfo.isBookmark,
-                                  title: self.timeSetInfo.title,
-                                  allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  isRepeat: self.timeSetInfo.isRepeat,
-                                  timers: self.timeSetInfo.timers,
-                                  timer: self.timeSetInfo.timers.first!,
+        initialState = State(isBookmark: timeSetInfo.isBookmark,
+                                  title: timeSetInfo.title,
+                                  allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                                  isRepeat: timeSetInfo.isRepeat,
+                                  timers: timeSetInfo.timers.toArray(),
+                                  timer: timeSetInfo.timers[0],
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   shouldSectionReload: true)
     }

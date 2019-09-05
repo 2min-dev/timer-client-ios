@@ -8,6 +8,7 @@
 
 import RxSwift
 import ReactorKit
+import RealmSwift
 
 class TimeSetEditViewReactor: Reactor {
     // MARK: - constants
@@ -133,11 +134,11 @@ class TimeSetEditViewReactor: Reactor {
 
         self.timeSetInfo = timeSetInfo ?? TimeSetInfo()
         
-        self.initialState = State(endTime: 0,
+        initialState = State(endTime: 0,
                                   allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                                   time: 0,
-                                  timers: self.timeSetInfo.timers,
-                                  timer: self.timeSetInfo.timers.first!,
+                                  timers: self.timeSetInfo.timers.toArray(),
+                                  timer: self.timeSetInfo.timers[0],
                                   selectedIndexPath: IndexPath(row: 0, section: 0),
                                   canTimeSetStart: false,
                                   alertMessage: nil,
@@ -261,7 +262,7 @@ class TimeSetEditViewReactor: Reactor {
 
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
+        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
         
         var indexPath = currentState.selectedIndexPath
         if  indexPath.row + 1 > timeSetInfo.timers.count {
@@ -281,7 +282,7 @@ class TimeSetEditViewReactor: Reactor {
         // Clear time set
         timeSetInfo = TimeSetInfo()
         
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
+        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
         let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: IndexPath(row: 0, section: 0))
         let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
@@ -290,10 +291,13 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func actionClearTimers() -> Observable<Mutation> {
-        // Clear timers
-        timeSetInfo.timers = [TimerInfo()]
+        // Clear default timers
+        let timers = List<TimerInfo>()
+        timers.append(TimerInfo())
         
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers))
+        timeSetInfo.timers = timers
+        
+        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
         let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: IndexPath(row: 0, section: 0))
         let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
@@ -378,14 +382,13 @@ class TimeSetEditViewReactor: Reactor {
         }
         
         // Remove a timer
-        let timer = timeSetInfo.timers.remove(at: index)
-        
-        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
+        timeSetInfo.timers.remove(at: index)
         // Set index path
         let indexPath = IndexPath(row: index < timeSetInfo.timers.count ? index : index - 1, section: 0)
-        let setSelectIndexPath = actionSelectTimer(at: indexPath)
         
-        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - timer.endTime))
+        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
+        let setSelectIndexPath: Observable<Mutation> = actionSelectTimer(at: indexPath)
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.timers[index].endTime))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
         return .concat(removeTimer, setSelectIndexPath, setAllTime, sectionReload)
