@@ -86,7 +86,7 @@ class TimeSetAlert: UIView {
             attributedString.mutableString.setString(string)
             textLabel.attributedText = attributedString
         }
-        get { textLabel.attributedText?.string }
+        get { return textLabel.attributedText?.string }
     }
     
     // MARK: - constructor
