@@ -11,46 +11,115 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-typealias TimeSetSecionModel = SectionModel<Void, String>
+typealias TimeSetSecionModel = SectionModel<Void, TimeSetCellType>
+
+enum TimeSetCellType {
+    case regular(TimeSetInfo)
+    case empty
+}
 
 class LocalTimeSetViewController: BaseViewController, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
+    
+    private var headerView: CommonHeader { return localTimeSetView.headerView }
     
     private var timeSetCollectionView: UICollectionView { return localTimeSetView.timeSetCollectionView }
     
     // MARK: - properties
     var coordinator: LocalTimeSetViewCoordinator
     
-    private var sections: [TimeSetSecionModel] = [TimeSetSecionModel(model: Void(), items: [ "a", "b", "c", "d", "e", "f" ]),
-                                                  TimeSetSecionModel(model: Void(), items: [ "a", "b", "c", "d", "e", "f" ])]
+    private var sections: [TimeSetSecionModel] = [TimeSetSecionModel(model: Void(), items: [.empty])]
+    private lazy var sectionStream = BehaviorRelay<[TimeSetSecionModel]>(value: sections)
     
     // Time set datasource
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSecionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
-        // Dequeue reusable cell
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UICollectionViewCell.name, for: indexPath)
-        cell.backgroundColor = .black
-        return cell
-    }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
-        // Dequeue supplementary view
-        guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else {
-            fatalError()
+        switch cellType {
+        case let .regular(timeSetinfo):
+            if indexPath.section == 0 {
+                // Saved time set
+                if indexPath.row > 0 {
+                    // Highlight time set
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { return UICollectionViewCell() }
+                    return cell
+                } else {
+                    // Normal time set
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { return UICollectionViewCell() }
+                    return cell
+                }
+            } else {
+                // Bookmared time set
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmaredTimeSetCollectionViewCell.name, for: indexPath) as? BookmaredTimeSetCollectionViewCell else { return UICollectionViewCell() }
+                cell.dividerType = indexPath.row == 0 ? .both : .bottom
+                return cell
+            }
+            
+        case .empty:
+            // Induce time set create
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetInduceCollectionViewCell.name, for: indexPath)
+            return cell
         }
         
+    }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
         switch kind {
-        case UICollectionView.elementKindSectionHeader:
-            // Set view type header
-            supplementaryView.type = .header
+        case JSCollectionViewLayout.Element.header.kind:
+            // Global header
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name, for: indexPath) as? TimeSetHeaderCollectionReusableView else {
+                return UICollectionReusableView()
+            }
+            return supplementaryView
             
-        case UICollectionView.elementKindSectionFooter:
+        case JSCollectionViewLayout.Element.sectionHeader.kind:
+            // Section header
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else {
+                return UICollectionReusableView()
+            }
+            
+            // Set view type
+            let cellType = self.sections[indexPath.section].items.first
+            switch cellType {
+            case .regular(_):
+                supplementaryView.type = .header
+                
+            default:
+                // Set title header except regular type cell
+                supplementaryView.type = .title
+            }
+            
+            // Set header text
+            if indexPath.section == 0 {
+                // Saved time set
+                supplementaryView.titleLabel.text = "저장한 타임셋"
+                supplementaryView.additionalTitleLabel.text = "저장한 타임셋 관리"
+            } else {
+                // Bookmarked time set
+                supplementaryView.titleLabel.text = "즐겨찾는 타임셋"
+                supplementaryView.additionalTitleLabel.text = "즐겨찾는 타임셋 관리"
+            }
+            
+            return supplementaryView
+            
+        case JSCollectionViewLayout.Element.sectionFooter.kind:
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else {
+                return UICollectionReusableView()
+            }
+            
             // Set view type footer
             supplementaryView.type = .footer
             
+            if indexPath.section == 0 {
+                // Saved time set
+                supplementaryView.additionalTitleLabel.text = "저장한 시간 모두보기"
+            } else {
+                // Bookmarked time set
+                supplementaryView.additionalTitleLabel.text = "즐겨찾는 시간 모두보기"
+            }
+            
+            return supplementaryView
+            
         default:
-            break
+            return UICollectionReusableView()
         }
-        
-        return supplementaryView
     })
     
     // MARK: - constructor
@@ -71,13 +140,20 @@ class LocalTimeSetViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register cell & supplimentary view
-        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
-        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
-        timeSetCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: UICollectionViewCell.name)
+        // Register supplimentary view
+        timeSetCollectionView.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
+        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
+        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionFooter.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
+        // Register cell
+        timeSetCollectionView.register(TimeSetInduceCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetInduceCollectionViewCell.name)
+        timeSetCollectionView.register(SavedTimeSetHighlightCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name)
+        timeSetCollectionView.register(SavedTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetCollectionViewCell.name)
+        timeSetCollectionView.register(BookmaredTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: BookmaredTimeSetCollectionViewCell.name)
         
-        // Set table view delegate
-        timeSetCollectionView.delegate = self
+        // Set layout delegate
+        if let layout = timeSetCollectionView.collectionViewLayout as? JSCollectionViewLayout {
+            layout.delegate = self
+        }
     }
     
     override func bind() {
@@ -92,6 +168,8 @@ class LocalTimeSetViewController: BaseViewController, View {
                 }
             })
             .disposed(by: disposeBag)
+        
+        timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     // MARK: - bind
@@ -99,7 +177,7 @@ class LocalTimeSetViewController: BaseViewController, View {
         // MARK: action
         
         // MARK: state
-        Observable<[TimeSetSecionModel]>.just(sections)
+        Observable.just(sections)
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -109,19 +187,79 @@ class LocalTimeSetViewController: BaseViewController, View {
     }
 }
 
-extension LocalTimeSetViewController: UICollectionViewDelegateFlowLayout {
+extension LocalTimeSetViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetThreshold: CGFloat = 3
+        let blurThreshold: CGFloat = 10
+        let weight: CGFloat = 5
+        
+        // Set shadow by scroll
+        headerView.layer.shadow(alpha: 0.04,
+                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
+                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
+    }
+}
+
+extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
+        
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 40.adjust())
+        var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 0)
+        
+        if indexPath.section == 0 {
+            // Saved time set
+            size.height = 140.adjust()
+            if indexPath.row > 0 {
+                // Set width that half of collection view width except first time set
+                size.width = (size.width - layout.minimumInteritemSpacing) / 2
+            }
+        } else {
+            // Bookmarked time set
+            size.height = 90.adjust()
+        }
+        
+        return size
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return section == 0 ? 10.adjust() : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 113.adjust())
+        
+        let cellType = sections[section].items.first
+        switch cellType {
+        case .regular(_):
+            // Common header
+            return CGSize(width: collectionView.bounds.width - horizontalInset, height: 113.adjust())
+            
+        default:
+            // Title header
+            return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 40.adjust())
+    }
+    
+    func referenceSizeForHeader(in collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> CGSize {
+        let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 103.adjust())
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleFooterInSection section: Int) -> Bool {
+        guard let cellType = sections[section].items.first else { return false }
+        
+        switch cellType {
+        case .regular(_):
+            return true
+            
+        default:
+            return false
+        }
     }
 }

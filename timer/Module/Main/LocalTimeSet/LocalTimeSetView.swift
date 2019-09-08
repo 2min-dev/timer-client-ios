@@ -24,8 +24,9 @@ class LocalTimeSetView: UIView {
     }()
     
     let timeSetCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = JSCollectionViewLayout()
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
+        layout.minimumInteritemSpacing = 5.adjust()
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
@@ -38,7 +39,14 @@ class LocalTimeSetView: UIView {
         super.init(frame: frame)
         
         // Set contraints of subviews
-        addAutolayoutSubviews([headerView, timeSetCollectionView])
+        addAutolayoutSubviews([timeSetCollectionView, headerView])
+        timeSetCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
@@ -47,13 +55,6 @@ class LocalTimeSetView: UIView {
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-        }
-        
-        timeSetCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
         }
     }
     
