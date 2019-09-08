@@ -10,6 +10,7 @@ import UIKit
 
 class TimeSetSectionCollectionReusableView: UICollectionReusableView {
     enum SectionType {
+        case title
         case header
         case footer
         
@@ -20,11 +21,17 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
                 
             case .footer:
                 return Constants.Color.gallery
+            
+            default:
+                return Constants.Color.clear
             }
         }
         
         var foregroundColor: UIColor {
             switch self {
+            case .title:
+                return Constants.Color.codGray
+                
             case .header:
                 return Constants.Color.white
                 
@@ -40,15 +47,14 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
                 
             case .footer:
                 return UIImage(named: "icon_arrow_right_carnation")
+                
+            default:
+                return nil
             }
         }
     }
     
     // MARK: - view properties
-    private let topPaddingView: UIView = {
-        return UIView()
-    }()
-    
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(15.adjust())
@@ -93,27 +99,9 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
         return view
     }()
     
-    private lazy var containerStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [topPaddingView, titleLabel, additionalContainerView])
-        view.axis = .vertical
-        view.spacing = 15.adjust()
-        
-        // Set constraint of subviews
-        topPaddingView.snp.makeConstraints { make in
-            make.height.equalTo(30.adjust())
-        }
-        
-        additionalContainerView.snp.makeConstraints { make in
-            make.height.equalTo(40.adjust())
-        }
-        return view
-    }()
-    
     // MARK: - properties
     var type: SectionType = .header {
-        didSet {
-            setType(type)
-        }
+        didSet { setType(type) }
     }
     
     // MARK: - constructor
@@ -121,9 +109,18 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
         super.init(frame: frame)
         
         // Set constraints of subviews
-        addAutolayoutSubview(containerStackView)
-        containerStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        addAutolayoutSubviews([titleLabel, additionalContainerView])
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(additionalContainerView.snp.top).inset(-15.adjust())
+        }
+        
+        additionalContainerView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(40.adjust())
         }
     }
     
@@ -133,11 +130,22 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
     
     // MARK: - private method
     private func setType(_ type: SectionType) {
-        topPaddingView.isHidden = type == .footer
         titleLabel.isHidden = type == .footer
+        additionalContainerView.isHidden = type == .title
         
         additionalContainerView.backgroundColor = type.backgroundColor
         additionalTitleLabel.textColor = type.foregroundColor
         arrowIconImageView.image = type.arrowIconImage
+        
+        // Remake constarint of title label
+        titleLabel.snp.remakeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            if type == .title {
+                make.bottom.equalToSuperview().inset(5.adjust())
+            } else {
+                make.bottom.equalTo(additionalContainerView.snp.top).inset(-15.adjust())
+            }
+        }
     }
 }
