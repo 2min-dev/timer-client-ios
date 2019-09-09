@@ -98,6 +98,7 @@
 "time_set_end_time_full_title" = "종료 예정";
 "time_set_end_time_title" = "종료예정 ";
 "time_set_end_time_format" = "H:mm a";
+"time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1분";
 "time_set_memo_hint" = "메모를 입력하세요.";
 "time_set_memo_bytes_format" = "%d/%d bytes";

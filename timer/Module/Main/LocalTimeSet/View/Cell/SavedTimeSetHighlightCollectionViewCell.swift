@@ -7,15 +7,15 @@
 //
 
 import UIKit
+import RxSwift
+import ReactorKit
 
-class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell {
+class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(24.adjust())
         view.textColor = Constants.Color.white
-        // TODO: Sample text. remove it
-        view.text = "HH:MM:SS"
         return view
     }()
     
@@ -25,8 +25,6 @@ class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell {
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.gallery
-        // TODO: Sample text. remove it
-        view.text = "HH:MM:SS"
         return view
     }()
     
@@ -34,8 +32,6 @@ class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.white
-        // TODO: Sample text. remove it
-        view.text = "타임셋 명"
         return view
     }()
     
@@ -51,10 +47,11 @@ class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell {
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.gallery
-        // TODO: Sample text. remove it
-        view.text = "N"
         return view
     }()
+    
+    // MARK: - properties
+    var disposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(frame: CGRect) {
@@ -96,6 +93,48 @@ class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - bind
+    func bind(reactor: TimeSetCollectionViewCellReactor) {
+        // MARK: action
+        
+        // MARK: state
+        // Title
+        reactor.state
+            .map { $0.title }
+            .distinctUntilChanged()
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Time
+        reactor.state
+            .map { $0.allTime }
+            .distinctUntilChanged()
+            .map { getTime(interval: $0) }
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: timeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // End of time set
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.allTime }
+                .distinctUntilChanged(),
+            Observable<Int>.timer(.seconds(0), period: .seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
+            .observeOn(MainScheduler.instance)
+            .map { Date().addingTimeInterval($0.0) }
+            .map { getDateString(format: "time_set_end_time_full_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .bind(to: endOfTimeSetLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Timer count
+        reactor.state
+            .map { $0.timerCount }
+            .distinctUntilChanged()
+            .map { String($0) }
+            .bind(to: timerCountLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     // MARK: - private method

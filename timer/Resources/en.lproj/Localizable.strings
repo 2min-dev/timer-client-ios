@@ -99,6 +99,7 @@
 "time_set_end_time_full_title" = "End Exp ";
 "time_set_end_time_title" = "Exp ";
 "time_set_end_time_format" = "H:mm a";
+"time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1M";
 "time_set_memo_hint" = "Type memo about this time set.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
