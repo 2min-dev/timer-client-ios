@@ -11,13 +11,6 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-typealias TimeSetSecionModel = SectionModel<Void, TimeSetCellType>
-
-enum TimeSetCellType {
-    case regular(TimeSetInfo)
-    case empty
-}
-
 class LocalTimeSetViewController: BaseViewController, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
@@ -29,14 +22,11 @@ class LocalTimeSetViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: LocalTimeSetViewCoordinator
     
-    private var sections: [TimeSetSecionModel] = [TimeSetSecionModel(model: Void(), items: [.empty])]
-    private lazy var sectionStream = BehaviorRelay<[TimeSetSecionModel]>(value: sections)
-    
     // Time set datasource
-    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSecionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
+    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
         switch cellType {
         case let .regular(timeSetinfo):
-            if indexPath.section == 0 {
+            if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
                 // Saved time set
                 if indexPath.row > 0 {
                     // Highlight time set
@@ -76,7 +66,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             }
             
             // Set view type
-            let cellType = self.sections[indexPath.section].items.first
+            let cellType = self.reactor?.currentState.sections[indexPath.section].items.first
             switch cellType {
             case .regular(_):
                 supplementaryView.type = .header
@@ -87,7 +77,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             }
             
             // Set header text
-            if indexPath.section == 0 {
+            if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
                 // Saved time set
                 supplementaryView.titleLabel.text = "저장한 타임셋"
                 supplementaryView.additionalTitleLabel.text = "저장한 타임셋 관리"
@@ -107,7 +97,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             // Set view type footer
             supplementaryView.type = .footer
             
-            if indexPath.section == 0 {
+            if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
                 // Saved time set
                 supplementaryView.additionalTitleLabel.text = "저장한 시간 모두보기"
             } else {
@@ -175,9 +165,15 @@ class LocalTimeSetViewController: BaseViewController, View {
     // MARK: - bind
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // MARK: state
-        Observable.just(sections)
+        reactor.state
+            .filter { $0.shouldSectionReload }
+            .map { $0.sections }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -207,7 +203,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 0)
         
-        if indexPath.section == 0 {
+        if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
             // Saved time set
             size.height = 140.adjust()
             if indexPath.row > 0 {
@@ -223,19 +219,21 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return section == 0 ? 10.adjust() : 0
+        return section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION ? 10.adjust() : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
+        guard let reactor = reactor, let cellType = reactor.currentState.sections[section].items.first else {
+            return .zero
+        }
         
-        let cellType = sections[section].items.first
+        let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         switch cellType {
         case .regular(_):
             // Common header
             return CGSize(width: collectionView.bounds.width - horizontalInset, height: 113.adjust())
             
-        default:
+        case .empty:
             // Title header
             return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
         }
@@ -251,15 +249,19 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 103.adjust())
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {
+        guard let reactor = reactor, !reactor.currentState.sections[section].items.isEmpty else { return false }
+        return true
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleFooterInSection section: Int) -> Bool {
-        guard let cellType = sections[section].items.first else { return false }
+        guard let reactor = reactor, !reactor.currentState.sections[section].items.isEmpty else { return false }
         
-        switch cellType {
-        case .regular(_):
-            return true
-            
-        default:
-            return false
+        let items = reactor.currentState.sections[section].items
+        if section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
+            return items.count > 9
+        } else {
+            return items.count > 10
         }
     }
 }

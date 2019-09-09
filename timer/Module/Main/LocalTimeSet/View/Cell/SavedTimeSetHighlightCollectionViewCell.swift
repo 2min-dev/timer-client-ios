@@ -101,7 +101,7 @@ class SavedTimeSetHighlightCollectionViewCell: UICollectionViewCell {
     // MARK: - private method
     private func initLayout() {
         backgroundColor = Constants.Color.carnation
-        layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 20.adjust()), blur: 4)
+        layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
         layer.cornerRadius = 20.adjust()
     }
 }
