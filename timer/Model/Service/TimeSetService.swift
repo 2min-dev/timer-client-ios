@@ -70,6 +70,8 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     /// Fetch timer set list
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
+        Logger.info("fetch time set list", tag: "SERVICE")
+        
         if let timeSets = self.timeSets {
             return .just(timeSets)
         } else {
@@ -141,6 +143,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
                     .do(onSuccess: { _ in
                         // Remove time set
                         timeSets.remove(at: index)
+                        self.timeSets = timeSets
                         
                         Logger.info("the time set removed.", tag: "SERVICE")
                     })

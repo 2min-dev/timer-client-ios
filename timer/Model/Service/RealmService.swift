@@ -43,18 +43,14 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         emitter(.error(DatabaseError.transaction))
                     }
                     Logger.info("created objects \n\(info)", tag: "REALM")
-                    
-                    // Pass data through main dispatch queue
-                    let threadSafeObject = ThreadSafeReference(to: info)
-                    DispatchQueue.main.async {
-                        // Create `Realm` in main thread and resolve passed object
-                        guard let realm = try? Realm(),
-                            let resolvedObject = realm.resolve(threadSafeObject) else {
-                            emitter(.error(DatabaseError.initialize))
-                            return
-                        }
-                        emitter(.success(resolvedObject))
+
+                    // Copy time set from realm object
+                    guard let copiedObject = info.copy() as? TimeSetInfo else {
+                        emitter(.error(DatabaseError.unknown))
+                        return
                     }
+
+                    emitter(.success(copiedObject))
                 }
             }
             
@@ -80,32 +76,27 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                     }
                     
                     // Transaction
-                    guard let timeSet = realm.object(ofType: TimeSetInfo.self, forPrimaryKey: id) else {
+                    guard let timeSetInfo = realm.object(ofType: TimeSetInfo.self, forPrimaryKey: id) else {
                         emitter(.error(DatabaseError.notFound))
+                        return
+                    }
+                    
+                    // Copy time set from realm object
+                    guard let copiedObject = timeSetInfo.copy() as? TimeSetInfo else {
+                        emitter(.error(DatabaseError.unknown))
                         return
                     }
                     
                     do {
                         try realm.write {
-                            realm.delete(timeSet)
+                            realm.delete(timeSetInfo)
                         }
                     } catch {
                         emitter(.error(DatabaseError.transaction))
                     }
-                    Logger.info("removed objects \n\(timeSet)", tag: "REALM")
+                    Logger.info("removed objects \n\(timeSetInfo)", tag: "REALM")
                     
-                    // Pass data through main dispatch queue
-                    let threadSafeObject = ThreadSafeReference(to: timeSet)
-                    DispatchQueue.main.async {
-                        // Create `Realm` in main thread and resolve passed object
-                        guard let realm = try? Realm(),
-                            let resolvedObject = realm.resolve(threadSafeObject) else {
-                            emitter(.error(DatabaseError.initialize))
-                            return
-                        }
-                        
-                        emitter(.success(resolvedObject))
-                    }
+                    emitter(.success(copiedObject))
                 }
             }
             
@@ -141,17 +132,13 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                     }
                     Logger.info("updated objects \n\(info)", tag: "REALM")
                     
-                    // Pass data through main dispatch queue
-                    let threadSafeObject = ThreadSafeReference(to: info)
-                    DispatchQueue.main.async {
-                        // Create `Realm` in main thread and resolve passed object
-                        guard let realm = try? Realm(),
-                            let resolvedObject = realm.resolve(threadSafeObject) else {
-                            emitter(.error(DatabaseError.initialize))
-                            return
-                        }
-                        emitter(.success(resolvedObject))
+                    // Copy time set from realm object
+                    guard let copiedObject = info.copy() as? TimeSetInfo else {
+                        emitter(.error(DatabaseError.unknown))
+                        return
                     }
+                    
+                    emitter(.success(copiedObject))
                 }
             }
             
@@ -168,7 +155,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     }
     
     // MARK: - private method
-    func fetch<T>() -> Single<[T]> where T: Object {
+    func fetch<T>() -> Single<[T]> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -185,18 +172,9 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                     let objects = realm.objects(T.self)
                     Logger.info("fetch objects - (\(objects.count)) \n\(objects)", tag: "REALM")
                     
-                    // Pass data through main dispatch queue
-                    let threadSafeObjects = ThreadSafeReference(to: objects)
-                    DispatchQueue.main.async {
-                        // Create `Realm` in main thread and resolve passed object
-                        guard let realm = try? Realm(),
-                            let resolvedObjects = realm.resolve(threadSafeObjects) else {
-                                emitter(.error(DatabaseError.initialize))
-                                return
-                        }
-                        
-                        emitter(.success(resolvedObjects.toArray()))
-                    }
+                    // Copy time set from realm object
+                    let copiedObjects = objects.toArray().compactMap { $0.copy() as? T }
+                    emitter(.success(copiedObjects))
                 }
             }
             
