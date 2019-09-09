@@ -170,12 +170,29 @@ class LocalTimeSetViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        timeSetCollectionView.rx.itemSelected
+            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
+            .subscribe(onNext: { [weak self] in self?.timeSetSelected(cell: $1[$0.section].items[$0.item]) })
+            .disposed(by: disposeBag)
+        
         // MARK: state
         reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.sections }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Perform present by selected cell type
+    private func timeSetSelected(cell type: TimeSetCellType) {
+        switch type {
+        case let .regular(timeSetInfo):
+            _ = coordinator.present(for: .timeSetDetail(timeSetInfo))
+            
+        case .empty:
+            tabBarController?.selectedIndex = MainViewController.TabType.Productivity.rawValue
+        }
     }
     
     deinit {
@@ -255,13 +272,15 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleFooterInSection section: Int) -> Bool {
-        guard let reactor = reactor, !reactor.currentState.sections[section].items.isEmpty else { return false }
+        guard let reactor = reactor else { return false }
         
-        let items = reactor.currentState.sections[section].items
+        let savedTimeSetCount = reactor.currentState.savedTimeSetCount
+        let bookmarkedTimeSetCount = reactor.currentState.bookmarkedTimeSetCount
+        
         if section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
-            return items.count > 9
+            return savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET
         } else {
-            return items.count > 10
+            return bookmarkedTimeSetCount > LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET
         }
     }
 }

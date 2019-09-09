@@ -12,7 +12,7 @@ import UIKit
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum LocalTimeSetRoute {
-        case empty
+        case timeSetDetail(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -25,10 +25,28 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
     }
     
     func present(for route: LocalTimeSetRoute) -> UIViewController? {
-        return get(for: route)
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .timeSetDetail(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
+        return viewController
     }
     
     func get(for route: LocalTimeSetRoute) -> UIViewController? {
-        return nil
+        switch route {
+        case let .timeSetDetail(timeSetInfo):
+            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
+            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
+            let viewController = TimeSetDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        }
     }
 }
