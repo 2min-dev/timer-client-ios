@@ -82,12 +82,12 @@ class LocalTimeSetViewController: BaseViewController, View {
             // Set header text
             if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
                 // Saved time set
-                supplementaryView.titleLabel.text = "저장한 타임셋"
-                supplementaryView.additionalTitleLabel.text = "저장한 타임셋 관리"
+                supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
+                supplementaryView.additionalTitleLabel.text = "local_saved_time_set_management_title".localized
             } else {
                 // Bookmarked time set
-                supplementaryView.titleLabel.text = "즐겨찾는 타임셋"
-                supplementaryView.additionalTitleLabel.text = "즐겨찾는 타임셋 관리"
+                supplementaryView.titleLabel.text = "local_bookmarked_time_set_section_title".localized
+                supplementaryView.additionalTitleLabel.text = "local_bookmarked_time_set_management_title".localized
             }
             
             return supplementaryView
@@ -102,10 +102,10 @@ class LocalTimeSetViewController: BaseViewController, View {
             
             if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
                 // Saved time set
-                supplementaryView.additionalTitleLabel.text = "저장한 시간 모두보기"
+                supplementaryView.additionalTitleLabel.text = "local_saved_time_set_all_show_title".localized
             } else {
                 // Bookmarked time set
-                supplementaryView.additionalTitleLabel.text = "즐겨찾는 시간 모두보기"
+                supplementaryView.additionalTitleLabel.text = "local_bookmarked_time_set_all_show_title".localized
             }
             
             return supplementaryView

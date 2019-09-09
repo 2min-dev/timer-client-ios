@@ -15,7 +15,7 @@ class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.numberOfLines = 0
-        view.text = "주로 쓰는 타임셋을 모아보세요,\n시간을 관리하는 데 도움이 될 거에요 :)"
+        view.text = "local_header_title".localized
         return view
     }()
     

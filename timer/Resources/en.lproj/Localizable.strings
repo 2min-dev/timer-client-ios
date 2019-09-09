@@ -50,6 +50,15 @@
 "history_detail_title" = "History Detail";
 "setting_title" = "Setting";
 
+// MARK: - local time set
+"local_header_title" = "Collect your favorite time set,\n time set to help you manage your time :)";
+"local_saved_time_set_section_title" = "SAVED TIME SET";
+"local_saved_time_set_management_title" = "SAVED TIME SET MANAGEMENT";
+"local_saved_time_set_all_show_title" = "SHOW ALL SAVED TIME SET";
+"local_bookmarked_time_set_section_title" = "BOOKMARKED TIME SET";
+"local_bookmarked_time_set_management_title" = "BOOKMARKED TIME SET MANAGEMENT";
+"local_bookmarked_time_set_all_show_title" = "SHOW ALL BOOKMARKED TIME SET";
+"time_set_induce_title" = "Try add your time set!";
 
 // MARK: - Productivity
 "productivity_button_hour_title" = "H";

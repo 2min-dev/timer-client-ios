@@ -20,7 +20,7 @@ class TimeSetInduceCollectionViewCell: UICollectionViewCell {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
-        view.text = "타임셋을 추가해보세요!"
+        view.text = "time_set_induce_title".localized
         return view
     }()
     
