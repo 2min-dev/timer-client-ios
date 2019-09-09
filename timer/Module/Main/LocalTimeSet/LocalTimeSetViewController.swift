@@ -25,22 +25,25 @@ class LocalTimeSetViewController: BaseViewController, View {
     // Time set datasource
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
         switch cellType {
-        case let .regular(timeSetinfo):
+        case let .regular(reactor):
             if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
                 // Saved time set
                 if indexPath.row > 0 {
                     // Highlight time set
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { return UICollectionViewCell() }
+                    cell.reactor = reactor
                     return cell
                 } else {
                     // Normal time set
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { return UICollectionViewCell() }
+                    cell.reactor = reactor
                     return cell
                 }
             } else {
                 // Bookmared time set
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmaredTimeSetCollectionViewCell.name, for: indexPath) as? BookmaredTimeSetCollectionViewCell else { return UICollectionViewCell() }
                 cell.dividerType = indexPath.row == 0 ? .both : .bottom
+                cell.reactor = reactor
                 return cell
             }
             
@@ -187,8 +190,8 @@ class LocalTimeSetViewController: BaseViewController, View {
     /// Perform present by selected cell type
     private func timeSetSelected(cell type: TimeSetCellType) {
         switch type {
-        case let .regular(timeSetInfo):
-            _ = coordinator.present(for: .timeSetDetail(timeSetInfo))
+        case let .regular(reactor):
+            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetInfo))
             
         case .empty:
             tabBarController?.selectedIndex = MainViewController.TabType.Productivity.rawValue
