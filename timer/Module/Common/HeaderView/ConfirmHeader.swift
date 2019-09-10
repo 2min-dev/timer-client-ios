@@ -76,6 +76,12 @@ class ConfirmHeader: UIView {
 }
 
 extension Reactive where Base: ConfirmHeader {
+    var title: Binder<String> {
+        return Binder(base) { _, title in
+            self.base.titleLabel.text = title
+        }
+    }
+    
     var cancel: ControlEvent<Void> {
         return ControlEvent(events: base.cancelButton.rx.tap)
     }

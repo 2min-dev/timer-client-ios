@@ -14,7 +14,7 @@ class LocalTimeSetView: UIView {
         let view = CommonHeader()
         view.backButton.isHidden = true
         view.buttonTypes = [.search, .history, .setting]
-        view.title = "my_time_set_title".localized
+        view.title = "local_time_set_title".localized
         return view
     }()
     

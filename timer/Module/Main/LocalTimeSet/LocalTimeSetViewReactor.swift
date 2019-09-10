@@ -61,7 +61,7 @@ class LocalTimeSetViewReactor: Reactor {
     init(timeSetService: TimeSetServiceProtocol) {
         self.timeSetService = timeSetService
         
-        self.initialState = State(sections: [TimeSetSectionModel(model: Void(), items: [.empty])],
+        self.initialState = State(sections: [],
                                   savedTimeSetCount: 0,
                                   bookmarkedTimeSetCount: 0,
                                   shouldSectionReload: true)
