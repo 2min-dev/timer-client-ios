@@ -40,10 +40,12 @@ class IntroViewCoordinator: CoordinatorProtocol {
         switch route {
         case .main:
             let coordinator = MainViewCoordinator(provider: provider)
+            let reactor = MainViewReactor(timeSetService: provider.timeSetService)
             let viewController = MainViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController
+            viewController.reactor = reactor
             
             // set tab bar view controller initial index
             viewController.select(at: MainViewController.TabType.Productivity.rawValue, animated: false)
