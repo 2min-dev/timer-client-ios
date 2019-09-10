@@ -132,7 +132,7 @@ class TimeSetEditViewReactor: Reactor {
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
         self.timeSetService = timeSetService
 
-        self.timeSetInfo = timeSetInfo ?? TimeSetInfo()
+        self.timeSetInfo = timeSetInfo ?? TimeSetInfo(id: nil)
         
         initialState = State(endTime: 0,
                                   allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
@@ -280,7 +280,7 @@ class TimeSetEditViewReactor: Reactor {
     
     private func actionClearTimeSet() -> Observable<Mutation> {
         // Clear time set
-        timeSetInfo = TimeSetInfo()
+        timeSetInfo = TimeSetInfo(id: nil)
         
         let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
         let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: IndexPath(row: 0, section: 0))

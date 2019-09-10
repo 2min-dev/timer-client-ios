@@ -76,19 +76,12 @@ class TimeSetInfo: Object, Codable, NSCopying {
         }
     }
     
-    required init() {
+    convenience init(id: String?) {
+        self.init()
+        
+        self.id = id
+        // Add default timer info
         self.timers.append(TimerInfo())
-        super.init()
-    }
-    
-    required init(realm: RLMRealm, schema: RLMObjectSchema) {
-        self.timers.append(TimerInfo(comment: "테ㅡ트", alarm: "호우", currentTime: 0, endTime: 19, extraTime: 90))
-        super.init(realm: realm, schema: schema)
-    }
-    
-    required init(value: Any, schema: RLMSchema) {
-        self.timers.append(TimerInfo(comment: "테솧ㅎㅎ트", alarm: "호우2", currentTime: 0, endTime: 19, extraTime: 90))
-        super.init(value: value, schema: schema)
     }
     
     // MARK: - realm method
@@ -99,7 +92,7 @@ class TimeSetInfo: Object, Codable, NSCopying {
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
         let timers: List<TimerInfo> = List()
-        timers.append(objectsIn: Array(self.timers.compactMap { $0.copy() as? TimerInfo }))
+        timers.append(objectsIn: self.timers.compactMap { $0.copy() as? TimerInfo })
         
         return TimeSetInfo(id: id,
                            title: title,
