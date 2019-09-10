@@ -69,10 +69,13 @@ class TimeSetDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    var timeSetService: TimeSetServiceProtocol
+    
     var timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
-    init(timeSetInfo: TimeSetInfo) {
+    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo) {
+        self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo
         
         initialState = State(isBookmark: timeSetInfo.isBookmark,
@@ -90,13 +93,13 @@ class TimeSetDetailViewReactor: Reactor {
         switch action {
         case .viewWillAppear:
             return actionViewWillAppear()
-            
-        case .toggleRepeat:
-            return actiontoggleRepeat()
-            
+
         case .toggleBookmark:
             return actionToggleBookmark()
             
+        case .toggleRepeat:
+            return actiontoggleRepeat()
+
         case let .selectTimer(at: indexPath):
             return actionSelectTimer(at: indexPath)
         }
@@ -134,16 +137,22 @@ class TimeSetDetailViewReactor: Reactor {
         return .just(.setBookmark(timeSetInfo.isBookmark))
     }
     
-    private func actiontoggleRepeat() -> Observable<Mutation> {
-        // Toggle time set repeat option
-        timeSetInfo.isRepeat.toggle()
-        return .just(.setRepeat(!currentState.isRepeat))
-    }
-    
     private func actionToggleBookmark() -> Observable<Mutation> {
         // Toggle time set bookmark
         timeSetInfo.isBookmark.toggle()
-        return .just(.setBookmark(!currentState.isBookmark))
+        
+        return timeSetService.updateTimeSet(info: timeSetInfo)
+            .asObservable()
+            .map { .setBookmark($0.isBookmark) }
+    }
+    
+    private func actiontoggleRepeat() -> Observable<Mutation> {
+        // Toggle time set repeat option
+        timeSetInfo.isRepeat.toggle()
+    
+        return timeSetService.updateTimeSet(info: timeSetInfo)
+            .asObservable()
+            .map { .setRepeat($0.isRepeat) }
     }
     
     private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {

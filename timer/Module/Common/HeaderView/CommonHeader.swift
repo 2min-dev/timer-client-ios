@@ -97,9 +97,6 @@ class CommonHeader: UIView {
         }
     }
     lazy var buttons: [ButtonType: UIButton] = [.back: backButton]
-    var isBackButtonHidden: Bool = false {
-        didSet { backButton.isHidden = isBackButtonHidden }
-    }
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: UIScreen.main.bounds.width, height: 75.adjust())

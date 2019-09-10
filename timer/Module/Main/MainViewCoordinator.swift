@@ -59,7 +59,7 @@ class MainViewCoordinator: CoordinatorProtocol {
             
         case .local:
             let coordinator = LocalTimeSetViewCoordinator(provider: provider)
-            let reactor = LocalTimeSetViewReactor()
+            let reactor = LocalTimeSetViewReactor(timeSetService: provider.timeSetService)
             let viewController = LocalTimeSetViewController(coordinator: coordinator)
             
             // DI

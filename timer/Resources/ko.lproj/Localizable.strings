@@ -50,6 +50,16 @@
 "history_detail_title" = "히스토리 상세";
 "setting_title" = "설정";
 
+// MARK: - local time set
+"local_header_title" = "주로 쓰는 타임셋을 모아보세요,\n시간을 관리하는 데 도움이 될 거에요 :)";
+"local_saved_time_set_section_title" = "저장한 타임셋";
+"local_saved_time_set_management_title" = "저장한 타임셋 관리";
+"local_saved_time_set_all_show_title" = "저장한 타임셋 모두보기";
+"local_bookmarked_time_set_section_title" = "즐겨찾는 타임셋";
+"local_bookmarked_time_set_management_title" = "즐겨찾는 타임셋 관리";
+"local_bookmarked_time_set_all_show_title" = "즐겨찾는 타임셋 모두보기";
+"time_set_induce_title" = "타임셋을 추가해보세요!";
+
 // MARK: - Productivity
 "productivity_button_hour_title" = "시";
 "productivity_button_minute_title" = "분";
@@ -98,6 +108,7 @@
 "time_set_end_time_full_title" = "종료 예정";
 "time_set_end_time_title" = "종료예정 ";
 "time_set_end_time_format" = "H:mm a";
+"time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1분";
 "time_set_memo_hint" = "메모를 입력하세요.";
 "time_set_memo_bytes_format" = "%d/%d bytes";

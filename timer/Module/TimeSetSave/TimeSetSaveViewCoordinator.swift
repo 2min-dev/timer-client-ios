@@ -35,9 +35,11 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
             }
             let viewControllers = [rootViewController, viewController]
             self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            
         default:
             break
         }
+        
         return viewController
     }
     
@@ -56,9 +58,10 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
             navigationController.isNavigationBarHidden = true
             
             return navigationController
+            
         case let .timeSetDetail(timeSetInfo):
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetInfo: timeSetInfo)
+            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
             let viewController = TimeSetDetailViewController(coordinator: coordinator)
             
             // DI
