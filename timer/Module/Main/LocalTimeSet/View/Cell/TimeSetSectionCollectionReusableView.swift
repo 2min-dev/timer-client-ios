@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class TimeSetSectionCollectionReusableView: UICollectionReusableView {
     enum SectionType {
@@ -58,16 +60,12 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(15.adjust())
-        // TODO: sample text. remove it
-        view.text = "저장한 타임셋"
         return view
     }()
     
     let additionalTitleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        // TODO: sample text. remove it
-        view.text = "저장한 타임셋 관리"
         return view
     }()
     
@@ -104,6 +102,8 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
         didSet { setType(type) }
     }
     
+    var disposeBag = DisposeBag()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -122,10 +122,18 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
             make.bottom.equalToSuperview()
             make.height.equalTo(40.adjust())
         }
+        
+        // Add tap gesture recognizer
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler(gesture:)))
+        additionalContainerView.addGestureRecognizer(tapGesture)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
     }
     
     // MARK: - private method
@@ -147,5 +155,16 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
                 make.bottom.equalTo(additionalContainerView.snp.top).inset(-15.adjust())
             }
         }
+    }
+    
+    // MARK: - selector
+    @objc fileprivate func tapHandler(gesture: UITapGestureRecognizer) {
+        
+    }
+}
+
+extension Reactive where Base: TimeSetSectionCollectionReusableView {
+    var tap: ControlEvent<Void> {
+        return ControlEvent(events: methodInvoked(#selector(base.tapHandler(gesture:))).map { _ in Void() })
     }
 }

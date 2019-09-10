@@ -84,10 +84,20 @@ class LocalTimeSetViewController: BaseViewController, View {
                 // Saved time set
                 supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_management_title".localized
+                
+                // Present to saved time set manage
+                supplementaryView.rx.tap
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.saved)) })
+                    .disposed(by: supplementaryView.disposeBag)
             } else {
                 // Bookmarked time set
                 supplementaryView.titleLabel.text = "local_bookmarked_time_set_section_title".localized
                 supplementaryView.additionalTitleLabel.text = "local_bookmarked_time_set_management_title".localized
+                
+                // Present to bookmarked time set manage
+                supplementaryView.rx.tap
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.bookmarked)) })
+                    .disposed(by: supplementaryView.disposeBag)
             }
             
             return supplementaryView
@@ -168,8 +178,9 @@ class LocalTimeSetViewController: BaseViewController, View {
     // MARK: - bind
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
-        rx.viewWillAppear
-            .map { Reactor.Action.viewWillAppear }
+        Observable.merge(rx.viewDidLoad.asObservable(),
+                         rx.viewWillAppear.asObservable())
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

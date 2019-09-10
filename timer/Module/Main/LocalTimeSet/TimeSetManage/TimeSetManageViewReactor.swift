@@ -10,6 +10,11 @@ import RxSwift
 import ReactorKit
 
 class TimeSetManageViewReactor: Reactor {
+    enum TimeSetType: Int {
+        case saved
+        case bookmarked
+    }
+    
     enum Action {
         
     }
@@ -24,9 +29,14 @@ class TimeSetManageViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    var timeSetService: TimeSetServiceProtocol
+    var type: TimeSetType
     
     // MARK: - constructor
-    init() {
+    init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
+        self.timeSetService = timeSetService
+        self.type = type
+        
         self.initialState = State()
     }
     

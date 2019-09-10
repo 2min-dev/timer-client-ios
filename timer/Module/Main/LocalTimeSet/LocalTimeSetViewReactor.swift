@@ -21,11 +21,8 @@ class LocalTimeSetViewReactor: Reactor {
     static let MAX_BOOKMARKED_TIME_SET = 10
     
     enum Action {
-        /// Fetch local stored time set list when view did load
-        case viewDidLoad
-        
-        /// Fetch local stored time set list when view will appear
-        case viewWillAppear
+        /// Fetch local stored time set list
+        case refresh
     }
     
     enum Mutation {
@@ -73,11 +70,8 @@ class LocalTimeSetViewReactor: Reactor {
     // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
-            
-        case .viewWillAppear:
-            return actionViewWillAppear()
+        case .refresh:
+            return actionRefresh()
         }
     }
     
@@ -106,16 +100,7 @@ class LocalTimeSetViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
-        return fetchTimeSets()
-    }
-    
-    private func actionViewWillAppear() -> Observable<Mutation> {
-        return fetchTimeSets()
-    }
-
-    // MARK: - private method
-    private func fetchTimeSets() -> Observable<Mutation> {
+    private func actionRefresh() -> Observable<Mutation> {
         return timeSetService.fetchTimeSets()
             .asObservable()
             .flatMap { timeSets -> Observable<Mutation> in

@@ -12,6 +12,7 @@ class TimeSetManageView: UIView {
     // MARK: - view properties
     let root: UIView = {
         let view = UIView()
+        view.backgroundColor = .white
         return view
     }()
     
@@ -19,6 +20,10 @@ class TimeSetManageView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        addAutolayoutSubview(root)
+        root.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
