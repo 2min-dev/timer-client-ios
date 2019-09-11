@@ -27,7 +27,7 @@ class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
         addAutolayoutSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().inset(10.adjust())
+            make.bottom.equalToSuperview()
         }
     }
     

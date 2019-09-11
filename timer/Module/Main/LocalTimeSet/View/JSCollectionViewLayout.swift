@@ -26,6 +26,9 @@ import UIKit
     
     /// Asks the delegate for visibility of the footer view in the collection view.
     @objc optional func footerVisible(collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> Bool
+    
+    /// Asks the delegate for the inset of the collection view
+    @objc optional func inset(for collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout) -> UIEdgeInsets
 }
 
 /// Global header & footer added flow layout
@@ -44,8 +47,6 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
     
     // MARK: - properties
     private var attributesCache: [Element: [IndexPath: UICollectionViewLayoutAttributes]] = [:]
-    
-    private var oldBounds: CGRect = .zero
     private var contentSize: CGSize = .zero
     
     private var itemPosition: CGPoint = .zero
@@ -54,11 +55,14 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
     // Flow layout delegate
     weak var delegate: JSCollectionViewDelegateLayout?
     
-    // Supplementary view size properties
+    // Global view inset
+    var globalInset: UIEdgeInsets = .zero
+    
+    // Global supplementary view size
     var globalHeaderReferenceSize: CGSize = .zero
     var globalFooterReferenceSize: CGSize = .zero
     
-    // Supplementary view visible properties
+    // Supplementary view visible
     var headerVisible: Bool = true
     var footerVisible: Bool = true
     var sectionHeaderVisible: Bool = true
@@ -71,7 +75,7 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
     override func prepare() {
         guard let collectionView = collectionView else { return }
         // Get delegate
-        let delegate = getDelegate()
+        delegate = getDelegate()
         
         // Init layout & attributes cache
         prepareLayout(collectionView: collectionView)
@@ -86,6 +90,8 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
                            type: Element.header)
         }
         
+        contentSize.height += delegate?.inset?(for: collectionView, layout: self).top ?? globalInset.top
+        
         let sectionCount = collectionView.numberOfSections
         (0 ..< sectionCount).forEach { section in
             // Section header
@@ -98,6 +104,8 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
                                type: Element.sectionHeader)
             }
             
+            contentSize.height += delegate?.collectionView?(collectionView, layout: self, insetForSectionAt: section).top ?? sectionInset.top
+            
             // Item
             let itemCount = collectionView.numberOfItems(inSection: section)
             (0 ..< itemCount).forEach { item in
@@ -106,8 +114,11 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
                                size: delegate?.collectionView?(collectionView,
                                                                layout: self,
                                                                sizeForItemAt: indexPath) ?? itemSize,
-                               type: .cell)
+                               type: .cell,
+                               section: section)
             }
+            
+            contentSize.height += delegate?.collectionView?(collectionView, layout: self, insetForSectionAt: section).bottom ?? sectionInset.bottom
             
             // Section footer
             if delegate?.collectionView?(collectionView, layout: self, visibleFooterInSection: section) ?? sectionFooterVisible {
@@ -120,6 +131,8 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
             }
         }
         
+        contentSize.height += delegate?.inset?(for: collectionView, layout: self).bottom ?? globalInset.bottom
+        
         // Global footer
         if delegate?.footerVisible?(collectionView: collectionView, layout: self) ?? footerVisible {
             prepareElement(UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: Element.header.kind,
@@ -127,6 +140,11 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
                            size: delegate?.referenceSizeForFooter?(in: collectionView,
                                                                    layout: self) ?? globalFooterReferenceSize,
                            type: Element.footer)
+        }
+
+        // Adjust content offset if content offset was broken
+        if collectionView.bounds.height < contentSize.height {
+            collectionView.contentOffset.y = min(collectionView.contentOffset.y, contentSize.height - collectionView.bounds.height)
         }
     }
     
@@ -141,13 +159,6 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
     
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         return attributesCache[.cell]?[indexPath]
-    }
-    
-    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        if oldBounds.size != newBounds.size {
-            attributesCache.removeAll(keepingCapacity: true)
-        }
-        return true
     }
     
     override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
@@ -192,8 +203,6 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         itemPosition = .zero
         maxRowPosition = 0
         
-        oldBounds = collectionView.bounds
-        
         // Init content size
         let contentInset = collectionView.contentInset
         contentSize = .zero
@@ -201,34 +210,38 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
     }
     
     /// Prepare element attribute for caching
-    private func prepareElement(_ element: UICollectionViewLayoutAttributes, size: CGSize, type: Element) {
-        guard size != .zero else { return }
+    private func prepareElement(_ element: UICollectionViewLayoutAttributes, size: CGSize, type: Element, section: Int = 0) {
+        guard let collectionView = collectionView, size != .zero else { return }
         
         if type == .cell {
             // If element type is cell, calculate cell can enter space
             if itemPosition.x + size.width > contentSize.width {
-                itemPosition = CGPoint(x: 0, y: contentSize.height + minimumLineSpacing)
+                let lineSpacing = delegate?.collectionView?(collectionView, layout: self, minimumLineSpacingForSectionAt: section) ?? minimumLineSpacing
+                itemPosition = CGPoint(x: 0, y: contentSize.height + lineSpacing)
+            } else if itemPosition.x > 0 {
+                let interItemSpacing = delegate?.collectionView?(collectionView, layout: self, minimumInteritemSpacingForSectionAt: section) ?? minimumInteritemSpacing
+                itemPosition.x += interItemSpacing
             } else {
-                itemPosition.x += minimumInteritemSpacing
+                itemPosition.y = contentSize.height
             }
         } else {
             // Supplementary view occupies full width of collection view
             itemPosition = CGPoint(x: 0, y: contentSize.height)
         }
         
-        if type == .sectionFooter {
-            itemPosition.y += sectionInset.bottom
-        }
-        
         // Set element frame attribute
         let origin = itemPosition
         element.frame = CGRect(origin: origin, size: size)
         
-        if type == .sectionHeader {
-            itemPosition.y += sectionInset.top
+        if type == .cell {
+            // If element type is cell, adjust next item position only x
+            itemPosition.x = element.frame.maxX
+        } else {
+            // Except element type is cell, reset next item position by direction
+            itemPosition = CGPoint(x: 0, y: element.frame.maxY)
         }
         
-        itemPosition.x = element.frame.maxX
+        // Update content size
         contentSize.height = max(contentSize.height, element.frame.maxY)
         
         // Add attribute into cache

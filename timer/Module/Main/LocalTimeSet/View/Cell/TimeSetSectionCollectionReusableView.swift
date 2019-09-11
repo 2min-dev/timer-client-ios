@@ -138,12 +138,14 @@ class TimeSetSectionCollectionReusableView: UICollectionReusableView {
     
     // MARK: - private method
     private func setType(_ type: SectionType) {
-        titleLabel.isHidden = type == .footer
-        additionalContainerView.isHidden = type == .title
-        
+        // Set additional view type
         additionalContainerView.backgroundColor = type.backgroundColor
         additionalTitleLabel.textColor = type.foregroundColor
         arrowIconImageView.image = type.arrowIconImage
+        
+        // Hidden view by type
+        titleLabel.isHidden = type == .footer
+        additionalContainerView.isHidden = type == .title
         
         // Remake constarint of title label
         titleLabel.snp.remakeConstraints { make in

@@ -78,6 +78,11 @@ class MainViewController: UITabBarController, View {
         view.addGestureRecognizer(panGestureRecognizer)
     }
     
+    override func viewDidLayoutSubviews() {
+        // Update child view controller view size
+        viewControllers?.forEach { $0.view.frame.size.height = self.view.bounds.height - self._tabBar.bounds.height }
+    }
+    
     // MARK: - bind
     func bind(reactor: MainViewReactor) {
         // MARK: action

@@ -26,7 +26,7 @@ class LocalTimeSetViewController: BaseViewController, View {
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
         switch cellType {
         case let .regular(reactor):
-            if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
+            if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
                 // Saved time set
                 if indexPath.row > 0 {
                     // Highlight time set
@@ -80,7 +80,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             }
             
             // Set header text
-            if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
+            if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
                 // Saved time set
                 supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_management_title".localized
@@ -110,7 +110,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             // Set view type footer
             supplementaryView.type = .footer
             
-            if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
+            if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
                 // Saved time set
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_all_show_title".localized
             } else {
@@ -160,18 +160,6 @@ class LocalTimeSetViewController: BaseViewController, View {
     }
     
     override func bind() {
-        rx.viewWillAppear
-            .take(1)
-            .subscribe(onNext: {
-                if let tabBar = (self.tabBarController as? MainViewController)?._tabBar {
-                    // Adjust time set collection view size by tab bar
-                    self.timeSetCollectionView.snp.updateConstraints { make in
-                        make.bottom.equalToSuperview().inset(tabBar.bounds.height)
-                    }
-                }
-            })
-            .disposed(by: disposeBag)
-        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -234,7 +222,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 0)
         
-        if indexPath.section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
+        if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
             // Saved time set
             size.height = 140.adjust()
             if indexPath.row > 0 {
@@ -250,7 +238,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION ? 10.adjust() : 0
+        return section == LocalTimeSetSectionType.saved.rawValue ? 10.adjust() : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -277,7 +265,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     
     func referenceSizeForHeader(in collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 103.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 93.adjust())
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {
@@ -291,10 +279,33 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
         let savedTimeSetCount = reactor.currentState.savedTimeSetCount
         let bookmarkedTimeSetCount = reactor.currentState.bookmarkedTimeSetCount
         
-        if section == LocalTimeSetViewReactor.SAVED_TIME_SET_SECTION {
+        if section == LocalTimeSetSectionType.saved.rawValue {
             return savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET
         } else {
             return bookmarkedTimeSetCount > LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET
+        }
+    }
+}
+
+// MARK: - local time set datasource
+typealias TimeSetSectionModel = SectionModel<Void, TimeSetCellType>
+
+enum LocalTimeSetSectionType: Int {
+    case saved
+    case bookmarked
+}
+
+enum TimeSetCellType {
+    case regular(TimeSetCollectionViewCellReactor)
+    case empty
+    
+    var item: TimeSetCollectionViewCellReactor? {
+        switch self {
+        case let .regular(reactor):
+            return reactor
+            
+        default:
+            return nil
         }
     }
 }
