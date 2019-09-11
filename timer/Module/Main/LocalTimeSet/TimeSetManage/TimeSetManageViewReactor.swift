@@ -8,6 +8,7 @@
 
 import RxSwift
 import ReactorKit
+import RxDataSources
 
 class TimeSetManageViewReactor: Reactor {
     enum TimeSetType: Int {
@@ -20,24 +21,33 @@ class TimeSetManageViewReactor: Reactor {
     }
     
     enum Mutation {
-        
+        /// Set should section reload `true`
+        case sectionReload
     }
     
     struct State {
+        /// Title of header
+        let type: TimeSetType
         
+        /// The section list of time set list
+        var sections: [TimeSetManageSectionModel]
+        
+        /// Need to reload section
+        var shouldSectionReload: Bool
     }
     
     // MARK: - properties
     var initialState: State
     var timeSetService: TimeSetServiceProtocol
-    var type: TimeSetType
     
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
         self.timeSetService = timeSetService
-        self.type = type
         
-        self.initialState = State()
+        self.initialState = State(type: type,
+                                  sections: [TimeSetManageSectionModel(model: Void(), items: ["a", "b", "c", "d"]),
+                                             TimeSetManageSectionModel(model: Void(), items: ["a", "b", "c", "d"])],
+                                  shouldSectionReload: true)
     }
     
     // MARK: - mutation
@@ -46,7 +56,14 @@ class TimeSetManageViewReactor: Reactor {
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        return state
+        var state = state
+        state.shouldSectionReload = false
+        
+        switch mutation {
+        case .sectionReload:
+            state.shouldSectionReload = true
+            return state
+        }
     }
     
     // MARK: - action method

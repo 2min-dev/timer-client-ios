@@ -1,0 +1,89 @@
+//
+//  TimeSetManageCollectionViewCell.swift
+//  timer
+//
+//  Created by JSilver on 10/09/2019.
+//  Copyright © 2019 Jeong Jin Eun. All rights reserved.
+//
+
+import UIKit
+
+class TimeSetManageCollectionViewCell: UICollectionViewCell {
+    // MARK: - view properties
+    let editButton: UIButton = {
+        let view = UIButton()
+        view.setImage(UIImage(named: "btn_timeset_delete"), for: .normal)
+        view.setImage(UIImage(named: "btn_timeset_recover"), for: .selected)
+        return view
+    }()
+    
+    private let timeLabel: UILabel = {
+        let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
+        view.setContentCompressionResistancePriority(.required, for: .horizontal)
+        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.textColor = Constants.Color.codGray
+        // TODO: sample text. remove it.
+        view.text = "00:00:00"
+        return view
+    }()
+    
+    private let titleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
+        // TODO: sample text. remove it.
+        view.text = "타임셋 명"
+        return view
+    }()
+    
+    let reorderButton: UIButton = {
+        let view = UIButton()
+        view.setImage(UIImage(named: "btn_change"), for: .normal)
+        return view
+    }()
+    
+    // MARK: - constructor
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        // Set constraint of subviews
+        addAutolayoutSubviews([editButton, timeLabel, titleLabel, reorderButton])
+        editButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(8.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(editButton.snp.width)
+        }
+        
+        timeLabel.snp.makeConstraints { make in
+            make.leading.equalTo(editButton.snp.trailing).offset(1)
+            make.centerY.equalTo(editButton)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(timeLabel.snp.trailing).offset(16.adjust())
+            make.trailing.equalTo(reorderButton.snp.leading)
+            make.centerY.equalTo(timeLabel)
+        }
+        
+        reorderButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(10.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(reorderButton.snp.width)
+        }
+        
+        initLayout()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - private method
+    private func initLayout() {
+        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderWidth = 1
+    }
+}
