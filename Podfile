@@ -8,7 +8,7 @@ target 'timer' do
 
   # Pods for timer
   # Common Libraries
-  pod 'JSReorderableCollectionView'
+  pod 'JSReorderableCollectionView', '~> 1.0.4'
 
   # RxSwift
   pod 'RxSwift', '~> 5'
@@ -18,7 +18,7 @@ target 'timer' do
   pod 'SnapKit', '~> 4.0.0'
 
   # Alamofire
-  pod 'Alamofire', `~> 4.9.0`
+  pod 'Alamofire', '~> 4.9.0'
 
   # Realm
   pod 'RealmSwift', '~> 3.17.3'
