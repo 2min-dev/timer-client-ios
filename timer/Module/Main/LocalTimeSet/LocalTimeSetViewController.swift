@@ -193,7 +193,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             _ = coordinator.present(for: .timeSetDetail(reactor.timeSetInfo))
             
         case .empty:
-            tabBarController?.selectedIndex = MainViewController.TabType.Productivity.rawValue
+            (tabBarController as? MainViewController)?.select(at: MainViewController.TabType.Productivity.rawValue, animated: true)
         }
     }
     

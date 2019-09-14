@@ -83,6 +83,7 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell {
     
     // MARK: - private method
     private func initLayout() {
+        backgroundColor = Constants.Color.white
         layer.borderColor = Constants.Color.gallery.cgColor
         layer.borderWidth = 1
     }

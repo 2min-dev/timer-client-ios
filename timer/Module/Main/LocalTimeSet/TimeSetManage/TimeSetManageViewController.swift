@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 import RxDataSources
+import JSReorderableCollectionView
 
 class TimeSetManageViewController: BaseViewController, View {
     // MARK: - view properties
@@ -17,7 +18,7 @@ class TimeSetManageViewController: BaseViewController, View {
     
     var headerView: ConfirmHeader { return timeSetManageView.headerView }
     
-    var timeSetCollectionView: UICollectionView { return timeSetManageView.timeSetCollectionView }
+    var timeSetCollectionView: JSReorderableCollectionView { return timeSetManageView.timeSetCollectionView }
     
     // MARK: - properties
     // Time set datasource
@@ -27,11 +28,9 @@ class TimeSetManageViewController: BaseViewController, View {
         // Inject cell reactor
 //        cell.reactor = reactor
         
-        if indexPath.section == TimeSetManageSectionType.normal.rawValue {
-            cell.editButton.isSelected = false
-        } else {
-            cell.editButton.isSelected = true
-        }
+        // Set button ftype
+        cell.editButton.isSelected = indexPath.section == TimeSetManageSectionType.removed.rawValue
+        
         return cell
     }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
         switch kind {
@@ -78,6 +77,14 @@ class TimeSetManageViewController: BaseViewController, View {
         // Register cell
         timeSetCollectionView.register(TimeSetManageCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetManageCollectionViewCell.name)
         
+        // Add pan gesture recognizer
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler(gesture:)))
+        panGesture.delegate = self
+        timeSetCollectionView.addGestureRecognizer(panGesture)
+        
+        // Set reorderable delegate
+        timeSetCollectionView.reorderableDelegate = self
+        
         // Set layout delegate
         if let layout = timeSetCollectionView.collectionViewLayout as? JSCollectionViewLayout {
             layout.delegate = self
@@ -123,11 +130,49 @@ class TimeSetManageViewController: BaseViewController, View {
         }
     }
     
-    // MARK: - priate method
-    // MARK: - public method
+    // MARK: - selector
+    @objc private func panHandler(gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            let location = gesture.location(in: timeSetCollectionView.superview)
+            timeSetCollectionView.beginInteractiveWithLocation(location)
+            
+        case .changed:
+            let location = gesture.location(in: timeSetCollectionView.superview)
+            timeSetCollectionView.updateInteractiveWithLocation(location)
+            
+        default:
+            timeSetCollectionView.finishInteractive()
+        }
+    }
     
     deinit {
         Logger.verbose()
+    }
+}
+
+extension TimeSetManageViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let point = touch.location(in: timeSetCollectionView)
+        guard let indexPath = timeSetCollectionView.indexPathForItem(at: point),
+            let cell = timeSetCollectionView.cellForItem(at: indexPath) as? TimeSetManageCollectionViewCell else { return false }
+        
+        return cell.reorderButton.frame.contains(timeSetCollectionView.convert(point, to: cell))
+    }
+}
+
+extension TimeSetManageViewController: JSReorderableCollectionViewDelegate {
+    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willAppear snapshot: UIView, source cell: UICollectionViewCell, at point: CGPoint) {
+        guard let superview = collectionView.superview else { return }
+        
+        // Initialize cell & snapshot view
+        snapshot.center = collectionView.convert(cell.center, to: superview)
+        cell.isHidden = true
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            snapshot.center = point
+            snapshot.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        })
     }
 }
 

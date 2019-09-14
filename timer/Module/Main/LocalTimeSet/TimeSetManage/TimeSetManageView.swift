@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import JSReorderableCollectionView
 
 class TimeSetManageView: UIView {
     // MARK: - view properties
@@ -15,14 +16,15 @@ class TimeSetManageView: UIView {
         return view
     }()
     
-    let timeSetCollectionView: UICollectionView = {
+    let timeSetCollectionView: JSReorderableCollectionView = {
         let layout = JSCollectionViewLayout()
         layout.globalInset.top = 10.adjust()
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 40.adjust(), right: 0)
         
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let view = JSReorderableCollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
         view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
+        view.isAxisFixed = true
         return view
     }()
     
