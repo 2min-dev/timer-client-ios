@@ -22,16 +22,22 @@ class TimeSetManageViewController: BaseViewController, View {
     
     // MARK: - properties
     // Time set datasource
-    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetManageSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetManageCollectionViewCell.name, for: indexPath) as? TimeSetManageCollectionViewCell else { return UICollectionViewCell() }
-        
-        // Inject cell reactor
-//        cell.reactor = reactor
-        
-        // Set button ftype
-        cell.editButton.isSelected = indexPath.section == TimeSetManageSectionType.removed.rawValue
-        
-        return cell
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimeSetManageSectionModel>(configureCell: { dataSource, collectionView, indexPath, reactor -> UICollectionViewCell in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetManageCollectionViewCell.name, for: indexPath) as? TimeSetManageCollectionViewCell else { return UICollectionViewCell() }
+            // Inject cell reactor
+            cell.reactor = reactor
+            
+            // Bind cell action
+            cell.editButton.rx.tap
+                .map { [weak self] in self?.timeSetCollectionView.indexPath(for: cell) }
+                .filter { $0 != nil }
+                .map { $0! }
+                .map { Reactor.Action.editTimeSet(at: $0) }
+                .filter { [weak self] _ in self?.reactor != nil }
+                .bind(to: self.reactor!.action)
+                .disposed(by: cell.disposeBag)
+            
+            return cell
     }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
         switch kind {
         case JSCollectionViewLayout.Element.header.kind:
@@ -102,6 +108,15 @@ class TimeSetManageViewController: BaseViewController, View {
     
     func bind(reactor: TimeSetManageViewReactor) {
         // MARK: action
+        rx.viewWillAppear
+            .take(1)
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        headerView.rx.cancel
+            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true) })
+            .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
@@ -206,12 +221,21 @@ extension TimeSetManageViewController: JSCollectionViewDelegateLayout {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 12.adjust())
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {
+        guard section > 0 else { return false }
+        return collectionView.numberOfItems(inSection: section) > 0
+    }
 }
 
 // MARK: - time set manage datasource
-typealias TimeSetManageSectionModel = SectionModel<Void, String>
+typealias TimeSetManageSectionModel = AnimatableSectionModel<TimeSetManageSectionType, TimeSetManageCollectionViewCellReactor>
 
-enum TimeSetManageSectionType: Int {
+enum TimeSetManageSectionType: Int, IdentifiableType {
     case normal
     case removed
+    
+    var identity: Int {
+        return rawValue
+    }
 }
