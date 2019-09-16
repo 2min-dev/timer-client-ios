@@ -47,6 +47,10 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
     
     // MARK: - properties
     private var attributesCache: [Element: [IndexPath: UICollectionViewLayoutAttributes]] = [:]
+    private var previousAttributesCache: [Element: [IndexPath: UICollectionViewLayoutAttributes]] = [:]
+    private var insertedAttributes: [Element: [IndexPath]] = [:]
+    private var deletedAttributes: [Element: [IndexPath]] = [:]
+    
     private var contentSize: CGSize = .zero
     
     private var itemPosition: CGPoint = .zero
@@ -72,6 +76,7 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         return contentSize
     }
     
+    // MARK: - core process
     override func prepare() {
         guard let collectionView = collectionView else { return }
         // Get delegate
@@ -79,6 +84,8 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         
         // Init layout & attributes cache
         prepareLayout(collectionView: collectionView)
+        
+        previousAttributesCache = attributesCache
         Element.allCases.forEach { attributesCache[$0] = [:] }
         
         // Global header
@@ -144,16 +151,19 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
 
         // Adjust content offset if content offset was broken
         if collectionView.bounds.height < contentSize.height {
-            collectionView.contentOffset.y = min(collectionView.contentOffset.y, contentSize.height - collectionView.bounds.height)
+            let offsetY = min(collectionView.contentOffset.y, collectionView.contentSize.height - collectionView.bounds.height)
+            
+            if offsetY > 0 && collectionView.contentOffset.y != offsetY {
+                UIView.animate(withDuration: 0.3) {
+                    collectionView.contentOffset.y = offsetY
+                }
+            }
         }
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var visibleAttributes: [UICollectionViewLayoutAttributes] = []
-        attributesCache.forEach {
-            visibleAttributes.append(contentsOf: ($0.value.filter { $0.value.frame.intersects(rect) }.map { $0.value }))
-        }
-        
+        attributesCache.forEach { visibleAttributes.append(contentsOf: $0.value.filter { $0.value.frame.intersects(rect) }.map { $0.value }) }
         return visibleAttributes
     }
     
@@ -161,23 +171,94 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         return attributesCache[.cell]?[indexPath]
     }
     
+    // MARK: - supplementary view
     override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        switch elementKind {
-        case Element.header.kind:
-            return attributesCache[.header]?[indexPath]
+        guard let element = Element(rawValue: elementKind),
+            let attribute = attributesCache[element]?[indexPath] else { return nil }
+        return attribute
+    }
+    
+    // MARK: - animation
+    override func prepare(forCollectionViewUpdates updateItems: [UICollectionViewUpdateItem]) {
+        super.prepare(forCollectionViewUpdates: updateItems)
+        
+        insertedAttributes.removeAll(keepingCapacity: false)
+        deletedAttributes.removeAll(keepingCapacity: false)
+        
+        // Find inserted/deleted supplementary views
+        Element.allCases.forEach { element in
+            insertedAttributes[element] = []
+            deletedAttributes[element] = []
             
-        case Element.footer.kind:
-            return attributesCache[.footer]?[indexPath]
+            guard element != .cell else { return }
             
-        case Element.sectionHeader.kind:
-            return attributesCache[.sectionHeader]?[indexPath]
+            // Inseted supplementary view
+            attributesCache[element]?.forEach {
+                guard previousAttributesCache[element]?[$0.key] == nil else { return }
+                insertedAttributes[element]?.append($0.key)
+            }
             
-        case Element.sectionFooter.kind:
-            return attributesCache[.sectionFooter]?[indexPath]
-            
-        default:
-            return nil
+            // Deleted supplementary view
+            previousAttributesCache[element]?.forEach {
+                guard attributesCache[element]?[$0.key] == nil else { return }
+                deletedAttributes[element]?.append($0.key)
+            }
         }
+        
+        // Find insserted/deleted items
+        updateItems.forEach {
+            switch $0.updateAction {
+            case .insert:
+                guard let indexPath = $0.indexPathAfterUpdate else { return }
+                insertedAttributes[.cell]?.append(indexPath)
+                
+            case .delete:
+                guard let indexPath = $0.indexPathBeforeUpdate else { return }
+                deletedAttributes[.cell]?.append(indexPath)
+                
+            default:
+                break
+            }
+        }
+    }
+    
+    override func finalizeCollectionViewUpdates() {
+        super.finalizeCollectionViewUpdates()
+        
+        // Clear cache
+        previousAttributesCache.removeAll(keepingCapacity: true)
+        insertedAttributes.removeAll(keepingCapacity: false)
+        deletedAttributes.removeAll(keepingCapacity: false)
+    }
+
+    override func initialLayoutAttributesForAppearingSupplementaryElement(ofKind elementKind: String, at elementIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = super.initialLayoutAttributesForAppearingSupplementaryElement(ofKind: elementKind, at: elementIndexPath)
+        guard let element = Element(rawValue: elementKind), insertedAttributes[element]?.contains(elementIndexPath) ?? false else { return attributes }
+
+        // Set initial attributes of element
+        attributes?.alpha = 0
+
+        return attributes
+    }
+
+    override func finalLayoutAttributesForDisappearingSupplementaryElement(ofKind elementKind: String, at elementIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = super.finalLayoutAttributesForDisappearingSupplementaryElement(ofKind: elementKind, at: elementIndexPath)
+        guard let element = Element(rawValue: elementKind), insertedAttributes[element]?.contains(elementIndexPath) ?? false else { return attributes }
+
+        // Set final attributes of element
+        attributes?.alpha = 0
+
+        return attributes
+    }
+
+    override func indexPathsToInsertForSupplementaryView(ofKind elementKind: String) -> [IndexPath] {
+        guard let element = Element(rawValue: elementKind), let indexPaths = insertedAttributes[element] else { return [] }
+        return indexPaths
+    }
+
+    override func indexPathsToDeleteForSupplementaryView(ofKind elementKind: String) -> [IndexPath] {
+        guard let element = Element(rawValue: elementKind), let indexPaths = deletedAttributes[element] else { return [] }
+        return indexPaths
     }
     
     // MARK: - private method
