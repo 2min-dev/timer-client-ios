@@ -75,6 +75,10 @@ class TimeSetManageViewController: BaseViewController, View {
     // MARK: - lifecycle
     override func loadView() {
         view = TimeSetManageView()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         // Register supplimentary view
         timeSetCollectionView.register(TimeSetManageHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetManageHeaderCollectionReusableView.name)
@@ -95,10 +99,6 @@ class TimeSetManageViewController: BaseViewController, View {
         if let layout = timeSetCollectionView.collectionViewLayout as? JSCollectionViewLayout {
             layout.delegate = self
         }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
     
     // MARK: - bine
