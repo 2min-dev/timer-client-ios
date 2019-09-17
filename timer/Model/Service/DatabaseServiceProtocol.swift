@@ -19,8 +19,14 @@ protocol DatabaseServiceProtocol {
     /// Remove the time set by id
     func removeTimeSet(id: String) -> Single<TimeSetInfo>
     
+    /// Remove time set list
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]>
+    
     /// Update the time set info
-    func updateTimeSet(id: String, info: TimeSetInfo) -> Single<TimeSetInfo>
+    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    
+    /// Update time set list
+    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
     
     // MARK: - database operate
     /// Clear database

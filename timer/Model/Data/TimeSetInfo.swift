@@ -42,6 +42,9 @@ class TimeSetInfo: Object, Codable, NSCopying {
     var timers: List<TimerInfo> = List()                // Timer info list of the timer set
     @objc dynamic var overtimer: TimerInfo?             // Timer info about overtime record of time set
     
+    @objc dynamic var sortingKey: Int = Int.max         // Sorting key of time set
+    @objc dynamic var bookmarkSortingKey: Int = Int.max // Sorting key of bookmarked time set
+    
     // MARK: - constructor
     convenience init(id: String?,
                      title: String,
@@ -54,7 +57,9 @@ class TimeSetInfo: Object, Codable, NSCopying {
                      runningTime: TimeInterval,
                      endState: EndState,
                      timers: List<TimerInfo>,
-                     overtimer: TimerInfo?) {
+                     overtimer: TimerInfo?,
+                     sortingKey: Int,
+                     bookmarkSortingKey: Int) {
         self.init()
         
         self.id = id
@@ -69,6 +74,8 @@ class TimeSetInfo: Object, Codable, NSCopying {
         self.endState = endState
         self.timers = timers
         self.overtimer = overtimer
+        self.sortingKey = sortingKey
+        self.bookmarkSortingKey = bookmarkSortingKey
         
         if self.timers.isEmpty {
             // Add a default timer if timers is empty
@@ -76,19 +83,12 @@ class TimeSetInfo: Object, Codable, NSCopying {
         }
     }
     
-    required init() {
+    convenience init(id: String?) {
+        self.init()
+        
+        self.id = id
+        // Add default timer info
         self.timers.append(TimerInfo())
-        super.init()
-    }
-    
-    required init(realm: RLMRealm, schema: RLMObjectSchema) {
-        self.timers.append(TimerInfo(comment: "테ㅡ트", alarm: "호우", currentTime: 0, endTime: 19, extraTime: 90))
-        super.init(realm: realm, schema: schema)
-    }
-    
-    required init(value: Any, schema: RLMSchema) {
-        self.timers.append(TimerInfo(comment: "테솧ㅎㅎ트", alarm: "호우2", currentTime: 0, endTime: 19, extraTime: 90))
-        super.init(value: value, schema: schema)
     }
     
     // MARK: - realm method
@@ -99,7 +99,7 @@ class TimeSetInfo: Object, Codable, NSCopying {
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
         let timers: List<TimerInfo> = List()
-        timers.append(objectsIn: Array(self.timers.compactMap { $0.copy() as? TimerInfo }))
+        timers.append(objectsIn: self.timers.compactMap { $0.copy() as? TimerInfo })
         
         return TimeSetInfo(id: id,
                            title: title,
@@ -112,6 +112,8 @@ class TimeSetInfo: Object, Codable, NSCopying {
                            runningTime: runningTime,
                            endState: endState,
                            timers: timers,
-                           overtimer: overtimer)
+                           overtimer: overtimer,
+                           sortingKey: sortingKey,
+                           bookmarkSortingKey: bookmarkSortingKey)
     }
 }

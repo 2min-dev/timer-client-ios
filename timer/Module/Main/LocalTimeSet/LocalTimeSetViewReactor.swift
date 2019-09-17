@@ -8,24 +8,15 @@
 
 import RxSwift
 import ReactorKit
-import RxDataSources
-
-typealias TimeSetSectionModel = SectionModel<Void, TimeSetCellType>
 
 class LocalTimeSetViewReactor: Reactor {
     // MARK: - constants
-    static let SAVED_TIME_SET_SECTION = 0
-    static let BOOKMARKED_TIME_SET_SECTION = 1
-    
     static let MAX_SAVED_TIME_SET = 9
     static let MAX_BOOKMARKED_TIME_SET = 10
     
     enum Action {
-        /// Fetch local stored time set list when view did load
-        case viewDidLoad
-        
-        /// Fetch local stored time set list when view will appear
-        case viewWillAppear
+        /// Fetch local stored time set list
+        case refresh
     }
     
     enum Mutation {
@@ -64,7 +55,7 @@ class LocalTimeSetViewReactor: Reactor {
     init(timeSetService: TimeSetServiceProtocol) {
         self.timeSetService = timeSetService
         
-        self.initialState = State(sections: [TimeSetSectionModel(model: Void(), items: [.empty])],
+        self.initialState = State(sections: [],
                                   savedTimeSetCount: 0,
                                   bookmarkedTimeSetCount: 0,
                                   shouldSectionReload: true)
@@ -73,11 +64,8 @@ class LocalTimeSetViewReactor: Reactor {
     // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
-            
-        case .viewWillAppear:
-            return actionViewWillAppear()
+        case .refresh:
+            return actionRefresh()
         }
     }
     
@@ -106,21 +94,15 @@ class LocalTimeSetViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
-        return fetchTimeSets()
-    }
-    
-    private func actionViewWillAppear() -> Observable<Mutation> {
-        return fetchTimeSets()
-    }
-
-    // MARK: - private method
-    private func fetchTimeSets() -> Observable<Mutation> {
+    private func actionRefresh() -> Observable<Mutation> {
         return timeSetService.fetchTimeSets()
             .asObservable()
             .flatMap { timeSets -> Observable<Mutation> in
-                let savedTimeSetItems = timeSets
-                let bookmarkedTimeSetItems = timeSets.filter { $0.isBookmark }
+                let savedTimeSetItems: [TimeSetCellType] = timeSets.sorted(by: { $0.sortingKey < $1.sortingKey })
+                    .map { .regular(TimeSetCollectionViewCellReactor(timeSetInfo: $0)) }
+                let bookmarkedTimeSetItems: [TimeSetCellType] = timeSets.filter { $0.isBookmark }
+                    .sorted(by: { $0.bookmarkSortingKey < $1.bookmarkSortingKey })
+                    .map { .regular(TimeSetCollectionViewCellReactor(timeSetInfo: $0)) }
                 
                 // Get time set items count
                 let savedTimeSetCount = savedTimeSetItems.count
@@ -128,12 +110,15 @@ class LocalTimeSetViewReactor: Reactor {
                 
                 // Create sections
                 let savedTimeSetSection = TimeSetSectionModel(model: Void(),
-                                                              items: savedTimeSetCount == 0 ? [.empty] : savedTimeSetItems[0 ..< min(savedTimeSetCount, LocalTimeSetViewReactor.MAX_SAVED_TIME_SET)].map { .regular(TimeSetCollectionViewCellReactor(timeSetInfo: $0)) })
-                let bookmaredTimeSetSection = TimeSetSectionModel(model: Void(),
-                                                                  items: bookmarkedTimeSetItems[0 ..< min(bookmarkedTimeSetCount, LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET)].map { .regular(TimeSetCollectionViewCellReactor(timeSetInfo: $0)) })
+                                                              items: savedTimeSetCount == 0 ? [.empty] : Array(savedTimeSetItems[0 ..< min(savedTimeSetCount, LocalTimeSetViewReactor.MAX_SAVED_TIME_SET)]))
+                var bookmarkedTimeSetSection: TimeSetSectionModel?
+                if bookmarkedTimeSetCount > 0 {
+                    bookmarkedTimeSetSection = TimeSetSectionModel(model: Void(),
+                                                                   items: Array(bookmarkedTimeSetItems[0 ..< min(bookmarkedTimeSetCount, LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET)]))
+                }
                 
                 // Create mutation observable
-                let setSections: Observable<Mutation> = .just(.setSections([savedTimeSetSection, bookmaredTimeSetSection]))
+                let setSections: Observable<Mutation> = .just(.setSections([savedTimeSetSection, bookmarkedTimeSetSection].compactMap { $0 }))
                 let setSavedTimeSetCount: Observable<Mutation> = .just(.setSavedTimeSetCount(savedTimeSetCount))
                 let setBookmarkedTimeSetCount: Observable<Mutation> = .just(.setBookmarkedTimeSetCount(bookmarkedTimeSetCount))
                 let sectionReload: Observable<Mutation> = .just(.sectionReload)
@@ -141,19 +126,8 @@ class LocalTimeSetViewReactor: Reactor {
                 return .concat(setSections, setSavedTimeSetCount, setBookmarkedTimeSetCount, sectionReload)
         }
     }
-}
-
-enum TimeSetCellType {
-    case regular(TimeSetCollectionViewCellReactor)
-    case empty
     
-    var item: TimeSetCollectionViewCellReactor? {
-        switch self {
-        case let .regular(reactor):
-            return reactor
-            
-        default:
-            return nil
-        }
+    deinit {
+        Logger.verbose()
     }
 }

@@ -1,21 +1,21 @@
 //
-//  TimeSetHeaderCollectionReusableView.swift
+//  TimeSetManageHeaderCollectionReusableView.swift
 //  timer
 //
-//  Created by JSilver on 06/09/2019.
+//  Created by JSilver on 10/09/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 
-class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
+class TimeSetManageHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - view properties
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.numberOfLines = 0
-        view.text = "local_header_title".localized
+        view.text = "time_set_manage_header_title".localized
         return view
     }()
     

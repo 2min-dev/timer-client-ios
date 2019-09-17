@@ -80,7 +80,7 @@ class TimeSetEditView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
-        view.isAxisFixedPoint = true
+        view.isAxisFixed = true
         view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
         view.layout?.axisAlign = .center
         return view

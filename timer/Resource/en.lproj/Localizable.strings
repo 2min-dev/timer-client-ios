@@ -38,11 +38,11 @@
 // MARK: - Screen title
 "time_set_save_title" = "Time Set Save";
 "time_set_edit_title" = "Time Set Edit";
-"my_time_set_title" = "My Time Set";
+"local_time_set_title" = "My Time Set";
 "saved_time_set_title" = "Saved Time Set";
 "saved_time_set_management_title" = "Saved Time Set Management";
-"liked_time_set_title" = "Liked Time Set";
-"liked_time_set_management_title" = "Liked Time Set Management";
+"bookmarked_time_set_title" = "Bookmarked Time Set";
+"bookmarked_time_set_management_title" = "Bookmarked Time Set Management";
 "shared_time_set_title" = "Shared Time Set";
 "shared_time_set_more_title" = "Shared Time Set More";
 "my_shared_time_set_title" = "My Shared Time Set";
@@ -59,6 +59,10 @@
 "local_bookmarked_time_set_management_title" = "BOOKMARKED TIME SET MANAGEMENT";
 "local_bookmarked_time_set_all_show_title" = "SHOW ALL BOOKMARKED TIME SET";
 "time_set_induce_title" = "Try add your time set!";
+
+// MARK: - time set manage
+"time_set_manage_header_title" = "Set the time set order to your liking";
+"time_set_manage_removed_time_set_title" = "Removed time set";
 
 // MARK: - Productivity
 "productivity_button_hour_title" = "H";
