@@ -31,11 +31,14 @@ class TimeSetManageCollectionViewCellReactor: Reactor, IdentifiableType {
     
     // MARK: - properties
     var initialState: State
+    var timeSetInfo: TimeSetInfo
     var identity: String?
     
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {
+        self.timeSetInfo = timeSetInfo
         identity = timeSetInfo.id
+        
         initialState = State(allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                              title: timeSetInfo.title,
                              type: .normal)
