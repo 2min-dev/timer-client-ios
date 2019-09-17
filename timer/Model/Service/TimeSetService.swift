@@ -42,8 +42,14 @@ protocol TimeSetServiceProtocol {
     /// Remove the time set
     func removeTimeSet(id: String) -> Single<TimeSetInfo>
     
+    /// Remove time set list
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]>
+    
     /// Update the time set
     func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    
+    /// Update time set list
+    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
     
 }
 
@@ -88,14 +94,13 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             .flatMap { timeSets in
                 // Convert mutable array
                 var timeSets = timeSets
-                guard let timeSet = info.copy() as? TimeSetInfo else { return .error(TimeSetError.unknown) }
                 
                 // Create time set id
                 let id = self.provider.userDefaultService.integer(.timeSetId)
-                timeSet.id = String(id)
+                info.id = String(id)
                 
                 // Save into realm
-                return self.provider.databaseService.createTimeSet(info: timeSet)
+                return self.provider.databaseService.createTimeSet(info: info)
                     .do(onSuccess: {
                         // Append info current time set list
                         timeSets.append($0)
@@ -108,27 +113,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
                     })
         }
         .do(onSuccess: { _ in self.event.onNext(.created) })
-    }
-    
-    // Update the time set
-    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
-        return fetchTimeSets()
-            .flatMap { timeSets in
-                // Convert mutable array
-                var timeSets = timeSets
-                guard let timeSet = info.copy() as? TimeSetInfo, let id = info.id else { return .error(TimeSetError.unknown) }
-                guard let index = timeSets.firstIndex(where: { $0.id == id }) else { return .error(TimeSetError.notFound) }
-                
-                return self.provider.databaseService.updateTimeSet(id: id, info: timeSet)
-                    .do(onSuccess: {
-                        // Update time set
-                        timeSets[index] = $0
-                        self.timeSets = timeSets
-                        
-                        Logger.info("the time set updated.", tag: "SERVICE")
-                    })
-        }
-        .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
     
     /// Delete the timerset
@@ -149,5 +133,53 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
                     })
         }
         .do(onSuccess: { _ in self.event.onNext(.removed) })
+    }
+    
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]> {
+        return self.provider.databaseService.removeTimeSets(ids: ids)
+            .flatMap { removedTimeSets -> Single<[TimeSetInfo]> in
+                return self.provider.databaseService.fetchTimeSets()
+                    .do(onSuccess: {
+                        // Update time set list
+                        self.timeSets = $0
+                        Logger.info("time set list removed.", tag: "SERVICE")
+                    })
+                    .flatMap { _ in .just(removedTimeSets)}
+        }
+        .do(onSuccess: { _ in self.event.onNext(.removed) })
+    }
+    
+    // Update the time set
+    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+        return fetchTimeSets()
+            .flatMap { timeSets in
+                // Convert mutable array
+                var timeSets = timeSets
+                guard let id = info.id, let index = timeSets.firstIndex(where: { $0.id == id }) else { return .error(TimeSetError.notFound) }
+                
+                return self.provider.databaseService.updateTimeSet(info: info)
+                    .do(onSuccess: {
+                        // Update time set
+                        timeSets[index] = $0
+                        self.timeSets = timeSets
+                        
+                        Logger.info("the time set updated.", tag: "SERVICE")
+                    })
+        }
+        .do(onSuccess: { _ in self.event.onNext(.updated) })
+    }
+    
+    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]> {
+        return self.provider.databaseService.updateTimeSets(infoes: infoes)
+            .flatMap { updatedTimeSets -> Single<[TimeSetInfo]> in
+                return self.provider.databaseService.fetchTimeSets()
+                    .do(onSuccess: {
+                        // Update time set list
+                        self.timeSets = $0
+                        Logger.info("time set list updated.", tag: "SERVICE")
+                    })
+                    .flatMap { _ in .just(updatedTimeSets) }
+        }
+        .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
 }
