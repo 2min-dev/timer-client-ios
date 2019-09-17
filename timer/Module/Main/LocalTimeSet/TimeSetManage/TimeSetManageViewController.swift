@@ -22,19 +22,18 @@ class TimeSetManageViewController: BaseViewController, View {
     
     // MARK: - properties
     // Time set datasource
-    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimeSetManageSectionModel>(configureCell: { dataSource, collectionView, indexPath, reactor -> UICollectionViewCell in
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimeSetManageSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, reactor -> UICollectionViewCell in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetManageCollectionViewCell.name, for: indexPath) as? TimeSetManageCollectionViewCell else { return UICollectionViewCell() }
             // Inject cell reactor
             cell.reactor = reactor
             
             // Bind cell action
             cell.editButton.rx.tap
-                .map { [weak self] in self?.timeSetCollectionView.indexPath(for: cell) }
+                .map { self?.timeSetCollectionView.indexPath(for: cell) }
                 .filter { $0 != nil }
                 .map { $0! }
                 .map { Reactor.Action.editTimeSet(at: $0) }
-                .filter { [weak self] _ in self?.reactor != nil }
-                .bind(to: self.reactor!.action)
+                .subscribe(onNext: { self?.reactor?.action.onNext($0) })
                 .disposed(by: cell.disposeBag)
             
             return cell
@@ -58,6 +57,13 @@ class TimeSetManageViewController: BaseViewController, View {
         default:
             return UICollectionReusableView()
         }
+    }, moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
+        guard let `self` = self else { return }
+        
+        Observable.just((sourceIndexPath, destinationIndexPath))
+            .map { Reactor.Action.moveTimeSet(at: $0, to: $1) }
+            .subscribe(onNext: { self.reactor?.action.onNext($0) })
+            .disposed(by: self.disposeBag)
     })
     
     var coordinator: TimeSetManageViewCoordinator
@@ -118,6 +124,11 @@ class TimeSetManageViewController: BaseViewController, View {
             .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true) })
             .disposed(by: disposeBag)
         
+        headerView.rx.confirm
+            .map { Reactor.Action.apply }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         // MARK: state
         reactor.state
             .map { $0.type }
@@ -129,6 +140,13 @@ class TimeSetManageViewController: BaseViewController, View {
             .filter { $0.shouldSectionReload }
             .map { $0.sections }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.shouldDismiss }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
             .disposed(by: disposeBag)
     }
     
