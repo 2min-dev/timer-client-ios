@@ -1,21 +1,21 @@
 //
-//  TimeSetManageViewCoordinator.swift
+//  AllTimeSetViewCoordinator.swift
 //  timer
 //
-//  Created by JSilver on 10/09/2019.
+//  Created by JSilver on 18/09/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 
-class TimeSetManageViewCoordinator: CoordinatorProtocol {
+class AllTimeSetViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum TimeSetManageRoute {
+    enum AllTimeSetRoute {
         case empty
     }
     
     // MARK: - properties
-    weak var viewController: TimeSetManageViewController!
+    weak var viewController: UIViewController!
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
@@ -24,11 +24,14 @@ class TimeSetManageViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: TimeSetManageRoute) -> UIViewController? {
+    func present(for route: AllTimeSetRoute) -> UIViewController? {
         return get(for: route)
     }
     
-    func get(for route: TimeSetManageRoute) -> UIViewController? {
+    func get(for route: AllTimeSetRoute) -> UIViewController? {
         return nil
     }
+    
+    // MARK: - private method
+    // MARK: - public method
 }
