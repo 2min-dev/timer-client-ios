@@ -24,9 +24,11 @@ class LocalTimeSetViewController: BaseViewController, View {
     
     // Time set datasource
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
+        guard let sectionType = LocalTimeSetSectionType(rawValue: indexPath.section) else { return UICollectionViewCell() }
+        
         switch cellType {
         case let .regular(reactor):
-            if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
+            if sectionType == .saved {
                 // Saved time set
                 if indexPath.row > 0 {
                     // Highlight time set
@@ -64,7 +66,8 @@ class LocalTimeSetViewController: BaseViewController, View {
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
             // Section header
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else {
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView,
+                let sectionType = LocalTimeSetSectionType(rawValue: indexPath.section) else {
                 return UICollectionReusableView()
             }
             
@@ -80,7 +83,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             }
             
             // Set header text
-            if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
+            if sectionType == .saved {
                 // Saved time set
                 supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_management_title".localized
@@ -103,19 +106,30 @@ class LocalTimeSetViewController: BaseViewController, View {
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionFooter.kind:
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else {
-                return UICollectionReusableView()
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView,
+                let sectionType = LocalTimeSetSectionType(rawValue: indexPath.section) else {
+                    return UICollectionReusableView()
             }
             
             // Set view type footer
             supplementaryView.type = .footer
             
-            if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
+            if sectionType == .saved {
                 // Saved time set
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_all_show_title".localized
+                
+                // Present to all saved time set
+                supplementaryView.rx.tap
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.saved)) })
+                    .disposed(by: supplementaryView.disposeBag)
             } else {
                 // Bookmarked time set
                 supplementaryView.additionalTitleLabel.text = "local_bookmarked_time_set_all_show_title".localized
+                
+                // Present to all bookmarked time set
+                supplementaryView.rx.tap
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.saved)) })
+                    .disposed(by: supplementaryView.disposeBag)
             }
             
             return supplementaryView

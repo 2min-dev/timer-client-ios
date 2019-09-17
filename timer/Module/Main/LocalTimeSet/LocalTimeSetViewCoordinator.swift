@@ -13,6 +13,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum LocalTimeSetRoute {
         case timeSetManage(TimeSetManageViewReactor.TimeSetType)
+        case allTimeSet(AllTimeSetViewReactor.TimeSetType)
         case timeSetDetail(TimeSetInfo)
     }
     
@@ -29,10 +30,9 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetManage(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
-            
-        case .timeSetDetail(_):
+        case .timeSetManage(_),
+             .allTimeSet(_),
+             .timeSetDetail(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
@@ -45,6 +45,17 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetManageViewCoordinator(provider: provider)
             let reactor = TimeSetManageViewReactor(timeSetService: provider.timeSetService, type: type)
             let viewController = TimeSetManageViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case let .allTimeSet(type):
+            let coordinator = AllTimeSetViewCoordinator(provider: provider)
+            let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService, type: type)
+            let viewController = AllTimeSetViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

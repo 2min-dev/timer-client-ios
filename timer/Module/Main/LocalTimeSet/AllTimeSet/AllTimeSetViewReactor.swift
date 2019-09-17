@@ -10,6 +10,11 @@ import RxSwift
 import ReactorKit
 
 class AllTimeSetViewReactor: Reactor {
+    enum TimeSetType: Int {
+        case saved
+        case bookmarked
+    }
+    
     enum Action {
         
     }
@@ -19,15 +24,19 @@ class AllTimeSetViewReactor: Reactor {
     }
     
     struct State {
-        
+        /// Title of header
+        let type: TimeSetType
     }
     
     // MARK: - properties
     var initialState: State
+    private let timeSetService: TimeSetServiceProtocol
     
     // MARK: - constructor
-    init() {
-        self.initialState = State()
+    init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
+        self.timeSetService = timeSetService
+        
+        initialState = State(type: type)
     }
     
     // MARK: - mutation
