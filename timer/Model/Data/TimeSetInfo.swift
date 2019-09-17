@@ -42,6 +42,9 @@ class TimeSetInfo: Object, Codable, NSCopying {
     var timers: List<TimerInfo> = List()                // Timer info list of the timer set
     @objc dynamic var overtimer: TimerInfo?             // Timer info about overtime record of time set
     
+    @objc dynamic var sortingKey: Int = Int.max         // Sorting key of time set
+    @objc dynamic var bookmarkSortingKey: Int = Int.max // Sorting key of bookmarked time set
+    
     // MARK: - constructor
     convenience init(id: String?,
                      title: String,
@@ -54,7 +57,9 @@ class TimeSetInfo: Object, Codable, NSCopying {
                      runningTime: TimeInterval,
                      endState: EndState,
                      timers: List<TimerInfo>,
-                     overtimer: TimerInfo?) {
+                     overtimer: TimerInfo?,
+                     sortingKey: Int,
+                     bookmarkSortingKey: Int) {
         self.init()
         
         self.id = id
@@ -69,6 +74,8 @@ class TimeSetInfo: Object, Codable, NSCopying {
         self.endState = endState
         self.timers = timers
         self.overtimer = overtimer
+        self.sortingKey = sortingKey
+        self.bookmarkSortingKey = bookmarkSortingKey
         
         if self.timers.isEmpty {
             // Add a default timer if timers is empty
@@ -105,6 +112,8 @@ class TimeSetInfo: Object, Codable, NSCopying {
                            runningTime: runningTime,
                            endState: endState,
                            timers: timers,
-                           overtimer: overtimer)
+                           overtimer: overtimer,
+                           sortingKey: sortingKey,
+                           bookmarkSortingKey: bookmarkSortingKey)
     }
 }
