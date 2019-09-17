@@ -154,4 +154,10 @@ extension Reactive where Base: CommonHeader {
         })
         return ControlEvent(events: source)
     }
+    
+    var title: Binder<String> {
+        return Binder(base) { _, title in
+            self.base.titleLabel.text = title
+        }
+    }
 }
