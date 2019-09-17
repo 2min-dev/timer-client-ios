@@ -60,6 +60,10 @@
 "local_bookmarked_time_set_all_show_title" = "즐겨찾는 타임셋 모두보기";
 "time_set_induce_title" = "타임셋을 추가해보세요!";
 
+// MARK: - time set manage
+"time_set_manage_header_title" = "원하는대로 타임셋 순서를 설정해서\n보다 편하게 사용해보세요";
+"time_set_manage_removed_time_set_title" = "삭제된 타임셋";
+
 // MARK: - Productivity
 "productivity_button_hour_title" = "시";
 "productivity_button_minute_title" = "분";

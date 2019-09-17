@@ -23,8 +23,6 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it.
-        view.text = "00:00:00"
         return view
     }()
     
@@ -32,8 +30,6 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it.
-        view.text = "타임셋 명"
         return view
     }()
     

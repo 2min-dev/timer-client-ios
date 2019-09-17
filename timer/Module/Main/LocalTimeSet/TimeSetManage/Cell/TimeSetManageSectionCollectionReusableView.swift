@@ -14,8 +14,7 @@ class TimeSetManageSectionCollectionReusableView: UICollectionReusableView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
-        view.text = "삭제된 타임셋"
+        view.text = "time_set_manage_removed_time_set_title".localized
         return view
     }()
     

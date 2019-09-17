@@ -12,10 +12,12 @@ import RxDataSources
 
 class TimeSetManageCollectionViewCellReactor: Reactor, IdentifiableType {
     enum Action {
+        /// Time set moved other section
         case sectionMoved(TimeSetManageSectionType)
     }
     
     enum Mutation {
+        /// Set type of section containing cell
         case setType(TimeSetManageSectionType)
     }
     
@@ -26,6 +28,7 @@ class TimeSetManageCollectionViewCellReactor: Reactor, IdentifiableType {
         /// Title of the time set
         let title: String
         
+        /// Type of section containing cell
         var type: TimeSetManageSectionType
     }
     

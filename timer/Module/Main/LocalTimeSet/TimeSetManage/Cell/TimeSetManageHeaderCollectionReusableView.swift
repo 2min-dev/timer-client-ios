@@ -15,7 +15,7 @@ class TimeSetManageHeaderCollectionReusableView: UICollectionReusableView {
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.numberOfLines = 0
-        view.text = "원하는대로 타임셋 순서를 설정해서\n보다 편하게 사용해보세요"
+        view.text = "time_set_manage_header_title".localized
         return view
     }()
     

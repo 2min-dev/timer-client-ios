@@ -24,7 +24,7 @@ class TimeSetMemoViewController: BaseViewController, View {
     private var memoLengthLabel: UILabel { return timeSetMemoView.memoLengthLabel }
     
     private var cancelButton: FooterButton { return timeSetMemoView.cancelButton }
-    private var pauseButton: FooterButton{ return timeSetMemoView.pauseButton }
+    private var pauseButton: FooterButton { return timeSetMemoView.pauseButton }
     private var restartButton: FooterButton { return timeSetMemoView.restartButton }
     
     // MARK: - properties
