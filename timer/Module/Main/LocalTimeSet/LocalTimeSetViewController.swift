@@ -128,7 +128,7 @@ class LocalTimeSetViewController: BaseViewController, View {
                 
                 // Present to all bookmarked time set
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.saved)) })
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.bookmarked)) })
                     .disposed(by: supplementaryView.disposeBag)
             }
             

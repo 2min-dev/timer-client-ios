@@ -11,7 +11,7 @@ import UIKit
 class AllTimeSetViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum AllTimeSetRoute {
-        case empty
+        case timeSetDetail(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -25,13 +25,28 @@ class AllTimeSetViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: AllTimeSetRoute) -> UIViewController? {
-        return get(for: route)
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .timeSetDetail(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
+        return viewController
     }
     
     func get(for route: AllTimeSetRoute) -> UIViewController? {
-        return nil
+        switch route {
+        case let .timeSetDetail(timeSetInfo):
+            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
+            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
+            let viewController = TimeSetDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        }
     }
-    
-    // MARK: - private method
-    // MARK: - public method
 }
