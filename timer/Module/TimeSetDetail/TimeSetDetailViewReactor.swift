@@ -141,8 +141,8 @@ class TimeSetDetailViewReactor: Reactor {
         // Toggle time set bookmark
         timeSetInfo.isBookmark.toggle()
         
-        return timeSetService.updateTimeSet(info: timeSetInfo)
-            .asObservable()
+        return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
+            .do(onNext: { self.timeSetInfo = $0 })
             .map { .setBookmark($0.isBookmark) }
     }
     
@@ -150,8 +150,8 @@ class TimeSetDetailViewReactor: Reactor {
         // Toggle time set repeat option
         timeSetInfo.isRepeat.toggle()
     
-        return timeSetService.updateTimeSet(info: timeSetInfo)
-            .asObservable()
+        return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
+            .do(onNext: { self.timeSetInfo = $0 })
             .map { .setRepeat($0.isRepeat) }
     }
     
