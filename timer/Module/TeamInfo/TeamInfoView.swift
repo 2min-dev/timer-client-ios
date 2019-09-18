@@ -18,23 +18,18 @@ class TeamInfoView: UIView {
         return view
     }()
     
-    let infoLabel: UILabel = {
+    private let infoLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
         view.numberOfLines = 0
-        
-        // TODO: sample text. remove it
-        let text = """
-        안녕하세요. 잘부탁드립니다.
-        """
         
         // Create paragraph style
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 12.adjust()
         
         // Set attributed string
-        view.attributedText = NSAttributedString(string: text, attributes: [.paragraphStyle: paragraphStyle])
+        view.attributedText = NSAttributedString(string: "team_info_service_description".localized, attributes: [.paragraphStyle: paragraphStyle])
         
         return view
     }()
@@ -43,21 +38,20 @@ class TeamInfoView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
         view.text = Constants.email
         return view
     }()
     
     let copyButton: UIButton = {
         let view = UIButton()
+        view.setContentHuggingPriority(.required, for: .horizontal)
         view.titleLabel?.font = Constants.Font.Regular.withSize(12.adjust())
         view.titleLabel?.textColor = Constants.Color.codGray
-        // TODO: sample text. remove it
-        view.setAttributedTitle(NSAttributedString(string: "복사", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue]), for: .normal)
+        view.setAttributedTitle(NSAttributedString(string: "team_info_email_copy_title".localized, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue]), for: .normal)
         return view
     }()
     
-    lazy var contactView: UIView = {
+    private lazy var contactView: UIView = {
         let view = UIView()
         
         let topDivider = UIView()
@@ -95,7 +89,7 @@ class TeamInfoView: UIView {
         return view
     }()
     
-    lazy var contentView: UIView = {
+    private lazy var contentView: UIView = {
         let view = UIView()
         
         view.addAutolayoutSubviews([infoLabel, contactView])
@@ -104,7 +98,7 @@ class TeamInfoView: UIView {
             make.leading.equalToSuperview().inset(30.adjust())
             make.trailing.equalToSuperview().inset(30.adjust())
         }
-        
+
         contactView.snp.makeConstraints { make in
             make.top.equalTo(infoLabel.snp.bottom).inset(-22.adjust())
             make.leading.equalToSuperview()
@@ -118,13 +112,14 @@ class TeamInfoView: UIView {
     
     lazy var scrollView: UIScrollView = {
         let view = UIScrollView()
+        view.delaysContentTouches = false
         
         // Set constraint of subviews
         view.addAutolayoutSubview(contentView)
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalToSuperview()
-            make.height.equalToSuperview().priorityLow()
+            make.height.lessThanOrEqualToSuperview().priorityLow()
         }
         
         return view

@@ -144,5 +144,9 @@
 "setting_alarm_setting_subtitle_format" = "Cur : %@";
 "setting_countdown_setting_subtitle_format" = "Cur : %dsec";
 
+// MARK: - Team information
+"team_info_email_copy_title" = "Copy";
+"team_info_service_description" = "Hello\nThanks for download our app \"2min\".\n\nSee you in the future for more advanced apps.";
+
 // MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";
