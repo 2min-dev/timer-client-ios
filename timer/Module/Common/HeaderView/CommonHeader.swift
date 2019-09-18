@@ -23,7 +23,7 @@ class CommonHeader: UIView {
         
         var button: UIButton {
             let button = UIButton()
-            button.tag = self.rawValue
+            button.tag = rawValue
             
             switch self {
             case .back:
@@ -69,34 +69,27 @@ class CommonHeader: UIView {
         return view
     }()
     
+    private var additionalLabel: UILabel = {
+        let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.codGray
+        view.isHidden = true
+        return view
+    }()
+    
     // MARK: - properties
     var title: String? {
         set { titleLabel.text = newValue }
         get { return titleLabel.text }
     }
-    var buttonTypes: [ButtonType] = [] {
-        didSet {
-            // Remove all buttons
-            buttonStackView.arrangedSubviews.forEach {
-                $0.removeFromSuperview()
-                buttons[ButtonType(rawValue: $0.tag)!] = nil
-            }
-            
-            // Add all header buttons
-            buttonTypes.forEach {
-                let button = $0.button
-                button.addTarget(self, action: #selector(touchButton(sender:)), for: .touchUpInside)
-                
-                buttonStackView.addArrangedSubview(button)
-                button.snp.makeConstraints { make in
-                    make.width.equalTo(36.adjust())
-                }
-        
-                buttons[$0] = button
-            }
-        }
+    var additionalButtons: [ButtonType] = [] {
+        didSet { setAdditionalButtons(additionalButtons) }
     }
     lazy var buttons: [ButtonType: UIButton] = [.back: backButton]
+    var additionalAttributedText: NSAttributedString? {
+        didSet { setAdditionalAttributedText(additionalAttributedText) }
+    }
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: UIScreen.main.bounds.width, height: 75.adjust())
@@ -108,7 +101,7 @@ class CommonHeader: UIView {
         backgroundColor = Constants.Color.white
         
         // Set consraint of subviews
-        addAutolayoutSubviews([backButton, titleLabel, buttonStackView])
+        addAutolayoutSubviews([backButton, titleLabel, buttonStackView, additionalLabel])
         backButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(10.adjust())
             make.centerY.equalToSuperview()
@@ -117,7 +110,7 @@ class CommonHeader: UIView {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(34.adjust()).priority(999)
+            make.leading.equalTo(backButton.snp.trailing).offset(34.adjust()).priorityHigh()
             make.trailing.equalTo(buttonStackView.snp.leading).offset(-5.adjust())
             make.centerY.equalToSuperview()
         }
@@ -126,13 +119,71 @@ class CommonHeader: UIView {
             make.trailing.equalToSuperview().inset(10.adjust())
             make.centerY.equalToSuperview()
             // Set minimum stack view size if arranged views are empty
-            make.width.equalTo(36).priority(999)
-            make.height.equalTo(36).priority(999)
+            make.width.equalTo(36).priorityHigh()
+            make.height.equalTo(36).priorityHigh()
+        }
+        
+        additionalLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20.adjust())
+            make.centerY.equalToSuperview()
         }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - private method
+    private func setAdditionalButtons(_ buttons: [ButtonType]) {
+        guard !buttons.isEmpty else { return }
+        buttonStackView.isHidden = false
+        additionalLabel.isHidden = true
+        
+        // Remake title constraint
+        titleLabel.snp.remakeConstraints { make in
+            make.leading.equalTo(backButton.snp.trailing).offset(34.adjust()).priorityHigh()
+            make.trailing.equalTo(buttonStackView.snp.leading).offset(-5.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        // Remove all buttons
+        buttonStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+            
+            // Remove buttons in button stack view from `buttons`
+            guard let buttonType = ButtonType(rawValue: $0.tag) else { return }
+            self.buttons[buttonType] = nil
+        }
+        
+        // Add all header buttons
+        buttons.forEach {
+            let button = $0.button
+            
+            button.addTarget(self, action: #selector(touchButton(sender:)), for: .touchUpInside)
+            
+            // Set constraint of subviews
+            buttonStackView.addArrangedSubview(button)
+            button.snp.makeConstraints { make in
+                make.width.equalTo(36.adjust())
+            }
+            
+            self.buttons[$0] = button
+        }
+    }
+    
+    private func setAdditionalAttributedText(_ attributedText: NSAttributedString?) {
+        guard attributedText != nil else { return }
+        buttonStackView.isHidden = true
+        additionalLabel.isHidden = false
+        
+        // Remake title constraint
+        titleLabel.snp.remakeConstraints { make in
+            make.leading.equalTo(backButton.snp.trailing).offset(34.adjust()).priorityHigh()
+            make.trailing.equalTo(additionalLabel.snp.leading).offset(-5.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        additionalLabel.attributedText = additionalAttributedText
     }
     
     // MARK: - selector

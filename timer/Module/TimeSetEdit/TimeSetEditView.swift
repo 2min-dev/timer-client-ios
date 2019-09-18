@@ -15,7 +15,7 @@ class TimeSetEditView: UIView {
     let headerView: CommonHeader = {
         let view = CommonHeader()
         view.title = "time_set_edit_title".localized
-        view.buttonTypes = [.delete]
+        view.additionalButtons = [.delete]
         return view
     }()
     

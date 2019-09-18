@@ -12,7 +12,7 @@ class TimeSetDetailView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
-        view.buttonTypes = [.share, .bookmark, .home]
+        view.additionalButtons = [.share, .bookmark, .home]
         return view
     }()
     
