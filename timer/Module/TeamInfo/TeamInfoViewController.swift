@@ -1,5 +1,5 @@
 //
-//  AppInfoViewController.swift
+//  TeamInfoViewController.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
@@ -9,15 +9,15 @@
 import RxSwift
 import ReactorKit
 
-class AppInfoViewController: BaseViewController, View {
+class TeamInfoViewController: BaseViewController, View {
 	// MARK: - view properties
-	private var appInfoView: AppInfoView { return view as! AppInfoView }
+	private var teamInfoView: TeamInfoView { return view as! TeamInfoView }
 	
 	// MARK: - properties
-	var coordinator: AppInfoCoordinator
+	var coordinator: TeamInfoViewCoordinator
     
     // MARK: - constructor
-    init(coordinator: AppInfoCoordinator) {
+    init(coordinator: TeamInfoViewCoordinator) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -28,7 +28,7 @@ class AppInfoViewController: BaseViewController, View {
     
 	// MARK: - lifecycle
 	override func loadView() {
-		view = AppInfoView()
+		view = TeamInfoView()
 	}
 
 	override func viewDidLoad() {
@@ -36,7 +36,7 @@ class AppInfoViewController: BaseViewController, View {
 	}
 
 	// MARK: - bind
-	func bind(reactor: AppInfoViewReactor) {
+	func bind(reactor: TeamInfoViewReactor) {
 		// MARK: action
 
 		// MARK: state

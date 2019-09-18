@@ -45,12 +45,13 @@ class SettingViewCoordinator: CoordinatorProtocol {
     func get(for route: SettingRoute) -> UIViewController? {
         switch route {
         case .teamInfo:
-            let coordinator = AppInfoCoordinator(provider: provider)
-            let viewController = AppInfoViewController(coordinator: coordinator)
+            let coordinator = TeamInfoViewCoordinator(provider: provider)
+            let reactor = TeamInfoViewReactor()
+            let viewController = TeamInfoViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController
-            viewController.reactor = AppInfoViewReactor()
+            viewController.reactor = reactor
             
             return viewController
 

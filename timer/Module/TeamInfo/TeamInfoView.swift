@@ -1,5 +1,5 @@
 //
-//  AppInfoView.swift
+//  TeamInfoView.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppInfoView: UIView {
+class TeamInfoView: UIView {
     // MARK: - view properties
     let developer: UILabel = {
         let view = UILabel()

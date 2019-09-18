@@ -1,5 +1,5 @@
 //
-//  AppInfoViewReactor.swift
+//  TeamInfoViewReactor.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class AppInfoViewReactor: Reactor {
+class TeamInfoViewReactor: Reactor {
 	enum Action {
 
 	}
