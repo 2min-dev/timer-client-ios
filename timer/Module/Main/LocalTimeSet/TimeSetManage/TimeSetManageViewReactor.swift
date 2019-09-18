@@ -66,17 +66,17 @@ class TimeSetManageViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    var timeSetService: TimeSetServiceProtocol
+    private let timeSetService: TimeSetServiceProtocol
     
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
         self.timeSetService = timeSetService
         
-        self.initialState = State(type: type,
-                                  sections: [TimeSetManageSectionModel(model: .normal, items: []),
-                                             TimeSetManageSectionModel(model: .removed, items: [])],
-                                  shouldSectionReload: true,
-                                  shouldDismiss: false)
+        initialState = State(type: type,
+                             sections: [TimeSetManageSectionModel(model: .normal, items: []),
+                                        TimeSetManageSectionModel(model: .removed, items: [])],
+                             shouldSectionReload: true,
+                             shouldDismiss: false)
     }
     
     // MARK: - mutation

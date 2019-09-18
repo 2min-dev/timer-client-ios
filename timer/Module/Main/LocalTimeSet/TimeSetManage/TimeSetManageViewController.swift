@@ -130,6 +130,7 @@ class TimeSetManageViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Title
         reactor.state
             .map { $0.type }
             .map { [weak self] in self?.getHeaderTitleByType($0) ?? "" }
@@ -156,10 +157,10 @@ class TimeSetManageViewController: BaseViewController, View {
     private func getHeaderTitleByType(_ type: TimeSetManageViewReactor.TimeSetType) -> String {
         switch type {
         case .saved:
-            return "saved_time_set_title".localized
+            return "saved_time_set_management_title".localized
             
         case .bookmarked:
-            return "bookmarked_time_set_title".localized
+            return "bookmarked_time_set_management_title".localized
         }
     }
     

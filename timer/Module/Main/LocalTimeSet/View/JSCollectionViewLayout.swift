@@ -88,8 +88,11 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         previousAttributesCache = attributesCache
         Element.allCases.forEach { attributesCache[$0] = [:] }
         
+        // Section
+        let sectionCount = collectionView.numberOfSections
+        
         // Global header
-        if delegate?.headerVisible?(collectionView: collectionView, layout: self) ?? headerVisible {
+        if sectionCount > 0 && delegate?.headerVisible?(collectionView: collectionView, layout: self) ?? headerVisible {
             prepareElement(UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: Element.header.kind,
                                                             with: IndexPath(item: 0, section: 0)),
                            size: delegate?.referenceSizeForHeader?(in: collectionView,
@@ -99,7 +102,6 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         
         contentSize.height += delegate?.inset?(for: collectionView, layout: self).top ?? globalInset.top
         
-        let sectionCount = collectionView.numberOfSections
         (0 ..< sectionCount).forEach { section in
             // Section header
             if delegate?.collectionView?(collectionView, layout: self, visibleHeaderInSection: section) ?? sectionHeaderVisible {
@@ -141,7 +143,7 @@ class JSCollectionViewLayout: UICollectionViewFlowLayout {
         contentSize.height += delegate?.inset?(for: collectionView, layout: self).bottom ?? globalInset.bottom
         
         // Global footer
-        if delegate?.footerVisible?(collectionView: collectionView, layout: self) ?? footerVisible {
+        if sectionCount > 0 && delegate?.footerVisible?(collectionView: collectionView, layout: self) ?? footerVisible {
             prepareElement(UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: Element.header.kind,
                                                             with: IndexPath(item: 0, section: 0)),
                            size: delegate?.referenceSizeForFooter?(in: collectionView,

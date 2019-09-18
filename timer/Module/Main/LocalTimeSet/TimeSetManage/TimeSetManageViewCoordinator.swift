@@ -10,7 +10,7 @@ import UIKit
 
 class TimeSetManageViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum Route {
+    enum TimeSetManageRoute {
         case empty
     }
     
@@ -24,14 +24,11 @@ class TimeSetManageViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: TimeSetManageRoute) -> UIViewController? {
         return get(for: route)
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: TimeSetManageRoute) -> UIViewController? {
         return nil
     }
-    
-    // MARK: - private method
-    // MARK: - public method
 }
