@@ -13,7 +13,6 @@ class SettingView: UIView {
     let headerView: CommonHeader = {
         let view = CommonHeader()
         view.title = "setting_title".localized
-        // TODO: sample text. remove it
         view.additionalAttributedText = NSAttributedString(string: "setting_version_lastest_title".localized)
         return view
     }()
@@ -36,7 +35,11 @@ class SettingView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.bottom.equalToSuperview()
+            }
         })
         
         headerView.snp.makeConstraints { make in

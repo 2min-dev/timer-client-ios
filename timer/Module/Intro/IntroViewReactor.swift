@@ -55,7 +55,7 @@ class IntroViewReactor: Reactor {
         - title(\(Constants.appTitle ?? ""))
         - version(\(Constants.appVersion ?? ""))
         - build(\(Constants.appBuild ?? ""))
-        - device version(\(Constants.deviceModel))
+        - device version(\(Constants.deviceVersion))
         """)
         
         return Observable<Mutation>.just(.done).delay(.seconds(1), scheduler: MainScheduler.instance)

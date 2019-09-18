@@ -7,48 +7,158 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class TeamInfoView: UIView {
     // MARK: - view properties
-    let developer: UILabel = {
-        let view = UILabel()
-        view.text = "Jeong Jin Eun"
-        view.font = Constants.Font.ExtraBold.withSize(26.adjust())
+    let headerView: CommonHeader = {
+        let view = CommonHeader()
+        view.title = "team_info_title".localized
         return view
     }()
     
-    let email: UILabel = {
+    let infoLabel: UILabel = {
         let view = UILabel()
-        view.text = "email : jsilver.dev@gmail.com"
-        view.font = Constants.Font.Regular.withSize(17.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.textColor = Constants.Color.codGray
+        view.numberOfLines = 0
+        
+        // TODO: sample text. remove it
+        let text = """
+        안녕하세요. 잘부탁드립니다.
+        """
+        
+        // Create paragraph style
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 12.adjust()
+        
+        // Set attributed string
+        view.attributedText = NSAttributedString(string: text, attributes: [.paragraphStyle: paragraphStyle])
+        
         return view
     }()
     
-    let version: UILabel = {
+    let emailLabel: UILabel = {
         let view = UILabel()
-        view.text = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        view.font = Constants.Font.Regular.withSize(17.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.textColor = Constants.Color.codGray
+        // TODO: sample text. remove it
+        view.text = Constants.email
         return view
     }()
     
-    lazy var stackView: UIStackView = { [unowned self] in
-        let view = UIStackView(arrangedSubviews: [self.developer, self.email, self.version])
-        view.axis = .vertical
-        view.alignment = .center
-        view.spacing = 8.adjust()
+    let copyButton: UIButton = {
+        let view = UIButton()
+        view.titleLabel?.font = Constants.Font.Regular.withSize(12.adjust())
+        view.titleLabel?.textColor = Constants.Color.codGray
+        // TODO: sample text. remove it
+        view.setAttributedTitle(NSAttributedString(string: "복사", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue]), for: .normal)
         return view
     }()
+    
+    lazy var contactView: UIView = {
+        let view = UIView()
+        
+        let topDivider = UIView()
+        topDivider.backgroundColor = Constants.Color.silver
+        
+        let bottomDivider = UIView()
+        bottomDivider.backgroundColor = Constants.Color.silver
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([topDivider, emailLabel, copyButton, bottomDivider])
+        topDivider.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(1)
+        }
+        
+        emailLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(30.adjust())
+            make.trailing.equalTo(copyButton.snp.leading).inset(-5.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        copyButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(30.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        bottomDivider.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(1)
+        }
+        return view
+    }()
+    
+    lazy var contentView: UIView = {
+        let view = UIView()
+        
+        view.addAutolayoutSubviews([infoLabel, contactView])
+        infoLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(22.adjust())
+            make.leading.equalToSuperview().inset(30.adjust())
+            make.trailing.equalToSuperview().inset(30.adjust())
+        }
+        
+        contactView.snp.makeConstraints { make in
+            make.top.equalTo(infoLabel.snp.bottom).inset(-22.adjust())
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(40.adjust())
+            make.height.equalTo(60.adjust())
+        }
+        
+        return view
+    }()
+    
+    lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalToSuperview().priorityLow()
+        }
+        
+        return view
+    }()
+    
+    // MARK: - properties
+    private var disposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
-        addAutolayoutSubview(stackView)
+        addAutolayoutSubviews([scrollView, headerView])
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.bottom.equalToSuperview()
+            }
+        }
         
-        stackView.snp.makeConstraints({ make in
-            make.center.equalToSuperview()
-        })
+        headerView.snp.makeConstraints { make in
+            if #available(iOS 11.0, *) {
+                make.top.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.top.equalToSuperview()
+            }
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
