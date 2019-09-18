@@ -1,0 +1,49 @@
+1. RxSwift
+https://github.com/ReactiveX/RxSwift/blob/master/LICENSE.md
+Copyright (c) 2015 Krunoslav Zaher
+The MIT License (MIT)
+
+2. RxCocoa
+https://github.com/ReactiveX/RxSwift/blob/master/LICENSE.md
+Copyright (c) 2015 Krunoslav Zaher
+The MIT License (MIT)
+
+3. RxDataSources
+https://github.com/RxSwiftCommunity/RxDataSources/blob/master/LICENSE.md
+Copyright (c) 2017 RxSwift Community
+The MIT License (MIT)
+
+4. ReactorKit
+https://github.com/ReactorKit/ReactorKit/blob/master/LICENSE
+Copyright (c) 2017 Suyeol Jeon
+The MIT License (MIT)
+
+5. SnapKit
+https://github.com/SnapKit/SnapKit/blob/develop/LICENSE
+Copyright (c) 2011-Present SnapKit Team
+The MIT License (MIT)
+
+6. Alamofire
+https://github.com/Alamofire/Alamofire/blob/master/LICENSE
+Copyright (c) 2014-2018 Alamofire Software Foundation
+The MIT License (MIT)
+
+7. RealmSwift
+https://github.com/realm/realm-cocoa/blob/master/LICENSE
+Apache License (2.0)
+Copyright (c) 2011-2017 Realm Inc
+
+8. SwiftLint
+https://github.com/realm/SwiftLint/blob/master/LICENSE
+Copyright (c) 2015 Realm Inc.
+The MIT License (MIT)
+
+9. SwiftyBeaver
+https://github.com/SwiftyBeaver/SwiftyBeaver/blob/master/LICENSE
+Copyright (c) 2015 Sebastian Kreutzberger
+The MIT License (MIT)
+
+10. JSReorderableCollectionView
+https://github.com/wlsdms0122/JSReorderableCollectionView/blob/master/LICENSE
+Copyright (c) 2019 wlsdms0122
+The MIT License (MIT)
