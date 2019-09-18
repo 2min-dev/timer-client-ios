@@ -328,15 +328,13 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - action method
     private func headerActionHandler(type: CommonHeader.ButtonType) {
         switch type {
-        case .search:
-            // TODO: Present search view
-            break
         case .history:
             // TODO: Present history view
             break
+            
         case .setting:
-            // TODO: Present setting view
-            break
+            _ = coordinator.present(for: .setting)
+            
         default:
             break
         }

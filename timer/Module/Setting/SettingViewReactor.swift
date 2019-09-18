@@ -15,11 +15,11 @@ class SettingViewReactor: Reactor {
     }
     
     enum Mutation {
-        case setSections([CommonTableSection])
+        case setSections([SettingSectionModel])
     }
     
     struct State {
-        var sections: [CommonTableSection]
+        var sections: [SettingSectionModel]
     }
     
     // MARK: - properties
@@ -30,17 +30,19 @@ class SettingViewReactor: Reactor {
     
     // MARK: - constructor
     init(appService: AppServicePorotocol) {
-        self.initialState = State(sections: [])
         self.appService = appService
+        initialState = State(sections: [])
     }
     
+    // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return initSettingMenus().map { Mutation.setSections($0) }
+            return actionViewDidLoad()
         }
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
@@ -50,15 +52,22 @@ class SettingViewReactor: Reactor {
         }
     }
     
-    /**
-     * initialize setting menu
-     * - returns: setting menu section list
-     */
-    func initSettingMenus() -> Observable<[CommonTableSection]> {
-        // add default menu
-        var sections: [CommonTableSection] = []
-        sections.append(CommonTableSection(title: "설정", items: [CommonTableItem(title: "앱 정보")]))
+    // MARK: - action method
+    private func actionViewDidLoad() -> Observable<Mutation> {
+        let countdown = appService.getCountdown()
+        
+        return .just(.setSections(
+            [SettingSectionModel(model: Void(), items: [
+                SettingItem(title: "공지사항", subTitle: nil),
+                SettingItem(title: "기본 사운드 설정", subTitle: "현재 : 기본음"),
+                SettingItem(title: "카운트 다운", subTitle: "현재 : \(countdown)초"),
+                SettingItem(title: "제작팀 정보", subTitle: nil),
+                SettingItem(title: "오픈소스 라이센스", subTitle: nil)
+            ])
+        ]))
+    }
     
-        return .just(sections)
+    deinit {
+        Logger.verbose()
     }
 }

@@ -11,16 +11,21 @@ import RxDataSources
 import ReactorKit
 
 class SettingViewController: BaseViewController, View {
-    enum SettingSection: Int {
-        case setting = 0
-    }
-    
     // MARK: - view properties
     private var settingView: SettingView { return view as! SettingView }
+    
+    private var headerView: CommonHeader { return settingView.headerView }
+    
     private var settingTableView: UITableView { return settingView.tableView }
     
     // MARK: - properties
     var coordinator: SettingViewCoordinator
+    
+    private let dataSource = RxTableViewSectionedReloadDataSource<SettingSectionModel>(configureCell: { (datasource, tableview, indexPath, item) in
+        let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+        cell.textLabel?.text = item.title
+        return cell
+    })
     
     // MARK: - constructor
     init(coordinator: SettingViewCoordinator) {
@@ -41,64 +46,48 @@ class SettingViewController: BaseViewController, View {
         super.viewDidLoad()
         
         settingTableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
-        initSettingTableView()
-    }
-    
-    deinit {
-        Logger.verbose()
     }
     
     // MARK: - bind
     func bind(reactor: SettingViewReactor) {
         // MARK: action
-        reactor.action.onNext(.viewDidLoad)
+        rx.viewDidLoad
+            .map { Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
+            .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
             .map { $0.sections }
-            .bind(to: settingTableView.rx.items(dataSource: RxTableViewSectionedReloadDataSource<CommonTableSection>(configureCell: { (datasource, tableview, indexPath, item) in
-                let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
-                cell.textLabel?.text = item.title
-                return cell
-            })))
+            .bind(to: settingTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
     
-    /**
-     * initizlize setting table view datasource & delegate
-     */
-    private func initSettingTableView() {
-        // set setting menu select action
-        settingTableView.rx.itemSelected
-            .subscribe(onNext: { [weak self] indexPath in
-                // caution: ControlEvent doesn't complete. so you have to add [weak self]
-                // when you want to use .subscribe about ControlEvent (ex. tap)
-                guard let `self` = self else { return }
-                
-                guard let cell = self.settingTableView.cellForRow(at: indexPath) else {
-                    Logger.error("setting table view doesn't have cell at indexPath.")
-                    return
-                }
-                
-                guard let section: SettingSection = SettingSection(rawValue: indexPath.section) else {
-                    Logger.error("setting table view doesn't have section at indexPath")
-                    return
-                }
-                
-                // set cell selected property to false for disable select background
-                cell.isSelected = false
-                
-                switch section {
-                // setting menu
-                case .setting:
-                    switch indexPath.row {
-                    case 0:
-                        _ = self.coordinator.present(for: .appInfo)
-                    default:
-                        Logger.error("not valid index path.")
-                    }
-                }
-            })
-            .disposed(by: disposeBag)
+    // MARK: - action
+    /// Handle header button tap action according to button type
+    private func headerActionHandler(type: CommonHeader.ButtonType) {
+        switch type {
+        case .back:
+            navigationController?.popViewController(animated: true)
+
+        default:
+            break
+        }
     }
+    
+    deinit {
+        Logger.verbose()
+    }
+}
+
+// MARK: - setting datasource
+typealias SettingSectionModel = SectionModel<Void, SettingItem>
+
+struct SettingItem {
+    var title: String
+    var subTitle: String?
 }

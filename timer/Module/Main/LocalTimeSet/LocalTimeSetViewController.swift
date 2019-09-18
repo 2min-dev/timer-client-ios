@@ -186,6 +186,10 @@ class LocalTimeSetViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.itemSelected
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
             .subscribe(onNext: { [weak self] in self?.timeSetSelected(cell: $1[$0.section].items[$0.item]) })
@@ -200,6 +204,20 @@ class LocalTimeSetViewController: BaseViewController, View {
     }
     
     // MARK: - action method
+    private func headerActionHandler(type: CommonHeader.ButtonType) {
+        switch type {
+        case .history:
+            // TODO: Present history view
+            break
+            
+        case .setting:
+            _ = coordinator.present(for: .setting)
+            
+        default:
+            break
+        }
+    }
+    
     /// Perform present by selected cell type
     private func timeSetSelected(cell type: TimeSetCellType) {
         switch type {

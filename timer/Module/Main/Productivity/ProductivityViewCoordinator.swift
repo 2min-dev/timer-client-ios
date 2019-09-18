@@ -15,6 +15,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         case timerOption
         case timeSetSave(TimeSetInfo)
         case timeSetProcess(TimeSetInfo?)
+        case setting
     }
 
     // MARK: - properties
@@ -30,10 +31,9 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetSave(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
-            
-        case .timeSetProcess(_):
+        case .timeSetSave(_),
+             .timeSetProcess(_),
+             .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
             
         default:
@@ -74,6 +74,17 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
             guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case .setting:
+            let coordinator = SettingViewCoordinator(provider: provider)
+            let reactor = SettingViewReactor(appService: provider.appService)
+            let viewController = SettingViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

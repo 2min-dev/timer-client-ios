@@ -10,24 +10,43 @@ import UIKit
 
 class SettingView: UIView {
     // MARK: view propeties
+    let headerView: CommonHeader = {
+        let view = CommonHeader()
+        view.title = "setting_title".localized
+        // TODO: sample text. remove it
+        view.additionalAttributedText = NSAttributedString(string: "최신버전입니다!")
+        return view
+    }()
+    
     let tableView: UITableView = {
-        let view = UITableView(frame: CGRect.zero, style: .grouped)
+        let view = UITableView()
+        view.separatorStyle = .none
         return view
     }()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = Constants.Color.white
         
-        addAutolayoutSubview(tableView)
-        
+        // Set constraint of subviews
+        addAutolayoutSubviews([tableView, headerView])
         tableView.snp.makeConstraints({ make in
-            if #available(iOS 11.0, *) {
-                make.edges.equalTo(safeAreaLayoutGuide)
-            } else {
-                make.edges.equalToSuperview()
-            }
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         })
+        
+        headerView.snp.makeConstraints { make in
+            if #available(iOS 11.0, *) {
+                make.top.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.top.equalToSuperview()
+            }
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

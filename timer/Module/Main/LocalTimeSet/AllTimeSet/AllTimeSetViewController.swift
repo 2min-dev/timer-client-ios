@@ -154,7 +154,6 @@ class AllTimeSetViewController: BaseViewController, View {
     }
     
     // MARK: - action method
-    
     /// Handle header button tap action according to button type
     private func headerActionHandler(type: CommonHeader.ButtonType) {
         switch type {
