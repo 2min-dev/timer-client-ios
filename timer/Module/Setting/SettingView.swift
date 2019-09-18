@@ -21,6 +21,7 @@ class SettingView: UIView {
     let tableView: UITableView = {
         let view = UITableView()
         view.separatorStyle = .none
+        view.rowHeight = 60.adjust()
         return view
     }()
     

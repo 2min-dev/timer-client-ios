@@ -22,8 +22,11 @@ class SettingViewController: BaseViewController, View {
     var coordinator: SettingViewCoordinator
     
     private let dataSource = RxTableViewSectionedReloadDataSource<SettingSectionModel>(configureCell: { (datasource, tableview, indexPath, item) in
-        let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
-        cell.textLabel?.text = item.title
+        guard let cell = tableview.dequeueReusableCell(withIdentifier: SettingTableViewCell.name, for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
+        
+        cell.titleLabel.text = item.title
+        cell.subtitleLabel.text = item.subtitle
+        
         return cell
     })
     
@@ -45,7 +48,7 @@ class SettingViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        settingTableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        settingTableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.name)
     }
     
     // MARK: - bind
@@ -89,5 +92,5 @@ typealias SettingSectionModel = SectionModel<Void, SettingItem>
 
 struct SettingItem {
     var title: String
-    var subTitle: String?
+    var subtitle: String?
 }

@@ -148,6 +148,7 @@
 		F3F5F875233155E8003271B3 /* AllTimeSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F871233155E8003271B3 /* AllTimeSetViewReactor.swift */; };
 		F3F5F876233155E8003271B3 /* AllTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F872233155E8003271B3 /* AllTimeSetViewController.swift */; };
 		F3F5F877233155E8003271B3 /* AllTimeSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F873233155E8003271B3 /* AllTimeSetView.swift */; };
+		F3F5F87A233221D7003271B3 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F879233221D7003271B3 /* SettingTableViewCell.swift */; };
 		F3F65D7422CFAC77009C667B /* SharedTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7322CFAC77009C667B /* SharedTimeSetViewController.swift */; };
 		F3F65D7622CFACA5009C667B /* SharedTimeSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7522CFACA5009C667B /* SharedTimeSetViewReactor.swift */; };
 		F3F65D7822CFACE4009C667B /* SharedTimeSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7722CFACE4009C667B /* SharedTimeSetView.swift */; };
@@ -352,6 +353,7 @@
 		F3F5F871233155E8003271B3 /* AllTimeSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTimeSetViewReactor.swift; sourceTree = "<group>"; };
 		F3F5F872233155E8003271B3 /* AllTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTimeSetViewController.swift; sourceTree = "<group>"; };
 		F3F5F873233155E8003271B3 /* AllTimeSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTimeSetView.swift; sourceTree = "<group>"; };
+		F3F5F879233221D7003271B3 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		F3F65D7322CFAC77009C667B /* SharedTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetViewController.swift; sourceTree = "<group>"; };
 		F3F65D7522CFACA5009C667B /* SharedTimeSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetViewReactor.swift; sourceTree = "<group>"; };
 		F3F65D7722CFACE4009C667B /* SharedTimeSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetView.swift; sourceTree = "<group>"; };
@@ -614,6 +616,7 @@
 		F3735C9C22CFAA8200DC247C /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				F3F5F878233221B8003271B3 /* Cell */,
 				F303F274225CCBA100A11FAF /* SettingViewController.swift */,
 				F303F276225CCBA600A11FAF /* SettingView.swift */,
 				F303F278225CCCE300A11FAF /* SettingViewReactor.swift */,
@@ -949,6 +952,14 @@
 				F3F5F870233155E8003271B3 /* AllTimeSetViewCoordinator.swift */,
 			);
 			path = AllTimeSet;
+			sourceTree = "<group>";
+		};
+		F3F5F878233221B8003271B3 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F3F5F879233221D7003271B3 /* SettingTableViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1298,6 +1309,7 @@
 				F303F271225CCB6A00A11FAF /* LocalTimeSetViewCoordinator.swift in Sources */,
 				F3F5413F232778D100D618D2 /* TimeSetManageViewController.swift in Sources */,
 				F3C18750226204EB00B2C644 /* AppInfoViewReactor.swift in Sources */,
+				F3F5F87A233221D7003271B3 /* SettingTableViewCell.swift in Sources */,
 				F303F27D225CCE2400A11FAF /* ProductivityView.swift in Sources */,
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
 				F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */,

@@ -58,11 +58,11 @@ class SettingViewReactor: Reactor {
         
         return .just(.setSections(
             [SettingSectionModel(model: Void(), items: [
-                SettingItem(title: "공지사항", subTitle: nil),
-                SettingItem(title: "기본 사운드 설정", subTitle: "현재 : 기본음"),
-                SettingItem(title: "카운트 다운", subTitle: "현재 : \(countdown)초"),
-                SettingItem(title: "제작팀 정보", subTitle: nil),
-                SettingItem(title: "오픈소스 라이센스", subTitle: nil)
+                SettingItem(title: "공지사항", subtitle: nil),
+                SettingItem(title: "기본 사운드 설정", subtitle: "현재 : 기본음"),
+                SettingItem(title: "카운트 다운", subtitle: "현재 : \(countdown)초"),
+                SettingItem(title: "제작팀 정보", subtitle: nil),
+                SettingItem(title: "오픈소스 라이센스", subtitle: nil)
             ])
         ]))
     }
