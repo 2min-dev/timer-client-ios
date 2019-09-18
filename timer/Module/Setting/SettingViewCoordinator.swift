@@ -12,7 +12,11 @@ import UIKit
 class SettingViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum SettingRoute {
-        case appInfo
+        case notice
+        case alarmSetting
+        case countdownSetting
+        case teamInfo
+        case license
     }
     
     // MARK: - properties
@@ -28,10 +32,11 @@ class SettingViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .appInfo:
-            Logger.verbose("presenting app info view controller.")
-            // push view controller
+        case .teamInfo:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            
+        default:
+            break
         }
         
         return viewController
@@ -39,7 +44,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
     
     func get(for route: SettingRoute) -> UIViewController? {
         switch route {
-        case .appInfo:
+        case .teamInfo:
             let coordinator = AppInfoCoordinator(provider: provider)
             let viewController = AppInfoViewController(coordinator: coordinator)
             
@@ -48,6 +53,9 @@ class SettingViewCoordinator: CoordinatorProtocol {
             viewController.reactor = AppInfoViewReactor()
             
             return viewController
+
+        default:
+            return nil
         }
     }
 }

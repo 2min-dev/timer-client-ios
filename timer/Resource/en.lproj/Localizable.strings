@@ -49,6 +49,11 @@
 "history_title" = "History";
 "history_detail_title" = "History Detail";
 "setting_title" = "Setting";
+"notice_title" = "Notice";
+"alarm_setting_title" = "Default alarm setting";
+"countdown_setting_title" = "Countdown setting";
+"team_info_title" = "Team information";
+"opensource_license_title" = "Opensource license";
 
 // MARK: - local time set
 "local_header_title" = "Collect your favorite time set,\n time set to help you manage your time :)";
@@ -132,6 +137,12 @@
 "alert_alarm_all_apply_description" = "The alarm has been applied to all timers";
 "alert_button_cancel" = "Cancel";
 "alert_button_yes" = "Yes";
+
+// MARK: - Setting
+"setting_version_lastest_title" = "Lastest!";
+"setting_version_need_update_title" = "Update!";
+"setting_alarm_setting_subtitle_format" = "Cur : %@";
+"setting_countdown_setting_subtitle_format" = "Cur : %dsec";
 
 // MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";

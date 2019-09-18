@@ -54,13 +54,19 @@ class SettingViewController: BaseViewController, View {
     // MARK: - bind
     func bind(reactor: SettingViewReactor) {
         // MARK: action
-        rx.viewDidLoad
+        rx.viewWillAppear
             .map { Reactor.Action.viewDidLoad }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         headerView.rx.tap
             .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
+            .disposed(by: disposeBag)
+        
+        settingTableView.rx.itemSelected
+            .do(onNext: { [weak self] in self?.settingTableView.deselectRow(at: $0, animated: true) })
+            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -82,15 +88,74 @@ class SettingViewController: BaseViewController, View {
         }
     }
     
+    /// Handle setting menu selected
+    private func menuSelectd(indexPath: IndexPath) {
+        
+    }
+    
     deinit {
         Logger.verbose()
     }
 }
 
 // MARK: - setting datasource
-typealias SettingSectionModel = SectionModel<Void, SettingItem>
+typealias SettingSectionModel = SectionModel<Void, SettingMenu>
 
-struct SettingItem {
-    var title: String
-    var subtitle: String?
+enum SettingMenu {
+    case notice
+    case alarm(String)
+    case countdown(Int)
+    case teamInfo
+    case license
+    
+    var title: String {
+        switch self {
+        case .notice:
+            return "notice_title".localized
+            
+        case .alarm:
+            return "alarm_setting_title".localized
+            
+        case .countdown:
+            return "countdown_setting_title".localized
+            
+        case .teamInfo:
+            return "team_info_title".localized
+            
+        case .license:
+            return "opensource_license_title".localized
+        }
+    }
+    
+    var subtitle: String? {
+        switch self {
+        case let .alarm(name):
+            return String(format: "setting_alarm_setting_subtitle_format".localized, name)
+            
+        case let .countdown(seconds):
+            return String(format: "setting_countdown_setting_subtitle_format".localized, seconds)
+            
+        default:
+            return nil
+        }
+    }
+    
+    var route: SettingViewCoordinator.SettingRoute {
+        switch self {
+        case .notice:
+            return .notice
+
+        case .alarm(_):
+            return .alarmSetting
+            
+        case .countdown(_):
+            return .countdownSetting
+            
+        case .teamInfo:
+            return .teamInfo
+
+        case .license:
+            return .license
+        }
+    }
 }

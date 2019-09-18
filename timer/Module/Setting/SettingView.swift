@@ -14,7 +14,7 @@ class SettingView: UIView {
         let view = CommonHeader()
         view.title = "setting_title".localized
         // TODO: sample text. remove it
-        view.additionalAttributedText = NSAttributedString(string: "최신버전입니다!")
+        view.additionalAttributedText = NSAttributedString(string: "setting_version_lastest_title".localized)
         return view
     }()
     
