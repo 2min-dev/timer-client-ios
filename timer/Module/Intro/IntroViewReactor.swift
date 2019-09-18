@@ -15,7 +15,7 @@ class IntroViewReactor: Reactor {
     }
     
     enum Mutation {
-        case introDone
+        case done
     }
     
     struct State {
@@ -29,20 +29,35 @@ class IntroViewReactor: Reactor {
         self.initialState = State(isDone: false)
     }
     
+    // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return Observable.just(Mutation.introDone).delay(.seconds(3), scheduler: MainScheduler.instance)
+            return actionViewDidLoad()
         }
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
-        case .introDone:
+        case .done:
             state.isDone = true
         }
         
         return state
+    }
+    
+    // MARK: - action method
+    private func actionViewDidLoad() -> Observable<Mutation> {
+        Logger.info("""
+        app launched.
+        - title(\(Constants.appTitle ?? ""))
+        - version(\(Constants.appVersion ?? ""))
+        - build(\(Constants.appBuild ?? ""))
+        - device version(\(Constants.deviceModel))
+        """)
+        
+        return Observable<Mutation>.just(.done).delay(.seconds(1), scheduler: MainScheduler.instance)
     }
 }

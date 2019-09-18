@@ -14,7 +14,10 @@ enum Constants {
         return UIDevice.current.userInterfaceIdiom
     }()
     
-    static let appTitle: String = "2min"
+    static var appTitle: String? { return Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String }
+    static var appVersion: String? { return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String }
+    static var appBuild: String? { return Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String }
+    static var deviceModel: String { UIDevice.current.systemVersion }
     
     // base screen display weight
     static let weight: CGFloat = {
