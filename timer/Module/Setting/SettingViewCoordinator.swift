@@ -32,11 +32,12 @@ class SettingViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .teamInfo:
+        case .notice,
+             .alarmSetting,
+             .countdownSetting,
+             .teamInfo,
+             .license:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
-            
-        default:
-            break
         }
         
         return viewController
@@ -54,7 +55,18 @@ class SettingViewCoordinator: CoordinatorProtocol {
             viewController.reactor = reactor
             
             return viewController
-
+            
+        case .license:
+            let coordinator = OpenSourceLicenseViewCoordinator(provider: provider)
+            let reactor = OpenSourceLicenseViewReactor()
+            let viewController = OpenSourceLicenseViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
         default:
             return nil
         }

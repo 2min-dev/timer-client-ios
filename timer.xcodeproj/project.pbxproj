@@ -34,7 +34,10 @@
 		F309F97822E9883100C280A0 /* TimerOptionViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97422E9883100C280A0 /* TimerOptionViewCoordinator.swift */; };
 		F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */; };
 		F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97722E9883100C280A0 /* TimerOptionView.swift */; };
-		F30B9CDC23326C2D003496A9 /* OPENSOURCE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F30B9CDB23326C2D003496A9 /* OPENSOURCE.txt */; };
+		F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */ = {isa = PBXBuildFile; fileRef = F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */; };
+		F30B9CE2233274DC003496A9 /* OpenSourceLicenseViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B9CDE233274DC003496A9 /* OpenSourceLicenseViewCoordinator.swift */; };
+		F30B9CE4233274DC003496A9 /* OpenSourceLicenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B9CE0233274DC003496A9 /* OpenSourceLicenseViewController.swift */; };
+		F30B9CE5233274DC003496A9 /* OpenSourceLicenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B9CE1233274DC003496A9 /* OpenSourceLicenseView.swift */; };
 		F3124B2423257F1300CB8B85 /* JSCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3124B2323257F1300CB8B85 /* JSCollectionViewLayout.swift */; };
 		F3124B2623267B8D00CB8B85 /* TimeSetCollectionViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3124B2523267B8D00CB8B85 /* TimeSetCollectionViewCellReactor.swift */; };
 		F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31CD7B822F7479F0038A2DE /* TimerInputView.swift */; };
@@ -46,6 +49,7 @@
 		F334090722D3A139008661EC /* TimerBadgeViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F334090622D3A139008661EC /* TimerBadgeViewReactor.swift */; };
 		F33C6AB42291612E00FC461A /* CommonHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB32291612E00FC461A /* CommonHeader.swift */; };
 		F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB52291678300FC461A /* CALayer+border.swift */; };
+		F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */; };
 		F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034D227FCD0E00E05E2E /* CheckBox.swift */; };
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
 		F35E05FF22FF023D00A66ED9 /* TimeKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E05FE22FF023D00A66ED9 /* TimeKeyView.swift */; };
@@ -232,7 +236,10 @@
 		F309F97422E9883100C280A0 /* TimerOptionViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimerOptionViewCoordinator.swift; path = Main/TimerOptionViewCoordinator.swift; sourceTree = "<group>"; };
 		F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionViewReactor.swift; sourceTree = "<group>"; };
 		F309F97722E9883100C280A0 /* TimerOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionView.swift; sourceTree = "<group>"; };
-		F30B9CDB23326C2D003496A9 /* OPENSOURCE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OPENSOURCE.txt; sourceTree = "<group>"; };
+		F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OPENSOURCE.html; sourceTree = "<group>"; };
+		F30B9CDE233274DC003496A9 /* OpenSourceLicenseViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSourceLicenseViewCoordinator.swift; sourceTree = "<group>"; };
+		F30B9CE0233274DC003496A9 /* OpenSourceLicenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSourceLicenseViewController.swift; sourceTree = "<group>"; };
+		F30B9CE1233274DC003496A9 /* OpenSourceLicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSourceLicenseView.swift; sourceTree = "<group>"; };
 		F3124B2323257F1300CB8B85 /* JSCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSCollectionViewLayout.swift; sourceTree = "<group>"; };
 		F3124B2523267B8D00CB8B85 /* TimeSetCollectionViewCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetCollectionViewCellReactor.swift; sourceTree = "<group>"; };
 		F31CD7B822F7479F0038A2DE /* TimerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInputView.swift; sourceTree = "<group>"; };
@@ -244,6 +251,7 @@
 		F334090622D3A139008661EC /* TimerBadgeViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeViewReactor.swift; sourceTree = "<group>"; };
 		F33C6AB32291612E00FC461A /* CommonHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHeader.swift; sourceTree = "<group>"; };
 		F33C6AB52291678300FC461A /* CALayer+border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+border.swift"; sourceTree = "<group>"; };
+		F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpensourceLicenseViewReactor.swift; sourceTree = "<group>"; };
 		F352034D227FCD0E00E05E2E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
 		F35E05FE22FF023D00A66ED9 /* TimeKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeKeyView.swift; sourceTree = "<group>"; };
@@ -473,9 +481,20 @@
 		F30B9CD8233263FE003496A9 /* License */ = {
 			isa = PBXGroup;
 			children = (
-				F30B9CDB23326C2D003496A9 /* OPENSOURCE.txt */,
+				F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */,
 			);
 			path = License;
+			sourceTree = "<group>";
+		};
+		F30B9CDD233274AC003496A9 /* OpenSourceLicense */ = {
+			isa = PBXGroup;
+			children = (
+				F30B9CE0233274DC003496A9 /* OpenSourceLicenseViewController.swift */,
+				F30B9CE1233274DC003496A9 /* OpenSourceLicenseView.swift */,
+				F30B9CDE233274DC003496A9 /* OpenSourceLicenseViewCoordinator.swift */,
+				F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */,
+			);
+			path = OpenSourceLicense;
 			sourceTree = "<group>";
 		};
 		F3124B2223257EF500CB8B85 /* View */ = {
@@ -531,6 +550,7 @@
 				F3ADF67E2300671400F0FC67 /* TimeSetProcess */,
 				F3735C9C22CFAA8200DC247C /* Setting */,
 				F3735C9D22CFAAA000DC247C /* TeamInfo */,
+				F30B9CDD233274AC003496A9 /* OpenSourceLicense */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -1108,7 +1128,7 @@
 				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
 				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
-				F30B9CDC23326C2D003496A9 /* OPENSOURCE.txt in Resources */,
+				F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1256,6 +1276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */,
+				F30B9CE5233274DC003496A9 /* OpenSourceLicenseView.swift in Sources */,
 				F3C1270023000C42006D736A /* JSONCodec.swift in Sources */,
 				F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */,
 				F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */,
@@ -1291,6 +1312,7 @@
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
 				F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */,
 				F387AF3122F18215002ABDB6 /* TimeSetSaveViewReactor.swift in Sources */,
+				F30B9CE4233274DC003496A9 /* OpenSourceLicenseViewController.swift in Sources */,
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
 				F3124B2423257F1300CB8B85 /* JSCollectionViewLayout.swift in Sources */,
 				F3CD208422FD95E20059E1BA /* TimeSetEditViewReactor.swift in Sources */,
@@ -1341,6 +1363,7 @@
 				F321B99F231503B700A7D9FF /* TimeSetPopup.swift in Sources */,
 				F3124B2623267B8D00CB8B85 /* TimeSetCollectionViewCellReactor.swift in Sources */,
 				F303F26F225CCAF500A11FAF /* LocalTimeSetView.swift in Sources */,
+				F30B9CE2233274DC003496A9 /* OpenSourceLicenseViewCoordinator.swift in Sources */,
 				F3282C9722F30D2200824F8A /* UITextField+rx.swift in Sources */,
 				F3FBFFE722F420B6001E369E /* Footer.swift in Sources */,
 				F3D1F7AE225CC22E006DC162 /* IntroViewCoordinator.swift in Sources */,
@@ -1389,6 +1412,7 @@
 				F3F5413D232778D100D618D2 /* TimeSetManageViewCoordinator.swift in Sources */,
 				F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */,
 				F37AF0E622F8211800509F5F /* AlertBuilder.swift in Sources */,
+				F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */,
 				F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

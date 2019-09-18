@@ -42,11 +42,11 @@ class TeamInfoViewController: BaseViewController, View {
 		super.viewDidLoad()
 	}
 
+	// MARK: - bind
     override func bind() {
         scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
-	// MARK: - bind
 	func bind(reactor: TeamInfoViewReactor) {
 		// MARK: action
         headerView.rx.tap
