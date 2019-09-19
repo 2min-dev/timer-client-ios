@@ -30,7 +30,7 @@ class OpenSourceLicenseViewReactor: Reactor {
     
     // MARK: - constructor
     init() {
-        self.initialState = State(license: "")
+        initialState = State(license: "")
     }
     
     // MARK: - mutation

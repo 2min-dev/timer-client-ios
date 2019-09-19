@@ -17,7 +17,7 @@ class SettingView: UIView {
         return view
     }()
     
-    let tableView: UITableView = {
+    let settingTableView: UITableView = {
         let view = UITableView()
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
@@ -30,8 +30,8 @@ class SettingView: UIView {
         backgroundColor = Constants.Color.white
         
         // Set constraint of subviews
-        addAutolayoutSubviews([tableView, headerView])
-        tableView.snp.makeConstraints({ make in
+        addAutolayoutSubviews([settingTableView, headerView])
+        settingTableView.snp.makeConstraints({ make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

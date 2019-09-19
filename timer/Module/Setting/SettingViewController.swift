@@ -16,7 +16,7 @@ class SettingViewController: BaseViewController, View {
     
     private var headerView: CommonHeader { return settingView.headerView }
     
-    private var settingTableView: UITableView { return settingView.tableView }
+    private var settingTableView: UITableView { return settingView.settingTableView }
     
     // MARK: - properties
     var coordinator: SettingViewCoordinator
@@ -52,10 +52,14 @@ class SettingViewController: BaseViewController, View {
     }
     
     // MARK: - bind
+    override func bind() {
+        settingTableView.rx.setDelegate(self).disposed(by: disposeBag)
+    }
+    
     func bind(reactor: SettingViewReactor) {
         // MARK: action
         rx.viewWillAppear
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -71,6 +75,7 @@ class SettingViewController: BaseViewController, View {
         
         // MARK: state
         reactor.state
+            .filter { $0.shouldSectionReload }
             .map { $0.sections }
             .bind(to: settingTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
@@ -95,6 +100,19 @@ class SettingViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+extension SettingViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetThreshold: CGFloat = 3
+        let blurThreshold: CGFloat = 10
+        let weight: CGFloat = 5
+        
+        // Set shadow by scroll
+        headerView.layer.shadow(alpha: 0.04,
+                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
+                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

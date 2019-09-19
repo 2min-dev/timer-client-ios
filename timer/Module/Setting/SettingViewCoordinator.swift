@@ -47,7 +47,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
         switch route {
         case .countdownSetting:
             let coordinator = CountdownSettingViewCoordinator(provider: provider)
-            let reactor = CountdownSettingViewReactor()
+            let reactor = CountdownSettingViewReactor(appService: provider.appService)
             let viewController = CountdownSettingViewController(coordinator: coordinator)
             
             // DI
