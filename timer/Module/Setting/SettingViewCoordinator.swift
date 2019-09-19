@@ -12,7 +12,7 @@ import UIKit
 class SettingViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum Route {
-        case notice
+        case noticeList
         case alarmSetting
         case countdownSetting
         case teamInfo
@@ -32,7 +32,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .notice,
+        case .noticeList,
              .alarmSetting,
              .countdownSetting,
              .teamInfo,
@@ -45,6 +45,17 @@ class SettingViewCoordinator: CoordinatorProtocol {
     
     func get(for route: Route) -> UIViewController? {
         switch route {
+        case .noticeList:
+            let coordinator = NoticeListViewCoordinator(provider: provider)
+            let reactor = NoticeListViewReactor()
+            let viewController = NoticeListViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
         case .alarmSetting:
             let coordinator = AlarmSettingViewCoordinator(provider: provider)
             let reactor = AlarmSettingViewReactor(appService: provider.appService)

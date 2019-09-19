@@ -161,7 +161,7 @@ enum SettingMenu {
     var route: SettingViewCoordinator.Route {
         switch self {
         case .notice:
-            return .notice
+            return .noticeList
 
         case .alarm(_):
             return .alarmSetting
