@@ -22,8 +22,8 @@ class CountdownSettingViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: CountdownSettingViewCoordinator
     
-    private let dataSource = RxTableViewSectionedReloadDataSource<CountdownSettingSectionModel>(configureCell: { (datasource, tableview, indexPath, item) in
-        guard let cell = tableview.dequeueReusableCell(withIdentifier: CountdownSettingTableViewCell.name, for: indexPath) as? CountdownSettingTableViewCell else { return UITableViewCell() }
+    private let dataSource = RxTableViewSectionedReloadDataSource<CountdownSettingSectionModel>(configureCell: { (datasource, tableView, indexPath, item) in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CountdownSettingTableViewCell.name, for: indexPath) as? CountdownSettingTableViewCell else { return UITableViewCell() }
         
         cell.titleLabel.text = item.title
         
@@ -47,7 +47,7 @@ class CountdownSettingViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // Register cell
         countdownSettingTableView.register(CountdownSettingTableViewCell.self, forCellReuseIdentifier: CountdownSettingTableViewCell.name)
     }
     

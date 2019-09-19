@@ -133,6 +133,7 @@ class TeamInfoView: UIView {
         super.init(frame: frame)
         backgroundColor = Constants.Color.white
         
+        // Set constraint of subviews
         addAutolayoutSubviews([scrollView, headerView])
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)

@@ -21,8 +21,8 @@ class SettingViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: SettingViewCoordinator
     
-    private let dataSource = RxTableViewSectionedReloadDataSource<SettingSectionModel>(configureCell: { (datasource, tableview, indexPath, item) in
-        guard let cell = tableview.dequeueReusableCell(withIdentifier: SettingTableViewCell.name, for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
+    private let dataSource = RxTableViewSectionedReloadDataSource<SettingSectionModel>(configureCell: { (datasource, tableView, indexPath, item) in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.name, for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
         
         cell.titleLabel.text = item.title
         cell.subtitleLabel.text = item.subtitle
@@ -47,7 +47,7 @@ class SettingViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // Register cell
         settingTableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.name)
     }
     

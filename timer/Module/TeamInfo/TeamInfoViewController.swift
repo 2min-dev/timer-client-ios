@@ -54,7 +54,6 @@ class TeamInfoViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         copyButton.rx.tap
-            .do(onNext: { Logger.debug("tap") })
             .do(onNext: { [weak self] in self?.showEmailCopiedAlert() })
             .subscribe(onNext: { [weak self] in UIPasteboard.general.string = self?.emailLabel.text })
             .disposed(by: disposeBag)

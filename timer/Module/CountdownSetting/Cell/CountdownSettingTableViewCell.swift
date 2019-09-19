@@ -46,8 +46,8 @@ class CountdownSettingTableViewCell: UITableViewCell {
         }
         
         divider.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(20.2.adjust())
-            make.trailing.equalToSuperview().inset(20.2.adjust())
+            make.leading.equalToSuperview().inset(20.8.adjust())
+            make.trailing.equalToSuperview().inset(20.8.adjust())
             make.bottom.equalToSuperview()
             make.height.equalTo(0.5)
         }

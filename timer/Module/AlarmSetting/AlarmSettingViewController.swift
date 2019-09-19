@@ -22,8 +22,8 @@ class AlarmSettingViewController: BaseViewController, View {
     // MARK: - properties
     var coordinator: AlarmSettingViewCoordinator
     
-    private let dataSource = RxTableViewSectionedReloadDataSource<AlarmSettingSectionModel>(configureCell: { (datasource, tableview, indexPath, item) in
-        guard let cell = tableview.dequeueReusableCell(withIdentifier: AlarmSettingTableViewCell.name, for: indexPath) as? AlarmSettingTableViewCell else { return UITableViewCell() }
+    private let dataSource = RxTableViewSectionedReloadDataSource<AlarmSettingSectionModel>(configureCell: { (datasource, tableView, indexPath, item) in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmSettingTableViewCell.name, for: indexPath) as? AlarmSettingTableViewCell else { return UITableViewCell() }
         
         cell.titleLabel.text = item.title
         
@@ -47,6 +47,7 @@ class AlarmSettingViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Register cell
         alarmSettingTableView.register(AlarmSettingTableViewCell.self, forCellReuseIdentifier: AlarmSettingTableViewCell.name)
     }
     

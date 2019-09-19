@@ -12,10 +12,17 @@ class TimeSetManageHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - view properties
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.textColor = Constants.Color.codGray
         view.numberOfLines = 0
-        view.text = "time_set_manage_header_title".localized
+        
+        // Create paragraph style
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10.adjust()
+        
+        // Set attributed string
+        view.attributedText = NSAttributedString(string: "time_set_manage_header_title".localized, attributes: [.paragraphStyle: paragraphStyle])
+        
         return view
     }()
     
