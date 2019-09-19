@@ -155,6 +155,10 @@
 		F3E0C0A022EA153B005D9FA4 /* AlarmChangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E0C09F22EA153B005D9FA4 /* AlarmChangeViewController.swift */; };
 		F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */; };
 		F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E5C3512296E52000148139 /* UITabBar+height.swift */; };
+		F3F21F6E23338A100000597B /* NoticeDetailViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6A23338A100000597B /* NoticeDetailViewCoordinator.swift */; };
+		F3F21F6F23338A100000597B /* NoticeDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6B23338A100000597B /* NoticeDetailViewReactor.swift */; };
+		F3F21F7023338A100000597B /* NoticeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */; };
+		F3F21F7123338A100000597B /* NoticeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6D23338A100000597B /* NoticeDetailView.swift */; };
 		F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F342AD226751A300A226C0 /* NotificationCenter.framework */; };
 		F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342B0226751A300A226C0 /* TodayViewController.swift */; };
 		F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F3F342AC226751A300A226C0 /* widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -380,6 +384,10 @@
 		F3E4383F227421FF00FA1246 /* timer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = timer.entitlements; path = timer/timer.entitlements; sourceTree = "<group>"; };
 		F3E438402274220500FA1246 /* widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widget.entitlements; sourceTree = "<group>"; };
 		F3E5C3512296E52000148139 /* UITabBar+height.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+height.swift"; sourceTree = "<group>"; };
+		F3F21F6A23338A100000597B /* NoticeDetailViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewCoordinator.swift; sourceTree = "<group>"; };
+		F3F21F6B23338A100000597B /* NoticeDetailViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewReactor.swift; sourceTree = "<group>"; };
+		F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewController.swift; sourceTree = "<group>"; };
+		F3F21F6D23338A100000597B /* NoticeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailView.swift; sourceTree = "<group>"; };
 		F3F342AC226751A300A226C0 /* widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3F342AD226751A300A226C0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		F3F342B0226751A300A226C0 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -835,6 +843,7 @@
 				F3C0DF9F233369CE00E49425 /* NoticeListView.swift */,
 				F3C0DF9D233369CE00E49425 /* NoticeListViewReactor.swift */,
 				F3C0DF9C233369CE00E49425 /* NoticeListViewCoordinator.swift */,
+				F3F21F69233389F80000597B /* NoticeDetail */,
 			);
 			path = NoticeList;
 			sourceTree = "<group>";
@@ -1034,6 +1043,17 @@
 				F302608922EC86F500E3E431 /* AlarmChangeViewReactor.swift */,
 			);
 			path = AlarmChange;
+			sourceTree = "<group>";
+		};
+		F3F21F69233389F80000597B /* NoticeDetail */ = {
+			isa = PBXGroup;
+			children = (
+				F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */,
+				F3F21F6D23338A100000597B /* NoticeDetailView.swift */,
+				F3F21F6B23338A100000597B /* NoticeDetailViewReactor.swift */,
+				F3F21F6A23338A100000597B /* NoticeDetailViewCoordinator.swift */,
+			);
+			path = NoticeDetail;
 			sourceTree = "<group>";
 		};
 		F3F342AF226751A300A226C0 /* widget */ = {
@@ -1403,6 +1423,7 @@
 				F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */,
 				F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */,
 				F334090522D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift in Sources */,
+				F3F21F6E23338A100000597B /* NoticeDetailViewCoordinator.swift in Sources */,
 				F302608822EB674100E3E431 /* AlarmChangeTableViewCell.swift in Sources */,
 				F3F5F877233155E8003271B3 /* AllTimeSetView.swift in Sources */,
 				F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */,
@@ -1444,6 +1465,7 @@
 				F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */,
 				F3DD7AD8232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* LocalTimeSetViewCoordinator.swift in Sources */,
+				F3F21F7123338A100000597B /* NoticeDetailView.swift in Sources */,
 				F3F5413F232778D100D618D2 /* TimeSetManageViewController.swift in Sources */,
 				F3C18750226204EB00B2C644 /* TeamInfoViewReactor.swift in Sources */,
 				F3C0DF962333501F00E49425 /* AlarmSettingViewController.swift in Sources */,
@@ -1488,6 +1510,7 @@
 				F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */,
 				F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */,
 				F3F5F874233155E8003271B3 /* AllTimeSetViewCoordinator.swift in Sources */,
+				F3F21F6F23338A100000597B /* NoticeDetailViewReactor.swift in Sources */,
 				F334090022D0D8E2008661EC /* TimerBadgeCollectionView.swift in Sources */,
 				F321B9A123166EEA00A7D9FF /* TimeSetAlert.swift in Sources */,
 				F3D1F7B2225CC2A9006DC162 /* BaseViewController.swift in Sources */,
@@ -1511,6 +1534,7 @@
 				F3C0DF972333501F00E49425 /* AlarmSettingView.swift in Sources */,
 				F3C0DF8E233342C800E49425 /* CountdownSettingTableViewCell.swift in Sources */,
 				F3A23D7A2320D7DA003856AB /* Realm+convert.swift in Sources */,
+				F3F21F7023338A100000597B /* NoticeDetailViewController.swift in Sources */,
 				F3CD184622F61776008DB221 /* FooterButton.swift in Sources */,
 				F3CD208322FD95E20059E1BA /* TimeSetEditViewCoordinator.swift in Sources */,
 				F309F97822E9883100C280A0 /* TimerOptionViewCoordinator.swift in Sources */,

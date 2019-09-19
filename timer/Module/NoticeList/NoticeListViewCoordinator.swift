@@ -11,7 +11,7 @@ import UIKit
 class NoticeListViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
-        case empty
+        case noticeDetail(Notice)
     }
     
     // MARK: - properties
@@ -25,11 +25,29 @@ class NoticeListViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: Route) -> UIViewController? {
-        return get(for: route)
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .noticeDetail(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
+        return viewController
     }
     
     func get(for route: Route) -> UIViewController? {
-        return nil
+        switch route {
+        case let .noticeDetail(notice):
+            let coordinator = NoticeDetailViewCoordinator(provider: provider)
+            let reactor = NoticeDetailViewReactor(notice: notice)
+            let viewController = NoticeDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+        }
     }
     
     // MARK: - private method

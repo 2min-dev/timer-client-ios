@@ -72,7 +72,7 @@ class NoticeListViewController: BaseViewController, View {
         noticeTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.noticeTableView.deselectRow(at: $0, animated: true) })
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
-            .subscribe(onNext: { Logger.debug($0) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .noticeDetail($0)) })
             .disposed(by: disposeBag)
         
         // MARK: state

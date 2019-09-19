@@ -99,9 +99,6 @@ class SettingViewCoordinator: CoordinatorProtocol {
             viewController.reactor = reactor
             
             return viewController
-            
-        default:
-            return nil
         }
     }
 }
