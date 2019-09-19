@@ -127,9 +127,5 @@ extension NoticeListViewController: UIScrollViewDelegate {
     }
 }
 
-extension NoticeListViewController: UITableViewDelegate {
-
-}
-
 // MARK: - countdown setting datasource
 typealias NoticeListSectionModel = SectionModel<Void, Notice>

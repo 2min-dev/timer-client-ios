@@ -211,4 +211,10 @@ extension Reactive where Base: CommonHeader {
             self.base.titleLabel.text = title
         }
     }
+    
+    var additionalText: Binder<NSAttributedString> {
+        return Binder(base) { _, attributedText in
+            self.base.additionalAttributedText = attributedText
+        }
+    }
 }

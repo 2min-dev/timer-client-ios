@@ -35,7 +35,6 @@ class OpenSourceLicenseView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.trailing.equalToSuperview()
             if #available(iOS 11.0, *) {
                 make.bottom.equalTo(safeAreaLayoutGuide)
             } else {
