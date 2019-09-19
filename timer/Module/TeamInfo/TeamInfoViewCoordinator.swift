@@ -11,7 +11,7 @@ import UIKit
 /// Route from app info view
 class TeamInfoViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum TeamInfoRoute {
+    enum Route {
         case empty
     }
     
@@ -24,11 +24,11 @@ class TeamInfoViewCoordinator: CoordinatorProtocol {
 		self.provider = provider
 	}
 
-	func present(for route: TeamInfoRoute) -> UIViewController? {
+	func present(for route: Route) -> UIViewController? {
         return get(for: route)
 	}
     
-    func get(for route: TeamInfoRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         return nil
     }
 } 

@@ -11,7 +11,7 @@ import UIKit
 /// Route from main view (tab bar)
 class MainViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum MainRoute {
+    enum Route {
         case productivity
         case local
         case share
@@ -26,7 +26,7 @@ class MainViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: MainRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
@@ -44,7 +44,7 @@ class MainViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: MainRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case .productivity:
             let coordinator = ProductivityViewCoordinator(provider: provider)

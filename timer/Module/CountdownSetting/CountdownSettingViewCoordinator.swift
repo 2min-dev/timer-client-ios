@@ -10,7 +10,7 @@ import UIKit
 
 class CountdownSettingViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum CountdownSettingRoute {
+    enum Route {
         case empty
     }
     
@@ -24,11 +24,11 @@ class CountdownSettingViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: CountdownSettingRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         return get(for: route)
     }
     
-    func get(for route: CountdownSettingRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         return nil
     }
 }

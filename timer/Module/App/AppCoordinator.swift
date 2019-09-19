@@ -11,7 +11,7 @@ import UIKit
 /// Route from app initialze
 class AppCoordinator {
     // MARK: - route enumeration
-    enum AppRoute {
+    enum Route {
         case intro
     }
 
@@ -25,7 +25,7 @@ class AppCoordinator {
         self.window = window
     }
     
-    func present(for route: AppRoute) {
+    func present(for route: Route) {
         let viewController = get(for: route)
         
         switch route {
@@ -36,7 +36,7 @@ class AppCoordinator {
         }
     }
     
-    func get(for route: AppRoute) -> UIViewController {
+    func get(for route: Route) -> UIViewController {
         switch route {
         case .intro:
             let introViewCoordinator = IntroViewCoordinator(provider: provider)

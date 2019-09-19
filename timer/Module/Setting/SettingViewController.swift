@@ -158,7 +158,7 @@ enum SettingMenu {
         }
     }
     
-    var route: SettingViewCoordinator.SettingRoute {
+    var route: SettingViewCoordinator.Route {
         switch self {
         case .notice:
             return .notice

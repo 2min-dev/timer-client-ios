@@ -753,10 +753,10 @@
 			isa = PBXGroup;
 			children = (
 				F3ADF687230079BF00F0FC67 /* View */,
-				F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */,
+				F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */,
 				F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */,
 				F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */,
-				F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */,
+				F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */,
 				F3ADF4302312943E00FA9277 /* TimeSetMemo */,
 			);
 			path = TimeSetProcess;

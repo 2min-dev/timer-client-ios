@@ -10,7 +10,7 @@ import UIKit
 
 class OpenSourceLicenseViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum OpenSourceLicenseRoute {
+    enum Route {
         case empty
     }
     
@@ -24,11 +24,11 @@ class OpenSourceLicenseViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: OpenSourceLicenseRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         return get(for: route)
     }
     
-    func get(for route: OpenSourceLicenseRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         return nil
     }
 }

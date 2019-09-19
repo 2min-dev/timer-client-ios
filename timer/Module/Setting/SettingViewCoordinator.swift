@@ -11,7 +11,7 @@ import UIKit
 /// Route from setting view
 class SettingViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum SettingRoute {
+    enum Route {
         case notice
         case alarmSetting
         case countdownSetting
@@ -28,7 +28,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: SettingRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
@@ -43,7 +43,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: SettingRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case .alarmSetting:
             let coordinator = AlarmSettingViewCoordinator(provider: provider)

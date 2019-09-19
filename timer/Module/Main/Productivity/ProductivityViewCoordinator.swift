@@ -11,7 +11,7 @@ import UIKit
 /// Route from one touch timer view
 class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum ProductivityRoute {
+    enum Route {
         case timerOption
         case timeSetSave(TimeSetInfo)
         case timeSetProcess(TimeSetInfo?)
@@ -27,7 +27,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: ProductivityRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
@@ -43,7 +43,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: ProductivityRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case .timerOption:
             let coordinator = TimerOptionViewCoordinator(provider: provider)

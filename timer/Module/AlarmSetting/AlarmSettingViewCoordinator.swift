@@ -10,7 +10,7 @@ import UIKit
 
 class AlarmSettingViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum AlarmSettingRoute {
+    enum Route {
         case empty
     }
     
@@ -24,11 +24,11 @@ class AlarmSettingViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: AlarmSettingRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         return get(for: route)
     }
     
-    func get(for route: AlarmSettingRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         return nil
     }
 }

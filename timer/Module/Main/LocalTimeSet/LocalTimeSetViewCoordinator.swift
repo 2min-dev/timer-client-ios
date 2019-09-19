@@ -11,7 +11,7 @@ import UIKit
 /// Route from local time set view
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum LocalTimeSetRoute {
+    enum Route {
         case timeSetManage(TimeSetManageViewReactor.TimeSetType)
         case allTimeSet(AllTimeSetViewReactor.TimeSetType)
         case timeSetDetail(TimeSetInfo)
@@ -27,7 +27,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: LocalTimeSetRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
@@ -41,7 +41,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: LocalTimeSetRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case let .timeSetManage(type):
             let coordinator = TimeSetManageViewCoordinator(provider: provider)

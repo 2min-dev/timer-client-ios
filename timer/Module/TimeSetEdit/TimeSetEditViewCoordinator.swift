@@ -10,7 +10,7 @@ import UIKit
 
 class TimeSetEditViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
-    enum TimeSetEditRoute {
+    enum Route {
         case home
         case timerOption
         case timeSetSave(TimeSetInfo)
@@ -26,7 +26,7 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - presentation
-    func present(for route: TimeSetEditRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
@@ -41,7 +41,7 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: TimeSetEditRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
