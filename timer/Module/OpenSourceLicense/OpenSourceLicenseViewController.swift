@@ -10,11 +10,11 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class OpenSourceLicenseViewController: BaseViewController, View {
+class OpenSourceLicenseViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var openSourceLicenseView: OpenSourceLicenseView { return view as! OpenSourceLicenseView }
     
-    private var headerView: CommonHeader { return openSourceLicenseView.headerView }
+    override var headerView: CommonHeader { return openSourceLicenseView.headerView }
     
     private var openSourceTextView: UITextView { return openSourceLicenseView.openSourceTextView }
     
@@ -111,18 +111,5 @@ class OpenSourceLicenseViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension OpenSourceLicenseViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }

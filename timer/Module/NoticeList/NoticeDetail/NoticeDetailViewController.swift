@@ -10,11 +10,11 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class NoticeDetailViewController: BaseViewController, View {
+class NoticeDetailViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var noticeDetailView: NoticeDetailView { return view as! NoticeDetailView }
     
-    private var headerView: CommonHeader { return noticeDetailView.headerView }
+    override var headerView: CommonHeader { return noticeDetailView.headerView }
     
     private var noticeTextView: UITextView { return noticeDetailView.noticeTextView }
     
@@ -114,18 +114,5 @@ class NoticeDetailViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension NoticeDetailViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }

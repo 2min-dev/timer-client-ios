@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class AlarmSettingViewController: BaseViewController, View {
+class AlarmSettingViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var alarmSettingView: AlarmSettingView { return view as! AlarmSettingView }
     
-    private var headerView: CommonHeader { return alarmSettingView.headerView }
+    override var headerView: CommonHeader { return alarmSettingView.headerView }
     
     private var alarmSettingTableView: UITableView { return alarmSettingView.alarmTableView }
     
@@ -100,19 +100,6 @@ class AlarmSettingViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension AlarmSettingViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

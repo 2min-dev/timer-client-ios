@@ -12,11 +12,11 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class TimeSetManageViewController: BaseViewController, View {
+class TimeSetManageViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var timeSetManageView: TimeSetManageView { return view as! TimeSetManageView }
     
-    var headerView: ConfirmHeader { return timeSetManageView.headerView }
+    override var headerView: ConfirmHeader { return timeSetManageView.headerView }
     
     var timeSetCollectionView: JSReorderableCollectionView { return timeSetManageView.timeSetCollectionView }
     
@@ -207,19 +207,6 @@ extension TimeSetManageViewController: JSReorderableCollectionViewDelegate {
             snapshot.center = point
             snapshot.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         })
-    }
-}
-
-extension TimeSetManageViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

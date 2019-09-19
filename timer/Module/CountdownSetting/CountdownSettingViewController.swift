@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class CountdownSettingViewController: BaseViewController, View {
+class CountdownSettingViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var countdownSettingView: CountdownSettingView { return view as! CountdownSettingView }
     
-    private var headerView: CommonHeader { return countdownSettingView.headerView }
+    override var headerView: CommonHeader { return countdownSettingView.headerView }
     
     private var countdownSettingTableView: UITableView { return countdownSettingView.countdownTableView }
     
@@ -102,19 +102,6 @@ class CountdownSettingViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension CountdownSettingViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

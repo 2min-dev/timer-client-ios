@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class AllTimeSetViewController: BaseViewController, View {
+class AllTimeSetViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var allTimeSetView: AllTimeSetView { return view as! AllTimeSetView }
     
-    private var headerView: CommonHeader { return allTimeSetView.headerView }
+    override var headerView: CommonHeader { return allTimeSetView.headerView }
     
     private var timeSetCollectionView: UICollectionView { return allTimeSetView.timeSetCollectionView }
     
@@ -179,19 +179,6 @@ class AllTimeSetViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension AllTimeSetViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

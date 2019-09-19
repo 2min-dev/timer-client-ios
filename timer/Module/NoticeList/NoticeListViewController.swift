@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class NoticeListViewController: BaseViewController, View {
+class NoticeListViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var noticeListView: NoticeListView { return view as! NoticeListView }
     
-    private var headerView: CommonHeader { return noticeListView.headerView }
+    override var headerView: CommonHeader { return noticeListView.headerView }
     
     private var noticeTableView: UITableView { return noticeListView.noticeTableView }
     private var emptyView: UIView { return noticeListView.emptyView }
@@ -111,19 +111,6 @@ class NoticeListViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension NoticeListViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

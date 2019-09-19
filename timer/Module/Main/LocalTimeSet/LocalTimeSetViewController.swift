@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class LocalTimeSetViewController: BaseViewController, View {
+class LocalTimeSetViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     
-    private var headerView: CommonHeader { return localTimeSetView.headerView }
+    override var headerView: CommonHeader { return localTimeSetView.headerView }
     
     private var timeSetCollectionView: UICollectionView { return localTimeSetView.timeSetCollectionView }
     
@@ -231,19 +231,6 @@ class LocalTimeSetViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension LocalTimeSetViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

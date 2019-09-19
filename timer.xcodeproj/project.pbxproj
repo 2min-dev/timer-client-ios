@@ -159,6 +159,7 @@
 		F3F21F6F23338A100000597B /* NoticeDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6B23338A100000597B /* NoticeDetailViewReactor.swift */; };
 		F3F21F7023338A100000597B /* NoticeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */; };
 		F3F21F7123338A100000597B /* NoticeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6D23338A100000597B /* NoticeDetailView.swift */; };
+		F3F21F752333A8850000597B /* BaseHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F742333A8850000597B /* BaseHeaderViewController.swift */; };
 		F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F342AD226751A300A226C0 /* NotificationCenter.framework */; };
 		F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342B0226751A300A226C0 /* TodayViewController.swift */; };
 		F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F3F342AC226751A300A226C0 /* widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -388,6 +389,7 @@
 		F3F21F6B23338A100000597B /* NoticeDetailViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewReactor.swift; sourceTree = "<group>"; };
 		F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewController.swift; sourceTree = "<group>"; };
 		F3F21F6D23338A100000597B /* NoticeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailView.swift; sourceTree = "<group>"; };
+		F3F21F742333A8850000597B /* BaseHeaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseHeaderViewController.swift; sourceTree = "<group>"; };
 		F3F342AC226751A300A226C0 /* widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3F342AD226751A300A226C0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		F3F342B0226751A300A226C0 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -619,6 +621,7 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7B1225CC2A9006DC162 /* BaseViewController.swift */,
+				F3F21F742333A8850000597B /* BaseHeaderViewController.swift */,
 				F3C18755226306EC00B2C644 /* CoordinatorProtocol.swift */,
 			);
 			path = Base;
@@ -1548,6 +1551,7 @@
 				F3F5413D232778D100D618D2 /* TimeSetManageViewCoordinator.swift in Sources */,
 				F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */,
 				F37AF0E622F8211800509F5F /* AlertBuilder.swift in Sources */,
+				F3F21F752333A8850000597B /* BaseHeaderViewController.swift in Sources */,
 				F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */,
 				F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */,
 			);

@@ -9,11 +9,11 @@
 import RxSwift
 import ReactorKit
 
-class TeamInfoViewController: BaseViewController, View {
+class TeamInfoViewController: BaseHeaderViewController, View {
 	// MARK: - view properties
 	private var teamInfoView: TeamInfoView { return view as! TeamInfoView }
     
-    private var headerView: CommonHeader { return teamInfoView.headerView }
+    override var headerView: CommonHeader { return teamInfoView.headerView }
     
     private var emailLabel: UILabel { return teamInfoView.emailLabel }
     private var copyButton: UIButton { return teamInfoView.copyButton }
@@ -88,18 +88,5 @@ class TeamInfoViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-} 
-
-extension TeamInfoViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
