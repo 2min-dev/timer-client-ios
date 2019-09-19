@@ -99,6 +99,10 @@
 		F3ADF68B23015CB200F0FC67 /* MemoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF68A23015CB200F0FC67 /* MemoButton.swift */; };
 		F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */; };
 		F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */; };
+		F3C0DF8823333F9F00E49425 /* CountdownSettingViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF8423333F9F00E49425 /* CountdownSettingViewCoordinator.swift */; };
+		F3C0DF8923333F9F00E49425 /* CountdownSettingViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF8523333F9F00E49425 /* CountdownSettingViewReactor.swift */; };
+		F3C0DF8A23333F9F00E49425 /* CountdownSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF8623333F9F00E49425 /* CountdownSettingViewController.swift */; };
+		F3C0DF8B23333F9F00E49425 /* CountdownSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF8723333F9F00E49425 /* CountdownSettingView.swift */; };
 		F3C1270023000C42006D736A /* JSONCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C126FF23000C42006D736A /* JSONCodec.swift */; };
 		F3C1874E226204DF00B2C644 /* TeamInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874D226204DF00B2C644 /* TeamInfoViewController.swift */; };
 		F3C18750226204EB00B2C644 /* TeamInfoViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874F226204EB00B2C644 /* TeamInfoViewReactor.swift */; };
@@ -303,6 +307,10 @@
 		F3ADF68A23015CB200F0FC67 /* MemoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoButton.swift; sourceTree = "<group>"; };
 		F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarAnimator.swift; sourceTree = "<group>"; };
 		F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarInteractor.swift; sourceTree = "<group>"; };
+		F3C0DF8423333F9F00E49425 /* CountdownSettingViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownSettingViewCoordinator.swift; sourceTree = "<group>"; };
+		F3C0DF8523333F9F00E49425 /* CountdownSettingViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownSettingViewReactor.swift; sourceTree = "<group>"; };
+		F3C0DF8623333F9F00E49425 /* CountdownSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownSettingViewController.swift; sourceTree = "<group>"; };
+		F3C0DF8723333F9F00E49425 /* CountdownSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownSettingView.swift; sourceTree = "<group>"; };
 		F3C126FF23000C42006D736A /* JSONCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONCodec.swift; sourceTree = "<group>"; };
 		F3C1874D226204DF00B2C644 /* TeamInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamInfoViewController.swift; sourceTree = "<group>"; };
 		F3C1874F226204EB00B2C644 /* TeamInfoViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamInfoViewReactor.swift; sourceTree = "<group>"; };
@@ -551,6 +559,7 @@
 				F3735C9C22CFAA8200DC247C /* Setting */,
 				F3735C9D22CFAAA000DC247C /* TeamInfo */,
 				F30B9CDD233274AC003496A9 /* OpenSourceLicense */,
+				F3C0DF8323333F6800E49425 /* CountdownSetting */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -750,6 +759,17 @@
 				F321B9A023166EEA00A7D9FF /* TimeSetAlert.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		F3C0DF8323333F6800E49425 /* CountdownSetting */ = {
+			isa = PBXGroup;
+			children = (
+				F3C0DF8623333F9F00E49425 /* CountdownSettingViewController.swift */,
+				F3C0DF8723333F9F00E49425 /* CountdownSettingView.swift */,
+				F3C0DF8523333F9F00E49425 /* CountdownSettingViewReactor.swift */,
+				F3C0DF8423333F9F00E49425 /* CountdownSettingViewCoordinator.swift */,
+			);
+			path = CountdownSetting;
 			sourceTree = "<group>";
 		};
 		F3C126FE23000BEA006D736A /* Data */ = {
@@ -1282,6 +1302,7 @@
 				F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */,
 				F3D1F7BD225CC357006DC162 /* UIViewController+child.swift in Sources */,
 				F303F273225CCB7500A11FAF /* SettingViewCoordinator.swift in Sources */,
+				F3C0DF8A23333F9F00E49425 /* CountdownSettingViewController.swift in Sources */,
 				F3A7940F22FDC0AC007D5D40 /* UserDefaultService.swift in Sources */,
 				F3C2E7B9228318C500C69FF2 /* TimerBadgeCellReactor.swift in Sources */,
 				F373CCD62265FA33007ECCA0 /* TMTimer.swift in Sources */,
@@ -1301,6 +1322,7 @@
 				F39B0B8D231F7D3B00C2785A /* RealmService.swift in Sources */,
 				F3C24CE0232D3FB200D7492C /* TimeSetManageCollectionViewCellReactor.swift in Sources */,
 				F399F6BE22E9937C00997E31 /* TimerOptionViewController.swift in Sources */,
+				F3C0DF8823333F9F00E49425 /* CountdownSettingViewCoordinator.swift in Sources */,
 				F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */,
 				F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */,
 				F334090522D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift in Sources */,
@@ -1350,6 +1372,7 @@
 				F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */,
 				F387AF3022F18215002ABDB6 /* TimeSetSaveViewCoordinator.swift in Sources */,
 				F303F275225CCBA100A11FAF /* SettingViewController.swift in Sources */,
+				F3C0DF8B23333F9F00E49425 /* CountdownSettingView.swift in Sources */,
 				F38702BA22F970E80099241C /* TimeSetDetailView.swift in Sources */,
 				F3F800A7226A0981003D1D88 /* Constants.swift in Sources */,
 				F3D1F7B0225CC267006DC162 /* IntroViewReactor.swift in Sources */,
@@ -1378,6 +1401,7 @@
 				F3F541432327E07500D618D2 /* TimeSetManageCollectionViewCell.swift in Sources */,
 				F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */,
 				F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */,
+				F3C0DF8923333F9F00E49425 /* CountdownSettingViewReactor.swift in Sources */,
 				F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */,
 				F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */,
 				F3F5F874233155E8003271B3 /* AllTimeSetViewCoordinator.swift in Sources */,
