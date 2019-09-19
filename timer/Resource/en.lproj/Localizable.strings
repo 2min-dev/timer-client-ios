@@ -144,6 +144,9 @@
 "setting_alarm_setting_subtitle_format" = "Cur : %@";
 "setting_countdown_setting_subtitle_format" = "Cur : %dsec";
 
+// MARK: - Notice
+"notice_empty_title" = "There are no registered notices,\nI'll be right back with the good news!";
+
 // MARK: - Countdown setting
 "countdown_setting_second_title_format" = "%dsec";
 "countdown_setting_zero_title" = "None";

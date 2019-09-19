@@ -144,6 +144,9 @@
 "setting_alarm_setting_subtitle_format" = "현재 : %@";
 "setting_countdown_setting_subtitle_format" = "현재 : %d초";
 
+// MARK: - Notice
+"notice_empty_title" = "등록된 공지사항이 없어요,\n좋은 소식으로 곧 찾아올게요!";
+
 // MARK: - Countdown setting
 "countdown_setting_second_title_format" = "%d초";
 "countdown_setting_zero_title" = "없음";
