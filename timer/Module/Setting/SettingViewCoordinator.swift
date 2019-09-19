@@ -45,6 +45,17 @@ class SettingViewCoordinator: CoordinatorProtocol {
     
     func get(for route: SettingRoute) -> UIViewController? {
         switch route {
+        case .alarmSetting:
+            let coordinator = AlarmSettingViewCoordinator(provider: provider)
+            let reactor = AlarmSettingViewReactor(appService: provider.appService)
+            let viewController = AlarmSettingViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
         case .countdownSetting:
             let coordinator = CountdownSettingViewCoordinator(provider: provider)
             let reactor = CountdownSettingViewReactor(appService: provider.appService)
