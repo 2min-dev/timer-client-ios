@@ -31,7 +31,4 @@ class AlarmSettingViewCoordinator: CoordinatorProtocol {
     func get(for route: AlarmSettingRoute) -> UIViewController? {
         return nil
     }
-    
-    // MARK: - private method
-    // MARK: - public method
 }

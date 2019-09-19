@@ -47,13 +47,13 @@ class CountdownSettingViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        countdownSettingTableView.register(CountdownSettingTableViewCell.self, forCellReuseIdentifier: CountdownSettingTableViewCell.name)
     }
     
     // MARK: - bine
     override func bind() {
         countdownSettingTableView.rx.setDelegate(self).disposed(by: disposeBag)
-        
-        countdownSettingTableView.register(CountdownSettingTableViewCell.self, forCellReuseIdentifier: CountdownSettingTableViewCell.name)
     }
     
     func bind(reactor: CountdownSettingViewReactor) {
@@ -118,6 +118,7 @@ extension CountdownSettingViewController: UIScrollViewDelegate {
     }
 }
 
+// MARK: - countdown setting datasource
 typealias CountdownSettingSectionModel = SectionModel<Void, CountdownSettingMenu>
 
 struct CountdownSettingMenu {
@@ -127,6 +128,5 @@ struct CountdownSettingMenu {
     init(seconds: Int) {
         self.seconds = seconds
         title = seconds > 0 ? String(format: "countdown_setting_second_title_format".localized, seconds) : "countdown_setting_zero_title".localized
-        
     }
 }

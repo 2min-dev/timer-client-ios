@@ -108,6 +108,7 @@
 		F3C0DF952333501F00E49425 /* AlarmSettingViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF912333501F00E49425 /* AlarmSettingViewReactor.swift */; };
 		F3C0DF962333501F00E49425 /* AlarmSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF922333501F00E49425 /* AlarmSettingViewController.swift */; };
 		F3C0DF972333501F00E49425 /* AlarmSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF932333501F00E49425 /* AlarmSettingView.swift */; };
+		F3C0DF9A2333511C00E49425 /* AlarmSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF992333511C00E49425 /* AlarmSettingTableViewCell.swift */; };
 		F3C1270023000C42006D736A /* JSONCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C126FF23000C42006D736A /* JSONCodec.swift */; };
 		F3C1874E226204DF00B2C644 /* TeamInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874D226204DF00B2C644 /* TeamInfoViewController.swift */; };
 		F3C18750226204EB00B2C644 /* TeamInfoViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C1874F226204EB00B2C644 /* TeamInfoViewReactor.swift */; };
@@ -321,6 +322,7 @@
 		F3C0DF912333501F00E49425 /* AlarmSettingViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSettingViewReactor.swift; sourceTree = "<group>"; };
 		F3C0DF922333501F00E49425 /* AlarmSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSettingViewController.swift; sourceTree = "<group>"; };
 		F3C0DF932333501F00E49425 /* AlarmSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSettingView.swift; sourceTree = "<group>"; };
+		F3C0DF992333511C00E49425 /* AlarmSettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSettingTableViewCell.swift; sourceTree = "<group>"; };
 		F3C126FF23000C42006D736A /* JSONCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONCodec.swift; sourceTree = "<group>"; };
 		F3C1874D226204DF00B2C644 /* TeamInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamInfoViewController.swift; sourceTree = "<group>"; };
 		F3C1874F226204EB00B2C644 /* TeamInfoViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamInfoViewReactor.swift; sourceTree = "<group>"; };
@@ -795,12 +797,21 @@
 		F3C0DF8F2333500D00E49425 /* AlarmSetting */ = {
 			isa = PBXGroup;
 			children = (
+				F3C0DF982333510C00E49425 /* Cell */,
 				F3C0DF922333501F00E49425 /* AlarmSettingViewController.swift */,
 				F3C0DF932333501F00E49425 /* AlarmSettingView.swift */,
 				F3C0DF912333501F00E49425 /* AlarmSettingViewReactor.swift */,
 				F3C0DF902333501F00E49425 /* AlarmSettingViewCoordinator.swift */,
 			);
 			path = AlarmSetting;
+			sourceTree = "<group>";
+		};
+		F3C0DF982333510C00E49425 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F3C0DF992333511C00E49425 /* AlarmSettingTableViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		F3C126FE23000BEA006D736A /* Data */ = {
@@ -1457,6 +1468,7 @@
 				F3ADF6852300672800F0FC67 /* TimeSetProcessViewController.swift in Sources */,
 				F3F5413E232778D100D618D2 /* TimeSetManageViewReactor.swift in Sources */,
 				F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */,
+				F3C0DF9A2333511C00E49425 /* AlarmSettingTableViewCell.swift in Sources */,
 				F3C0DF972333501F00E49425 /* AlarmSettingView.swift in Sources */,
 				F3C0DF8E233342C800E49425 /* CountdownSettingTableViewCell.swift in Sources */,
 				F3A23D7A2320D7DA003856AB /* Realm+convert.swift in Sources */,
