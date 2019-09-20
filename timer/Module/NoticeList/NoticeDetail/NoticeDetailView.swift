@@ -17,6 +17,7 @@ class NoticeDetailView: UIView {
     
     let noticeTextView: UITextView = {
         let view = UITextView()
+        view.backgroundColor = Constants.Color.white
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.carnation
         view.isEditable = false

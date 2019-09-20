@@ -209,9 +209,9 @@ class TimeSetProcessView: UIView {
     
     let commentTextView: UITextView = {
         let view = UITextView()
+        view.backgroundColor = Constants.Color.white
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
-        // Remove padding
         view.textContainer.lineFragmentPadding = 0
         view.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         view.isEditable = false

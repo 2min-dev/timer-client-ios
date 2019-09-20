@@ -18,6 +18,7 @@ class NoticeListView: UIView {
     
     let noticeTableView: UITableView = {
         let view = UITableView()
+        view.backgroundColor = Constants.Color.white
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
         return view

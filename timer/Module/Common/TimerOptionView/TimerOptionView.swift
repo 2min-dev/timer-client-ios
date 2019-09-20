@@ -14,6 +14,7 @@ class TimerOptionView: UIView {
     // MARK: - view properties
     let commentTextView: UITextView = {
         let view = UITextView()
+        view.backgroundColor = Constants.Color.white
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         view.textContainerInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 0, right: 0)

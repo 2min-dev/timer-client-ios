@@ -18,6 +18,7 @@ class OpenSourceLicenseView: UIView {
     
     let openSourceTextView: UITextView = {
         let view = UITextView()
+        view.backgroundColor = Constants.Color.white
         view.isEditable = false
         view.textContainer.lineFragmentPadding = 30
         view.textContainerInset = UIEdgeInsets(top: 22.adjust(), left: 0, bottom: 22.adjust(), right: 0)

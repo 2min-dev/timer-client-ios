@@ -31,8 +31,11 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetManage(_),
-             .allTimeSet(_),
+        case .timeSetManage(_):
+            viewController.modalPresentationStyle = .fullScreen
+            self.viewController.present(viewController, animated: true)
+             
+        case .allTimeSet(_),
              .timeSetDetail(_),
              .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)

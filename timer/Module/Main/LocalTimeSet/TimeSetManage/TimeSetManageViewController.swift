@@ -121,7 +121,7 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         headerView.rx.cancel
-            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true) })
+            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
             .disposed(by: disposeBag)
         
         headerView.rx.confirm
@@ -147,7 +147,7 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
             .map { $0.shouldDismiss }
             .distinctUntilChanged()
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
+            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: true) })
             .disposed(by: disposeBag)
     }
     
