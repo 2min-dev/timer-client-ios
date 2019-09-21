@@ -28,29 +28,23 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                 // Wrap autorelease pool explicitly due to use `Realm`.
                 // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
                 autoreleasepool {
-                    // Create `Realm`
-                    guard let realm = try? Realm() else {
-                        emitter(.error(DatabaseError.initialize))
-                        return
-                    }
-                    
-                    // Transaction
                     do {
-                        try realm.write {
+                        // Open `Realm`
+                        let realm = try self.open()
+                    
+                        // Transaction
+                        try self.write(realm) {
                             realm.add(info)
                         }
+                        Logger.info("created object and save into realm \n\(info)", tag: "REALM")
+
+                        // Copy time set from realm object
+                        guard let copiedObject = info.copy() as? TimeSetInfo else { throw DatabaseError.unknown }
+
+                        emitter(.success(copiedObject))
                     } catch {
-                        emitter(.error(DatabaseError.transaction))
+                        emitter(.error(error))
                     }
-                    Logger.info("created object and save into realm \n\(info)", tag: "REALM")
-
-                    // Copy time set from realm object
-                    guard let copiedObject = info.copy() as? TimeSetInfo else {
-                        emitter(.error(DatabaseError.unknown))
-                        return
-                    }
-
-                    emitter(.success(copiedObject))
                 }
             }
             
@@ -69,34 +63,25 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                 // Wrap autorelease pool explicitly due to use realm.
                 // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
                 autoreleasepool {
-                    // Create `Realm`
-                    guard let realm = try? Realm() else {
-                        emitter(.error(DatabaseError.initialize))
-                        return
-                    }
-                    
-                    // Transaction
-                    guard let timeSetInfo = realm.object(ofType: TimeSetInfo.self, forPrimaryKey: id) else {
-                        emitter(.error(DatabaseError.notFound))
-                        return
-                    }
-                    
-                    // Copy time set from realm object
-                    guard let copiedObject = timeSetInfo.copy() as? TimeSetInfo else {
-                        emitter(.error(DatabaseError.unknown))
-                        return
-                    }
-                    
                     do {
-                        try realm.write {
+                        // Open `Realm`
+                        let realm = try self.open()
+                        
+                        // Transaction
+                        guard let timeSetInfo = realm.object(ofType: TimeSetInfo.self, forPrimaryKey: id) else { throw DatabaseError.notFound }
+                        
+                        // Copy time set from realm object
+                        guard let copiedObject = timeSetInfo.copy() as? TimeSetInfo else { throw DatabaseError.unknown }
+                        
+                        try self.write(realm) {
                             realm.delete(timeSetInfo)
                         }
+                        Logger.info("removed object from realm - id(\(id))", tag: "REALM")
+                        
+                        emitter(.success(copiedObject))
                     } catch {
-                        emitter(.error(DatabaseError.transaction))
+                        emitter(.error(error))
                     }
-                    Logger.info("removed object from realm - id(\(id))", tag: "REALM")
-                    
-                    emitter(.success(copiedObject))
                 }
             }
             
@@ -111,28 +96,25 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                 // Wrap autorelease pool explicitly due to use realm.
                 // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
                 autoreleasepool {
-                    // Create `Realm`
-                    guard let realm = try? Realm() else {
-                        emitter(.error(DatabaseError.initialize))
-                        return
-                    }
-                    
-                    // Transaction
-                    let timeSets = ids.compactMap { realm.object(ofType: TimeSetInfo.self, forPrimaryKey: $0) }
-                    
-                    // Copy time set from realm object
-                    let copiedObject = timeSets.compactMap({ $0.copy() as? TimeSetInfo })
-                    
                     do {
-                        try realm.write {
+                        // Open `Realm`
+                        let realm = try self.open()
+                        
+                        // Transaction
+                        let timeSets = ids.compactMap { realm.object(ofType: TimeSetInfo.self, forPrimaryKey: $0) }
+                        
+                        // Copy time set from realm object
+                        let copiedObject = timeSets.compactMap({ $0.copy() as? TimeSetInfo })
+                        
+                        try self.write(realm) {
                             realm.delete(timeSets)
                         }
+                        Logger.info("removed objects from realm - count(\(timeSets.count)) \n\(timeSets)", tag: "REALM")
+                        
+                        emitter(.success(copiedObject))
                     } catch {
-                        emitter(.error(DatabaseError.transaction))
+                        emitter(.error(error))
                     }
-                    Logger.info("removed objects from realm - count(\(timeSets.count)) \n\(timeSets)", tag: "REALM")
-                    
-                    emitter(.success(copiedObject))
                 }
             }
             
@@ -151,29 +133,23 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                 // Wrap autorelease pool explicitly due to use realm.
                 // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
                 autoreleasepool {
-                    // Create `Realm`
-                    guard let realm = try? Realm() else {
-                        emitter(.error(DatabaseError.initialize))
-                        return
-                    }
-                    
-                    // Transaction
                     do {
-                        try realm.write {
+                        // Open `Realm`
+                        let realm = try self.open()
+                        
+                        // Transaction
+                        try self.write(realm, {
                             realm.add(info, update: .all)
-                        }
+                        })
+                        Logger.info("updated object of realm \n\(info)", tag: "REALM")
+                        
+                        // Copy time set from realm object
+                        guard let copiedObject = info.copy() as? TimeSetInfo else { throw DatabaseError.unknown }
+                        
+                        emitter(.success(copiedObject))
                     } catch {
-                        emitter(.error(DatabaseError.transaction))
+                        emitter(.error(error))
                     }
-                    Logger.info("updated object of realm \n\(info)", tag: "REALM")
-                    
-                    // Copy time set from realm object
-                    guard let copiedObject = info.copy() as? TimeSetInfo else {
-                        emitter(.error(DatabaseError.unknown))
-                        return
-                    }
-                    
-                    emitter(.success(copiedObject))
                 }
             }
             
@@ -188,26 +164,23 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                 // Wrap autorelease pool explicitly due to use realm.
                 // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
                 autoreleasepool {
-                    // Create `Realm`
-                    guard let realm = try? Realm() else {
-                        emitter(.error(DatabaseError.initialize))
-                        return
-                    }
-                    
-                    // Transaction
                     do {
-                        try realm.write {
+                        // Open `Realm`
+                        let realm = try self.open()
+
+                        // Transaction
+                        try self.write(realm) {
                             realm.add(infoes, update: .all)
                         }
+                        Logger.info("updated objects of - count(\(infoes.count)) \n\(infoes)", tag: "REALM")
+                        
+                        // Copy time set from realm object
+                        let copiedObject = infoes.compactMap({ $0.copy() as? TimeSetInfo })
+                        
+                        emitter(.success(copiedObject))
                     } catch {
-                        emitter(.error(DatabaseError.transaction))
+                        emitter(.error(error))
                     }
-                    Logger.info("updated objects of - count(\(infoes.count)) \n\(infoes)", tag: "REALM")
-                    
-                    // Copy time set from realm object
-                    let copiedObject = infoes.compactMap({ $0.copy() as? TimeSetInfo })
-                    
-                    emitter(.success(copiedObject))
                 }
             }
             
@@ -231,23 +204,45 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                 // Wrap autorelease pool explicitly due to use realm.
                 // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
                 autoreleasepool {
-                    // Create `Realm`
-                    guard let realm = try? Realm() else {
-                        emitter(.error(DatabaseError.initialize))
-                        return
+                    do {
+                        // Open `Realm`
+                        let realm = try self.open()
+
+                        // Transaction
+                        let objects = realm.objects(T.self)
+                        Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
+                        
+                        // Copy time set from realm object
+                        let copiedObjects = objects.toArray().compactMap { $0.copy() as? T }
+                        emitter(.success(copiedObjects))
+                    } catch {
+                        emitter(.error(error))
                     }
-                    
-                    // Transaction
-                    let objects = realm.objects(T.self)
-                    Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
-                    
-                    // Copy time set from realm object
-                    let copiedObjects = objects.toArray().compactMap { $0.copy() as? T }
-                    emitter(.success(copiedObjects))
                 }
             }
             
             return Disposables.create()
+        }
+    }
+    
+    // MARK: - private method
+    private func open() throws -> Realm {
+        do {
+            return try Realm()
+        } catch {
+            Logger.error(error)
+            throw DatabaseError.initialize
+        }
+    }
+    
+    private func write(_ realm: Realm, _ block: () -> Void) throws {
+        do {
+            try realm.write {
+                block()
+            }
+        } catch {
+            Logger.error(error)
+            throw DatabaseError.transaction
         }
     }
 }
