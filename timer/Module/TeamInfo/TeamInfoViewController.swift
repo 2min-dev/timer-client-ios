@@ -44,15 +44,13 @@ class TeamInfoViewController: BaseHeaderViewController, View {
 
 	// MARK: - bind
     override func bind() {
+        super.bind()
+        
         scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
 	func bind(reactor: TeamInfoViewReactor) {
 		// MARK: action
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
-            .disposed(by: disposeBag)
-        
         copyButton.rx.tap
             .do(onNext: { [weak self] in self?.showEmailCopiedAlert() })
             .subscribe(onNext: { [weak self] in UIPasteboard.general.string = self?.emailLabel.text })

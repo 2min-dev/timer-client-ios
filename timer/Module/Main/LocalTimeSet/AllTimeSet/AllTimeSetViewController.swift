@@ -117,6 +117,8 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
     }
     
     override func bind() {
+        super.bind()
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -127,10 +129,6 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
             .take(1)
             .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
@@ -154,17 +152,6 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     /// Get header title by type
     private func getHeaderTitleByType(_ type: AllTimeSetViewReactor.TimeSetType) -> String {

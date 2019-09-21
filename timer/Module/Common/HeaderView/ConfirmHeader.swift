@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class ConfirmHeader: UIView {
+class ConfirmHeader: Header {
     // MARK: - view properties
     let cancelButton: UIButton = {
         let view = UIButton()
@@ -37,7 +37,7 @@ class ConfirmHeader: UIView {
     }()
     
     // MARK: - properties
-    var title: String? {
+    override var title: String? {
         set { titleLabel.text = newValue }
         get { return titleLabel.text }
     }
@@ -73,20 +73,17 @@ class ConfirmHeader: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-extension Reactive where Base: ConfirmHeader {
-    var title: Binder<String> {
-        return Binder(base) { _, title in
-            self.base.titleLabel.text = title
-        }
-    }
     
-    var cancel: ControlEvent<Void> {
-        return ControlEvent(events: base.cancelButton.rx.tap)
-    }
-    
-    var confirm: ControlEvent<Void> {
-        return ControlEvent(events: base.confirmButton.rx.tap)
+    // MARK: - bind
+    override func bind() {
+        cancelButton.rx.tap
+            .map { .cancel }
+            .bind(to: action)
+            .disposed(by: disposeBag)
+        
+        confirmButton.rx.tap
+            .map { .confirm }
+            .bind(to: action)
+            .disposed(by: disposeBag)
     }
 }

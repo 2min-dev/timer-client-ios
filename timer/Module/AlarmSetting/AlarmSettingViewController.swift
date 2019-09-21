@@ -53,6 +53,8 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
     
     // MARK: - bine
     override func bind() {
+        super.bind()
+        
         alarmSettingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -61,10 +63,6 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
         rx.viewDidLoad
             .map { Reactor.Action.viewDidLoad }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         alarmSettingTableView.rx.itemSelected

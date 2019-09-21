@@ -53,18 +53,17 @@ class SettingViewController: BaseHeaderViewController, View {
     
     // MARK: - bind
     override func bind() {
+        super.bind()
+        Logger.debug()
         settingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     func bind(reactor: SettingViewReactor) {
+        Logger.debug()
         // MARK: action
         rx.viewWillAppear
             .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         settingTableView.rx.itemSelected

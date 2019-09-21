@@ -31,4 +31,8 @@ class TeamInfoViewReactor: Reactor {
     init() {
 		initialState = State()
 	}
+    
+    deinit {
+        Logger.verbose()
+    }
 } 

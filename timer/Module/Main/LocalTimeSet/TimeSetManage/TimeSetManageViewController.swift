@@ -109,6 +109,8 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
     
     // MARK: - bine
     override func bind() {
+        super.bind()
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -117,15 +119,6 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
         rx.viewWillAppear
             .take(1)
             .map { Reactor.Action.viewWillAppear }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.cancel
-            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
-            .disposed(by: disposeBag)
-        
-        headerView.rx.confirm
-            .map { Reactor.Action.apply }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -152,6 +145,19 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
+    override func handleHeaderAction(_ action: ConfirmHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
+        case .confirm:
+            guard let reactor = reactor else { return }
+            reactor.action.onNext(.apply)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get header title by type
     private func getHeaderTitleByType(_ type: TimeSetManageViewReactor.TimeSetType) -> String {

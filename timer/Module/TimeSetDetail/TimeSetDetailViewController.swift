@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TimeSetDetailViewController: BaseViewController, View {
+class TimeSetDetailViewController: BaseHeaderViewController, View {
     // MARK: - constraints
     private let FOOTER_BUTTON_EDIT = 0
     private let FOOTER_BUTTON_START = 1
@@ -18,7 +18,7 @@ class TimeSetDetailViewController: BaseViewController, View {
     // MARK: - view properties
     private var timeSetDetailView: TimeSetDetailView { return view as! TimeSetDetailView }
     
-    private var headerView: CommonHeader { return timeSetDetailView.headerView }
+    override var headerView: CommonHeader { return timeSetDetailView.headerView }
     
     private var titleLabel: UILabel { return timeSetDetailView.titleLabel }
     private var allTimeLabel: UILabel { return timeSetDetailView.allTimeLabel }
@@ -71,10 +71,6 @@ class TimeSetDetailViewController: BaseViewController, View {
         timerBadgeCollectionView.rx.badgeSelected
             .map { Reactor.Action.selectTimer(at: $0.0) }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
             .disposed(by: disposeBag)
         
         editButton.rx.tap
@@ -165,17 +161,17 @@ class TimeSetDetailViewController: BaseViewController, View {
     
     // MARK: - action method
     /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-        case .share:
-            break
+    override func handleHeaderAction(_ action: CommonHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
         case .bookmark:
             guard let reactor = reactor else { return }
             reactor.action.onNext(.toggleBookmark)
+            
         case .home:
             _ = coordinator.present(for: .home)
+            
         default:
             break
         }

@@ -42,6 +42,8 @@ class OpenSourceLicenseViewController: BaseHeaderViewController, View {
     
     // MARK: - bine
     override func bind() {
+        super.bind()
+        
         openSourceTextView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -50,10 +52,6 @@ class OpenSourceLicenseViewController: BaseHeaderViewController, View {
         rx.viewDidLoad
             .map { Reactor.Action.viewDidLoad }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         // Scroll to top

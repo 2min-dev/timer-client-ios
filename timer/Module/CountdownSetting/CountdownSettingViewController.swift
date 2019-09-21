@@ -53,6 +53,8 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
     
     // MARK: - bine
     override func bind() {
+        super.bind()
+        
         countdownSettingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -61,10 +63,6 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
         rx.viewDidLoad
             .map { Reactor.Action.viewDidLoad }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         countdownSettingTableView.rx.itemSelected
@@ -87,17 +85,6 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-            
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     
     deinit {

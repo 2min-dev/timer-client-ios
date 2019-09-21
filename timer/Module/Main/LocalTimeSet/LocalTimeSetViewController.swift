@@ -174,6 +174,8 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     }
     
     override func bind() {
+        super.bind()
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -184,10 +186,6 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                          rx.viewWillAppear.asObservable())
             .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
@@ -204,8 +202,10 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
+    override func handleHeaderAction(_ action: CommonHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
         case .history:
             // TODO: Present history view
             break

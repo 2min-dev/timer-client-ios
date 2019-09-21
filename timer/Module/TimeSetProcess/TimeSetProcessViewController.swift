@@ -10,11 +10,11 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TimeSetProcessViewController: BaseViewController, View {
+class TimeSetProcessViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var timeSetProcessView: TimeSetProcessView { return view as! TimeSetProcessView }
     
-    private var headerView: CommonHeader { return timeSetProcessView.headerView }
+    override var headerView: CommonHeader { return timeSetProcessView.headerView }
     
     private var timeSetBadge: TimeSetBadge { return timeSetProcessView.timeSetBadge }
     private var titleLabel: UILabel { return timeSetProcessView.titleLabel }
@@ -101,10 +101,6 @@ class TimeSetProcessViewController: BaseViewController, View {
         rx.viewDidLayoutSubviews
             .takeUntil(rx.viewDidAppear)
             .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: reactor.currentState.selectedIndexPath, animated: false) })
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0)})
             .disposed(by: disposeBag)
         
         repeatButton.rx.tap
@@ -366,15 +362,10 @@ class TimeSetProcessViewController: BaseViewController, View {
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-            
-        case .share: break
-            // TODO: Share time set
-            
+    override func handleHeaderAction(_ action: CommonHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
         case .bookmark:
             reactor?.action.onNext(.toggleBookmark)
             

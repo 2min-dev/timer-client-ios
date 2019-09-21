@@ -8,23 +8,37 @@
 
 import UIKit
 
-protocol HeaderViewController where Self: UIViewController {
-    associatedtype Header: UIView
-    var headerView: Header { get }
-}
-
 /// - warning: Shouldn't use `Base` controller not inherited
-class BaseHeaderViewController: BaseViewController, HeaderViewController {
-    var headerView: UIView { return UIView() }
+class BaseHeaderViewController: BaseViewController {
+    var headerView: Header { return Header() }
+    
+    override func bind() {
+        super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+    }
+
+    func handleHeaderAction(_ action: Header.Action) {
+        // Implement default header action
+        switch action {
+        case .back,
+             .cancel:
+            dismissOrPopViewController(animated: true)
+            
+        default:
+            break
+        }
+    }
 }
 
 extension BaseHeaderViewController: UIScrollViewDelegate {
-    // Implement header view to have shadow by scroll offset
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetThreshold: CGFloat = 3
         let blurThreshold: CGFloat = 10
         let weight: CGFloat = 5
-        
+
         // Set shadow by scroll
         headerView.layer.shadow(alpha: 0.04,
                                 offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
