@@ -14,7 +14,6 @@ class MainViewCoordinator: CoordinatorProtocol {
     enum Route {
         case productivity
         case local
-        case share
         case timeSetProcess
     }
     
@@ -61,17 +60,6 @@ class MainViewCoordinator: CoordinatorProtocol {
             let coordinator = LocalTimeSetViewCoordinator(provider: provider)
             let reactor = LocalTimeSetViewReactor(timeSetService: provider.timeSetService)
             let viewController = LocalTimeSetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
-            
-        case .share:
-            let coordinator = SharedTimeSetViewCoordinator(provider: provider)
-            let reactor = SharedTimeSetViewReactor()
-            let viewController = SharedTimeSetViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

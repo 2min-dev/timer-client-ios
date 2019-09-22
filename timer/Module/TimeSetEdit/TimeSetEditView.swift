@@ -66,8 +66,8 @@ class TimeSetEditView: UIView {
         return view
     }()
     
-    let timeKeyView: TimeKeyView = {
-        let view = TimeKeyView()
+    let timeKeyView: TimeKeyPad = {
+        let view = TimeKeyPad()
         view.font = Constants.Font.ExtraBold.withSize(20.adjust())
         view.setTitleColor(normal: Constants.Color.codGray, disabled: Constants.Color.silver)
         

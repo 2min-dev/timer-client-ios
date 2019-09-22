@@ -48,7 +48,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
             viewController.reactor = reactor
             
             // set tab bar view controller initial index
-            viewController.select(at: MainViewController.TabType.Productivity.rawValue, animated: false)
+            viewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
             return viewController
         }
     }

@@ -214,13 +214,7 @@ class NumberKeyPad: UIView {
     
     var font: UIFont = UIFont.systemFont(ofSize: 17) {
         didSet {
-            keys.forEach {
-                if $0.tag == Key.cancel {
-                    $0.titleLabel?.font = font.withSize(font.pointSize - 10)
-                } else {
-                    $0.titleLabel?.font = font
-                }
-            }
+            keys.forEach { $0.titleLabel?.font = font }
         }
     }
     
@@ -242,13 +236,14 @@ class NumberKeyPad: UIView {
 // MARK: - Extension
 extension Reactive where Base: NumberKeyPad {
     var keyPadTap: ControlEvent<Base.Key> {
-        let source: Observable<Base.Key> = .merge(base.keys.map { key in
+        let source = Observable<Base.Key>.merge(base.keys.map { key in
             key.rx.tap
                 .flatMap { () -> Observable<Base.Key> in
                     guard let key = Base.Key(rawValue: key.tag) else { return .empty() }
                     return .just(key)
                 }
         })
+        .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
         
         return ControlEvent(events: source)
     }

@@ -1,5 +1,5 @@
 //
-//  TimeKeyView.swift
+//  TimeKeyPad.swift
 //  timer
 //
 //  Created by JSilver on 10/08/2019.
@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TimeKeyView: UIView {
+class TimeKeyPad: UIView {
     enum Key: Int {
         case hour = 0
         case minute
@@ -82,7 +82,7 @@ class TimeKeyView: UIView {
     }
 }
 
-extension Reactive where Base: TimeKeyView {
+extension Reactive where Base: TimeKeyPad {
     var enableKey: Binder<Base.Key> {
         return Binder(base.self) { _, time in
             self.base.keys.forEach { $0.isEnabled = $0.tag >= time.rawValue ? true : false }
@@ -90,14 +90,15 @@ extension Reactive where Base: TimeKeyView {
     }
     
     var tap: ControlEvent<Base.Key> {
-        let source: Observable<Base.Key> = .merge(base.keys.map { key in
+        let source = Observable<Base.Key>.merge(base.keys.map { key in
             key.rx.tap
                 .flatMap { () -> Observable<Base.Key> in
                     guard let key = Base.Key(rawValue: key.tag) else { return .empty() }
                     return .just(key)
                 }
-            }
-        )
+        })
+        .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+        
         return ControlEvent(events: source)
     }
 }

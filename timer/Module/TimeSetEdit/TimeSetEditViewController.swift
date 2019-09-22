@@ -32,7 +32,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     
     private var keyPadView: NumberKeyPad { return timeSetEditView.keyPadView }
     
-    private var timeKeyView: TimeKeyView { return timeSetEditView.timeKeyView }
+    private var timeKeyView: TimeKeyPad { return timeSetEditView.timeKeyView }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetEditView.timerBadgeCollectionView }
     
@@ -316,7 +316,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     }
     
     /// Get base time (second) from key of time key view
-    private func getBaseTime(from key: TimeKeyView.Key) -> TimeInterval {
+    private func getBaseTime(from key: TimeKeyPad.Key) -> TimeInterval {
         switch key {
         case .hour:
             return Constants.Time.hour
@@ -384,7 +384,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     }
     
     /// Get enable time key from values of time & timer
-    private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyView.Key {
+    private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyPad.Key {
         if timer + TimeInterval(time) * Constants.Time.minute > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .second
         } else if timer + TimeInterval(time) * Constants.Time.hour > TimeSetEditViewReactor.MAX_TIME_INTERVAL {

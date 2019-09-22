@@ -52,7 +52,7 @@
 		F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */; };
 		F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034D227FCD0E00E05E2E /* CheckBox.swift */; };
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
-		F35E05FF22FF023D00A66ED9 /* TimeKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E05FE22FF023D00A66ED9 /* TimeKeyView.swift */; };
+		F35E05FF22FF023D00A66ED9 /* TimeKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */; };
 		F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerInfo.swift */; };
 		F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimeSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimeSetInfo.swift */; };
@@ -176,10 +176,6 @@
 		F3F5F876233155E8003271B3 /* AllTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F872233155E8003271B3 /* AllTimeSetViewController.swift */; };
 		F3F5F877233155E8003271B3 /* AllTimeSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F873233155E8003271B3 /* AllTimeSetView.swift */; };
 		F3F5F87A233221D7003271B3 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5F879233221D7003271B3 /* SettingTableViewCell.swift */; };
-		F3F65D7422CFAC77009C667B /* SharedTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7322CFAC77009C667B /* SharedTimeSetViewController.swift */; };
-		F3F65D7622CFACA5009C667B /* SharedTimeSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7522CFACA5009C667B /* SharedTimeSetViewReactor.swift */; };
-		F3F65D7822CFACE4009C667B /* SharedTimeSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7722CFACE4009C667B /* SharedTimeSetView.swift */; };
-		F3F65D7A22CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F65D7922CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift */; };
 		F3F800A7226A0981003D1D88 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
 		F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F3F800B3226A0C15003D1D88 /* Localizable.strings */; };
 		F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F800B5226A0D0F003D1D88 /* String+localized.swift */; };
@@ -276,7 +272,7 @@
 		F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpensourceLicenseViewReactor.swift; sourceTree = "<group>"; };
 		F352034D227FCD0E00E05E2E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
-		F35E05FE22FF023D00A66ED9 /* TimeKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeKeyView.swift; sourceTree = "<group>"; };
+		F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeKeyPad.swift; sourceTree = "<group>"; };
 		F37041C8226B65550012EA16 /* TimerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimeSetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInfo.swift; sourceTree = "<group>"; };
@@ -408,10 +404,6 @@
 		F3F5F872233155E8003271B3 /* AllTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTimeSetViewController.swift; sourceTree = "<group>"; };
 		F3F5F873233155E8003271B3 /* AllTimeSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTimeSetView.swift; sourceTree = "<group>"; };
 		F3F5F879233221D7003271B3 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
-		F3F65D7322CFAC77009C667B /* SharedTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetViewController.swift; sourceTree = "<group>"; };
-		F3F65D7522CFACA5009C667B /* SharedTimeSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetViewReactor.swift; sourceTree = "<group>"; };
-		F3F65D7722CFACE4009C667B /* SharedTimeSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetView.swift; sourceTree = "<group>"; };
-		F3F65D7922CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimeSetViewCoordinator.swift; sourceTree = "<group>"; };
 		F3F800B2226A0C15003D1D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F3F800B4226A0C3F003D1D88 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F3F800B5226A0D0F003D1D88 /* String+localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+localized.swift"; sourceTree = "<group>"; };
@@ -662,7 +654,6 @@
 				F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */,
 				F3735C9822CFA88700DC247C /* Productivity */,
 				F3735C9A22CFA98A00DC247C /* LocalTimeSet */,
-				F3735C9B22CFA9BB00DC247C /* SharedTimeSet */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -679,17 +670,6 @@
 				F3F5F86F233155AA003271B3 /* AllTimeSet */,
 			);
 			path = LocalTimeSet;
-			sourceTree = "<group>";
-		};
-		F3735C9B22CFA9BB00DC247C /* SharedTimeSet */ = {
-			isa = PBXGroup;
-			children = (
-				F3F65D7322CFAC77009C667B /* SharedTimeSetViewController.swift */,
-				F3F65D7722CFACE4009C667B /* SharedTimeSetView.swift */,
-				F3F65D7522CFACA5009C667B /* SharedTimeSetViewReactor.swift */,
-				F3F65D7922CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift */,
-			);
-			path = SharedTimeSet;
 			sourceTree = "<group>";
 		};
 		F3735C9C22CFAA8200DC247C /* Setting */ = {
@@ -1019,7 +999,7 @@
 				F38702AD22F899720099241C /* HeaderView */,
 				F3CD184422F6167B008DB221 /* FooterView */,
 				F31CD7B822F7479F0038A2DE /* TimerInputView.swift */,
-				F35E05FE22FF023D00A66ED9 /* TimeKeyView.swift */,
+				F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */,
 				F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */,
 				F352034D227FCD0E00E05E2E /* CheckBox.swift */,
 			);
@@ -1414,7 +1394,6 @@
 				F3C0DFA2233369CE00E49425 /* NoticeListViewController.swift in Sources */,
 				F3ADF4362312945600FA9277 /* TimeSetMemoViewReactor.swift in Sources */,
 				F3E0C0A022EA153B005D9FA4 /* AlarmChangeViewController.swift in Sources */,
-				F3F65D7422CFAC77009C667B /* SharedTimeSetViewController.swift in Sources */,
 				F33C6AB42291612E00FC461A /* CommonHeader.swift in Sources */,
 				F39B0B8F231F7D4900C2785A /* DatabaseServiceProtocol.swift in Sources */,
 				F3ADF4372312945600FA9277 /* TimeSetMemoViewController.swift in Sources */,
@@ -1443,7 +1422,6 @@
 				F3C18758226318DB00B2C644 /* AppService.swift in Sources */,
 				F3124B2423257F1300CB8B85 /* JSCollectionViewLayout.swift in Sources */,
 				F3CD208422FD95E20059E1BA /* TimeSetEditViewReactor.swift in Sources */,
-				F3F65D7A22CFAD7E009C667B /* SharedTimeSetViewCoordinator.swift in Sources */,
 				F379A71C231D36BA007E69A0 /* TimeSetProcessFloatingView.swift in Sources */,
 				F3ADF6842300672800F0FC67 /* TimeSetProcessViewReactor.swift in Sources */,
 				F38702B922F970E80099241C /* TimeSetDetailViewController.swift in Sources */,
@@ -1492,7 +1470,6 @@
 				F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */,
 				F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */,
 				F3CD208522FD95E20059E1BA /* TimeSetEditViewController.swift in Sources */,
-				F3F65D7622CFACA5009C667B /* SharedTimeSetViewReactor.swift in Sources */,
 				F3F541452327E0FE00D618D2 /* TimeSetManageHeaderCollectionReusableView.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
 				F321B99F231503B700A7D9FF /* TimeSetPopup.swift in Sources */,
@@ -1504,7 +1481,6 @@
 				F3D1F7AE225CC22E006DC162 /* IntroViewCoordinator.swift in Sources */,
 				F3ADF4382312945600FA9277 /* TimeSetMemoView.swift in Sources */,
 				F303F26D225CCAE400A11FAF /* LocalTimeSetViewReactor.swift in Sources */,
-				F3F65D7822CFACE4009C667B /* SharedTimeSetView.swift in Sources */,
 				F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */,
 				F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */,
 				F379A71A231D36BA007E69A0 /* TimeSetProcessFloatingViewReactor.swift in Sources */,
@@ -1529,7 +1505,7 @@
 				F3756F242322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift in Sources */,
 				F3CD208622FD95E20059E1BA /* TimeSetEditView.swift in Sources */,
 				F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */,
-				F35E05FF22FF023D00A66ED9 /* TimeKeyView.swift in Sources */,
+				F35E05FF22FF023D00A66ED9 /* TimeKeyPad.swift in Sources */,
 				F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */,
 				F39B0B88231F71E200C2785A /* Error.swift in Sources */,
 				F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */,

@@ -33,7 +33,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     private var keyPadView: NumberKeyPad { return productivityView.keyPadView }
     
-    private var timeKeyView: TimeKeyView { return productivityView.timeKeyView }
+    private var timeKeyView: TimeKeyPad { return productivityView.timeKeyPadView }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
@@ -157,6 +157,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         timerClearButton.rx.tap
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .map { Reactor.Action.clearTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -223,7 +224,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { $0.time }
             .distinctUntilChanged()
             .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
-            .map { $0 > 0 ? String($0) : "" }
+            .map { $0 > 0 ? "\("productivity_time_input_prefix_title".localized)\($0)" : "" }
             .bind(to: timerInputLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -232,11 +233,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
-                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
-            }
-            .bind(to: allTimeLabel.rx.attributedText)
+            .map { String(format: "time_set_all_time_title_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: allTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
         // End of time set
@@ -246,11 +244,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
                 .distinctUntilChanged(),
             Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
-                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
-            }
-            .bind(to: endOfTimeSetLabel.rx.attributedText)
+            .map { getDateString(format: "time_set_end_time_title_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
         // Time info view
@@ -342,24 +337,29 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     /// Convert number key pad input to time value
     private func updateTime(key: NumberKeyPad.Key) -> Int {
-        guard var text = timerInputLabel.text else { return 0 }
+        guard let text = timerInputLabel.text else { return 0 }
+        
+        let prefix = "productivity_time_input_prefix_title".localized
+        let range = Range(uncheckedBounds: (text.range(of: prefix)?.upperBound ?? text.startIndex, text.endIndex))
+        var time = String(text[range])
         
         switch key {
         case .cancel:
-            // Nothing to do
             break
+            
         case .back:
-            guard !text.isEmpty else { return 0 }
-            text.removeLast()
+            guard !time.isEmpty else { return 0 }
+            time.removeLast()
+            
         default:
-            text.append(String(key.rawValue))
+            time.append(String(key.rawValue))
         }
         
-        return Int(text) ?? 0
+        return Int(time) ?? 0
     }
     
     /// Get base time (second) from key of time key view
-    private func getBaseTime(from key: TimeKeyView.Key) -> TimeInterval {
+    private func getBaseTime(from key: TimeKeyPad.Key) -> TimeInterval {
         switch key {
         case .hour:
             return Constants.Time.hour
@@ -401,21 +401,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
         }
     }
     
-    /// Get time set info's attributed string
-    private func getTimeSetInfoString(title: String, info: String) -> NSAttributedString {
-        let title = NSAttributedString(string: title,
-                                       attributes: [.font: Constants.Font.Regular.withSize(12.adjust())])
-        let time = NSAttributedString(string: info,
-                                      attributes: [.font: Constants.Font.Bold.withSize(12.adjust())])
-        
-        let attributedString = NSMutableAttributedString()
-        attributedString.append(title)
-        attributedString.append(time)
-        return attributedString
-    }
-    
     /// Get enable time key from values of time & timer
-    private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyView.Key {
+    private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyPad.Key {
         if timer + TimeInterval(time) * Constants.Time.minute > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .second
         } else if timer + TimeInterval(time) * Constants.Time.hour > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
