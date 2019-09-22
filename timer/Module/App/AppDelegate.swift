@@ -24,6 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create new window
         window = UIWindow(frame: UIScreen.main.bounds)
+        if #available(iOS 13.0, *) {
+            // Fix interface style to .light before deal with dark mode
+            window?.overrideUserInterfaceStyle = .light
+        }
         
         // Present intro view
         let appCoordinator: AppCoordinator = AppCoordinator(provider: ServiceProvider(), window: window!)

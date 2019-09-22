@@ -150,7 +150,7 @@ class TeamInfoView: UIView {
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

@@ -37,14 +37,18 @@ class AllTimeSetView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.bottom.equalToSuperview().priorityHigh()
+            }
         }
         
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

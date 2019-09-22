@@ -32,7 +32,6 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         
         switch route {
         case .timeSetManage(_):
-            viewController.modalPresentationStyle = .fullScreen
             self.viewController.present(viewController, animated: true)
              
         case .allTimeSet(_),

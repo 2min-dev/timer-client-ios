@@ -158,10 +158,7 @@ class ProductivityView: UIView {
     
     lazy var footerView: Footer = {
         let view = Footer()
-        view.buttons = [
-            saveButton,
-            startButton
-        ]
+        view.buttons = [saveButton, startButton]
         return view
     }()
     
@@ -175,7 +172,7 @@ class ProductivityView: UIView {
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

@@ -55,7 +55,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
             return cell
         }
         
-    }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
+    }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
         switch kind {
         case JSCollectionViewLayout.Element.header.kind:
             // Global header
@@ -72,7 +72,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
             }
             
             // Set view type
-            let cellType = self.reactor?.currentState.sections[indexPath.section].items.first
+            let cellType = self?.reactor?.currentState.sections[indexPath.section].items.first
             switch cellType {
             case .regular(_):
                 supplementaryView.type = .header

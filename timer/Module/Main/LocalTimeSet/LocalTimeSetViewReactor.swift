@@ -69,6 +69,23 @@ class LocalTimeSetViewReactor: Reactor {
         }
     }
     
+    private func mutate(timeSetEvent: TimeSetEvent) -> Observable<Mutation> {
+        switch timeSetEvent {
+        case .updated:
+            return actionRefresh()
+            
+        default:
+            return .empty()
+        }
+    }
+    
+    func transform(mutation: Observable<LocalTimeSetViewReactor.Mutation>) -> Observable<LocalTimeSetViewReactor.Mutation> {
+        let timeSetEventMutation = timeSetService.event
+            .flatMap { [weak self] in self?.mutate(timeSetEvent: $0) ?? .empty() }
+        
+        return .merge(mutation, timeSetEventMutation)
+    }
+    
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
