@@ -11,15 +11,24 @@ import ReactorKit
 
 class SettingViewReactor: Reactor {
     enum Action {
-        case viewDidLoad
+        /// Refresh menu items
+        case refresh
     }
     
     enum Mutation {
-        case setSections([CommonTableSection])
+        /// Set menu sections
+        case setSections([SettingSectionModel])
+        
+        /// Set should section reload `true`
+        case sectionReload
     }
     
     struct State {
-        var sections: [CommonTableSection]
+        /// Menu sections
+        var sections: [SettingSectionModel]
+        
+        /// Need to reload section
+        var shouldSectionReload: Bool
     }
     
     // MARK: - properties
@@ -30,35 +39,53 @@ class SettingViewReactor: Reactor {
     
     // MARK: - constructor
     init(appService: AppServicePorotocol) {
-        self.initialState = State(sections: [])
         self.appService = appService
+        initialState = State(sections: [], shouldSectionReload: true)
     }
     
+    // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return initSettingMenus().map { Mutation.setSections($0) }
+        case .refresh:
+            return actionRefresh()
         }
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
+        state.shouldSectionReload = false
+        
         switch mutation {
         case let .setSections(sections):
             state.sections = sections
             return state
+            
+        case .sectionReload:
+            state.shouldSectionReload = true
+            return state
         }
     }
     
-    /**
-     * initialize setting menu
-     * - returns: setting menu section list
-     */
-    func initSettingMenus() -> Observable<[CommonTableSection]> {
-        // add default menu
-        var sections: [CommonTableSection] = []
-        sections.append(CommonTableSection(title: "설정", items: [CommonTableItem(title: "앱 정보")]))
+    // MARK: - action method
+    private func actionRefresh() -> Observable<Mutation> {
+        let countdown = appService.getCountdown()
+        
+        let items: [SettingMenu] = [
+            .notice,
+            .alarm("기본음"),
+            .countdown(countdown),
+            .teamInfo,
+            .license
+        ]
+        
+        let setSections: Observable<Mutation> = .just(.setSections([SettingSectionModel(model: Void(), items: items)]))
+        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        
+        return .concat(setSections, sectionReload)
+    }
     
-        return .just(sections)
+    deinit {
+        Logger.verbose()
     }
 }

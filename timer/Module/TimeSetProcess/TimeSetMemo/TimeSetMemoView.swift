@@ -13,7 +13,7 @@ class TimeSetMemoView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
-        view.buttonTypes = [.share, .bookmark, .home]
+        view.additionalButtons = [.share, .bookmark, .home]
         return view
     }()
     
@@ -63,6 +63,7 @@ class TimeSetMemoView: UIView {
     
     let memoTextView: UITextView = {
         let view = UITextView()
+        view.backgroundColor = Constants.Color.white
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         view.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -163,7 +164,7 @@ class TimeSetMemoView: UIView {
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

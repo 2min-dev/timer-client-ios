@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class AllTimeSetViewController: BaseViewController, View {
+class AllTimeSetViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var allTimeSetView: AllTimeSetView { return view as! AllTimeSetView }
     
-    private var headerView: CommonHeader { return allTimeSetView.headerView }
+    override var headerView: CommonHeader { return allTimeSetView.headerView }
     
     private var timeSetCollectionView: UICollectionView { return allTimeSetView.timeSetCollectionView }
     
@@ -117,6 +117,8 @@ class AllTimeSetViewController: BaseViewController, View {
     }
     
     override func bind() {
+        super.bind()
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -127,10 +129,6 @@ class AllTimeSetViewController: BaseViewController, View {
             .take(1)
             .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
@@ -154,18 +152,6 @@ class AllTimeSetViewController: BaseViewController, View {
     }
     
     // MARK: - action method
-    
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     /// Get header title by type
     private func getHeaderTitleByType(_ type: AllTimeSetViewReactor.TimeSetType) -> String {
@@ -180,19 +166,6 @@ class AllTimeSetViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension AllTimeSetViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

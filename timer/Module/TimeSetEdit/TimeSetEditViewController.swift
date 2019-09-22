@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import JSReorderableCollectionView
 
-class TimeSetEditViewController: BaseViewController, View {
+class TimeSetEditViewController: BaseHeaderViewController, View {
     // MARK: - constants
     private let MAX_TIMER_COUNT: Int = 10
     private let FOOTER_BUTTON_CANCEL: Int = 0
@@ -20,7 +20,7 @@ class TimeSetEditViewController: BaseViewController, View {
     // MARK: - view properties
     private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
-    private var headerView: CommonHeader { return timeSetEditView.headerView }
+    override var headerView: CommonHeader { return timeSetEditView.headerView }
     
     private var timerInputView: TimerInputView { return timeSetEditView.timerInputView }
     private var timerClearButton: UIButton { return timeSetEditView.timerInputView.timerClearButton }
@@ -98,6 +98,8 @@ class TimeSetEditViewController: BaseViewController, View {
     
     // MARK: - bind
     override func bind() {
+        super.bind()
+        
         // Timer option view visible
         timerOptionVisibleSubject
             .distinctUntilChanged()
@@ -112,10 +114,6 @@ class TimeSetEditViewController: BaseViewController, View {
         rx.viewWillAppear
             .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         timerClearButton.rx.tap
@@ -286,12 +284,14 @@ class TimeSetEditViewController: BaseViewController, View {
     }
     
     // MARK: - action method
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
+    override func handleHeaderAction(_ action: CommonHeader.Action) {
+        switch action {
         case .back:
             showBackWarningAlert()
+            
         case .delete:
             showTimeSetDeleteWarningAlert()
+            
         default:
             break
         }

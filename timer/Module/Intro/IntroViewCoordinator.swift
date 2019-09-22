@@ -11,7 +11,7 @@ import UIKit
 /// Route from intro view
 class IntroViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum IntroRoute {
+    enum Route {
         case main
     }
     
@@ -24,7 +24,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: IntroRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
@@ -36,7 +36,7 @@ class IntroViewCoordinator: CoordinatorProtocol {
         return viewController
     }
     
-    func get(for route: IntroRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case .main:
             let coordinator = MainViewCoordinator(provider: provider)

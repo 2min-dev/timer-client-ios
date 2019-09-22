@@ -49,6 +49,11 @@
 "history_title" = "히스토리";
 "history_detail_title" = "히스토리 상세";
 "setting_title" = "설정";
+"notice_title" = "공지사항";
+"alarm_setting_title" = "기본 사운드 설정";
+"countdown_setting_title" = "카운트 다운";
+"team_info_title" = "제작팀 정보";
+"opensource_license_title" = "오픈소스 라이센스";
 
 // MARK: - local time set
 "local_header_title" = "주로 쓰는 타임셋을 모아보세요,\n시간을 관리하는 데 도움이 될 거에요 :)";
@@ -132,6 +137,22 @@
 "alert_alarm_all_apply_description" = "알람이 모든 타이머에 적용되었습니다.";
 "alert_button_cancel" = "취소";
 "alert_button_yes" = "네";
+
+// MARK: - Setting
+"setting_version_lastest_title" = "최신버전입니다!";
+"setting_version_need_update_title" = "업데이트가 필요해요!";
+"setting_alarm_setting_subtitle_format" = "현재 : %@";
+"setting_countdown_setting_subtitle_format" = "현재 : %d초";
+
+// MARK: - Notice
+"notice_empty_title" = "등록된 공지사항이 없어요,\n좋은 소식으로 곧 찾아올게요!";
+
+// MARK: - Countdown setting
+"countdown_setting_second_title_format" = "%d초";
+
+// MARK: - Team information
+"team_info_email_copy_title" = "복사";
+"team_info_service_description" = "안녕하세요.\n\"2min\"을 사용해주셔서 감사드립니다.\n\n앞으로 더욱 발전된 앱으로 찾아뵙겠습니다.";
 
 // MARK: - Widget String
 "widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";

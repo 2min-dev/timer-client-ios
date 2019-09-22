@@ -1,5 +1,5 @@
 //
-//  AppInfoCoordinator.swift
+//  TeamInfoViewCoordinator.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 13/04/2019.
@@ -9,14 +9,14 @@
 import UIKit
 
 /// Route from app info view
-class AppInfoCoordinator: CoordinatorProtocol {
+class TeamInfoViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum AppInfoRoute {
+    enum Route {
         case empty
     }
     
 	// MARK: - properties
-	weak var viewController: AppInfoViewController!
+	weak var viewController: TeamInfoViewController!
 	let provider: ServiceProviderProtocol
 
     // MARK: - constructor
@@ -24,11 +24,11 @@ class AppInfoCoordinator: CoordinatorProtocol {
 		self.provider = provider
 	}
 
-	func present(for route: AppInfoRoute) -> UIViewController? {
+	func present(for route: Route) -> UIViewController? {
         return get(for: route)
 	}
     
-    func get(for route: AppInfoRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         return nil
     }
 } 

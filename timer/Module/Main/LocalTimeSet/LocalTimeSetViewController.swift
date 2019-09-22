@@ -11,11 +11,11 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class LocalTimeSetViewController: BaseViewController, View {
+class LocalTimeSetViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     
-    private var headerView: CommonHeader { return localTimeSetView.headerView }
+    override var headerView: CommonHeader { return localTimeSetView.headerView }
     
     private var timeSetCollectionView: UICollectionView { return localTimeSetView.timeSetCollectionView }
     
@@ -55,7 +55,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             return cell
         }
         
-    }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
+    }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
         switch kind {
         case JSCollectionViewLayout.Element.header.kind:
             // Global header
@@ -72,7 +72,7 @@ class LocalTimeSetViewController: BaseViewController, View {
             }
             
             // Set view type
-            let cellType = self.reactor?.currentState.sections[indexPath.section].items.first
+            let cellType = self?.reactor?.currentState.sections[indexPath.section].items.first
             switch cellType {
             case .regular(_):
                 supplementaryView.type = .header
@@ -174,6 +174,8 @@ class LocalTimeSetViewController: BaseViewController, View {
     }
     
     override func bind() {
+        super.bind()
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -200,6 +202,22 @@ class LocalTimeSetViewController: BaseViewController, View {
     }
     
     // MARK: - action method
+    override func handleHeaderAction(_ action: CommonHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
+        case .history:
+            // TODO: Present history view
+            break
+            
+        case .setting:
+            _ = coordinator.present(for: .setting)
+            
+        default:
+            break
+        }
+    }
+    
     /// Perform present by selected cell type
     private func timeSetSelected(cell type: TimeSetCellType) {
         switch type {
@@ -213,19 +231,6 @@ class LocalTimeSetViewController: BaseViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension LocalTimeSetViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

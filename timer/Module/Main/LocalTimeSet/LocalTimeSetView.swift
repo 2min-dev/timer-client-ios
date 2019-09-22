@@ -13,7 +13,7 @@ class LocalTimeSetView: UIView {
     let headerView: CommonHeader = {
         let view = CommonHeader()
         view.backButton.isHidden = true
-        view.buttonTypes = [.search, .history, .setting]
+        view.additionalButtons = [.search, .history, .setting]
         view.title = "local_time_set_title".localized
         return view
     }()
@@ -45,14 +45,14 @@ class LocalTimeSetView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalToSuperview().priorityHigh()
         }
         
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

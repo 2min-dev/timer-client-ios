@@ -10,11 +10,12 @@ import Foundation
 import UIKit
 
 enum Constants {
-    static let device = {
-        return UIDevice.current.userInterfaceIdiom
-    }()
+    static var email: String = "jsilver.dev@gmail.com"
     
-    static let appTitle: String = "2min"
+    static var appTitle: String? { return Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String }
+    static var appVersion: String? { return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String }
+    static var appBuild: String? { return Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String }
+    static var deviceVersion: String { return UIDevice.current.systemVersion }
     
     // base screen display weight
     static let weight: CGFloat = {

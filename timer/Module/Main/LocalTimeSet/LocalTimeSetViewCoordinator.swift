@@ -11,10 +11,11 @@ import UIKit
 /// Route from local time set view
 class LocalTimeSetViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
-    enum LocalTimeSetRoute {
+    enum Route {
         case timeSetManage(TimeSetManageViewReactor.TimeSetType)
         case allTimeSet(AllTimeSetViewReactor.TimeSetType)
         case timeSetDetail(TimeSetInfo)
+        case setting
     }
     
     // MARK: - properties
@@ -26,20 +27,23 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
-    func present(for route: LocalTimeSetRoute) -> UIViewController? {
+    func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetManage(_),
-             .allTimeSet(_),
-             .timeSetDetail(_):
+        case .timeSetManage(_):
+            self.viewController.present(viewController, animated: true)
+             
+        case .allTimeSet(_),
+             .timeSetDetail(_),
+             .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
         return viewController
     }
     
-    func get(for route: LocalTimeSetRoute) -> UIViewController? {
+    func get(for route: Route) -> UIViewController? {
         switch route {
         case let .timeSetManage(type):
             let coordinator = TimeSetManageViewCoordinator(provider: provider)
@@ -67,6 +71,17 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
             let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
             let viewController = TimeSetDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case .setting:
+            let coordinator = SettingViewCoordinator(provider: provider)
+            let reactor = SettingViewReactor(appService: provider.appService)
+            let viewController = SettingViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

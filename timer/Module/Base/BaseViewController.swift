@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 
+/// - warning: Shouldn't use `Base` controller not inherited
 class BaseViewController: UIViewController {
     var disposeBag: DisposeBag = DisposeBag()
     

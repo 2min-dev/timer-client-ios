@@ -18,7 +18,7 @@ class TimeSetManageView: UIView {
     
     let timeSetCollectionView: JSReorderableCollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset.top = 10.adjust()
+        layout.globalInset.top = 16.adjust()
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 40.adjust(), right: 0)
         
         let view = JSReorderableCollectionView(frame: .zero, collectionViewLayout: layout)
@@ -41,7 +41,7 @@ class TimeSetManageView: UIView {
             if #available(iOS 11.0, *) {
                 make.bottom.equalTo(safeAreaLayoutGuide)
             } else {
-                make.bottom.equalToSuperview()
+                make.bottom.equalToSuperview().priorityHigh()
             }
         }
         
@@ -49,7 +49,7 @@ class TimeSetManageView: UIView {
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
             } else {
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

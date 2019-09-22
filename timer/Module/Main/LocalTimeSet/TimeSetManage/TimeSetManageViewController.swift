@@ -12,11 +12,11 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class TimeSetManageViewController: BaseViewController, View {
+class TimeSetManageViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var timeSetManageView: TimeSetManageView { return view as! TimeSetManageView }
     
-    var headerView: ConfirmHeader { return timeSetManageView.headerView }
+    override var headerView: ConfirmHeader { return timeSetManageView.headerView }
     
     var timeSetCollectionView: JSReorderableCollectionView { return timeSetManageView.timeSetCollectionView }
     
@@ -109,6 +109,8 @@ class TimeSetManageViewController: BaseViewController, View {
     
     // MARK: - bine
     override func bind() {
+        super.bind()
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -117,15 +119,6 @@ class TimeSetManageViewController: BaseViewController, View {
         rx.viewWillAppear
             .take(1)
             .map { Reactor.Action.viewWillAppear }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.cancel
-            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true) })
-            .disposed(by: disposeBag)
-        
-        headerView.rx.confirm
-            .map { Reactor.Action.apply }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -147,11 +140,24 @@ class TimeSetManageViewController: BaseViewController, View {
             .map { $0.shouldDismiss }
             .distinctUntilChanged()
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
+            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: true) })
             .disposed(by: disposeBag)
     }
     
     // MARK: - action method
+    override func handleHeaderAction(_ action: ConfirmHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
+        case .confirm:
+            guard let reactor = reactor else { return }
+            reactor.action.onNext(.apply)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get header title by type
     private func getHeaderTitleByType(_ type: TimeSetManageViewReactor.TimeSetType) -> String {
@@ -207,19 +213,6 @@ extension TimeSetManageViewController: JSReorderableCollectionViewDelegate {
             snapshot.center = point
             snapshot.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         })
-    }
-}
-
-extension TimeSetManageViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetThreshold: CGFloat = 3
-        let blurThreshold: CGFloat = 10
-        let weight: CGFloat = 5
-        
-        // Set shadow by scroll
-        headerView.layer.shadow(alpha: 0.04,
-                                offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
-                                blur: min(scrollView.contentOffset.y / weight, blurThreshold))
     }
 }
 

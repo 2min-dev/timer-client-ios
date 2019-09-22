@@ -15,6 +15,7 @@ enum AppEvent {
 protocol AppServicePorotocol {
     var event: PublishSubject<AppEvent> { get }
     
+    func setCountdown(_ countdown: Int)
     func getCountdown() -> Int
 }
 

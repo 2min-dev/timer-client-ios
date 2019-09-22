@@ -78,9 +78,27 @@ class MainViewController: UITabBarController, View {
         view.addGestureRecognizer(panGestureRecognizer)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if #available(iOS 11.0, *) {
+            // Nothing newer than iOS 11.0
+        } else {
+            // Invalidate current layout to update child view controller's view size
+            view.setNeedsLayout()
+        }
+    }
+    
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         // Update child view controller view size
-        viewControllers?.forEach { $0.view.frame.size.height = self.view.bounds.height - self._tabBar.bounds.height }
+        viewControllers?.forEach {
+            if #available(iOS 11.0, *) {
+                // Set child viewcontrollers sefaarea
+                $0.additionalSafeAreaInsets.bottom = self._tabBar.bounds.height - self.view.safeAreaInsets.bottom
+            } else {
+                $0.view.frame.size.height = self.view.bounds.height - self._tabBar.bounds.height
+            }
+        }
     }
     
     // MARK: - bind

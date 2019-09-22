@@ -10,17 +10,25 @@ import RxSwift
 import RxDataSources
 import ReactorKit
 
-class SettingViewController: BaseViewController, View {
-    enum SettingSection: Int {
-        case setting = 0
-    }
-    
+class SettingViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var settingView: SettingView { return view as! SettingView }
-    private var settingTableView: UITableView { return settingView.tableView }
+    
+    override var headerView: CommonHeader { return settingView.headerView }
+    
+    private var settingTableView: UITableView { return settingView.settingTableView }
     
     // MARK: - properties
     var coordinator: SettingViewCoordinator
+    
+    private let dataSource = RxTableViewSectionedReloadDataSource<SettingSectionModel>(configureCell: { (datasource, tableView, indexPath, item) in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.name, for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
+        
+        cell.titleLabel.text = item.title
+        cell.subtitleLabel.text = item.subtitle
+        
+        return cell
+    })
     
     // MARK: - constructor
     init(coordinator: SettingViewCoordinator) {
@@ -39,66 +47,119 @@ class SettingViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Register cell
+        settingTableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.name)
+    }
+    
+    // MARK: - bind
+    override func bind() {
+        super.bind()
+        Logger.debug()
+        settingTableView.rx.setDelegate(self).disposed(by: disposeBag)
+    }
+    
+    func bind(reactor: SettingViewReactor) {
+        Logger.debug()
+        // MARK: action
+        rx.viewWillAppear
+            .map { Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
-        settingTableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
-        initSettingTableView()
+        settingTableView.rx.itemSelected
+            .do(onNext: { [weak self] in self?.settingTableView.deselectRow(at: $0, animated: true) })
+            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route) })
+            .disposed(by: disposeBag)
+        
+        // MARK: state
+        reactor.state
+            .filter { $0.shouldSectionReload }
+            .map { $0.sections }
+            .bind(to: settingTableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action
+    /// Handle header button tap action according to button type
+    private func headerActionHandler(type: CommonHeader.ButtonType) {
+        switch type {
+        case .back:
+            navigationController?.popViewController(animated: true)
+
+        default:
+            break
+        }
+    }
+    
+    /// Handle setting menu selected
+    private func menuSelectd(indexPath: IndexPath) {
+        
     }
     
     deinit {
         Logger.verbose()
     }
+}
+
+// MARK: - setting datasource
+typealias SettingSectionModel = SectionModel<Void, SettingMenu>
+
+enum SettingMenu {
+    case notice
+    case alarm(String)
+    case countdown(Int)
+    case teamInfo
+    case license
     
-    // MARK: - bind
-    func bind(reactor: SettingViewReactor) {
-        // MARK: action
-        reactor.action.onNext(.viewDidLoad)
-        
-        // MARK: state
-        reactor.state
-            .map { $0.sections }
-            .bind(to: settingTableView.rx.items(dataSource: RxTableViewSectionedReloadDataSource<CommonTableSection>(configureCell: { (datasource, tableview, indexPath, item) in
-                let cell = tableview.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
-                cell.textLabel?.text = item.title
-                return cell
-            })))
-            .disposed(by: disposeBag)
+    var title: String {
+        switch self {
+        case .notice:
+            return "notice_title".localized
+            
+        case .alarm:
+            return "alarm_setting_title".localized
+            
+        case .countdown:
+            return "countdown_setting_title".localized
+            
+        case .teamInfo:
+            return "team_info_title".localized
+            
+        case .license:
+            return "opensource_license_title".localized
+        }
     }
     
-    /**
-     * initizlize setting table view datasource & delegate
-     */
-    private func initSettingTableView() {
-        // set setting menu select action
-        settingTableView.rx.itemSelected
-            .subscribe(onNext: { [weak self] indexPath in
-                // caution: ControlEvent doesn't complete. so you have to add [weak self]
-                // when you want to use .subscribe about ControlEvent (ex. tap)
-                guard let `self` = self else { return }
-                
-                guard let cell = self.settingTableView.cellForRow(at: indexPath) else {
-                    Logger.error("setting table view doesn't have cell at indexPath.")
-                    return
-                }
-                
-                guard let section: SettingSection = SettingSection(rawValue: indexPath.section) else {
-                    Logger.error("setting table view doesn't have section at indexPath")
-                    return
-                }
-                
-                // set cell selected property to false for disable select background
-                cell.isSelected = false
-                
-                switch section {
-                // setting menu
-                case .setting:
-                    switch indexPath.row {
-                    case 0:
-                        _ = self.coordinator.present(for: .appInfo)
-                    default:
-                        Logger.error("not valid index path.")
-                    }
-                }
-            })
-            .disposed(by: disposeBag)
+    var subtitle: String? {
+        switch self {
+        case let .alarm(name):
+            return String(format: "setting_alarm_setting_subtitle_format".localized, name)
+            
+        case let .countdown(seconds):
+            return String(format: "setting_countdown_setting_subtitle_format".localized, seconds)
+            
+        default:
+            return nil
+        }
+    }
+    
+    var route: SettingViewCoordinator.Route {
+        switch self {
+        case .notice:
+            return .noticeList
+
+        case .alarm(_):
+            return .alarmSetting
+            
+        case .countdown(_):
+            return .countdownSetting
+            
+        case .teamInfo:
+            return .teamInfo
+
+        case .license:
+            return .license
+        }
     }
 }

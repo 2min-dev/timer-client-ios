@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class ProductivityViewController: BaseViewController, View {
+class ProductivityViewController: BaseHeaderViewController, View {
     // MARK: - constants
     private let MAX_TIMER_COUNT: Int = 10
     private let FOOTER_BUTTON_SAVE: Int = 0
@@ -21,7 +21,7 @@ class ProductivityViewController: BaseViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
     
-    private var headerView: CommonHeader { return productivityView.headerView }
+    override var headerView: CommonHeader { return productivityView.headerView }
     
     private var timerInputView: TimerInputView { return productivityView.timerInputView }
     private var timerClearButton: UIButton { return productivityView.timerInputView.timerClearButton }
@@ -113,6 +113,8 @@ class ProductivityViewController: BaseViewController, View {
     
     // MARK: - bind
     override func bind() {
+        super.bind()
+        
         rx.viewDidAppear // For get super view controller
             .take(1)
             .subscribe(onNext: { [unowned self] in
@@ -152,10 +154,6 @@ class ProductivityViewController: BaseViewController, View {
         rx.viewWillAppear
             .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        headerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.headerActionHandler(type: $0) })
             .disposed(by: disposeBag)
         
         timerClearButton.rx.tap
@@ -326,17 +324,17 @@ class ProductivityViewController: BaseViewController, View {
     }
 
     // MARK: - action method
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .search:
-            // TODO: Present search view
-            break
+    override func handleHeaderAction(_ action: CommonHeader.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
         case .history:
             // TODO: Present history view
             break
+            
         case .setting:
-            // TODO: Present setting view
-            break
+            _ = coordinator.present(for: .setting)
+            
         default:
             break
         }
