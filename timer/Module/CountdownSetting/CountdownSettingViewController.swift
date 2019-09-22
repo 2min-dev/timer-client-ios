@@ -101,6 +101,6 @@ struct CountdownSettingMenu {
     
     init(seconds: Int) {
         self.seconds = seconds
-        title = seconds > 0 ? String(format: "countdown_setting_second_title_format".localized, seconds) : "countdown_setting_zero_title".localized
+        title = String(format: "countdown_setting_second_title_format".localized, seconds)
     }
 }

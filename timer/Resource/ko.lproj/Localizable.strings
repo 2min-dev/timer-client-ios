@@ -149,7 +149,6 @@
 
 // MARK: - Countdown setting
 "countdown_setting_second_title_format" = "%d초";
-"countdown_setting_zero_title" = "없음";
 
 // MARK: - Team information
 "team_info_email_copy_title" = "복사";
