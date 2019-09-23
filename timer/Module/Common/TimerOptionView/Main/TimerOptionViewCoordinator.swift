@@ -11,7 +11,7 @@ import UIKit
 class TimerOptionViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
-        case alarmChange(String)
+        case empty
     }
     
     // MARK: - properties
@@ -25,26 +25,10 @@ class TimerOptionViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
-        
-        switch route {
-        case .alarmChange(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
-        return viewController
+        return get(for: route)
     }
     
     func get(for route: Route) -> UIViewController? {
-        switch route {
-        case let .alarmChange(alarm):
-            let viewController = AlarmChangeViewController()
-            let reactor = AlarmChangeViewReactor(alarm: alarm)
-            
-            // DI
-            viewController.reactor = reactor
-            
-            return viewController
-        }
+        return nil
     }
 }
