@@ -1,22 +1,22 @@
 //
-//  TimerBadgeAddCollectionViewCell.swift
+//  TimerBadgeRepeatCollectionViewCell.swift
 //  timer
 //
-//  Created by JSilver on 2019/07/08.
+//  Created by JSilver on 23/09/2019.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 import RxSwift
 
-class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
+class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell {
     // MARK: - view properties
-    let addLabel: UILabel = {
-        let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
-        view.text = "+"
-        view.textAlignment = .center
+    let repeatButton: UIButton = {
+        let view = UIButton()
+        view.isUserInteractionEnabled = false
+        view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
+        view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
+        view.setImage(UIImage(named: "btn_repeat_disable"), for: .disabled)
         return view
     }()
     
@@ -25,8 +25,8 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
         view.backgroundColor = Constants.Color.gallery
         
         // Set constraint of subviews
-        view.addAutolayoutSubview(addLabel)
-        addLabel.snp.makeConstraints { make in
+        view.addAutolayoutSubview(repeatButton)
+        repeatButton.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         

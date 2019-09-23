@@ -12,40 +12,32 @@ import ReactorKit
 
 class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
-    private let timeLabel: UILabel = {
+    private let timerIconImageView: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "icon_timer"))
+        return view
+    }()
+    
+    private let timerIndexLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(12.adjust())
-        view.textColor = Constants.Color.white
+        view.font = Constants.Font.Bold.withSize(10.adjust())
+        view.textColor = Constants.Color.silver
         view.textAlignment = .center
         return view
     }()
     
-    private lazy var containerView: UIView = { [unowned self] in
-        let view = UIView()
-        view.backgroundColor = Constants.Color.codGray
-        view.layer.borderWidth = 1
-
-        // Set constraint of subviews
-        view.addAutolayoutSubview(self.timeLabel)
-        timeLabel.snp.makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 5.adjust(), left: 6.adjust(), bottom: 5.adjust(), right: 6.adjust()))
-        }
-
-        return view
-    }()
-
-    let optionButton: UIButton = {
-        let view = UIButton()
-        view.setImage(UIImage(named: "btn_timer_detail_enable"), for: .normal)
-        view.setImage(UIImage(named: "btn_timer_detail_disable"), for: .disabled)
-        return view
-    }()
-
-    let indexLabel: UILabel = {
+    private let timeLabel: UILabel = {
         let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
+        view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
-        view.textColor = Constants.Color.silver
+        view.textColor = Constants.Color.codGray
         view.textAlignment = .center
+        return view
+    }()
+    
+    let editButton: UIButton = {
+        let view = UIButton()
+        view.setImage(UIImage(named: "btn_timer_edit"), for: .normal)
         return view
     }()
     
@@ -63,27 +55,33 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
             make.edges.equalToSuperview()
         }
         
-        contentView.addAutolayoutSubviews([optionButton, containerView, indexLabel])
-        optionButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+        contentView.addAutolayoutSubviews([timerIconImageView, timerIndexLabel, timeLabel, editButton])
+        timerIconImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalTo(containerView.snp.top)
-        }
-        
-        containerView.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(30.adjust())
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(timerIconImageView.snp.width)
         }
         
-        indexLabel.snp.makeConstraints { make in
-            make.top.equalTo(containerView.snp.bottom).offset(5.adjust())
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+        timerIndexLabel.snp.makeConstraints { make in
+            make.leading.equalTo(timerIconImageView.snp.trailing).inset(11.adjust())
+            make.trailing.equalTo(timeLabel.snp.leading).inset(-3.adjust())
+            make.centerY.equalToSuperview()
         }
+        
+        timeLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(editButton.snp.leading).inset(-11.adjust())
+            make.centerY.equalToSuperview()
+        }
+        
+        editButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(7.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(2.adjust())
+            make.height.equalTo(10.adjust())
+        }
+        
+        initLayout()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -91,11 +89,6 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     }
     
     // MARK: - lifecycle
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        containerView.layer.cornerRadius = containerView.bounds.height / 2
-    }
-    
     override func prepareForReuse() {
         setSelected(false)
         disposeBag = DisposeBag()
@@ -111,13 +104,21 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
             .map { String(format: "%02d:%02d:%02d", $0.0, $0.1, $0.2) }
-            .bind(to: timeLabel.rx.text)
+            .map { NSAttributedString(string: $0, attributes: [.kern: -0.36]) }
+            .bind(to: timeLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
-        reactor.state
-            .map { String($0.index) }
-            .distinctUntilChanged()
-            .bind(to: indexLabel.rx.text)
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.index }
+                .distinctUntilChanged(),
+            reactor.state
+                .map { $0.count }
+                .distinctUntilChanged()
+            )
+            .map { String(format: "timer_badge_index_title_format".localized, $0.0, $0.1) }
+            .map { NSAttributedString(string: $0, attributes: [.kern: -0.3]) }
+            .bind(to: timerIndexLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         reactor.state
@@ -134,36 +135,28 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     }
     
     // MARK: - private method
+    private func initLayout() {
+        contentView.backgroundColor = Constants.Color.alabaster
+        
+        contentView.layer.cornerRadius = 5.adjust()
+        contentView.layer.borderColor = Constants.Color.silver.cgColor
+        contentView.layer.borderWidth = 0.5
+    }
+    
     private func setEnabled(_ isEnabled: Bool) {
         self.isEnabled = isEnabled
-        
-        // Set badge color
-        containerView.backgroundColor = isSelected ? (isEnabled ? Constants.Color.codGray : Constants.Color.gallery) : Constants.Color.white
-        
-        // Set time label color
-        timeLabel.textColor = isEnabled ? (isSelected ? Constants.Color.white : Constants.Color.codGray) : Constants.Color.silver
-        
-        // Set index label color
-        indexLabel.textColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
-        
-        // Set option button enabled
-        optionButton.isEnabled = isEnabled
     }
     
     private func setSelected(_ isSelected: Bool) {
         self.isSelected = isSelected
         
-        // Set badge color
-        containerView.backgroundColor = isSelected ? (isEnabled ? Constants.Color.codGray : Constants.Color.gallery) : Constants.Color.white
-        containerView.layer.borderColor = isSelected ? Constants.Color.clear.cgColor : Constants.Color.gallery.cgColor
+        contentView.layer.borderColor = (isSelected ? Constants.Color.carnation : Constants.Color.silver).cgColor
+        contentView.layer.borderWidth = isSelected ? 1 : 0.5
         
-        // Set time label color
-        timeLabel.textColor = isEnabled ? (isSelected ? Constants.Color.white : Constants.Color.codGray) : Constants.Color.silver
-        
-        // Set index label color
-        indexLabel.textColor = isEnabled ? Constants.Color.codGray : Constants.Color.silver
-        
-        // Set option button visible
-        optionButton.isHidden = !isSelected
+        if isSelected {
+            contentView.layer.shadow(alpha: 0.16, offset: CGSize(width: 0, height: 3.adjust()), blur: 6)
+        } else {
+            contentView.layer.shadow(offset: .zero)
+        }
     }
 }
