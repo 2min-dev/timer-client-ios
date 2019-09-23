@@ -172,7 +172,7 @@ class TimeSetSaveViewController: BaseViewController, View {
         // Timer badge view
         reactor.state
             .filter { $0.shouldSectionReload }
-            .map { $0.timers }
+            .map { ($0.timers, nil, nil) }
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
         
@@ -247,8 +247,9 @@ class TimeSetSaveViewController: BaseViewController, View {
     
     /// Get index path from badge view scrolling
     private func getIndexPathFromScrolling() -> IndexPath? {
-        guard let axisPoint = timerBadgeCollectionView.layout?.axisPoint else { return nil }
-
+        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return nil }
+        let axisPoint = layout.axisPoint
+        
         let frame = timerBadgeCollectionView.frame
         let origin = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
         let converted = self.contentView.convert(origin, to: timerBadgeCollectionView)

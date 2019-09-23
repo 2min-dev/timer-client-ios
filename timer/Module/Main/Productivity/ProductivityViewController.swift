@@ -75,19 +75,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        timerBadgeCollectionView.reorderableDelegate = self
-        timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
-            switch cellType {
-            case .add:
-                if timers.count < self.MAX_TIMER_COUNT {
-                    return true
-                }
-                return false
-            default:
-                return false
-            }
-        }
-        
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
         
@@ -181,8 +168,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.setVisibleOfTimerOptionView(oldIndexPath: reactor.currentState.selectedIndexPath, newIndexPath: $0.0) })
-            .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
+            .do(onNext: { [weak self] in self?.setVisibleOfTimerOptionView(oldIndexPath: reactor.currentState.selectedIndexPath, newIndexPath: $0.1) })
+            .flatMap { [weak self] in self?.selectBadge(at: $0.0, timerIndexPath: $0.1, cellType: $0.2) ?? .empty() }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -244,7 +231,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
                 .distinctUntilChanged(),
             Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
-            .map { getDateString(format: "time_set_end_time_title_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .map { String(format: "time_set_end_time_title_format".localized, $0) }
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -282,11 +270,12 @@ class ProductivityViewController: BaseHeaderViewController, View {
         reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.timers }
+            .withLatestFrom(reactor.state.map { $0.isRepeat }, resultSelector: { ($0, $1) })
+            .flatMap { [weak self] in self?.makeTimerBadgeItems(timers: $0.0, isRepeat: $0.1) ?? .empty() }
             .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
         
-        // Timer badge view
         reactor.state
             .map { $0.selectedIndexPath }
             .distinctUntilChanged()
@@ -371,8 +360,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
     }
     
     /// Toggle timer option view visible state
-    private func setVisibleOfTimerOptionView(oldIndexPath: IndexPath, newIndexPath: IndexPath) {
-        if oldIndexPath == newIndexPath {
+    private func setVisibleOfTimerOptionView(oldIndexPath: IndexPath, newIndexPath: IndexPath?) {
+        if let indexPath = newIndexPath, oldIndexPath == indexPath {
             timerOptionVisibleSubject.accept(!timerOptionVisibleSubject.value)
         } else {
             timerOptionVisibleSubject.accept(false)
@@ -380,12 +369,20 @@ class ProductivityViewController: BaseHeaderViewController, View {
     }
     
     /// Convert badge select event to reactor action
-    private func selectBadge(at indexPath: IndexPath, cellType: TimerBadgeCellType) -> TimeSetEditViewReactor.Action {
+    private func selectBadge(at indexPath: IndexPath, timerIndexPath: IndexPath?, cellType: TimerBadgeCellType) -> Observable<TimeSetEditViewReactor.Action> {
         switch cellType {
-        case .add:
-            return Reactor.Action.addTimer
-        default:
-            return Reactor.Action.selectTimer(at: indexPath)
+        case .regular(_):
+            guard let timerIndexPath = timerIndexPath else { return .empty() }
+            return .just(.selectTimer(at: timerIndexPath))
+            
+        case let .extra(type):
+            switch type {
+                case .add:
+                    return .just(.addTimer)
+                    
+                case .repeat(_):
+                    return .just(.toggleRepeat)
+            }
         }
     }
     
@@ -415,7 +412,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     /// Timer bage view scroll to selected badge if can
     private func scrollToBadgeIfCan(at indexPath: IndexPath) {
         guard !isBadgeMoving else { return }
-        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+        timerBadgeCollectionView.scrollToBadge(at: indexPath, withExtraCells: true, animated: true)
     }
     
     /// Show/Hide view according to `canTimeSetStart` value
@@ -427,8 +424,20 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         // Show created timers
         timerBadgeCollectionView.isHidden = !canTimeSetStart
+        if canTimeSetStart {
+            timerBadgeCollectionView.scrollToBadge(at: IndexPath(item: 0, section: 0), animated: false)
+        }
+        
         // Show timer option footer view
         showFooterView(isShow: canTimeSetStart)
+    }
+
+    /// Make timer badge items
+    private func makeTimerBadgeItems(timers: [TimerInfo], isRepeat: Bool) -> Observable<([TimerInfo], [TimerBadgeExtraCellType]?, [TimerBadgeExtraCellType]?)> {
+        let leftExtraItems: [TimerBadgeExtraCellType]? = [.repeat(isRepeat)]
+        let rightExtraItems: [TimerBadgeExtraCellType]? = timers.count < self.MAX_TIMER_COUNT ? [.add] : nil
+        
+        return .just((timers, leftExtraItems, rightExtraItems))
     }
     
     /// Show popup alert
@@ -517,28 +526,5 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension ProductivityViewController: JSReorderableCollectionViewDelegate {
-    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        guard let reactor = reactor, indexPath.row < reactor.currentState.timers.count else { return false }
-        return true
-    }
-    
-    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willSnapshot cell: UICollectionViewCell, at point: CGPoint) -> UIView {
-        guard let badge = cell as? TimerBadgeCollectionViewCell else { return cell.snapshotView(afterScreenUpdates: true)! }
-        
-        let originOptionIsHidden = badge.optionButton.isHidden
-        let originIndexIsHidden = badge.indexLabel.isHidden
-        
-        badge.optionButton.isHidden = true
-        badge.indexLabel.isHidden = true
-        
-        let snapshot = badge.snapshotView(afterScreenUpdates: true)
-        badge.optionButton.isHidden = originOptionIsHidden
-        badge.indexLabel.isHidden = originIndexIsHidden
-        
-        return snapshot!
     }
 }

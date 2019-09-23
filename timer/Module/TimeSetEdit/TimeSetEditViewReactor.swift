@@ -33,6 +33,9 @@ class TimeSetEditViewReactor: Reactor {
         /// Add time into current selected timer
         case addTime(base: TimeInterval)
         
+        /// Toggle the state of time set repeat
+        case toggleRepeat
+        
         /// Delete time set
         case deleteTimeSet
         
@@ -61,6 +64,8 @@ class TimeSetEditViewReactor: Reactor {
         
         /// Set input time
         case setTime(Int)
+        
+        case setRepeat(Bool)
         
         /// Set timers of time set
         case setTimers([TimerInfo])
@@ -100,6 +105,9 @@ class TimeSetEditViewReactor: Reactor {
         /// The time that user inputed
         var time: Int
         
+        /// The state of time set repeat
+        var isRepeat: Bool
+        
         /// The timer list model of timer set
         var timers: [TimerInfo]
 
@@ -131,21 +139,23 @@ class TimeSetEditViewReactor: Reactor {
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
         self.timeSetService = timeSetService
-
+        
         self.timeSetInfo = timeSetInfo ?? TimeSetInfo(id: nil)
         
         initialState = State(endTime: 0,
-                                  allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  time: 0,
-                                  timers: self.timeSetInfo.timers.toArray(),
-                                  timer: self.timeSetInfo.timers[0],
-                                  selectedIndexPath: IndexPath(row: 0, section: 0),
-                                  canTimeSetStart: false,
-                                  alertMessage: nil,
-                                  shouldSectionReload: true,
-                                  shouldDismiss: false)
+                             allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                             time: 0,
+                             isRepeat: self.timeSetInfo.isRepeat,
+                             timers: self.timeSetInfo.timers.toArray(),
+                             timer: self.timeSetInfo.timers[0],
+                             selectedIndexPath: IndexPath(row: 0, section: 0),
+                             canTimeSetStart: false,
+                             alertMessage: nil,
+                             shouldSectionReload: true,
+                             shouldDismiss: false)
     }
     
+    // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewWillAppear:
@@ -165,6 +175,9 @@ class TimeSetEditViewReactor: Reactor {
             
         case let .addTime(base: time):
             return actionAddTime(base: time)
+            
+        case .toggleRepeat:
+            return actionToggleRepeat()
             
         case .deleteTimeSet:
             return actionDeleteTimeSet()
@@ -203,6 +216,7 @@ class TimeSetEditViewReactor: Reactor {
         return .merge(mutation, timeSetEventMutation)
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         state.shouldSectionReload = false
@@ -220,6 +234,10 @@ class TimeSetEditViewReactor: Reactor {
             
         case let .setTime(time):
             state.time = time
+            return state
+            
+        case let .setRepeat(isRepeat):
+            state.isRepeat = isRepeat
             return state
             
         case let .setTimers(timers):
@@ -275,7 +293,7 @@ class TimeSetEditViewReactor: Reactor {
         let setAllTime: Observable<Mutation> = .just(.setAllTime(allTime))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setTimers, setSelectedIndexPath, setAllTime, sectionReload)
+        return .concat(setTimers, setAllTime, sectionReload, setSelectedIndexPath)
     }
     
     private func actionClearTimeSet() -> Observable<Mutation> {
@@ -349,6 +367,16 @@ class TimeSetEditViewReactor: Reactor {
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
         return .concat(setEndTime, setTime, setAllTime, sectionReload)
+    }
+    
+    private func actionToggleRepeat() -> Observable<Mutation> {
+        // Toggle time set repeat
+        timeSetInfo.isRepeat.toggle()
+        
+        let setRepeat: Observable<Mutation> = .just(.setRepeat(timeSetInfo.isRepeat))
+        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        
+        return .concat(setRepeat, sectionReload)
     }
     
     private func actionDeleteTimeSet() -> Observable<Mutation> {

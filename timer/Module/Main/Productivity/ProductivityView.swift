@@ -81,8 +81,10 @@ class ProductivityView: UIView {
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         view.isAxisFixed = true
-        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
-        view.layout?.axisAlign = .center
+        if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
+            layout.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+            layout.axisAlign = .center
+        }
         return view
     }()
     
@@ -123,7 +125,7 @@ class ProductivityView: UIView {
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timeKeyPadView.snp.bottom)
+            make.top.equalTo(timeKeyPadView.snp.bottom).offset(5.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }

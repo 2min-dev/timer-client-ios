@@ -238,7 +238,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Timer badge view
         reactor.state
             .filter { $0.shouldSectionReload }
-            .map { $0.timers }
+            .map { ($0.timers, nil, nil) }
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
         
@@ -402,7 +402,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     
     /// Show start timer with selected index alert
     private func showTimerStartAlert(at indexPath: IndexPath) {
-        guard let layout = timerBadgeCollectionView.layout else { return }
+        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return }
         
         // Create alert & binding
         let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))

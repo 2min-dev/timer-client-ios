@@ -131,7 +131,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         // Timer badge view
         reactor.state
             .filter { $0.shouldSectionReload }
-            .map { $0.timers }
+            .map { ($0.timers, nil, nil) }
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
         

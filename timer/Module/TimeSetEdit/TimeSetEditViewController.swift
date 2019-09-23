@@ -71,19 +71,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         timerBadgeCollectionView.reorderableDelegate = self
-        timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
-            switch cellType {
-            case .add:
-                if timers.count < self.MAX_TIMER_COUNT {
-                    return true
-                }
-                return false
-            default:
-                return false
-            }
-        }
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
@@ -141,7 +129,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         
         timerBadgeCollectionView.rx.badgeSelected
             .do(onNext: { [weak self] in self?.setVisibleOfTimerOptionView(oldIndexPath: reactor.currentState.selectedIndexPath, newIndexPath: $0.0) })
-            .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
+            .flatMap { [weak self] in self?.selectBadge(at: $0.0, timerIndexPath: $0.1, cellType: $0.2) ?? .empty() }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -234,6 +222,8 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.timers }
+            .withLatestFrom(reactor.state.map { $0.isRepeat }, resultSelector: { ($0, $1) })
+            .flatMap { [weak self] in self?.makeTimerBadgeItems(timers: $0.0, isRepeat: $0.1) ?? .empty() }
             .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
             .bind(to: timerBadgeCollectionView.rx.items)
             .disposed(by: disposeBag)
@@ -337,12 +327,20 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     }
     
     /// Convert badge select event to reactor action
-    private func selectBadge(at indexPath: IndexPath, cellType: TimerBadgeCellType) -> TimeSetEditViewReactor.Action {
+    private func selectBadge(at indexPath: IndexPath, timerIndexPath: IndexPath?, cellType: TimerBadgeCellType) -> Observable<TimeSetEditViewReactor.Action> {
         switch cellType {
-        case .add:
-            return Reactor.Action.addTimer
-        default:
-            return Reactor.Action.selectTimer(at: indexPath)
+        case .regular(_):
+            guard let timerIndexPath = timerIndexPath else { return .empty() }
+            return .just(.selectTimer(at: timerIndexPath))
+            
+        case let .extra(type):
+            switch type {
+                case .add:
+                    return .just(.addTimer)
+                    
+                case .repeat(_):
+                    return .just(.toggleRepeat)
+            }
         }
     }
     
@@ -398,6 +396,14 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     private func scrollToBadgeIfCan(at indexPath: IndexPath) {
         guard !isBadgeMoving else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+    }
+    
+    /// Make timer badge items
+    private func makeTimerBadgeItems(timers: [TimerInfo], isRepeat: Bool) -> Observable<([TimerInfo], [TimerBadgeExtraCellType]?, [TimerBadgeExtraCellType]?)> {
+        let leftExtraItems: [TimerBadgeExtraCellType]? = [.repeat(isRepeat)]
+        let rightExtraItems: [TimerBadgeExtraCellType]? = timers.count < self.MAX_TIMER_COUNT ? [.add] : nil
+        
+        return .just((timers, leftExtraItems, rightExtraItems))
     }
     
     /// Show popup alert
@@ -489,19 +495,19 @@ extension TimeSetEditViewController: JSReorderableCollectionViewDelegate {
         return true
     }
     
-    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willSnapshot cell: UICollectionViewCell, at point: CGPoint) -> UIView {
-        guard let badge = cell as? TimerBadgeCollectionViewCell else { return cell.snapshotView(afterScreenUpdates: true)! }
-        
-        let originOptionIsHidden = badge.optionButton.isHidden
-        let originIndexIsHidden = badge.indexLabel.isHidden
-        
-        badge.optionButton.isHidden = true
-        badge.indexLabel.isHidden = true
-        
-        let snapshot = badge.snapshotView(afterScreenUpdates: true)
-        badge.optionButton.isHidden = originOptionIsHidden
-        badge.indexLabel.isHidden = originIndexIsHidden
-        
-        return snapshot!
-    }
+//    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willSnapshot cell: UICollectionViewCell, at point: CGPoint) -> UIView {
+//        guard let badge = cell as? TimerBadgeCollectionViewCell else { return cell.snapshotView(afterScreenUpdates: true)! }
+//
+//        let originOptionIsHidden = badge.editButton.isHidden
+//        let originIndexIsHidden = badge.indexLabel.isHidden
+//
+//        badge.editButton.isHidden = true
+//        badge.indexLabel.isHidden = true
+//
+//        let snapshot = badge.snapshotView(afterScreenUpdates: true)
+//        badge.editButton.isHidden = originOptionIsHidden
+//        badge.indexLabel.isHidden = originIndexIsHidden
+//
+//        return snapshot!
+//    }
 }
