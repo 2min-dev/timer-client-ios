@@ -75,6 +75,9 @@
 "productivity_button_second_title" = "초";
 "productivity_time_input_prefix_title" = "+ ";
 
+// MARK: - Timer badge
+"timer_badge_index_title_format" = "%d/%d";
+ 
 // MARK: - Timer option
 "timer_option_title_format" = "%d번째 타이머";
 "timer_option_alarm_all_apply" = "전체 적용";
@@ -115,7 +118,8 @@
 "time_set_all_time_full_title" = "전체 시간";
 "time_set_all_time_title_format" = "타임셋 시간 %02d:%02d:%02d";
 "time_set_end_time_full_title" = "종료 예정";
-"time_set_end_time_title_format" = "종료예정 h:mm a";
+"time_set_end_time_title_format" = "종료 예정 %@";
+"time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1분";
 "time_set_memo_hint" = "메모를 입력하세요.";

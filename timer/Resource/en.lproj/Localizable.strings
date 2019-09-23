@@ -75,6 +75,9 @@
 "productivity_button_second_title" = "S";
 "productivity_time_input_prefix_title" = "+ ";
 
+// MARK: - Timer badge
+"timer_badge_index_title_format" = "%d/%d";
+
 // MARK: - Timer option
 "timer_option_title_format" = "Timer %d";
 "timer_option_alarm_all_apply" = "All";
@@ -115,7 +118,8 @@
 "time_set_all_time_full_title" = "All Time";
 "time_set_all_time_title_format" = "All Time %02d:%02d:%02d";
 "time_set_end_time_full_title" = "End Exp ";
-"time_set_end_time_title_format" = "Exp h:mm a";
+"time_set_end_time_title_format" = "Exp %@";
+"time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1M";
 "time_set_memo_hint" = "Type memo about this time set.";
