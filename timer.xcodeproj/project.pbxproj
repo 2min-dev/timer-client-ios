@@ -43,7 +43,6 @@
 		F3282C9722F30D2200824F8A /* UITextField+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3282C9622F30D2200824F8A /* UITextField+rx.swift */; };
 		F334090022D0D8E2008661EC /* TimerBadgeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33408FF22D0D8E2008661EC /* TimerBadgeCollectionView.swift */; };
 		F334090522D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F334090422D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift */; };
-		F334090722D3A139008661EC /* TimerBadgeViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F334090622D3A139008661EC /* TimerBadgeViewReactor.swift */; };
 		F33C6AB42291612E00FC461A /* CommonHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB32291612E00FC461A /* CommonHeader.swift */; };
 		F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB52291678300FC461A /* CALayer+border.swift */; };
 		F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */; };
@@ -151,6 +150,7 @@
 		F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */; };
 		F3DD7AD623216293000E3BB9 /* BookmaredTimeSetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* BookmaredTimeSetCollectionViewCell.swift */; };
 		F3DD7AD8232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */; };
+		F3DD937B233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */; };
 		F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */; };
 		F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E5C3512296E52000148139 /* UITabBar+height.swift */; };
 		F3F21F6E23338A100000597B /* NoticeDetailViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6A23338A100000597B /* NoticeDetailViewCoordinator.swift */; };
@@ -260,7 +260,6 @@
 		F3282C9622F30D2200824F8A /* UITextField+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+rx.swift"; sourceTree = "<group>"; };
 		F33408FF22D0D8E2008661EC /* TimerBadgeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCollectionView.swift; sourceTree = "<group>"; };
 		F334090422D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeAddCollectionViewCell.swift; sourceTree = "<group>"; };
-		F334090622D3A139008661EC /* TimerBadgeViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeViewReactor.swift; sourceTree = "<group>"; };
 		F33C6AB32291612E00FC461A /* CommonHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHeader.swift; sourceTree = "<group>"; };
 		F33C6AB52291678300FC461A /* CALayer+border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+border.swift"; sourceTree = "<group>"; };
 		F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpensourceLicenseViewReactor.swift; sourceTree = "<group>"; };
@@ -373,6 +372,7 @@
 		F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD523216293000E3BB9 /* BookmaredTimeSetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmaredTimeSetCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionCollectionReusableView.swift; sourceTree = "<group>"; };
+		F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCellReactor.swift; sourceTree = "<group>"; };
 		F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModelProtocol.swift; sourceTree = "<group>"; };
 		F3E4383F227421FF00FA1246 /* timer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = timer.entitlements; path = timer/timer.entitlements; sourceTree = "<group>"; };
 		F3E438402274220500FA1246 /* widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widget.entitlements; sourceTree = "<group>"; };
@@ -532,7 +532,6 @@
 			children = (
 				F334090322D0D9B5008661EC /* Cell */,
 				F33408FF22D0D8E2008661EC /* TimerBadgeCollectionView.swift */,
-				F334090622D3A139008661EC /* TimerBadgeViewReactor.swift */,
 			);
 			path = TimerBadgeView;
 			sourceTree = "<group>";
@@ -544,6 +543,7 @@
 				F3AA90582337CC0D00CBB8EE /* TimerBadgeRepeatCollectionViewCell.swift */,
 				F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */,
 				F3C2E7B8228318C500C69FF2 /* TimerBadgeCellReactor.swift */,
+				F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1396,6 +1396,7 @@
 				F3124B2423257F1300CB8B85 /* JSCollectionViewLayout.swift in Sources */,
 				F3CD208422FD95E20059E1BA /* TimeSetEditViewReactor.swift in Sources */,
 				F379A71C231D36BA007E69A0 /* TimeSetProcessFloatingView.swift in Sources */,
+				F3DD937B233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift in Sources */,
 				F3ADF6842300672800F0FC67 /* TimeSetProcessViewReactor.swift in Sources */,
 				F38702B922F970E80099241C /* TimeSetDetailViewController.swift in Sources */,
 				F379A726231E67EF007E69A0 /* MainViewReactor.swift in Sources */,
@@ -1474,7 +1475,6 @@
 				F3F5F875233155E8003271B3 /* AllTimeSetViewReactor.swift in Sources */,
 				F303F27B225CCE1600A11FAF /* ProductivityViewController.swift in Sources */,
 				F3D49924227F273E00AC4B2B /* NumberKeyPad.swift in Sources */,
-				F334090722D3A139008661EC /* TimerBadgeViewReactor.swift in Sources */,
 				F3756F242322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift in Sources */,
 				F3CD208622FD95E20059E1BA /* TimeSetEditView.swift in Sources */,
 				F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */,

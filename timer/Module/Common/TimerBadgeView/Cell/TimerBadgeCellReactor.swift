@@ -54,22 +54,24 @@ class TimerBadgeCellReactor: Reactor {
         /// time of timer
         var time: TimeInterval
         
-        /// Enable state of badge
-        var isEnabled: Bool
-        
         /// Selected state of badge
         var isSelected: Bool
+        
+        /// Enable state of badge
+        var isEnabled: Bool
     }
     
     // MARK: - properties
     var initialState: State
+    let id: Int
     
-    init(info: TimerInfo, index: Int, count: Int) {
-        self.initialState = State(index: index,
+    init(id: Int = 0, time: TimeInterval = 0, index: Int = 1, count: Int = 1, isSelected: Bool = false, isEnabled: Bool = true) {
+        self.id = id
+        initialState = State(index: index,
                                   count: count,
-                                  time: info.endTime,
-                                  isEnabled: true,
-                                  isSelected: false)
+                                  time: time,
+                                  isSelected: isSelected,
+                                  isEnabled: isEnabled)
     }
     
     // MARK: - mutate

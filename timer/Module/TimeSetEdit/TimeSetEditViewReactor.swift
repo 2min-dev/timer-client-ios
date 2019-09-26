@@ -13,11 +13,14 @@ import RealmSwift
 class TimeSetEditViewReactor: Reactor {
     // MARK: - constants
     static let MAX_TIME_INTERVAL = TimeInterval(99 * Constants.Time.hour + 59 * Constants.Time.minute + 59)
+    private let MAX_TIMER_COUNT: Int = 10
+    
+    private enum TimerBadgeExtraType {
+        case add
+        case `repeat`
+    }
     
     enum Action {
-        /// Update time set info when view will appear. because time set info can change other view
-        case viewWillAppear
-        
         /// Clear time set info
         case clearTimeSet
         
@@ -36,9 +39,6 @@ class TimeSetEditViewReactor: Reactor {
         /// Toggle the state of time set repeat
         case toggleRepeat
         
-        /// Delete time set
-        case deleteTimeSet
-        
         /// Add a timer into time set
         case addTimer
         
@@ -46,10 +46,13 @@ class TimeSetEditViewReactor: Reactor {
         case deleteTimer
         
         /// Change timer position
-        case moveTimer(at: IndexPath, to: IndexPath)
+        case moveTimer(at: Int, to: Int)
         
         /// Select the timer
-        case selectTimer(at: IndexPath)
+        case selectTimer(at: Int)
+        
+        /// Delete time set
+        case deleteTimeSet
         
         /// Apply alarm to all timers
         case applyAlarm(String)
@@ -65,25 +68,11 @@ class TimeSetEditViewReactor: Reactor {
         /// Set input time
         case setTime(Int)
         
-        case setRepeat(Bool)
+        /// Set timer list badge sections
+        case setSections([TimerBadgeSectionModel])
         
-        /// Set timers of time set
-        case setTimers([TimerInfo])
-        
-        /// Set current timer
-        case setTimer(TimerInfo)
-        
-        /// Append a timer into time set
-        case appendTimer(TimerInfo)
-        
-        /// Remove a timer from time set
-        case removeTimer(at: Int)
-        
-        /// Swap the position of two timers
-        case swapTimer(at: IndexPath, to: IndexPath)
-        
-        /// Set seected index path
-        case setSelectedIndexPath(IndexPath)
+        /// Set selected index
+        case setSelectedIndex(Int)
         
         /// Set alert message
         case setAlertMessage(String)
@@ -97,59 +86,66 @@ class TimeSetEditViewReactor: Reactor {
     
     struct State {
         /// The time of timer
-        var endTime: TimeInterval
+        var endTime: TimeInterval = 0
         
         /// All time of time set
-        var allTime: TimeInterval
+        var allTime: TimeInterval = 0
         
         /// The time that user inputed
-        var time: Int
+        var time: Int = 0
         
-        /// The state of time set repeat
-        var isRepeat: Bool
-        
-        /// The timer list model of timer set
-        var timers: [TimerInfo]
-
-        /// Current selected timer
-        var timer: TimerInfo
+        /// The timer list badge sections
+        var sections: [TimerBadgeSectionModel] = []
         
         /// Current selected timer index path
-        var selectedIndexPath: IndexPath
-        
-        /// Can the time set start
-        var canTimeSetStart: Bool
+        var selectedIndex: Int = 0
         
         /// Alert message
         var alertMessage: String?
         
         /// Need section reload
-        var shouldSectionReload: Bool
+        var shouldSectionReload: Bool = false
         
         /// Need to dismiss view
-        var shouldDismiss: Bool
+        var shouldDismiss: Bool = false
     }
     
     // MARK: - properties
-    var initialState: State
+    var initialState: State = State()
     private let timeSetService: TimeSetServiceProtocol
 
     var timeSetInfo: TimeSetInfo
     
+    private var regularItems: [TimerBadgeCellReactor] = []
+    private lazy var extraItems: [TimerBadgeExtraType: TimerBadgeExtraCellType] = [
+        .add: .add,
+        .repeat: .repeat(TimerBadgeRepeatCellReactor(isRepeat: timeSetInfo.isRepeat))
+    ]
+    
+    private var itemId: Int = 0
+    
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
         self.timeSetService = timeSetService
-        
         self.timeSetInfo = timeSetInfo ?? TimeSetInfo(id: nil)
         
-        initialState = State(endTime: 0,
+        let timers = self.timeSetInfo.timers.toArray()
+        let timer = timers.first
+        
+        itemId = timers.count
+        regularItems = self.timeSetInfo.timers.enumerated().map {
+            TimerBadgeCellReactor(id: $0.offset,
+                                  time: $0.element.endTime,
+                                  index: $0.offset + 1,
+                                  count: timers.count,
+                                  isSelected: $0.offset == 0)
+        }
+        
+        initialState = State(endTime: timer?.endTime ?? 0,
                              allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                              time: 0,
-                             isRepeat: self.timeSetInfo.isRepeat,
-                             timers: self.timeSetInfo.timers.toArray(),
-                             timer: self.timeSetInfo.timers[0],
-                             selectedIndexPath: IndexPath(row: 0, section: 0),
-                             canTimeSetStart: false,
+                             sections: makeSections(regular: regularItems, time: timer?.endTime ?? 0),
+                             selectedIndex: 0,
                              alertMessage: nil,
                              shouldSectionReload: true,
                              shouldDismiss: false)
@@ -158,9 +154,6 @@ class TimeSetEditViewReactor: Reactor {
     // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewWillAppear:
-            return actionViewWillAppear()
-            
         case .clearTimeSet:
             return actionClearTimeSet()
             
@@ -179,20 +172,20 @@ class TimeSetEditViewReactor: Reactor {
         case .toggleRepeat:
             return actionToggleRepeat()
             
-        case .deleteTimeSet:
-            return actionDeleteTimeSet()
-            
         case .addTimer:
             return actionAddTimer()
             
         case .deleteTimer:
             return actionDeleteTimer()
             
-        case let .moveTimer(at: sourceIndexPath, to: destinationIndexPath):
-            return actionMoveTimer(at: sourceIndexPath, to: destinationIndexPath)
+        case let .moveTimer(at: sourceIndex, to: destinationIndex):
+            return actionMoveTimer(at: sourceIndex, to: destinationIndex)
             
-        case let .selectTimer(indexPath):
-            return actionSelectTimer(at: indexPath)
+        case let .selectTimer(index):
+            return actionSelectTimer(at: index)
+            
+        case .deleteTimeSet:
+            return actionDeleteTimeSet()
             
         case let .applyAlarm(alarm):
             return actionApplyAlarm(alarm)
@@ -229,39 +222,20 @@ class TimeSetEditViewReactor: Reactor {
             
         case let .setAllTime(timeInterval):
             state.allTime = timeInterval
-            state.canTimeSetStart = state.allTime > 0
             return state
             
         case let .setTime(time):
             state.time = time
             return state
             
-        case let .setRepeat(isRepeat):
-            state.isRepeat = isRepeat
+        case let .setSections(timers):
+            state.sections = timers
             return state
             
-        case let .setTimers(timers):
-            state.timers = timers
-            return state
-            
-        case let .setTimer(timer):
-            state.timer = timer
-            return state
-            
-        case let .appendTimer(info):
-            state.timers.append(info)
-            return state
-            
-        case let .removeTimer(at: index):
-            state.timers.remove(at: index)
-            return state
-            
-        case let .swapTimer(at: sourceIndexPath, to: destinationIndexPth):
-            state.timers.swapAt(sourceIndexPath.row, destinationIndexPth.row)
-            return state
-            
-        case let .setSelectedIndexPath(indexPath):
-            state.selectedIndexPath = indexPath
+        case let .setSelectedIndex(index):
+            let section: Int = TimerBadgeSectionType.regular.rawValue
+            guard index >= 0 && index < state.sections[section].items.count else { return state }
+            state.selectedIndex = index
             return state
             
         case let .setAlertMessage(message):
@@ -279,62 +253,62 @@ class TimeSetEditViewReactor: Reactor {
     }
 
     // MARK: - action method
-    private func actionViewWillAppear() -> Observable<Mutation> {
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
-        
-        var indexPath = currentState.selectedIndexPath
-        if  indexPath.row + 1 > timeSetInfo.timers.count {
-            // Reset index path if timer count less than current selected index path's row
-            indexPath = IndexPath(row: timeSetInfo.timers.count - 1, section: 0)
-        }
-        let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: indexPath)
-        
-        let allTime = timeSetInfo.timers.reduce(0) { $0 + $1.endTime }
-        let setAllTime: Observable<Mutation> = .just(.setAllTime(allTime))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        return .concat(setTimers, setAllTime, sectionReload, setSelectedIndexPath)
-    }
-    
     private func actionClearTimeSet() -> Observable<Mutation> {
         // Clear time set
         timeSetInfo = TimeSetInfo(id: nil)
         
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
-        let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: IndexPath(row: 0, section: 0))
+        // Clear timer items
+        regularItems = [regularItems.first].compactMap { $0 }
+        
+        extraItems = [
+            .add: .add,
+            .repeat: .repeat(TimerBadgeRepeatCellReactor(isRepeat: timeSetInfo.isRepeat))
+        ]
+        
         let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems)))
+        let setSelectedIndex: Observable<Mutation> = actionSelectTimer(at: 0)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setTimers, setSelectedIndexPath, setAllTime, sectionReload)
+        return .concat(setAllTime, setSections, setSelectedIndex, sectionReload)
     }
     
     private func actionClearTimers() -> Observable<Mutation> {
+        guard let item = regularItems.first else { return .empty() }
+        
         // Clear default timers
         let timers = List<TimerInfo>()
         timers.append(TimerInfo())
-        
         timeSetInfo.timers = timers
         
-        let setTimers: Observable<Mutation> = .just(.setTimers(timeSetInfo.timers.toArray()))
-        let setSelectedIndexPath: Observable<Mutation> = actionSelectTimer(at: IndexPath(row: 0, section: 0))
+        // Clear timer items
+        item.action.onNext(.updateTime(0))
+        regularItems = [item]
+        
         let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems)))
+        let setSelectedIndex: Observable<Mutation> = actionSelectTimer(at: 0)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setTimers, setSelectedIndexPath, setAllTime, sectionReload)
+        return .concat(setAllTime, setSections, setSelectedIndex, sectionReload)
     }
     
     private func actionClearTimer() -> Observable<Mutation> {
         let state = currentState
         
         // Clear the timer's end time
-        timeSetInfo.timers[state.selectedIndexPath.row].endTime = 0
+        timeSetInfo.timers[state.selectedIndex].endTime = 0
+        
+        // Update badge time
+        regularItems[state.selectedIndex].action.onNext(.updateTime(0))
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(0))
         let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.endTime))
         let setTime: Observable<Mutation> = .just(.setTime(0))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems)))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setAllTime, setTime, sectionReload)
+        return .concat(setEndTime, setAllTime, setTime, setSections, sectionReload)
     }
     
     private func actionUpdateTime(_ time: Int) -> Observable<Mutation> {
@@ -351,7 +325,6 @@ class TimeSetEditViewReactor: Reactor {
     private func actionAddTime(base time: TimeInterval) -> Observable<Mutation> {
         let state = currentState
         
-        let allTime = state.allTime - state.endTime
         var timeInterval = state.endTime + TimeInterval(state.time) * time
         if timeInterval > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
            // Set to max time if timer exceeded limit
@@ -359,96 +332,138 @@ class TimeSetEditViewReactor: Reactor {
         }
         
         // Update the timer's end time
-        timeSetInfo.timers[state.selectedIndexPath.row].endTime = timeInterval
+        timeSetInfo.timers[state.selectedIndex].endTime = timeInterval
+        
+        // Update badge time
+        regularItems[state.selectedIndex].action.onNext(.updateTime(timeInterval))
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(timeInterval))
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.endTime + timeInterval))
         let setTime: Observable<Mutation> = .just(.setTime(0))
-        let setAllTime: Observable<Mutation> = .just(.setAllTime(allTime + timeInterval))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems, time: timeInterval)))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setTime, setAllTime, sectionReload)
+        return .concat(setEndTime, setAllTime, setTime, setSections, sectionReload)
     }
     
     private func actionToggleRepeat() -> Observable<Mutation> {
         // Toggle time set repeat
         timeSetInfo.isRepeat.toggle()
         
-        let setRepeat: Observable<Mutation> = .just(.setRepeat(timeSetInfo.isRepeat))
+        if case let .repeat(reactor) = extraItems[.repeat] {
+            reactor.action.onNext(.updateRepeat(timeSetInfo.isRepeat))
+        }
+        
+        return .empty()
+    }
+    
+    private func actionAddTimer() -> Observable<Mutation> {
+        // Create timer and append into time set info
+        let info = TimerInfo()
+        timeSetInfo.timers.append(info)
+        
+        // Create timer item and append into regular items
+        let count = timeSetInfo.timers.count
+        regularItems.append(TimerBadgeCellReactor(id: itemId, time: info.endTime, index: count, count: count))
+        itemId += 1
+        
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems, time: info.endTime)))
+        let setSelectIndex = actionSelectTimer(at: count - 1)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setRepeat, sectionReload)
+        return .concat(setSections, sectionReload, setSelectIndex)
+    }
+    
+    private func actionDeleteTimer() -> Observable<Mutation> {
+        let state = currentState
+        
+        // Get will remove timer
+        let index = state.selectedIndex
+        let removedTimer = timeSetInfo.timers[index]
+        
+        // Remove a timer
+        timeSetInfo.timers.remove(at: index)
+        
+        // Remove a timer item
+        regularItems.remove(at: index)
+        
+        // Calculate selected index
+        // If selected index is last index, adjust index to last index of removed list
+        let selectIndex = index < timeSetInfo.timers.count ? index : index - 1
+        
+        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - removedTimer.endTime))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems,
+                                                                                time: timeSetInfo.timers[selectIndex].endTime)))
+        let setSelectIndex = actionSelectTimer(at: selectIndex)
+        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        
+        return .concat(setAllTime, setSelectIndex, setSections, sectionReload)
+    }
+    
+    private func actionMoveTimer(at sourceIndex: Int, to destinationIndex: Int) -> Observable<Mutation> {
+        let state = currentState
+        
+        // Swap timer
+        timeSetInfo.timers.swapAt(sourceIndex, destinationIndex)
+        
+        // Swap timer item & update index
+        regularItems.swapAt(sourceIndex, destinationIndex)
+        regularItems[sourceIndex].action.onNext(.updateIndex(sourceIndex + 1))
+        regularItems[destinationIndex].action.onNext(.updateIndex(destinationIndex + 1))
+        
+        // Update selected index
+        var setSelectedIndex: Observable<Mutation>
+        if state.selectedIndex == sourceIndex {
+            setSelectedIndex = .just(.setSelectedIndex(destinationIndex))
+        } else if state.selectedIndex == destinationIndex {
+            setSelectedIndex = .just(.setSelectedIndex(sourceIndex))
+        } else {
+            // Moved timer is not selected timer
+            setSelectedIndex = .empty()
+        }
+        
+        return setSelectedIndex
+    }
+    
+    private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
+        let state = currentState
+        
+        let previousIndex = state.selectedIndex
+        var index = index
+        
+        if index != previousIndex && previousIndex < timeSetInfo.timers.count {
+            // Update to previous item state
+            if timeSetInfo.timers[previousIndex].endTime == 0 {
+                // If current selected timer's end time is 0
+                // Remove previous selected timer
+                timeSetInfo.timers.remove(at: previousIndex)
+                regularItems.remove(at: previousIndex)
+                
+                // Adjust index
+                index = index > previousIndex ? index - 1 : index
+            } else {
+                // Deselect previous item
+                regularItems[previousIndex].action.onNext(.select(false))
+            }
+        }
+        
+        // Select current item
+        regularItems[index].action.onNext(.select(true))
+        
+        let setEndTime: Observable<Mutation> = .just(.setEndTime(timeSetInfo.timers[index].endTime))
+        let setTime: Observable<Mutation> = .just(.setTime(0))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems,
+                                                                                time: timeSetInfo.timers[index].endTime)))
+        let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(index))
+        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        
+        return .concat(setEndTime, setTime, setSections, sectionReload, setSelectedIndex)
     }
     
     private func actionDeleteTimeSet() -> Observable<Mutation> {
         guard let id = timeSetInfo.id else { return .empty() }
         return timeSetService.removeTimeSet(id: id).asObservable()
             .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
-    }
-    
-    private func actionAddTimer() -> Observable<Mutation> {
-        // Create default a timer (set 0)
-        let index = timeSetInfo.timers.count
-        let info = TimerInfo()
-        
-        // Add a timer
-        timeSetInfo.timers.append(info)
-        
-        let appendSectionItem: Observable<Mutation> = .just(.appendTimer(info))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        let setSelectIndexPath = actionSelectTimer(at: IndexPath(row: index, section: 0))
-        
-        return .concat(appendSectionItem, sectionReload, setSelectIndexPath)
-    }
-    
-    private func actionDeleteTimer() -> Observable<Mutation> {
-        let state = currentState
-        
-        let index = state.selectedIndexPath.row
-        guard index > 0 else {
-            // Ignore delete first timer action
-            return .empty()
-        }
-        
-        // Remove a timer
-        timeSetInfo.timers.remove(at: index)
-        // Set index path
-        let indexPath = IndexPath(row: index < timeSetInfo.timers.count ? index : index - 1, section: 0)
-        
-        let removeTimer: Observable<Mutation> = .just(.removeTimer(at: index))
-        let setSelectIndexPath: Observable<Mutation> = actionSelectTimer(at: indexPath)
-        let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.timers[index].endTime))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        return .concat(removeTimer, setSelectIndexPath, setAllTime, sectionReload)
-    }
-    
-    private func actionMoveTimer(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) -> Observable<Mutation> {
-        let state = currentState
-        
-        // Swap timer
-        timeSetInfo.timers.swapAt(sourceIndexPath.row, destinationIndexPath.row)
-        
-        let swapTimer: Observable<Mutation> = .just(.swapTimer(at: sourceIndexPath, to: destinationIndexPath))
-        // Update selected index path
-        var setSelectedIndexPath: Observable<Mutation> = .empty()
-        if state.selectedIndexPath == sourceIndexPath {
-            setSelectedIndexPath = .just(.setSelectedIndexPath(destinationIndexPath))
-        } else if state.selectedIndexPath == destinationIndexPath {
-            setSelectedIndexPath = .just(.setSelectedIndexPath(sourceIndexPath))
-        }
-        
-        return .concat(swapTimer, setSelectedIndexPath)
-    }
-    
-    private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {
-        guard indexPath.row < timeSetInfo.timers.count else { return .empty() }
-        
-        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
-        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[indexPath.row]))
-        let setEndTime: Observable<Mutation> = .just(.setEndTime(timeSetInfo.timers[indexPath.row].endTime))
-        let setTime: Observable<Mutation> = .just(.setTime(0))
-        
-        return .concat(setSelectedIndexPath, setTimer, setEndTime, setTime)
     }
     
     private func actionApplyAlarm(_ alarm: String) -> Observable<Mutation> {
@@ -459,6 +474,44 @@ class TimeSetEditViewReactor: Reactor {
     /// If current time set info doesn't asigned id(It is createing new), clear time set info due to save the time set
     private func actionTimeSetCreate() -> Observable<Mutation> {
         return actionClearTimeSet()
+    }
+    
+    // MARK: - private method
+    private func makeSections(regular: [TimerBadgeCellReactor], left: [TimerBadgeExtraType] = [.repeat], right: [TimerBadgeExtraType] = [.add], time: TimeInterval = 0) -> [TimerBadgeSectionModel] {
+    
+        let count = regular.count
+        let regularItem: [TimerBadgeCellType] = regular.enumerated().map { (offset, reactor) in
+            reactor.action.onNext(.updateIndex(offset + 1))
+            reactor.action.onNext(.updateCount(count))
+            
+            return .regular(reactor)
+        }
+        
+        let leftItems: [TimerBadgeCellType] = left
+            .filter { isExtraItemIncluded(type: $0, count: count, time: time) }
+            .compactMap { extraItems[$0] }
+            .map { .extra($0) }
+        
+        let rightItems: [TimerBadgeCellType] = right
+            .filter { isExtraItemIncluded(type: $0, count: count, time: time) }
+            .compactMap { extraItems[$0] }
+            .map { .extra($0) }
+        
+        return [
+            TimerBadgeSectionModel(model: .leftExtra, items: leftItems),
+            TimerBadgeSectionModel(model: .regular, items: regularItem),
+            TimerBadgeSectionModel(model: .rightExtra, items: rightItems)
+        ]
+    }
+    
+    private func isExtraItemIncluded(type: TimerBadgeExtraType, count: Int, time: TimeInterval) -> Bool {
+        switch type {
+        case .add:
+            return count < MAX_TIMER_COUNT && time > 0
+            
+        case .repeat:
+            return true
+        }
     }
     
     deinit {

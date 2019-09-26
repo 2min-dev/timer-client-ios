@@ -387,7 +387,6 @@ class TimeSetProcessView: UIView {
         // Set add time button title color
         addTimeButton.titleLabel?.textColor = isEnabled ? Constants.Color.carnation : Constants.Color.silver
         
-        timerBadgeCollectionView.isEnabled = isEnabled
         memoButton.isEnabled = isEnabled
     }
 }

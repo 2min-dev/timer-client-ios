@@ -68,11 +68,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        timerBadgeCollectionView.rx.badgeSelected
-            .map { Reactor.Action.selectTimer(at: $0.0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
         editButton.rx.tap
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))})
             .disposed(by: disposeBag)
@@ -126,20 +121,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .map { $0.isRepeat }
             .distinctUntilChanged()
             .bind(to: repeatButton.rx.isSelected)
-            .disposed(by: disposeBag)
-        
-        // Timer badge view
-        reactor.state
-            .filter { $0.shouldSectionReload }
-            .map { ($0.timers, nil, nil) }
-            .bind(to: timerBadgeCollectionView.rx.items)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
-            .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
         // Alarm

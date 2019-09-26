@@ -150,13 +150,40 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
     private func setSelected(_ isSelected: Bool) {
         self.isSelected = isSelected
         
-        contentView.layer.borderColor = (isSelected ? Constants.Color.carnation : Constants.Color.silver).cgColor
-        contentView.layer.borderWidth = isSelected ? 1 : 0.5
-        
+        // Animate border animation
+        animateSelection(isSelected)
+
+        // Animate shadow animation
         if isSelected {
-            contentView.layer.shadow(alpha: 0.16, offset: CGSize(width: 0, height: 3.adjust()), blur: 6)
+            contentView.layer.shadowWithAnimation(alpha: 0.16, offset: CGSize(width: 0, height: 3.adjust()), blur: 6)
         } else {
-            contentView.layer.shadow(offset: .zero)
+            contentView.layer.shadowWithAnimation(alpha: 0.16, offset: .zero)
         }
+    }
+    
+    private func animateSelection(_ isSelected: Bool) {
+        // Create layer animation
+        let borderColorAnimation = CABasicAnimation(keyPath: "borderColor")
+        borderColorAnimation.toValue = (isSelected ? Constants.Color.carnation : Constants.Color.silver).cgColor
+
+        let borderWidthAnimation = CABasicAnimation(keyPath: "borderWidth")
+        borderWidthAnimation.toValue = isSelected ? 1 : 0.5
+
+        // Create animation group
+        let animation = CAAnimationGroup()
+        animation.animations = [borderColorAnimation, borderWidthAnimation]
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = .forwards
+        animation.duration = 0.2
+
+        // Set properties when animation complete
+        CATransaction.setCompletionBlock {
+            self.contentView.layer.borderColor = (isSelected ? Constants.Color.carnation : Constants.Color.silver).cgColor
+            self.contentView.layer.borderWidth = isSelected ? 1 : 0.5
+        }
+        
+        CATransaction.begin()
+        contentView.layer.add(animation, forKey: "select")
+        CATransaction.commit()
     }
 }

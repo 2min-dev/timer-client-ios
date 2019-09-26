@@ -10,63 +10,17 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxDataSources
-import ReactorKit
 import JSReorderableCollectionView
 
-typealias TimerBadgeSectionModel = SectionModel<Void, TimerBadgeCellType>
-
-class TimerBadgeCollectionView: JSReorderableCollectionView, View {
+class TimerBadgeCollectionView: JSReorderableCollectionView {
     // MARK: - properties
-    private lazy var _dataSource = RxCollectionViewSectionedReloadDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
-        switch cellType {
-        case let .regular(reactor):
-            // Send action into reactor for initialize state
-            reactor.action.onNext(.enable(self.isEnabled))
-            
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as! TimerBadgeCollectionViewCell
-            cell.reactor = reactor
-            
-            return cell
-            
-        case let .extra(type):
-            switch type {
-            case .add:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.name, for: indexPath)
-                cell.setNeedsLayout()
-                return cell
-                
-            case let .repeat(isRepeat):
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeRepeatCollectionViewCell.name, for: indexPath) as? TimerBadgeRepeatCollectionViewCell else { fatalError() }
-                cell.repeatButton.isSelected = isRepeat
-                cell.setNeedsLayout()
-                return cell
-            }
-        }
-    }, moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
-        guard let `self` = self, let reactor = self.reactor else { return }
-        
-        Observable.just((sourceIndexPath, destinationIndexPath))
-            .map { Reactor.Action.moveBadge(at: $0.0, to: $0.1) }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-    })
-    
-    var isEnabled: Bool {
-        set { reactor?.action.onNext(.updateEnabled(newValue)) }
-        get { reactor?.currentState.isEnabled ?? false }
-    }
-    
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 0, height: 90.adjust())
     }
     
-    var disposeBag = DisposeBag()
-    
     // MARK: - constructor
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        // Create reactor
-        reactor = TimerBadgeViewReactor()
         
         // Set collection view properties
         backgroundColor = Constants.Color.clear
@@ -86,6 +40,7 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
             // Set layout properties
             layout.scrollDirection = .horizontal
             layout.minimumInteritemSpacing = 10.adjust()
+            layout.sectionInset = UIEdgeInsets(top: 0, left: 10.adjust(), bottom: 0, right: 10.adjust())
         }
     }
     
@@ -97,36 +52,11 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(reactor: TimerBadgeViewReactor) {
-        // MARK: action
-        // MARK: state
-        reactor.state
-            .filter { $0.shouldSectionReload }
-            .map { $0.sections }
-            .bind(to: rx.items(dataSource: _dataSource))
-            .disposed(by: disposeBag)
-    }
-    
-    // MARK: - private method
     // MARK: - public method
     /// Animate that move cell to axis point
-    func scrollToBadge(at indexPath: IndexPath, withExtraCells: Bool = true, animated: Bool) {
-        // Calc actual index path to scroll
-        guard let items = reactor?.currentState.sections[0].items,
-            let index = items.firstIndex(where: { $0.isRegular }) else { return }
-        
-        // Adjust index path by range
-        let indexPath = withExtraCells ? IndexPath(item: indexPath.item + index, section: indexPath.section) : indexPath
-        
-        guard let layout = collectionViewLayout as? TimerBadgeCollectionViewFlowLayout, indexPath.row < items.count else { return }
-
-        let cellSize = collectionView(self, layout: layout, sizeForItemAt: indexPath)
-        let cellOffset = (0 ..< Int(indexPath.row)).reduce(layout.sectionInset.left) {
-            // Get cell size
-            let cellSize = collectionView(self, layout: layout, sizeForItemAt: IndexPath(item: $1, section: indexPath.section))
-            // Current cell offset in collection view
-            return $0 + cellSize.width + layout.minimumInteritemSpacing
-        }
+    func scrollToBadge(at indexPath: IndexPath, animated: Bool) {
+        guard let layout = collectionViewLayout as? TimerBadgeCollectionViewFlowLayout,
+            let cellAttribute = layout.layoutAttributesForItem(at: indexPath) else { return }
         
         // Deference about between cell offset and axis point
         var diff: CGFloat
@@ -135,135 +65,34 @@ class TimerBadgeCollectionView: JSReorderableCollectionView, View {
             diff = layout.axisPoint.x
             
         case .center:
-            diff = layout.axisPoint.x - cellSize.width / 2
+            diff = layout.axisPoint.x - cellAttribute.size.width / 2
             
         case .right:
-            diff = layout.axisPoint.x - cellSize.width
+            diff = layout.axisPoint.x - cellAttribute.size.width
         }
-
+        
         // Animate scroll to axis point
-        setContentOffset(CGPoint(x: cellOffset - diff, y: 0), animated: animated)
+        setContentOffset(CGPoint(x: cellAttribute.frame.origin.x - diff, y: 0), animated: animated)
     }
 }
 
 extension TimerBadgeCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let reactor = reactor else { return .zero }
-
-        let cellType = reactor.currentState.sections[0].items[indexPath.row]
-        switch cellType {
-        case .regular(_):
+        if indexPath.section == 0 {
+            return CGSize(width: 40.adjust(), height: 40.adjust())
+        } else if indexPath.section == 1 {
             return CGSize(width: 130.adjust(), height: 70.adjust())
-            
-        case .extra(_):
-            return CGSize(width: 60.adjust(), height: 40.adjust())
+        } else {
+            return CGSize(width: 40.adjust(), height: 40.adjust())
         }
-    }
-}
-
-// MARK: - Rx extension
-extension Reactive where Base: TimerBadgeCollectionView {
-    // MARK: - binder
-    var items: Binder<([TimerInfo], [TimerBadgeExtraCellType]?, [TimerBadgeExtraCellType]?)> {
-        return Binder(base.self) { _, items in
-            guard let reactor = self.base.reactor else { return }
-            
-            Observable.just(items)
-                .map { timers, leftItems, rightItems in Base.Reactor.Action.updateTimers(timers, leftItems, rightItems) }
-                .bind(to: reactor.action)
-                .disposed(by: self.base.disposeBag)
-        }
-    }
-    
-    var selected: Binder<IndexPath> {
-        return Binder(base.self) { _, indexPath in
-            guard let reactor = self.base.reactor else { return }
-            
-            Observable.just(indexPath)
-                .map { Base.Reactor.Action.selectBadge(at: $0) }
-                .bind(to: reactor.action)
-                .disposed(by: self.base.disposeBag)
-        }
-    }
-    
-    // MARK: - control event
-    var badgeSelected: ControlEvent<(IndexPath, IndexPath?, TimerBadgeCellType)> {
-        let source = base.rx.itemSelected
-            .flatMap { indexPath -> Observable<(IndexPath, IndexPath?, TimerBadgeCellType)> in
-                guard let reactor = self.base.reactor else { return .empty() }
-                
-                let items = reactor.currentState.sections[0].items
-                let cellType = items[indexPath.row]
-                
-                var timerIndexPath: IndexPath?
-                if case .regular(_) = cellType, let firstTimerIndex = items.firstIndex(where: { $0.isRegular }) {
-                    timerIndexPath = IndexPath(item: indexPath.item - firstTimerIndex, section: 0)
-                }
-                
-                return .just((indexPath, timerIndexPath, cellType))
-        }
-        
-        return ControlEvent(events: source)
-    }
-    
-    var badgeMoved: ControlEvent<(IndexPath, IndexPath)> {
-        let source = dataSource.methodInvoked(#selector(UICollectionViewDataSource.collectionView(_:moveItemAt:to:)))
-            .flatMap { a -> Observable<(IndexPath, IndexPath)> in
-                guard let items = self.base.reactor?.currentState.sections[0].items,
-                    let firstTimerIndex = items.firstIndex(where: { $0.isRegular }) else { return .empty() }
-                    
-                guard var sourceIndexPath = a[1] as? IndexPath, var destinationIndexPath = a[2] as? IndexPath else { return .empty() }
-                sourceIndexPath.item -= firstTimerIndex
-                destinationIndexPath.item -= firstTimerIndex
-                
-                return .just((sourceIndexPath, destinationIndexPath))
-            }
-        
-        return ControlEvent(events: source)
     }
 }
 
 extension TimerBadgeCollectionView: JSReorderableCollectionViewDelegate {
     func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        guard let reactor = reactor else { return false }
-        
-        let cellType = reactor.currentState.sections[0].items[indexPath.row]
-        switch cellType {
-        case .regular(_):
-            return true
-            
-        default:
-            return false
-        }
-    }
-}
-
-// Timer badge cell type
-enum TimerBadgeCellType {
-    case regular(TimerBadgeCellReactor)
-    case extra(TimerBadgeExtraCellType)
-    
-    // Get cell item
-    var item: TimerBadgeCellReactor? {
-        switch self {
-        case let .regular(reactor):
-            return reactor
-            
-        default:
-            return nil
-        }
-    }
-    
-    var isRegular: Bool {
-        guard case .regular(_) = self else { return false }
+        guard indexPath.section == TimerBadgeSectionType.regular.rawValue else { return false }
         return true
     }
-}
-
-enum TimerBadgeExtraCellType {
-    case add
-    case `repeat`(Bool)
-    // Define here, if need to add any extra cell type
 }
 
 class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
@@ -279,7 +108,7 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     // MARK: - properties
-    private var attributesCache: [UICollectionViewLayoutAttributes] = []
+    private var attributesCache: [IndexPath: UICollectionViewLayoutAttributes] = [:]
     weak var delegate: UICollectionViewDelegateFlowLayout?
     
     private var contentSize: CGSize = .zero
@@ -297,54 +126,55 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     override func prepare() {
-        super.prepare()
-        
         guard let collectionView = collectionView, collectionView.numberOfSections > 0 else { return }
         delegate = collectionView.delegate as? UICollectionViewDelegateFlowLayout
         
-        var attributes: [UICollectionViewLayoutAttributes] = []
+        attributesCache.removeAll(keepingCapacity: true)
         
         // Init section inset
-        sectionInset = calcSectionInset(in: collectionView, section: 0)
-        // Add horizontal section left inset to content size
-        contentSize = CGSize(width: sectionInset.left, height: collectionView.bounds.height)
+        collectionView.contentInset = calcContentInset(in: collectionView)
+        // Set content size
+        contentSize = CGSize(width: 0, height: collectionView.bounds.height)
         
-        let items = collectionView.numberOfItems(inSection: 0)
-        (0 ..< items).forEach {
-            let indexPath = IndexPath(row: $0, section: 0)
-            let itemSize = delegate?.collectionView?(collectionView, layout: self, sizeForItemAt: indexPath) ?? self.itemSize
-
-            let attribute = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-            attribute.frame = CGRect(x: contentSize.width,
-                                     y: (contentSize.height - itemSize.height) / 2,
-                                     width: itemSize.width,
-                                     height: itemSize.height)
-
-            attributes.append(attribute)
-            // Add item size to content width
-            contentSize.width += itemSize.width + ($0 < items - 1 ? minimumInteritemSpacing : 0)
+        let sections = collectionView.numberOfSections
+        (0 ..< sections).forEach { section in
+            // Add section left inset to content size
+            contentSize.width += sectionInset.left
+            
+            let items = collectionView.numberOfItems(inSection: section)
+            (0 ..< items).forEach { item in
+                let indexPath = IndexPath(row: item, section: section)
+                let attribute = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+                
+                let size = delegate?.collectionView?(collectionView, layout: self, sizeForItemAt: indexPath) ?? self.itemSize
+                attribute.frame = CGRect(origin: CGPoint(x: contentSize.width, y: (contentSize.height - size.height) / 2),
+                                         size: size)
+                
+                attributesCache[indexPath] = attribute
+                
+                // Add item size to content width
+                contentSize.width += size.width + (item < items - 1 ? minimumInteritemSpacing : 0)
+            }
+            // Add section right inset to content size
+            contentSize.width += sectionInset.right
         }
-        // Add horizontal section right inset to content size
-        contentSize.width += sectionInset.right
-
-        attributesCache = attributes
     }
-
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        return attributesCache.filter { $0.frame.intersects(rect) }
+        return attributesCache.values.filter { $0.frame.intersects(rect) }
     }
-
+    
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        return attributesCache[indexPath.item]
+        return attributesCache[indexPath]
     }
-
+    
     override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         guard let collectionView = collectionView else { return .zero }
-
+        
         // Get layout attributes in target rect
         let targetRect = CGRect(x: proposedContentOffset.x, y: proposedContentOffset.y, width: collectionView.frame.width, height: collectionView.frame.height)
         guard let layoutAttributes = layoutAttributesForElements(in: targetRect) else { return .zero }
-
+        
         var offsetAdjustment = CGFloat.greatestFiniteMagnitude
         // Calculate base axis point.
         let axisX = proposedContentOffset.x + axisPoint.x
@@ -369,20 +199,30 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     // MARK: - private method
-    private func calcSectionInset(in collectionView: UICollectionView, section: Int) -> UIEdgeInsets {
-        let count = collectionView.numberOfItems(inSection: section)
-        guard count > 0 else { return .zero }
-
-        let firstIndexPath = IndexPath(row: 0, section: section)
-        let lastIndexPath = IndexPath(row: count - 1, section: section)
+    private func calcContentInset(in collectionView: UICollectionView) -> UIEdgeInsets {
+        var fIndexPath: IndexPath?
+        var lIndexPath: IndexPath?
+        
+        let sections = collectionView.numberOfSections
+        (0 ..< sections).forEach { section in
+            let items = collectionView.numberOfItems(inSection: section)
+            guard items > 0 else { return }
+            
+            lIndexPath = IndexPath(item: items - 1, section: section)
+            if fIndexPath == nil {
+                fIndexPath = IndexPath(item: 0, section: section)
+            }
+        }
+        
+        guard let firstIndexPath = fIndexPath, let lastIndexPath = lIndexPath else { return .zero }
         
         // Get first & last item size
         let firstItem = delegate?.collectionView?(collectionView,
-                                                 layout: self,
-                                                 sizeForItemAt: firstIndexPath) ?? self.itemSize
+                                                  layout: self,
+                                                  sizeForItemAt: firstIndexPath) ?? self.itemSize
         let lastItem = delegate?.collectionView?(collectionView,
-                                                layout: self,
-                                                sizeForItemAt: lastIndexPath) ?? self.itemSize
+                                                 layout: self,
+                                                 sizeForItemAt: lastIndexPath) ?? self.itemSize
         
         switch axisAlign {
         case .left:
@@ -400,6 +240,55 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
                                 left: axisPoint.x - firstItem.width,
                                 bottom: 0,
                                 right: collectionView.bounds.width - axisPoint.x)
+        }
+    }
+}
+
+// MARK: - timer badge datasource
+typealias TimerBadgeSectionModel = AnimatableSectionModel<TimerBadgeSectionType, TimerBadgeCellType>
+
+/// Timer badge section type
+enum TimerBadgeSectionType: Int, IdentifiableType {
+    case leftExtra = 0
+    case regular
+    case rightExtra
+    
+    var identity: Self { return self }
+}
+
+/// Timer badge cell type
+enum TimerBadgeCellType: IdentifiableType, Equatable {
+    case regular(TimerBadgeCellReactor)
+    case extra(TimerBadgeExtraCellType)
+    
+    var identity: String {
+        switch self {
+        case let .regular(reactor):
+            return String(reactor.id)
+            
+        case let .extra(type):
+            return type.id
+        }
+    }
+    
+    static func == (lhs: TimerBadgeCellType, rhs: TimerBadgeCellType) -> Bool {
+        return lhs.identity == rhs.identity
+    }
+}
+
+/// Timer badge extra cell type
+enum TimerBadgeExtraCellType {
+    case add
+    case `repeat`(TimerBadgeRepeatCellReactor)
+    // Define here, if need to add any extra cell type
+    
+    var id: String {
+        switch self {
+        case .add:
+            return "add"
+            
+        case .repeat(_):
+            return "repeat"
         }
     }
 }

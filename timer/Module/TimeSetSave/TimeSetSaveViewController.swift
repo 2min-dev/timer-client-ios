@@ -91,12 +91,6 @@ class TimeSetSaveViewController: BaseViewController, View {
             .do(onNext: { [weak self] _ in self?.titleTextField.becomeFirstResponder() })
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-
-        timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0.0) })
-            .map { Reactor.Action.selectTimer(at: $0.0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
         
         // Timer badge collection view dragging
         timerBadgeCollectionView.rx.willBeginDragging
@@ -167,20 +161,6 @@ class TimeSetSaveViewController: BaseViewController, View {
                                            info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
             .bind(to: endOfTimeSetLabel.rx.attributedText)
-            .disposed(by: disposeBag)
-        
-        // Timer badge view
-        reactor.state
-            .filter { $0.shouldSectionReload }
-            .map { ($0.timers, nil, nil) }
-            .bind(to: timerBadgeCollectionView.rx.items)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0) })
-            .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
         // Timer option view

@@ -40,11 +40,46 @@ extension CALayer {
         shadowOffset = offset
         shadowRadius = blur / 2.0
         if spread == 0 {
-          shadowPath = nil
+            shadowPath = nil
         } else {
-          let dx = -spread
-          let rect = bounds.insetBy(dx: dx, dy: dx)
-          shadowPath = UIBezierPath(rect: rect).cgPath
+            let dx = -spread
+            let rect = bounds.insetBy(dx: dx, dy: dx)
+            shadowPath = UIBezierPath(rect: rect).cgPath
         }
+    }
+    
+    func shadowWithAnimation(color: UIColor = .black, alpha: Float = 0.5, offset: CGSize, blur: CGFloat = 0, spread: CGFloat = 0, duration: CFTimeInterval = 0.2) {
+        let shadowColorAnimation = CABasicAnimation(keyPath: "shadowColor")
+        shadowColorAnimation.toValue = color.cgColor
+        
+        let shadowOpacityAnimation = CABasicAnimation(keyPath: "shadowOpacity")
+        shadowOpacityAnimation.toValue = alpha
+        
+        let shadowOffsetAnimation = CABasicAnimation(keyPath: "shadowOffset")
+        shadowOffsetAnimation.toValue = offset
+        
+        let shadowRadiusAnimation = CABasicAnimation(keyPath: "shadowRadius")
+        shadowRadiusAnimation.toValue = blur / 2.0
+        
+        let shadowPathAnimation = CABasicAnimation(keyPath: "shadowPath")
+        shadowPathAnimation.toValue = UIBezierPath(rect: bounds.insetBy(dx: -spread, dy: -spread)).cgPath
+        
+        let animationGroup = CAAnimationGroup()
+        animationGroup.animations = [shadowColorAnimation,
+                                     shadowOpacityAnimation,
+                                     shadowOffsetAnimation,
+                                     shadowRadiusAnimation,
+                                     shadowPathAnimation]
+        animationGroup.isRemovedOnCompletion = false
+        animationGroup.fillMode = .forwards
+        animationGroup.duration = duration
+        
+        CATransaction.setCompletionBlock {
+            self.shadow(color: color, alpha: alpha, offset: offset, blur: blur, spread: spread)
+        }
+        
+        CATransaction.begin()
+        add(animationGroup, forKey: "shadow")
+        CATransaction.commit()
     }
 }

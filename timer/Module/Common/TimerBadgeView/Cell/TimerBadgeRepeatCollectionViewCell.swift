@@ -8,8 +8,9 @@
 
 import UIKit
 import RxSwift
+import ReactorKit
 
-class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell {
+class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     let repeatButton: UIButton = {
         let view = UIButton()
@@ -66,5 +67,16 @@ class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         disposeBag = DisposeBag()
+    }
+    
+    // MARK: - bind
+    func bind(reactor: TimerBadgeRepeatCellReactor) {
+        // MARK: action
+        // MARK: state
+        reactor.state
+            .map { $0.isRepeat }
+            .distinctUntilChanged()
+            .bind(to: repeatButton.rx.isSelected)
+            .disposed(by: disposeBag)
     }
 }
