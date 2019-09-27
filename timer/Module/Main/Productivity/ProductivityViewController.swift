@@ -265,7 +265,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.selectedIndex }
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue), animated: true) })
+            .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue)) })
             .disposed(by: disposeBag)
         
         // Alert
@@ -389,6 +389,11 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         // Show timer option footer view
         showFooterView(isShow: canTimeSetStart)
+    }
+    
+    private func badgeScrollIfCan(at indexPath: IndexPath) {
+        guard !isBadgeMoving else { return }
+        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
     }
     
     /// Show popup alert

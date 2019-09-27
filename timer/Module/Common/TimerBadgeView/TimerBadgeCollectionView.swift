@@ -137,11 +137,12 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
         contentSize = CGSize(width: 0, height: collectionView.bounds.height)
         
         let sections = collectionView.numberOfSections
-        (0 ..< sections).forEach { section in
-            // Add section left inset to content size
-            contentSize.width += sectionInset.left
-            
+        (0 ..< sections).enumerated().forEach { (offset, section) in
             let items = collectionView.numberOfItems(inSection: section)
+            
+            // Add section left inset to content size
+            contentSize.width += offset == sections - 1 && items > 0 ? sectionInset.left : 0
+            
             (0 ..< items).forEach { item in
                 let indexPath = IndexPath(row: item, section: section)
                 let attribute = UICollectionViewLayoutAttributes(forCellWith: indexPath)
@@ -155,8 +156,9 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
                 // Add item size to content width
                 contentSize.width += size.width + (item < items - 1 ? minimumInteritemSpacing : 0)
             }
+            
             // Add section right inset to content size
-            contentSize.width += sectionInset.right
+            contentSize.width += offset == 0 && items > 0 ? sectionInset.right : 0
         }
     }
     
@@ -185,8 +187,10 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
             switch axisAlign {
             case .left:
                 diff = $0.frame.origin.x - axisX
+                
             case .center:
                 diff = $0.center.x - axisX
+                
             case .right:
                 diff = $0.frame.origin.x + $0.bounds.width - axisX
             }
@@ -230,11 +234,13 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
                                 left: axisPoint.x,
                                 bottom: 0,
                                 right: collectionView.bounds.width - (axisPoint.x + lastItem.width))
+            
         case .center:
             return UIEdgeInsets(top: 0,
                                 left: axisPoint.x - firstItem.width / 2,
                                 bottom: 0,
                                 right: axisPoint.x - lastItem.width / 2)
+            
         case .right:
             return UIEdgeInsets(top: 0,
                                 left: axisPoint.x - firstItem.width,
