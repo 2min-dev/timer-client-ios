@@ -110,6 +110,14 @@ enum Constants {
                 return UIColor(hex: "#020873")
             }
         }()
+        
+        static let darkBlue: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "dark_blue")!
+            } else {
+                return UIColor(hex: "#0009AC")
+            }
+        }()
     }
     
     enum Locale {

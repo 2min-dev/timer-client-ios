@@ -150,7 +150,7 @@ class ProductivityView: UIView {
     }()
     
     let saveButton: FooterButton = {
-        return FooterButton(title: "footer_button_save".localized, type: .normal)
+        return FooterButton(title: "footer_button_save".localized, type: .sub)
     }()
     
     let startButton: FooterButton = {
