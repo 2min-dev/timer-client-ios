@@ -37,14 +37,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetEditView.timerBadgeCollectionView }
     
     private var timerOptionView: UIView { return timeSetEditView.timerOptionView }
-    private lazy var timerOptionViewController: TimerOptionViewController = {
-        guard let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
-            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController else { fatalError() }
-        
-        // Add timer option view controller
-        addChild(timerOptionNavigationController, in: timerOptionView)
-        return timerOptionViewController
-    }()
     
     private var footerView: Footer { return timeSetEditView.footerView }
     
@@ -74,13 +66,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
-        
-        // Add timer option view controller
-        if let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
-            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController {
-            addChild(timerOptionNavigationController, in: timerOptionView)
-            self.timerOptionViewController = timerOptionViewController
-        }
     }
     
     // MARK: - bind
@@ -106,16 +91,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         timeKeyView.rx.tap
             .map { [unowned self] in self.getBaseTime(from: $0) }
             .map { Reactor.Action.addTime(base: $0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        timerOptionViewController.rx.alarmApplyAll
-            .map { Reactor.Action.applyAlarm($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        timerOptionViewController.rx.delete
-            .map { Reactor.Action.deleteTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

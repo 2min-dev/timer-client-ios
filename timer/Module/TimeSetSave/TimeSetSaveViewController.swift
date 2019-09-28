@@ -29,7 +29,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     private var endOfTimeSetLabel: UILabel { return timeSetSaveView.endOfTimeSetLabel }
     
     private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
-    private var timerOptionViewController: TimerOptionViewController!
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetSaveView.timerBadgeCollectionView }
     
@@ -57,13 +56,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Add timer option view controller
-        if let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
-            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController {
-            addChild(timerOptionNavigationController, in: timerOptionView)
-            self.timerOptionViewController = timerOptionViewController
-        }
     }
     
     // MARK: - bine
@@ -106,16 +98,6 @@ class TimeSetSaveViewController: BaseViewController, View {
             .map { [weak self] in self?.getIndexPathFromScrolling() }
             .filter { $0 != nil }
             .map { Reactor.Action.selectTimer(at: $0!) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-
-        timerOptionViewController.rx.alarmApplyAll
-            .map { Reactor.Action.applyAlarm($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-
-        timerOptionViewController.rx.delete
-            .map { Reactor.Action.deleteTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -161,21 +143,6 @@ class TimeSetSaveViewController: BaseViewController, View {
                                            info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
             .bind(to: endOfTimeSetLabel.rx.attributedText)
-            .disposed(by: disposeBag)
-        
-        // Timer option view
-        reactor.state
-            .map { $0.timer }
-            .distinctUntilChanged { $0 === $1 }
-            .do(onNext: { [weak self] _ in self?.timerOptionViewController.navigationController?.popViewController(animated: true) })
-            .bind(to: timerOptionViewController.rx.timer)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath.row + 1 }
-            .distinctUntilChanged()
-            .map { String(format: "timer_option_title_format".localized, $0) }
-            .bind(to: timerOptionViewController.rx.title)
             .disposed(by: disposeBag)
         
         // Alert
