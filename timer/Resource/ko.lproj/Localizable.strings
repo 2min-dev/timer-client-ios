@@ -15,6 +15,9 @@
 "tab_button_my_time_set" = "마이 타임셋";
 "tab_button_shared_time_set" = "공유 타임셋";
 
+// MARK: - Keyboard accessory
+"keyboard_accessory_done_title" = "완료";
+
 // MARK: - Keypad
 "keypad_cancel" = "취소";
 "keypad_delete" = "삭제";
@@ -80,8 +83,10 @@
  
 // MARK: - Timer option
 "timer_option_title_format" = "%d번째 타이머";
+"timer_option_alarm_silence_title" = "무음";
+"timer_option_alarm_vibrate_title" = "진동";
+"timer_option_alarm_default_title" = "기본음";
 "timer_option_alarm_all_apply" = "전체 적용";
-"timer_option_alarm_change" = "변경";
 
 // MARK: - Alarm change
 "alarm_change_current_title_format" = "현재 : %@";

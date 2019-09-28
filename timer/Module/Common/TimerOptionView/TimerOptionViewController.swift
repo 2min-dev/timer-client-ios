@@ -18,9 +18,7 @@ class TimerOptionViewController: BaseViewController, View {
     private var commentLengthLabel: UILabel { return timerOptionView.commentLengthLabel }
     private var commentHintLabel: UILabel { return timerOptionView.commentHintLabel }
     
-    private var alarmNameLabel: UILabel { return timerOptionView.alarmNameLabel }
     fileprivate var alarmApplyAllButton: UIButton { return timerOptionView.alarmApplyAllButton }
-    private var alarmChangeButton: UIButton { return timerOptionView.alarmChangeButton }
     
     private var titleLabel: UILabel { return timerOptionView.titleLabel }
     fileprivate var deleteButton: UIButton { return timerOptionView.deleteButton }
@@ -79,13 +77,6 @@ class TimerOptionViewController: BaseViewController, View {
             .distinctUntilChanged()
             .map { String(format: "timer_comment_bytes_format".localized, $0, TimerOptionViewReactor.MAX_COMMENT_LENGTH) }
             .bind(to: commentLengthLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Alarm
-        reactor.state
-            .map { $0.alarm }
-            .distinctUntilChanged()
-            .bind(to: alarmNameLabel.rx.text)
             .disposed(by: disposeBag)
     }
     

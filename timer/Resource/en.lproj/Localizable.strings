@@ -15,6 +15,9 @@
 "tab_button_my_time_set" = "MY";
 "tab_button_shared_time_set" = "SHARED";
 
+// MARK: - Keyboard accessory
+"keyboard_accessory_done_title" = "Done";
+
 // MARK: - Keypad
 "keypad_cancel" = "Cancel";
 "keypad_delete" = "Delete";
@@ -80,8 +83,10 @@
 
 // MARK: - Timer option
 "timer_option_title_format" = "Timer %d";
-"timer_option_alarm_all_apply" = "All";
-"timer_option_alarm_change" = "Change";
+"timer_option_alarm_silence_title" = "Silence";
+"timer_option_alarm_vibrate_title" = "Vibrate";
+"timer_option_alarm_default_title" = "Default";
+"timer_option_alarm_all_apply" = "Apply All";
 
 // MARK: - Alarm change
 "alarm_change_current_title_format" = "Cur : %@";

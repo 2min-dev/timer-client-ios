@@ -141,12 +141,8 @@ class ProductivityView: UIView {
         return layer
     }()
     
-    lazy var timerOptionView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.layer.addSublayer(timerOptionLayer)
-        view.isHidden = true
-        return view
+    let timerOptionView: TimerOptionView = {
+        return TimerOptionView()
     }()
     
     let saveButton: FooterButton = {
@@ -189,8 +185,6 @@ class ProductivityView: UIView {
         timerOptionView.snp.makeConstraints { make in
             make.bottom.equalTo(timerBadgeCollectionView.snp.top).offset(-8.adjust())
             make.centerX.equalToSuperview()
-            make.width.equalTo(250.adjust())
-            make.height.equalTo(271.adjust())
         }
     }
     
