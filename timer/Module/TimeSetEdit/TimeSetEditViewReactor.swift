@@ -116,6 +116,8 @@ class TimeSetEditViewReactor: Reactor {
 
     var timeSetInfo: TimeSetInfo
     
+    let timerOptionViewReactor: TimerOptionViewReactor
+    
     private var regularItems: [TimerBadgeCellReactor] = []
     private lazy var extraItems: [TimerBadgeExtraType: TimerBadgeExtraCellType] = [
         .add: .add,
@@ -128,6 +130,9 @@ class TimeSetEditViewReactor: Reactor {
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
         self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo ?? TimeSetInfo(id: nil)
+        
+        // Create sub reactor
+        timerOptionViewReactor = TimerOptionViewReactor()
         
         let timers = self.timeSetInfo.timers.toArray()
         let timer = timers.first
@@ -447,13 +452,15 @@ class TimeSetEditViewReactor: Reactor {
             }
         }
         
+        let timer = timeSetInfo.timers[index]
+        
         // Select current item
         regularItems[index].action.onNext(.select(true))
+        timerOptionViewReactor.action.onNext(.updateTimer(timer, at: index))
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(timeSetInfo.timers[index].endTime))
         let setTime: Observable<Mutation> = .just(.setTime(0))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems,
-                                                                                time: timeSetInfo.timers[index].endTime)))
+        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems, time: timer.endTime)))
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(index))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         

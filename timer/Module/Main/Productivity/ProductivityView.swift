@@ -88,7 +88,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    private lazy var contentView: UIView = {
+    lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
