@@ -87,6 +87,9 @@
 "timer_option_alarm_vibrate_title" = "Vibrate";
 "timer_option_alarm_default_title" = "Default";
 "timer_option_alarm_all_apply" = "Apply All";
+"timer_option_comment_hint_format" = "Leave a comment for %d timer";
+"timer_option_comment_excess_title" = "Exceeded the number of characters";
+"timer_option_comment_bytes_format" = "%d/%d bytes";
 
 // MARK: - Alarm change
 "alarm_change_current_title_format" = "Cur : %@";
@@ -130,10 +133,6 @@
 "time_set_memo_hint" = "Type memo about this time set.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "Exceeded the number of characters";
-
-// MARK: - Timer
-"timer_comment_hint" = "You can typing comment";
-"timer_comment_bytes_format" = "%02d/%d bytes";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "Initialize Time Set";

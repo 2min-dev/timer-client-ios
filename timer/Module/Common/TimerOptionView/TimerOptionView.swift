@@ -9,8 +9,9 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import ReactorKit
 
-class TimerOptionView: UIView {
+class TimerOptionView: UIView, View {
     enum AlarmType: Int {
         case silence = 0
         case vibrate
@@ -37,6 +38,9 @@ class TimerOptionView: UIView {
         }
     }
     
+    // MARK: - constants
+    private let MAX_COMMENT_LENGTH: Int = 100
+    
     // MARK: - view properties
     lazy var commentTextView: UITextView = {
         let view = UITextView()
@@ -54,6 +58,7 @@ class TimerOptionView: UIView {
     
     let commentLengthLabel: UILabel = {
         let view = UILabel()
+        view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
         view.textAlignment = .right
@@ -64,7 +69,14 @@ class TimerOptionView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.silver
-        view.text = "timer_comment_hint".localized
+        return view
+    }()
+    
+    let commentExcessLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.textColor = Constants.Color.carnation
+        view.text = "timer_option_comment_excess_title".localized
         return view
     }()
     
@@ -72,7 +84,7 @@ class TimerOptionView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([commentTextView, commentLengthLabel, commentHintLabel])
+        view.addAutolayoutSubviews([commentTextView, commentLengthLabel, commentHintLabel, commentExcessLabel])
         commentTextView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(5.adjust())
             make.leading.equalToSuperview().inset(5.adjust())
@@ -81,7 +93,6 @@ class TimerOptionView: UIView {
         }
         
         commentLengthLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(17.adjust())
             make.trailing.equalToSuperview().inset(17.adjust())
             make.bottom.equalToSuperview().inset(16.adjust())
         }
@@ -89,6 +100,12 @@ class TimerOptionView: UIView {
         commentHintLabel.snp.makeConstraints { make in
             make.top.equalTo(commentTextView).offset(commentTextView.textContainerInset.top)
             make.leading.equalTo(commentTextView).offset(commentTextView.textContainer.lineFragmentPadding)
+        }
+        
+        commentExcessLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(10.adjust())
+            make.trailing.equalTo(commentLengthLabel.snp.leading)
+            make.centerY.equalTo(commentLengthLabel)
         }
         
         return view
@@ -266,7 +283,7 @@ class TimerOptionView: UIView {
         return CGSize(width: 250.adjust(), height: 300.adjust())
     }
     
-    private var disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(frame: CGRect) {
@@ -280,7 +297,6 @@ class TimerOptionView: UIView {
         }
         
         layer.insertSublayer(borderLayer, at: 0)
-        bind()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -306,6 +322,94 @@ class TimerOptionView: UIView {
             .map { !$0!.isEmpty }
             .bind(to: commentHintLabel.rx.isHidden)
             .disposed(by: disposeBag)
+        
+        commentTextView.rx.text
+            .orEmpty
+            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
+            .filter { [weak self] in $0.1 > (self?.MAX_COMMENT_LENGTH ?? 0) }
+            .map { String($0.0.dropLast()) }
+            .bind(to: commentTextView.rx.text)
+            .disposed(by: disposeBag)
+    }
+    
+    func bind(reactor: TimerOptionViewReactor) {
+        // Bind view reactive stream
+        bind()
+        
+        // MARK: action
+        commentTextView.rx.text
+            .orEmpty
+            .compactMap { Reactor.Action.updateComment($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // MARK: state
+        // Title
+        let timerIndex = reactor.state
+            .map { $0.index + 1 }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        timerIndex
+            .map { String(format: "timer_option_title_format".localized, $0) }
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        timerIndex
+            .map { String(format: "timer_option_comment_hint_format".localized, $0) }
+            .bind(to: commentHintLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Comment
+        reactor.state
+            .map { $0.comment }
+            .filter { [weak self] in self?.commentTextView.text != $0 }
+            .bind(to: commentTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Comment length
+        let lengthOfBytes = reactor.state
+            .map { $0.comment }
+            .map { $0.lengthOfBytes(using: .utf16) }
+            .distinctUntilChanged()
+        
+        let isCommentExceeded = lengthOfBytes
+            .map { [weak self] in $0 >= self?.MAX_COMMENT_LENGTH ?? 0 }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        // legnth text
+        Observable.combineLatest(lengthOfBytes, isCommentExceeded)
+            .compactMap { [weak self] in self?.getCommentLengthAttributedString(length: $0, isExcess: $1) }
+            .bind(to: commentLengthLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+        
+        // Exceeded info
+        isCommentExceeded
+            .map { !$0 }
+            .bind(to: commentExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        isCommentExceeded
+            .filter { $0 }
+            .debounce(.seconds(3), scheduler: MainScheduler.instance)
+            .bind(to: commentExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - state method
+    /// Get comment length attributed string
+    private func getCommentLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {
+        let lengthString = String(format: "timer_option_comment_bytes_format".localized, length, MAX_COMMENT_LENGTH)
+        let attributedString = NSMutableAttributedString(string: lengthString)
+        
+        if isExcess {
+            // Highlight length text
+            let range = NSString(string: lengthString).range(of: String(length))
+            attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
+        }
+        
+        return attributedString
     }
     
     // MARK: - private method
@@ -373,7 +477,14 @@ class TimerOptionView: UIView {
     
     // MARK: - selector
     @objc private func touchCommentDone(_ sender: UIBarButtonItem) {
-        Logger.debug(sender)
         commentTextView.endEditing(true)
+    }
+}
+
+extension Reactive where Base: TimerOptionView {
+    var timer: Binder<(TimerInfo, Int)> {
+        return Binder(base.self) { _, timerInfo in
+            self.base.reactor?.action.onNext(.updateTimer(timerInfo.0, at: timerInfo.1))
+        }
     }
 }
