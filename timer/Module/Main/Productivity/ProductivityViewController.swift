@@ -13,10 +13,6 @@ import RxDataSources
 import JSReorderableCollectionView
 
 class ProductivityViewController: BaseHeaderViewController, View {
-    // MARK: - constants
-    private let FOOTER_BUTTON_SAVE: Int = 0
-    private let FOOTER_BUTTON_START: Int = 1
-    
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
     private var contentView: UIView { return productivityView.contentView }
@@ -35,9 +31,9 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     private var timeKeyView: TimeKeyPad { return productivityView.timeKeyPadView }
     
-    private var timerOptionView: TimerOptionView { return productivityView.timerOptionView }
-    
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
+    
+    private var timerOptionView: TimerOptionView { return productivityView.timerOptionView }
     
     private var saveButton: FooterButton { return productivityView.saveButton }
     private var startButton: FooterButton { return productivityView.startButton }
@@ -287,7 +283,16 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { $0.selectedIndex }
             .distinctUntilChanged()
             .do(onNext: { [weak self] _ in self?.isTimerOptionVisible.accept(false) })
-            .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue)) })
+            .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
+            .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
+            .disposed(by: disposeBag)
+        
+        // Scroll to selected badge when timer option view visible
+        isTimerOptionVisible
+            .filter { $0 }
+            .withLatestFrom(reactor.state.map { $0.selectedIndex })
+            .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
+            .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
             .disposed(by: disposeBag)
         
         // Alert
@@ -428,6 +433,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         showFooterView(isShow: canTimeSetStart)
     }
     
+    /// Scroll timer badge view if badge isn't moving
     private func badgeScrollIfCan(at indexPath: IndexPath) {
         guard !isBadgeMoving else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
@@ -502,8 +508,11 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         switch gesture.state {
         case .began:
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            
             isTimerOptionVisible.accept(false)
             isBadgeMoving = true
+            
             timerBadgeCollectionView.beginInteractiveWithLocation(location)
             
         case .changed:

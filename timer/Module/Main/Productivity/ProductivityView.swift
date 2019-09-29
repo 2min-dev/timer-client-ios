@@ -183,7 +183,7 @@ class ProductivityView: UIView {
         }
         
         timerOptionView.snp.makeConstraints { make in
-            make.bottom.equalTo(timerBadgeCollectionView.snp.top).offset(-8.adjust())
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).offset(-14.adjust())
             make.centerX.equalToSuperview()
         }
     }

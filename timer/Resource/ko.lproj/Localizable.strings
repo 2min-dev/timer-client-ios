@@ -91,9 +91,6 @@
 "timer_option_comment_excess_title" = "작성 가능한 글자 수가 초과됐어요";
 "timer_option_comment_bytes_format" = "%d/%d bytes";
 
-// MARK: - Alarm change
-"alarm_change_current_title_format" = "현재 : %@";
-
 // MARK: - Time set process
 "time_set_process_extra_time_format" = "+%d분";
 "time_set_process_memo_title" = "메모";
