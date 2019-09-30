@@ -10,132 +10,85 @@ import RxSwift
 import ReactorKit
 
 class TimerOptionViewReactor: Reactor {
-    // MARK: - constants
-    static let MAX_COMMENT_LENGTH: Int = 200
-    
     enum Action {
-        /// Update timer info when view will appear
-        case viewWillAppear
-        
-        /// Update title of timer
-        case updateTitle(String)
-        
         /// Update timer info
-        case updateTimer(TimerInfo)
+        case updateTimer(TimerInfo, at: Int)
         
         /// Update comment of timer
         case updateComment(String)
         
-        /// Update alarm of timer
-        case updateAlarm(String)
+        // TODO: After alarm model design
+        // case updateAlarm(String)
     }
     
     enum Mutation {
         /// Set title of timer
-        case setTitle(String)
+        case setIndex(Int)
         
         /// Set comment of timer
         case setComment(String)
         
-        /// Set alarm of timer
-        case setAlarm(String)
+        // TODO: After alarm model design
+        // case setAlarm(String)
     }
     
     struct State {
-        /// Title of the timer
-        var title: String
+        /// Index of timer
+        var index: Int = 0
         
         /// Comment of the timer
-        var comment: String
+        var comment: String = ""
         
-        /// Alarm of the timer
-        var alarm: String
+        // TODO: After alarm model design
+        // var alarm: String
     }
     
     // MARK: - properties
-    var initialState: State
-    var timerInfo: TimerInfo?
-    
-    // MARK: - constructor
-    init() {
-        self.initialState = State(title: "",
-                                  comment: "",
-                                  alarm: "")
-    }
+    var initialState: State = State()
+    private var timerInfo: TimerInfo?
     
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewWillAppear:
-            return actionViewWillAppear()
-            
-        case let .updateTitle(title):
-            return actionUpdateTitle(title)
-            
-        case let .updateTimer(timerInfo):
-            return actionUpdateTimer(info: timerInfo)
+        case let .updateTimer(timerInfo, at: index):
+            return actionUpdateTimer(info: timerInfo, at: index)
             
         case let .updateComment(comment):
             return actionUpdateComment(comment)
-            
-        case let .updateAlarm(alarm):
-            return actionUpdateAlarm(alarm)
         }
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         
         switch mutation {
-        case let .setTitle(title):
-            state.title = title
+        case let .setIndex(index):
+            state.index = index
             return state
             
         case let .setComment(comment):
             state.comment = comment
             return state
-            
-        case let .setAlarm(alarm):
-            state.alarm = alarm
-            return state
         }
     }
     
     // MARK: - action method
-    private func actionViewWillAppear() -> Observable<Mutation> {
-        guard let timerInfo = timerInfo else { return .empty() }
-        return actionUpdateTimer(info: timerInfo)
-    }
-    
-    private func actionUpdateTitle(_ title: String) -> Observable<Mutation> {
-        return .just(.setTitle(title))
-    }
-    
-    private func actionUpdateTimer(info: TimerInfo) -> Observable<Mutation> {
+    private func actionUpdateTimer(info: TimerInfo, at index: Int) -> Observable<Mutation> {
         // Change current timer
         timerInfo = info
+        
         return .concat(.just(.setComment(info.comment)),
-                       .just(.setAlarm(info.alarm)))
+                       .just(.setIndex(index)))
     }
     
     private func actionUpdateComment(_ comment: String) -> Observable<Mutation> {
         // Update timer's comment
         guard let timerInfo = timerInfo else { return .empty() }
-        let length = comment.lengthOfBytes(using: .utf16)
-        
-        guard length <= TimerOptionViewReactor.MAX_COMMENT_LENGTH else {
-            return .just(.setComment(timerInfo.comment))
-        }
-        
+        // Update timer comment
         timerInfo.comment = comment
         
         return .just(.setComment(comment))
-    }
-    
-    private func actionUpdateAlarm(_ alarm: String) -> Observable<Mutation> {
-        // Update alarm title
-        timerInfo?.alarm = alarm
-        return .just(.setAlarm(alarm))
     }
     
     deinit {

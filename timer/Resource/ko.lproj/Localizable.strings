@@ -15,6 +15,9 @@
 "tab_button_my_time_set" = "마이 타임셋";
 "tab_button_shared_time_set" = "공유 타임셋";
 
+// MARK: - Keyboard accessory
+"keyboard_accessory_done_title" = "완료";
+
 // MARK: - Keypad
 "keypad_cancel" = "취소";
 "keypad_delete" = "삭제";
@@ -73,14 +76,20 @@
 "productivity_button_hour_title" = "시";
 "productivity_button_minute_title" = "분";
 "productivity_button_second_title" = "초";
+"productivity_time_input_prefix_title" = "+ ";
 
+// MARK: - Timer badge
+"timer_badge_index_title_format" = "%d/%d";
+ 
 // MARK: - Timer option
 "timer_option_title_format" = "%d번째 타이머";
+"timer_option_alarm_silence_title" = "무음";
+"timer_option_alarm_vibrate_title" = "진동";
+"timer_option_alarm_default_title" = "기본음";
 "timer_option_alarm_all_apply" = "전체 적용";
-"timer_option_alarm_change" = "변경";
-
-// MARK: - Alarm change
-"alarm_change_current_title_format" = "현재 : %@";
+"timer_option_comment_hint_format" = "%d번째 타이머에 대한 코멘트를 남겨보세요";
+"timer_option_comment_excess_title" = "작성 가능한 글자 수가 초과됐어요";
+"timer_option_comment_bytes_format" = "%d/%d bytes";
 
 // MARK: - Time set process
 "time_set_process_extra_time_format" = "+%d분";
@@ -112,20 +121,15 @@
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ 종료";
 "time_set_all_time_full_title" = "전체 시간";
-"time_set_all_time_title" = "전체시간 ";
-"time_set_all_time_format" = "%02d:%02d:%02d";
+"time_set_all_time_title_format" = "타임셋 시간 %02d:%02d:%02d";
 "time_set_end_time_full_title" = "종료 예정";
-"time_set_end_time_title" = "종료예정 ";
-"time_set_end_time_format" = "H:mm a";
+"time_set_end_time_title_format" = "종료 예정 %@";
+"time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1분";
 "time_set_memo_hint" = "메모를 입력하세요.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "작성 가능한 글자 수 초과";
-
-// MARK: - Timer
-"timer_comment_hint" = "코멘트를 입력하실 수 있어요.";
-"timer_comment_bytes_format" = "%02d/%d bytes";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "타임셋 초기화";

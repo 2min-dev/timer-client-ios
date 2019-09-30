@@ -29,7 +29,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     private var endOfTimeSetLabel: UILabel { return timeSetSaveView.endOfTimeSetLabel }
     
     private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
-    private var timerOptionViewController: TimerOptionViewController!
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetSaveView.timerBadgeCollectionView }
     
@@ -57,13 +56,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Add timer option view controller
-        if let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
-            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController {
-            addChild(timerOptionNavigationController, in: timerOptionView)
-            self.timerOptionViewController = timerOptionViewController
-        }
     }
     
     // MARK: - bine
@@ -91,12 +83,6 @@ class TimeSetSaveViewController: BaseViewController, View {
             .do(onNext: { [weak self] _ in self?.titleTextField.becomeFirstResponder() })
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-
-        timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0.0) })
-            .map { Reactor.Action.selectTimer(at: $0.0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
         
         // Timer badge collection view dragging
         timerBadgeCollectionView.rx.willBeginDragging
@@ -112,16 +98,6 @@ class TimeSetSaveViewController: BaseViewController, View {
             .map { [weak self] in self?.getIndexPathFromScrolling() }
             .filter { $0 != nil }
             .map { Reactor.Action.selectTimer(at: $0!) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-
-        timerOptionViewController.rx.alarmApplyAll
-            .map { Reactor.Action.applyAlarm($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-
-        timerOptionViewController.rx.delete
-            .map { Reactor.Action.deleteTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -167,35 +143,6 @@ class TimeSetSaveViewController: BaseViewController, View {
                                            info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
             }
             .bind(to: endOfTimeSetLabel.rx.attributedText)
-            .disposed(by: disposeBag)
-        
-        // Timer badge view
-        reactor.state
-            .filter { $0.shouldSectionReload }
-            .map { $0.timers }
-            .bind(to: timerBadgeCollectionView.rx.items)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0) })
-            .bind(to: timerBadgeCollectionView.rx.selected)
-            .disposed(by: disposeBag)
-        
-        // Timer option view
-        reactor.state
-            .map { $0.timer }
-            .distinctUntilChanged { $0 === $1 }
-            .do(onNext: { [weak self] _ in self?.timerOptionViewController.navigationController?.popViewController(animated: true) })
-            .bind(to: timerOptionViewController.rx.timer)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath.row + 1 }
-            .distinctUntilChanged()
-            .map { String(format: "timer_option_title_format".localized, $0) }
-            .bind(to: timerOptionViewController.rx.title)
             .disposed(by: disposeBag)
         
         // Alert
@@ -247,8 +194,9 @@ class TimeSetSaveViewController: BaseViewController, View {
     
     /// Get index path from badge view scrolling
     private func getIndexPathFromScrolling() -> IndexPath? {
-        guard let axisPoint = timerBadgeCollectionView.layout?.axisPoint else { return nil }
-
+        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return nil }
+        let axisPoint = layout.axisPoint
+        
         let frame = timerBadgeCollectionView.frame
         let origin = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
         let converted = self.contentView.convert(origin, to: timerBadgeCollectionView)

@@ -14,6 +14,9 @@ class TimerBadgeCellReactor: Reactor {
         /// Update badge index
         case updateIndex(Int)
         
+        /// Update timer list count
+        case updateCount(Int)
+        
         /// Update badge time
         case updateTime(TimeInterval)
         
@@ -27,6 +30,9 @@ class TimerBadgeCellReactor: Reactor {
     enum Mutation {
         /// Set badge index
         case setIndex(Int)
+        
+        /// Set timer list count
+        case setCount(Int)
         
         /// Set badge time
         case setTime(TimeInterval)
@@ -42,30 +48,40 @@ class TimerBadgeCellReactor: Reactor {
         /// Index of badge
         var index: Int
         
+        /// Count of timer list
+        var count: Int
+        
         /// time of timer
         var time: TimeInterval
         
-        /// Enable state of badge
-        var isEnabled: Bool
-        
         /// Selected state of badge
         var isSelected: Bool
+        
+        /// Enable state of badge
+        var isEnabled: Bool
     }
     
     // MARK: - properties
     var initialState: State
+    let id: Int
     
-    init(info: TimerInfo, index: Int, isEnabled: Bool = true, isSelected: Bool = false) {
-        self.initialState = State(index: index,
-                                  time: info.endTime,
-                                  isEnabled: isEnabled,
-                                  isSelected: isSelected)
+    init(id: Int = 0, time: TimeInterval = 0, index: Int = 1, count: Int = 1, isSelected: Bool = false, isEnabled: Bool = true) {
+        self.id = id
+        initialState = State(index: index,
+                                  count: count,
+                                  time: time,
+                                  isSelected: isSelected,
+                                  isEnabled: isEnabled)
     }
     
+    // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case let .updateIndex(index):
             return .just(.setIndex(index))
+            
+        case let .updateCount(count):
+            return .just(.setCount(count))
             
         case let .updateTime(time):
             return .just(.setTime(time))
@@ -78,11 +94,16 @@ class TimerBadgeCellReactor: Reactor {
         }
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
         case let .setIndex(index):
             state.index = index
+            return state
+            
+        case let .setCount(count):
+            state.count = count
             return state
             
         case let .setTime(time):

@@ -78,6 +78,14 @@ enum Constants {
                 return UIColor(hex: "#F0F0F0")
             }
         }()
+        
+        static let alabaster: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "alabaster")!
+            } else {
+                return UIColor(hex: "#FAFAFA")
+            }
+        }()
 
         static let white: UIColor = {
             if #available(iOS 11.0, *) {
@@ -100,6 +108,14 @@ enum Constants {
                 return UIColor(named: "navy_blue")!
             } else {
                 return UIColor(hex: "#020873")
+            }
+        }()
+        
+        static let darkBlue: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "dark_blue")!
+            } else {
+                return UIColor(hex: "#0009AC")
             }
         }()
     }

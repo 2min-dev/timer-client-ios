@@ -66,8 +66,8 @@ class TimeSetEditView: UIView {
         return view
     }()
     
-    let timeKeyView: TimeKeyView = {
-        let view = TimeKeyView()
+    let timeKeyView: TimeKeyPad = {
+        let view = TimeKeyPad()
         view.font = Constants.Font.ExtraBold.withSize(20.adjust())
         view.setTitleColor(normal: Constants.Color.codGray, disabled: Constants.Color.silver)
         
@@ -81,8 +81,10 @@ class TimeSetEditView: UIView {
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         view.isAxisFixed = true
-        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
-        view.layout?.axisAlign = .center
+        if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
+            layout.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+            layout.axisAlign = .center
+        }
         return view
     }()
     

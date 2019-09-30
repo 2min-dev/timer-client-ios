@@ -14,7 +14,7 @@ class ProductivityView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
-        view.additionalButtons = [.search, .history, .setting]
+        view.additionalButtons = [.history, .setting]
         view.backButton.isHidden = true
         return view
     }()
@@ -26,14 +26,16 @@ class ProductivityView: UIView {
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.silver
+        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.textColor = Constants.Color.codGray
         view.textAlignment = .center
         return view
     }()
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.silver
+        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.textColor = Constants.Color.codGray
         view.textAlignment = .center
         return view
     }()
@@ -56,42 +58,41 @@ class ProductivityView: UIView {
     
     let keyPadView: NumberKeyPad = {
         let view = NumberKeyPad()
-        view.font = Constants.Font.Regular.withSize(30.adjust())
+        view.font = Constants.Font.Regular.withSize(24.adjust())
+        view.cancelButton.titleLabel?.font = Constants.Font.Regular.withSize(20.adjust())
         view.foregroundColor = Constants.Color.codGray
         view.cancelButton.isHidden = true
         
         // Set key touch animation
-        view.keys.forEach {
-            $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
-        }
+        view.keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
         return view
     }()
     
-    let timeKeyView: TimeKeyView = {
-        let view = TimeKeyView()
-        view.font = Constants.Font.ExtraBold.withSize(20.adjust())
+    let timeKeyPadView: TimeKeyPad = {
+        let view = TimeKeyPad()
+        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.setTitleColor(normal: Constants.Color.codGray, disabled: Constants.Color.silver)
         
         // Set key touch animation
-        view.keys.forEach {
-            $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside)
-        }
+        view.keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
         return view
     }()
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         view.isAxisFixed = true
-        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
-        view.layout?.axisAlign = .center
+        if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
+            layout.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+            layout.axisAlign = .center
+        }
         return view
     }()
     
-    private lazy var contentView: UIView = {
+    lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyPadView, timerBadgeCollectionView])
         timerInputView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -113,18 +114,18 @@ class ProductivityView: UIView {
             make.top.equalTo(timerInputView.snp.bottom).offset(30.adjust())
             make.centerX.equalToSuperview()
             make.width.equalTo(270.adjust())
-            make.height.equalTo(280.adjust())
+            make.height.equalTo(255.adjust())
         }
         
-        timeKeyView.snp.makeConstraints { make in
+        timeKeyPadView.snp.makeConstraints { make in
             make.top.equalTo(keyPadView.snp.bottom)
             make.leading.equalTo(keyPadView)
             make.trailing.equalTo(keyPadView)
-            make.height.equalTo(70.adjust())
+            make.height.equalTo(60.adjust())
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timeKeyView.snp.bottom)
+            make.top.equalTo(timeKeyPadView.snp.bottom).offset(5.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -140,16 +141,12 @@ class ProductivityView: UIView {
         return layer
     }()
     
-    lazy var timerOptionView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.layer.addSublayer(timerOptionLayer)
-        view.isHidden = true
-        return view
+    let timerOptionView: TimerOptionView = {
+        return TimerOptionView()
     }()
     
     let saveButton: FooterButton = {
-        return FooterButton(title: "footer_button_save".localized, type: .normal)
+        return FooterButton(title: "footer_button_save".localized, type: .sub)
     }()
     
     let startButton: FooterButton = {
@@ -186,10 +183,8 @@ class ProductivityView: UIView {
         }
         
         timerOptionView.snp.makeConstraints { make in
-            make.bottom.equalTo(timerBadgeCollectionView.snp.top).offset(-8.adjust())
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).offset(-14.adjust())
             make.centerX.equalToSuperview()
-            make.width.equalTo(250.adjust())
-            make.height.equalTo(271.adjust())
         }
     }
     

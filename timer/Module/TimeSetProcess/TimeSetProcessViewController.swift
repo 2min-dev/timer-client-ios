@@ -113,11 +113,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        timerBadgeCollectionView.rx.badgeSelected
-            .withLatestFrom(reactor.state.map { $0.timeSetState }, resultSelector: { ($0.0, $0.1, $1) })
-            .subscribe(onNext: { [weak self] (indexPath, _, state) in self?.badgeSelect(at: indexPath, withTimeSetState: state) })
-            .disposed(by: disposeBag)
-        
         memoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: reactor.timeSetInfo))
@@ -233,20 +228,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .map { $0.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME }
             .distinctUntilChanged()
             .bind(to: addTimeButton.rx.isEnabled)
-            .disposed(by: disposeBag)
-        
-        // Timer badge view
-        reactor.state
-            .filter { $0.shouldSectionReload }
-            .map { $0.timers }
-            .bind(to: timerBadgeCollectionView.rx.items)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath }
-            .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0) })
-            .bind(to: timerBadgeCollectionView.rx.selected)
             .disposed(by: disposeBag)
         
         // Alarm
@@ -402,7 +383,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     
     /// Show start timer with selected index alert
     private func showTimerStartAlert(at indexPath: IndexPath) {
-        guard let layout = timerBadgeCollectionView.layout else { return }
+        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return }
         
         // Create alert & binding
         let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))

@@ -120,7 +120,9 @@ class TimeSetSaveView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
-        view.layout?.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+        if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
+            layout.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+        }
         return view
     }()
     

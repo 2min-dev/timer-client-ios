@@ -12,7 +12,6 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case home
-        case timerOption
         case timeSetSave(TimeSetInfo)
     }
     
@@ -32,10 +31,9 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
         switch route {
         case .home:
             self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            
         case .timeSetSave(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
-        default:
-            break
         }
         
         return viewController
@@ -45,19 +43,7 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
         switch route {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
-        case .timerOption:
-            let coordinator = TimerOptionViewCoordinator(provider: provider)
-            let reactor = TimerOptionViewReactor()
-            let viewController = TimerOptionViewController(coordinator: coordinator)
             
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            let navigationController = UINavigationController(rootViewController: viewController)
-            navigationController.isNavigationBarHidden = true
-            
-            return navigationController
         case let .timeSetSave(timeSetInfo):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
             let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)

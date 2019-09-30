@@ -12,7 +12,6 @@ import UIKit
 class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum Route {
-        case timerOption
         case timeSetSave(TimeSetInfo)
         case timeSetProcess(TimeSetInfo?)
         case setting
@@ -35,9 +34,6 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
              .timeSetProcess(_),
              .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
-            
-        default:
-            break
         }
         
         return viewController
@@ -45,20 +41,6 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     
     func get(for route: Route) -> UIViewController? {
         switch route {
-        case .timerOption:
-            let coordinator = TimerOptionViewCoordinator(provider: provider)
-            let reactor = TimerOptionViewReactor()
-            let viewController = TimerOptionViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            let navigationController = UINavigationController(rootViewController: viewController)
-            navigationController.isNavigationBarHidden = true
-            
-            return navigationController
-            
         case let .timeSetSave(timeSetInfo):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
             let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)

@@ -13,13 +13,9 @@ import RxDataSources
 import JSReorderableCollectionView
 
 class ProductivityViewController: BaseHeaderViewController, View {
-    // MARK: - constants
-    private let MAX_TIMER_COUNT: Int = 10
-    private let FOOTER_BUTTON_SAVE: Int = 0
-    private let FOOTER_BUTTON_START: Int = 1
-    
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
+    private var contentView: UIView { return productivityView.contentView }
     
     override var headerView: CommonHeader { return productivityView.headerView }
     
@@ -33,27 +29,51 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     private var keyPadView: NumberKeyPad { return productivityView.keyPadView }
     
-    private var timeKeyView: TimeKeyView { return productivityView.timeKeyView }
+    private var timeKeyView: TimeKeyPad { return productivityView.timeKeyPadView }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return productivityView.timerBadgeCollectionView }
     
-    private var timerOptionView: UIView { return productivityView.timerOptionView }
-    private lazy var timerOptionViewController: TimerOptionViewController = {
-        guard let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
-            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController else { fatalError() }
-        
-        // Add timer option view controller
-        addChild(timerOptionNavigationController, in: timerOptionView)
-        return timerOptionViewController
-    }()
+    private var timerOptionView: TimerOptionView { return productivityView.timerOptionView }
     
     private var saveButton: FooterButton { return productivityView.saveButton }
     private var startButton: FooterButton { return productivityView.startButton }
     private var footerView: Footer { return productivityView.footerView }
     
     // MARK: - properties
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+        switch cellType {
+        case let .regular(reactor):
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as! TimerBadgeCollectionViewCell
+            cell.reactor = reactor
+            
+            return cell
+            
+        case let .extra(type):
+            switch type {
+            case .add:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.name, for: indexPath)
+                
+                return cell
+                
+            case let .repeat(reactor):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeRepeatCollectionViewCell.name, for: indexPath) as? TimerBadgeRepeatCollectionViewCell else { fatalError() }
+                cell.reactor = reactor
+                
+                return cell
+            }
+        }
+    }, moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
+        let section = TimerBadgeSectionType.regular.rawValue
+        guard let reactor = self?.reactor,
+            sourceIndexPath.section == section && destinationIndexPath.section == section else { return }
+        
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        reactor.action.onNext(.moveTimer(at: sourceIndexPath.item, to: destinationIndexPath.item))
+    })
+    
+    private let canTimeSetStart: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+    private let isTimerOptionVisible: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private var isBadgeMoving: Bool = false
-    private var timerOptionVisibleSubject: BehaviorRelay = BehaviorRelay(value: false)
     
     var coordinator: ProductivityViewCoordinator
     
@@ -75,36 +95,19 @@ class ProductivityViewController: BaseHeaderViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        timerBadgeCollectionView.reorderableDelegate = self
-        timerBadgeCollectionView.setExtraCell(.add) { [unowned self] timers, cellType in
-            switch cellType {
-            case .add:
-                if timers.count < self.MAX_TIMER_COUNT {
-                    return true
-                }
-                return false
-            default:
-                return false
-            }
-        }
-        
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
-        
-        // Add timer option view controller
-        if let timerOptionNavigationController = coordinator.get(for: .timerOption) as? UINavigationController,
-            let timerOptionViewController = timerOptionNavigationController.viewControllers.first as? TimerOptionViewController {
-            addChild(timerOptionNavigationController, in: timerOptionView)
-            self.timerOptionViewController = timerOptionViewController
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         // Add footer view when view did appear because footer view should remove after will appear due to animation (add view)
         addFooterView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
         // Remove footer view when view controller disappeared
         showFooterView(isShow: false) {
             self.footerView.removeFromSuperview()
@@ -117,46 +120,41 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         rx.viewDidAppear // For get super view controller
             .take(1)
-            .subscribe(onNext: { [unowned self] in
-                // Bind navigation controller event & tab bar controller event
-                self.navigationController?.rx.didShow
-                    .skip(1) // Skip until did finished drawing of tab bar controller
-                    .filter { [unowned self] in
-                        ($0.viewController as? UITabBarController)?.selectedViewController == self
-                    }
-                    .subscribe(onNext: { [unowned self] viewController, animated in
-                        self.showFooterView(isShow: self.reactor?.currentState.canTimeSetStart ?? false)
-                    })
-                    .disposed(by: self.disposeBag)
-                
-                self.tabBarController?.rx.didSelect
-                    .filter { [unowned self] in
-                        $0 == self
-                    }
-                    .subscribe(onNext: { [unowned self] viewController in
-                        self.showFooterView(isShow: self.reactor?.currentState.canTimeSetStart ?? false)
-                    })
-                    .disposed(by: self.disposeBag)
-            })
+            .flatMap { [weak self] () -> Observable<Void> in
+                guard let self = self else { return .empty() }
+
+                return Observable.merge([
+                    self.navigationController?.rx.didShow
+                        .skip(1) // Skip until did finished drawing of tab bar controller
+                        .filter { ($0.viewController as? UITabBarController)?.selectedViewController == self }
+                        .map { _ in Void() },
+                    self.tabBarController?.rx.didSelect
+                        .filter { $0 == self }
+                        .map { _ in Void() }
+                ].compactMap { $0 })
+            }
+            .withLatestFrom(canTimeSetStart)
+            .subscribe(onNext: { [weak self] in self?.showFooterView(isShow: $0) })
+            .disposed(by: disposeBag)
+
+        canTimeSetStart
+            .subscribe(onNext: { [weak self] in self?.updateLayoutFrom(canTimeSetStart: $0) })
             .disposed(by: disposeBag)
         
-        // Timer option view visible
-        timerOptionVisibleSubject
-            .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.handleTimerOptionView(isVisible: $0) })
+        isTimerOptionVisible
             .map { !$0 }
-            .bind(to: timerOptionView.rx.isHidden, timerBadgeCollectionView.rx.isScrollEnabled)
+            .do(onNext: { [weak self] in self?.timerBadgeCollectionView.isScrollEnabled = $0 })
+            .bind(to: timerOptionView.rx.isHidden)
             .disposed(by: disposeBag)
     }
     
     func bind(reactor: TimeSetEditViewReactor) {
-        // MARK: action
-        rx.viewWillAppear
-            .map { Reactor.Action.viewWillAppear }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
+        // DI
+        timerOptionView.reactor = reactor.timerOptionViewReactor
         
+        // MARK: action
         timerClearButton.rx.tap
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .map { Reactor.Action.clearTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -179,25 +177,21 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        timerBadgeCollectionView.rx.badgeSelected
-            .do(onNext: { [weak self] in self?.setVisibleOfTimerOptionView(oldIndexPath: reactor.currentState.selectedIndexPath, newIndexPath: $0.0) })
-            .map { [unowned self] in self.selectBadge(at: $0.0, cellType: $0.1) }
+        let itemSelected = timerBadgeCollectionView.rx.itemSelected
+            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
+            .share(replay: 1)
+        
+        itemSelected
+            .compactMap { [weak self] in self?.selectBadge(at: $0.0) }
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        timerBadgeCollectionView.rx.badgeMoved
-            .map { Reactor.Action.moveTimer(at: $0.0, to: $0.1) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        timerOptionViewController.rx.alarmApplyAll
-            .map { Reactor.Action.applyAlarm($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        timerOptionViewController.rx.delete
-            .map { Reactor.Action.deleteTimer }
-            .bind(to: reactor.action)
+        itemSelected
+            .filter { $0.0.section == TimerBadgeSectionType.regular.rawValue }
+            .filter { $0.0.item == $0.1 }
+            .map { [weak self] _ in !(self?.isTimerOptionVisible.value ?? true) }
+            .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
@@ -211,19 +205,33 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         // MARK: state
-        // Timer
+        // Can time set start
+        reactor.state
+            .map { $0.allTime > 0 && $0.endTime > 0 }
+            .distinctUntilChanged()
+            .bind(to: canTimeSetStart)
+            .disposed(by: disposeBag)
+        
+        // Update layout (cancel button of keypad, timer badge)
+        reactor.state
+            .map { $0.allTime > 0 }
+            .distinctUntilChanged()
+            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
+            .subscribe(onNext: { [weak self] in self?.updateLayoutFrom(isTimeInputed: $0.0, selectedIndex: $0.1) })
+            .disposed(by: disposeBag)
+        
+        // Timer end time
         reactor.state
             .map { $0.endTime }
             .distinctUntilChanged()
             .bind(to: timerInputView.rx.timer)
             .disposed(by: disposeBag)
         
-        // Time
+        // Current inputed time
         reactor.state
             .map { $0.time }
             .distinctUntilChanged()
-            .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
-            .map { $0 > 0 ? String($0) : "" }
+            .map { $0 > 0 ? "\("productivity_time_input_prefix_title".localized)\($0)" : "" }
             .bind(to: timerInputLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -232,11 +240,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
-                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
-            }
-            .bind(to: allTimeLabel.rx.attributedText)
+            .map { String(format: "time_set_all_time_title_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: allTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
         // End of time set
@@ -246,25 +251,16 @@ class ProductivityViewController: BaseHeaderViewController, View {
                 .distinctUntilChanged(),
             Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
-                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
-            }
-            .bind(to: endOfTimeSetLabel.rx.attributedText)
+            .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .map { String(format: "time_set_end_time_title_format".localized, $0) }
+            .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
         // Time info view
         reactor.state
-            .map { $0.time > 0 || !$0.canTimeSetStart }
+            .map { $0.time > 0 || $0.allTime == 0 }
             .distinctUntilChanged()
             .bind(to: timeInfoView.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        // Cancel key pad
-        reactor.state
-            .map { $0.timers.count <= 1 && !$0.canTimeSetStart }
-            .distinctUntilChanged()
-            .bind(to: keyPadView.cancelButton.rx.isHidden)
             .disposed(by: disposeBag)
         
         // Enable time key
@@ -272,46 +268,31 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { $0.time }
             .distinctUntilChanged()
             .withLatestFrom(reactor.state.map { $0.endTime }, resultSelector: { ($0, $1) })
-            .map { [unowned self] in self.getEnableTimeKey(from: $0.0, timer: $0.1) }
+            .compactMap { [weak self] in self?.getEnableTimeKey(from: $0.0, endTime: $0.1) }
             .bind(to: timeKeyView.rx.enableKey)
             .disposed(by: disposeBag)
         
-        // View state (timer badge view & footer view visible)
-        reactor.state
-            .map { $0.canTimeSetStart }
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] in self?.setViewStateFrom(canTimeSetStart: $0) })
-            .disposed(by: disposeBag)
-        
-        // Timer badge view
+        // Timer badge
         reactor.state
             .filter { $0.shouldSectionReload }
-            .map { $0.timers }
-            .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) })
-            .bind(to: timerBadgeCollectionView.rx.items)
+            .map { $0.sections }
+            .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        // Timer badge view
         reactor.state
-            .map { $0.selectedIndexPath }
+            .map { $0.selectedIndex }
             .distinctUntilChanged()
-            .do(onNext: { [weak self] _ in self?.timerOptionVisibleSubject.accept(false) }) // Close timer option view
-            .do(onNext: { [weak self] in self?.scrollToBadgeIfCan(at: $0) }) // Scroll badge
-            .bind(to: timerBadgeCollectionView.rx.selected)
+            .do(onNext: { [weak self] _ in self?.isTimerOptionVisible.accept(false) })
+            .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
+            .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
             .disposed(by: disposeBag)
         
-        // Timer option view
-        reactor.state
-            .map { $0.timer }
-            .distinctUntilChanged { $0 === $1 }
-            .bind(to: timerOptionViewController.rx.timer)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.selectedIndexPath.row + 1 }
-            .distinctUntilChanged()
-            .map { String(format: "timer_option_title_format".localized, $0) }
-            .bind(to: timerOptionViewController.rx.title)
+        // Scroll to selected badge when timer option view visible
+        isTimerOptionVisible
+            .filter { $0 }
+            .withLatestFrom(reactor.state.map { $0.selectedIndex })
+            .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
+            .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
             .disposed(by: disposeBag)
         
         // Alert
@@ -342,106 +323,120 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     /// Convert number key pad input to time value
     private func updateTime(key: NumberKeyPad.Key) -> Int {
-        guard var text = timerInputLabel.text else { return 0 }
+        guard let text = timerInputLabel.text else { return 0 }
+        
+        let prefix = "productivity_time_input_prefix_title".localized
+        let range = Range(uncheckedBounds: (text.range(of: prefix)?.upperBound ?? text.startIndex, text.endIndex))
+        var time = String(text[range])
         
         switch key {
         case .cancel:
-            // Nothing to do
             break
+            
         case .back:
-            guard !text.isEmpty else { return 0 }
-            text.removeLast()
+            guard !time.isEmpty else { return 0 }
+            time.removeLast()
+            
         default:
-            text.append(String(key.rawValue))
+            time.append(String(key.rawValue))
         }
         
-        return Int(text) ?? 0
+        return Int(time) ?? 0
     }
     
     /// Get base time (second) from key of time key view
-    private func getBaseTime(from key: TimeKeyView.Key) -> TimeInterval {
+    private func getBaseTime(from key: TimeKeyPad.Key) -> TimeInterval {
         switch key {
         case .hour:
             return Constants.Time.hour
+            
         case .minute:
             return Constants.Time.minute
+            
         case .second:
             return 1
         }
     }
     
-    /// Toggle timer option view visible state
-    private func setVisibleOfTimerOptionView(oldIndexPath: IndexPath, newIndexPath: IndexPath) {
-        if oldIndexPath == newIndexPath {
-            timerOptionVisibleSubject.accept(!timerOptionVisibleSubject.value)
-        } else {
-            timerOptionVisibleSubject.accept(false)
+    /// Convert badge select event to reactor action
+    private func selectBadge(at indexPath: IndexPath) -> Reactor.Action? {
+        guard let reactor = reactor else { return nil }
+        
+        let cellType = reactor.currentState.sections[indexPath.section].items[indexPath.item]
+        switch cellType {
+        case .regular(_):
+            return .selectTimer(at: indexPath.item)
+            
+        case let .extra(type):
+            switch type {
+            case .add:
+                return .addTimer
+                
+            case .repeat:
+                return .toggleRepeat
+            }
         }
     }
     
-    /// Convert badge select event to reactor action
-    private func selectBadge(at indexPath: IndexPath, cellType: TimerBadgeCellType) -> TimeSetEditViewReactor.Action {
-        switch cellType {
-        case .add:
-            return Reactor.Action.addTimer
-        default:
-            return Reactor.Action.selectTimer(at: indexPath)
-        }
+    /// Get index path from badge view scrolling
+    private func getIndexFromScrolling() -> Int? {
+        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return nil }
+        let axisPoint = layout.axisPoint
+        
+        let frame = timerBadgeCollectionView.frame
+        let point = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
+        let convertedPoint = contentView.convert(point, to: timerBadgeCollectionView)
+        
+        guard let indexPath = timerBadgeCollectionView.indexPathForItem(at: convertedPoint),
+            indexPath.section == TimerBadgeSectionType.regular.rawValue else { return nil }
+        
+        return indexPath.item
     }
     
     // MARK: - state method
-    /// Preprocess handler of timer option visible stream
-    private func handleTimerOptionView(isVisible: Bool) {
-        if isVisible {
-            guard let reactor = reactor else { return }
-            timerBadgeCollectionView.scrollToBadge(at: reactor.currentState.selectedIndexPath, animated: true)
-        } else {
-            timerOptionViewController.navigationController?.popViewController(animated: false)
-            view.endEditing(true)
-        }
-    }
-    
-    /// Get time set info's attributed string
-    private func getTimeSetInfoString(title: String, info: String) -> NSAttributedString {
-        let title = NSAttributedString(string: title,
-                                       attributes: [.font: Constants.Font.Regular.withSize(12.adjust())])
-        let time = NSAttributedString(string: info,
-                                      attributes: [.font: Constants.Font.Bold.withSize(12.adjust())])
-        
-        let attributedString = NSMutableAttributedString()
-        attributedString.append(title)
-        attributedString.append(time)
-        return attributedString
-    }
-    
     /// Get enable time key from values of time & timer
-    private func getEnableTimeKey(from time: Int, timer: TimeInterval) -> TimeKeyView.Key {
-        if timer + TimeInterval(time) * Constants.Time.minute > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
+    private func getEnableTimeKey(from time: Int, endTime: TimeInterval) -> TimeKeyPad.Key {
+        if endTime + (TimeInterval(time) * Constants.Time.minute) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .second
-        } else if timer + TimeInterval(time) * Constants.Time.hour > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
+        } else if endTime + (TimeInterval(time) * Constants.Time.hour) > TimeSetEditViewReactor.MAX_TIME_INTERVAL {
             return .minute
         } else {
             return .hour
         }
     }
     
-    /// Timer bage view scroll to selected badge if can
-    private func scrollToBadgeIfCan(at indexPath: IndexPath) {
-        guard !isBadgeMoving else { return }
-        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+    /// Update layout according to time is inputed into time set
+    /// - Show/Hide cancel button of keypad
+    /// - Show/Hide timer badge collection view
+    ///   - Scroll default badge position when view is visibled
+    private func updateLayoutFrom(isTimeInputed: Bool, selectedIndex: Int) {
+        keyPadView.cancelButton.isHidden = !isTimeInputed
+        timerBadgeCollectionView.isHidden = !isTimeInputed
+        
+        if !timerBadgeCollectionView.isHidden {
+            // Scroll timer badge to seleted index if badge is visible
+            let section = TimerBadgeSectionType.regular.rawValue
+            timerBadgeCollectionView.scrollToBadge(at: IndexPath(item: selectedIndex, section: section), animated: false)
+        }
     }
     
-    /// Show/Hide view according to `canTimeSetStart` value
-    private func setViewStateFrom(canTimeSetStart: Bool) {
+    /// Update layout according to time set can start
+    /// - Set tab bar swipe enabled
+    /// - Show/Hide footer view
+    private func updateLayoutFrom(canTimeSetStart: Bool) {
         // Prevent tab bar swipe gesture
         if let tabBarController = tabBarController as? MainViewController {
             tabBarController.swipeEnable = !canTimeSetStart
         }
         
-        // Show created timers
-        timerBadgeCollectionView.isHidden = !canTimeSetStart
         // Show timer option footer view
         showFooterView(isShow: canTimeSetStart)
+    }
+    
+    /// Scroll timer badge view if badge isn't moving
+    private func badgeScrollIfCan(at indexPath: IndexPath) {
+        guard !isBadgeMoving else { return }
+        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
     }
     
     /// Show popup alert
@@ -513,11 +508,16 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         switch gesture.state {
         case .began:
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            
+            isTimerOptionVisible.accept(false)
             isBadgeMoving = true
-            timerOptionVisibleSubject.accept(false)
+            
             timerBadgeCollectionView.beginInteractiveWithLocation(location)
+            
         case .changed:
             timerBadgeCollectionView.updateInteractiveWithLocation(location)
+            
         default:
             isBadgeMoving = false
             timerBadgeCollectionView.finishInteractive()
@@ -530,28 +530,5 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
     deinit {
         Logger.verbose()
-    }
-}
-
-extension ProductivityViewController: JSReorderableCollectionViewDelegate {
-    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        guard let reactor = reactor, indexPath.row < reactor.currentState.timers.count else { return false }
-        return true
-    }
-    
-    func reorderableCollectionView(_ collectionView: JSReorderableCollectionView, willSnapshot cell: UICollectionViewCell, at point: CGPoint) -> UIView {
-        guard let badge = cell as? TimerBadgeCollectionViewCell else { return cell.snapshotView(afterScreenUpdates: true)! }
-        
-        let originOptionIsHidden = badge.optionButton.isHidden
-        let originIndexIsHidden = badge.indexLabel.isHidden
-        
-        badge.optionButton.isHidden = true
-        badge.indexLabel.isHidden = true
-        
-        let snapshot = badge.snapshotView(afterScreenUpdates: true)
-        badge.optionButton.isHidden = originOptionIsHidden
-        badge.indexLabel.isHidden = originIndexIsHidden
-        
-        return snapshot!
     }
 }

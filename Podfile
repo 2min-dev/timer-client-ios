@@ -8,7 +8,7 @@ target 'timer' do
 
   # Pods for timer
   # Common Libraries
-  pod 'JSReorderableCollectionView', '~> 1.0.4'
+  pod 'JSReorderableCollectionView', '~> 1.0.5'
 
   # RxSwift
   pod 'RxSwift', '~> 5'

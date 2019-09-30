@@ -15,6 +15,9 @@
 "tab_button_my_time_set" = "MY";
 "tab_button_shared_time_set" = "SHARED";
 
+// MARK: - Keyboard accessory
+"keyboard_accessory_done_title" = "Done";
+
 // MARK: - Keypad
 "keypad_cancel" = "Cancel";
 "keypad_delete" = "Delete";
@@ -73,14 +76,20 @@
 "productivity_button_hour_title" = "H";
 "productivity_button_minute_title" = "M";
 "productivity_button_second_title" = "S";
+"productivity_time_input_prefix_title" = "+ ";
+
+// MARK: - Timer badge
+"timer_badge_index_title_format" = "%d/%d";
 
 // MARK: - Timer option
 "timer_option_title_format" = "Timer %d";
-"timer_option_alarm_all_apply" = "All";
-"timer_option_alarm_change" = "Change";
-
-// MARK: - Alarm change
-"alarm_change_current_title_format" = "Cur : %@";
+"timer_option_alarm_silence_title" = "Silence";
+"timer_option_alarm_vibrate_title" = "Vibrate";
+"timer_option_alarm_default_title" = "Default";
+"timer_option_alarm_all_apply" = "Apply All";
+"timer_option_comment_hint_format" = "Leave a comment for %d timer";
+"timer_option_comment_excess_title" = "Exceeded the number of characters";
+"timer_option_comment_bytes_format" = "%d/%d bytes";
 
 // MARK: - Time set process
 "time_set_process_extra_time_format" = "+%dM";
@@ -112,20 +121,15 @@
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ Ended";
 "time_set_all_time_full_title" = "All Time";
-"time_set_all_time_title" = "All ";
-"time_set_all_time_format" = "%02d:%02d:%02d";
+"time_set_all_time_title_format" = "All Time %02d:%02d:%02d";
 "time_set_end_time_full_title" = "End Exp ";
-"time_set_end_time_title" = "Exp ";
-"time_set_end_time_format" = "H:mm a";
+"time_set_end_time_title_format" = "Exp %@";
+"time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
 "time_set_add_time_title" = "+1M";
 "time_set_memo_hint" = "Type memo about this time set.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "Exceeded the number of characters";
-
-// MARK: - Timer
-"timer_comment_hint" = "You can typing comment";
-"timer_comment_bytes_format" = "%02d/%d bytes";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "Initialize Time Set";
