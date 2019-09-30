@@ -28,8 +28,6 @@ class TimeSetSaveViewController: BaseViewController, View {
     private var allTimeLabel: UILabel { return timeSetSaveView.allTimeLabel}
     private var endOfTimeSetLabel: UILabel { return timeSetSaveView.endOfTimeSetLabel }
     
-    private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
-    
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetSaveView.timerBadgeCollectionView }
     
     private var footerView: Footer { return timeSetSaveView.footerView }
@@ -120,47 +118,47 @@ class TimeSetSaveViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         // All time
-        reactor.state
-            .map { $0.allTime }
-            .distinctUntilChanged()
-            .map { getTime(interval: $0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
-                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
-            }
-            .bind(to: allTimeLabel.rx.attributedText)
-            .disposed(by: disposeBag)
-        
-        // End of time set
-        Observable.combineLatest(
-            reactor.state
-                .map { $0.allTime }
-                .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
-            .map { Date().addingTimeInterval($0.0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
-                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
-            }
-            .bind(to: endOfTimeSetLabel.rx.attributedText)
-            .disposed(by: disposeBag)
-        
-        // Alert
-        reactor.state
-            .map { $0.alertMessage }
-            .filter { $0 != nil }
-            .map { $0! }
-            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
-            .disposed(by: disposeBag)
-        
-        // Time set saved
-        reactor.state
-            .map { $0.savedTimeSet }
-            .distinctUntilChanged { $0 === $1 }
-            .filter { $0 != nil }
-            .observeOn(MainScheduler.instance) // Ignore rx error
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
-            .disposed(by: disposeBag)
+//        reactor.state
+//            .map { $0.allTime }
+//            .distinctUntilChanged()
+//            .map { getTime(interval: $0) }
+//            .map { [weak self] in
+//                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
+//                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
+//            }
+//            .bind(to: allTimeLabel.rx.attributedText)
+//            .disposed(by: disposeBag)
+//        
+//        // End of time set
+//        Observable.combineLatest(
+//            reactor.state
+//                .map { $0.allTime }
+//                .distinctUntilChanged(),
+//            Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
+//            .map { Date().addingTimeInterval($0.0) }
+//            .map { [weak self] in
+//                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
+//                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
+//            }
+//            .bind(to: endOfTimeSetLabel.rx.attributedText)
+//            .disposed(by: disposeBag)
+//        
+//        // Alert
+//        reactor.state
+//            .map { $0.alertMessage }
+//            .filter { $0 != nil }
+//            .map { $0! }
+//            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
+//            .disposed(by: disposeBag)
+//        
+//        // Time set saved
+//        reactor.state
+//            .map { $0.savedTimeSet }
+//            .distinctUntilChanged { $0 === $1 }
+//            .filter { $0 != nil }
+//            .observeOn(MainScheduler.instance) // Ignore rx error
+//            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
+//            .disposed(by: disposeBag)
     }
     
     // MARK: - private method

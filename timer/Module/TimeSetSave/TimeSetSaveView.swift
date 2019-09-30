@@ -18,13 +18,15 @@ class TimeSetSaveView: UIView {
         return view
     }()
     
-    let titleTextField: UITextField = {
+    lazy var titleTextField: UITextField = {
         let view = UITextField()
         view.textAlignment = .center
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
         view.textColor = Constants.Color.codGray
+        view.textAlignment = .left
         // Disable auto correction (keyboard)
         view.autocorrectionType = .no
+        view.inputAccessoryView = keyboardAccessoryView
         return view
     }()
     
@@ -38,8 +40,9 @@ class TimeSetSaveView: UIView {
     let titleHintLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
         view.textColor = Constants.Color.silver
+        view.textAlignment = .left
         return view
     }()
     
@@ -55,17 +58,16 @@ class TimeSetSaveView: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubviews([titleHintLabel, titleClearButton, titleTextField, titleInputBottomLineView])
         titleTextField.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.center.equalToSuperview()
-            make.width.equalTo(128.adjust())
+            make.leading.equalToSuperview().inset(8.adjust())
+            make.trailing.equalTo(titleClearButton.snp.leading)
+            make.centerY.equalToSuperview()
         }
         
         titleClearButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.width.equalTo(titleClearButton.snp.height)
+            make.trailing.equalToSuperview().inset(10.adjust())
+            make.centerY.equalToSuperview()
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(titleClearButton.snp.width)
         }
         
         titleHintLabel.snp.makeConstraints { make in
@@ -82,46 +84,142 @@ class TimeSetSaveView: UIView {
         return view
     }()
     
+    let allTimeTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        // TODO: remove
+        view.text = "타임셋 시간"
+        return view
+    }()
+    
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.silver
-        view.textAlignment = .center
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        return view
+    }()
+    
+    private lazy var allTimeStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [allTimeTitleLabel, allTimeLabel])
+        view.axis = .horizontal
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        allTimeTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
+        }
+        
+        return view
+    }()
+    
+    let endOfTimeSetTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        // TODO: remove
+        view.text = "종료 예정"
         return view
     }()
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Constants.Color.silver
-        view.textAlignment = .center
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
         return view
     }()
     
-    private lazy var timeInfoView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [allTimeLabel, endOfTimeSetLabel])
+    private lazy var endOfTimeSetStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [endOfTimeSetTitleLabel, endOfTimeSetLabel])
         view.axis = .horizontal
-        view.distribution = .fillEqually
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        endOfTimeSetTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
+        }
+        
         return view
     }()
     
-    private let timerOptionLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.white.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
-        layer.lineWidth = 1
-        return layer
+    let alarmTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        // TODO: remove
+        view.text = "사운드"
+        return view
     }()
     
-    lazy var timerOptionView: UIView = {
-        let view = UIView()
-        view.layer.addSublayer(timerOptionLayer)
-        view.backgroundColor = .white
+    let alarmLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        return view
+    }()
+    
+    private lazy var alarmStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [alarmTitleLabel, alarmLabel])
+        view.axis = .horizontal
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        alarmTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
+        }
+        
+        return view
+    }()
+    
+    let commentTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        // TODO: remove
+        view.text = "코멘트"
+        return view
+    }()
+    
+    let commentTextView: UITextView = {
+        let view = UITextView()
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        view.isEditable = false
+        view.textContainer.lineFragmentPadding = 0
+        view.textContainerInset = .zero
+        return view
+    }()
+    
+    private lazy var commentStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [commentTitleLabel, commentTextView])
+        view.axis = .horizontal
+        view.alignment = .top
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        commentTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
+        }
+        
+        commentTextView.snp.makeConstraints { make in
+            make.height.equalTo(32.adjust())
+        }
+        
+        return view
+    }()
+    
+    private lazy var infoStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [allTimeStackView, endOfTimeSetStackView, alarmStackView, commentStackView])
+        view.axis = .vertical
+        view.spacing = 10.adjust()
         return view
     }()
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
         if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
-            layout.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center
+            layout.axisPoint = CGPoint(x: 60.adjust(), y: 0)
+            layout.axisAlign = .left
         }
         return view
     }()
@@ -130,29 +228,22 @@ class TimeSetSaveView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleInputView, timeInfoView, timerOptionView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([titleInputView, infoStackView, timerBadgeCollectionView])
         titleInputView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(22.adjust())
-            make.centerX.equalToSuperview()
-            make.width.equalTo(200.adjust())
-            make.height.equalTo(36.adjust())
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().inset(60.adjust())
+            make.trailing.equalToSuperview()
+            make.height.equalTo(50.adjust())
         }
         
-        timeInfoView.snp.makeConstraints { make in
-            make.top.equalTo(titleInputView.snp.bottom).offset(10.adjust())
-            make.centerX.equalTo(titleInputView)
-            make.width.equalTo(titleInputView).offset(15.adjust())
-        }
-        
-        timerOptionView.snp.makeConstraints { make in
-            make.top.equalTo(titleInputView.snp.bottom).offset(87.adjust())
-            make.centerX.equalToSuperview()
-            make.width.equalTo(250.adjust())
-            make.height.equalTo(271.adjust())
+        infoStackView.snp.makeConstraints { make in
+            make.top.equalTo(titleInputView.snp.bottom).offset(14.adjust())
+            make.leading.equalTo(titleInputView)
+            make.trailing.equalTo(titleInputView).inset(20.adjust())
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timerOptionView.snp.bottom).offset(8.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(23.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -163,9 +254,20 @@ class TimeSetSaveView: UIView {
     let footerView: Footer = {
         let view = Footer()
         view.buttons = [
-            FooterButton(title: "footer_button_cancel".localized, type: .normal),
+            FooterButton(title: "footer_button_cancel".localized, type: .sub),
             FooterButton(title: "footer_button_confirm".localized, type: .highlight)
         ]
+        return view
+    }()
+    
+    private let keyboardAccessoryView: UIToolbar = {
+        let view = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: UIScreen.main.bounds.width, height: 0)))
+        view.sizeToFit()
+        
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(title: "keyboard_accessory_done_title".localized, style: .done, target: self, action: #selector(touchTitleDone(_:)))
+
+        view.items = [flexibleSpace, doneButton]
         return view
     }()
     
@@ -208,17 +310,6 @@ class TimeSetSaveView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - lifecycle
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        // Update timer option layer frame
-        timerOptionLayer.frame = CGRect(x: 0, y: 0, width: timerOptionView.bounds.width, height: timerOptionView.bounds.height)
-    }
-    
-    override func draw(_ rect: CGRect) {
-        timerOptionLayer.path = drawTimerOptionLayer(frame: timerOptionView.bounds).cgPath
-    }
-    
     // MARK: - bind
     private func bind() {
         titleTextField.rx.textChanged
@@ -234,26 +325,8 @@ class TimeSetSaveView: UIView {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - private method
-    private func drawTimerOptionLayer(frame: CGRect) -> UIBezierPath {
-        let tailSize = CGSize(width: 13.adjust(), height: 8.adjust())
-        
-        let edgePoints: [CGPoint] = [
-            CGPoint(x: -0.5, y: frame.height + 0.5),
-            CGPoint(x: (frame.width - tailSize.width) * 0.5, y: frame.height + 0.5),
-            CGPoint(x: frame.width * 0.5, y: frame.height + tailSize.height + 0.5),
-            CGPoint(x: (frame.width + tailSize.width) * 0.5, y: frame.height + 0.5),
-            CGPoint(x: frame.width + 0.5, y: frame.height + 0.5),
-            CGPoint(x: frame.width + 0.5, y: -0.5),
-            CGPoint(x: -0.5, y: -0.5)
-        ]
-        
-        // Move starting point
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: -0.5, y: -0.5))
-        // Draw path
-        edgePoints.forEach { path.addLine(to: $0) }
-        
-        return path
+    // MARK: - selector
+    @objc private func touchTitleDone(_ sender: UIBarButtonItem) {
+        titleTextField.endEditing(true)
     }
 }
