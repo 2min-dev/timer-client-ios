@@ -15,7 +15,6 @@ import JSReorderableCollectionView
 class ProductivityViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
-    private var contentView: UIView { return productivityView.contentView }
     
     override var headerView: CommonHeader { return productivityView.headerView }
     
@@ -376,21 +375,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
                 return .toggleRepeat
             }
         }
-    }
-    
-    /// Get index path from badge view scrolling
-    private func getIndexFromScrolling() -> Int? {
-        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return nil }
-        let axisPoint = layout.axisPoint
-        
-        let frame = timerBadgeCollectionView.frame
-        let point = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
-        let convertedPoint = contentView.convert(point, to: timerBadgeCollectionView)
-        
-        guard let indexPath = timerBadgeCollectionView.indexPathForItem(at: convertedPoint),
-            indexPath.section == TimerBadgeSectionType.regular.rawValue else { return nil }
-        
-        return indexPath.item
     }
     
     // MARK: - state method

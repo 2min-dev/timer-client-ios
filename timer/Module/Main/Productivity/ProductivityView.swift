@@ -88,7 +88,7 @@ class ProductivityView: UIView {
         return view
     }()
     
-    lazy var contentView: UIView = {
+    private lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
@@ -131,14 +131,6 @@ class ProductivityView: UIView {
         }
         
         return view
-    }()
-
-    private let timerOptionLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.white.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
-        layer.lineWidth = 1
-        return layer
     }()
     
     let timerOptionView: TimerOptionView = {
@@ -190,41 +182,6 @@ class ProductivityView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - lifecycle
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        // Update timer option layer frame
-        timerOptionLayer.frame = CGRect(x: 0, y: 0, width: timerOptionView.bounds.width, height: timerOptionView.bounds.height)
-        
-    }
-    
-    override func draw(_ rect: CGRect) {
-        timerOptionLayer.path = drawTimerOptionLayer(frame: timerOptionView.frame).cgPath
-    }
-    
-    // MARK: - private method
-    private func drawTimerOptionLayer(frame: CGRect) -> UIBezierPath {
-        let tailSize = CGSize(width: 13.adjust(), height: 8.adjust())
-        
-        let edgePoints: [CGPoint] = [
-            CGPoint(x: -0.5, y: frame.height + 0.5),
-            CGPoint(x: (frame.width - tailSize.width) * 0.5, y: frame.height + 0.5),
-            CGPoint(x: frame.width * 0.5, y: frame.height + tailSize.height + 0.5),
-            CGPoint(x: (frame.width + tailSize.width) * 0.5, y: frame.height + 0.5),
-            CGPoint(x: frame.width + 0.5, y: frame.height + 0.5),
-            CGPoint(x: frame.width + 0.5, y: -0.5),
-            CGPoint(x: -0.5, y: -0.5)
-        ]
-        
-        // Move starting point
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: -0.5, y: -0.5))
-        // Draw path
-        edgePoints.forEach { path.addLine(to: $0) }
-        
-        return path
     }
     
     // MARK: - selector
