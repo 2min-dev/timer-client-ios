@@ -65,7 +65,7 @@ class TimerBadgeCellReactor: Reactor {
     var initialState: State
     let id: Int
     
-    init(id: Int = 0, time: TimeInterval = 0, index: Int = 1, count: Int = 1, isSelected: Bool = false, isEnabled: Bool = true) {
+    init(id: Int = 0, time: TimeInterval = 0, index: Int = 0, count: Int = 1, isSelected: Bool = false, isEnabled: Bool = true) {
         self.id = id
         initialState = State(index: index,
                                   count: count,
