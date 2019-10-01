@@ -44,15 +44,21 @@ class TimerOptionView: UIView, View {
     // MARK: - view properties
     lazy var commentTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.white
+        view.backgroundColor = Constants.Color.clear
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
         view.textContainerInset = UIEdgeInsets(top: 5.adjust(), left: 0, bottom: 0, right: 0) // Vertical padding
         view.textContainer.lineFragmentPadding = 5.adjust() // Horizontal padding
         
         // Disable auto correction (keyboard)
         view.autocorrectionType = .no
         view.inputAccessoryView = keyboardAccessoryView
+        
+        // Set line height of text view
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10.adjust()
+        
+        view.typingAttributes = [.foregroundColor: Constants.Color.codGray,
+                                 .paragraphStyle: paragraphStyle]
         return view
     }()
     
@@ -319,7 +325,8 @@ class TimerOptionView: UIView, View {
             .disposed(by: disposeBag)
         
         commentTextView.rx.text
-            .map { !$0!.isEmpty }
+            .orEmpty
+            .map { !$0.isEmpty }
             .bind(to: commentHintLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
@@ -363,6 +370,7 @@ class TimerOptionView: UIView, View {
         // Comment
         reactor.state
             .map { $0.comment }
+            .distinctUntilChanged()
             .filter { [weak self] in self?.commentTextView.text != $0 }
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
@@ -372,6 +380,7 @@ class TimerOptionView: UIView, View {
             .map { $0.comment }
             .map { $0.lengthOfBytes(using: .utf16) }
             .distinctUntilChanged()
+            .share(replay: 1)
         
         let isCommentExceeded = lengthOfBytes
             .map { [weak self] in $0 >= self?.MAX_COMMENT_LENGTH ?? 0 }

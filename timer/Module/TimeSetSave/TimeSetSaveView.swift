@@ -11,6 +11,9 @@ import RxSwift
 import RxCocoa
 
 class TimeSetSaveView: UIView {
+    // MARK: - constants
+    private let MAX_TITLE_LENGTH: Int = 20
+    
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
@@ -71,7 +74,9 @@ class TimeSetSaveView: UIView {
         }
         
         titleHintLabel.snp.makeConstraints { make in
-            make.edges.equalTo(titleTextField)
+            make.leading.equalToSuperview().inset(8.adjust())
+            make.trailing.equalTo(titleClearButton.snp.leading)
+            make.centerY.equalToSuperview()
         }
         
         titleInputBottomLineView.snp.makeConstraints { make in
@@ -88,8 +93,7 @@ class TimeSetSaveView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: remove
-        view.text = "타임셋 시간"
+        view.text = "time_set_all_time_title".localized
         return view
     }()
     
@@ -117,8 +121,7 @@ class TimeSetSaveView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: remove
-        view.text = "종료 예정"
+        view.text = "time_set_end_time_title".localized
         return view
     }()
     
@@ -146,8 +149,7 @@ class TimeSetSaveView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: remove
-        view.text = "사운드"
+        view.text = "timer_alarm_title".localized
         return view
     }()
     
@@ -175,18 +177,25 @@ class TimeSetSaveView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
-        // TODO: remove
-        view.text = "코멘트"
+        view.text = "timer_comment_title".localized
         return view
     }()
     
     let commentTextView: UITextView = {
         let view = UITextView()
+        view.backgroundColor = Constants.Color.clear
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
         view.isEditable = false
+        view.isSelectable = false
         view.textContainer.lineFragmentPadding = 0
         view.textContainerInset = .zero
+    
+        // Set line height of text view
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 7.adjust()
+        
+        view.typingAttributes = [.foregroundColor: Constants.Color.doveGray,
+                                 .paragraphStyle: paragraphStyle]
         return view
     }()
     
@@ -202,7 +211,7 @@ class TimeSetSaveView: UIView {
         }
         
         commentTextView.snp.makeConstraints { make in
-            make.height.equalTo(32.adjust())
+            make.height.equalTo(34.adjust())
         }
         
         return view
@@ -224,14 +233,14 @@ class TimeSetSaveView: UIView {
         return view
     }()
     
-    lazy var contentView: UIView = {
+    private lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([titleInputView, infoStackView, timerBadgeCollectionView])
         titleInputView.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(60.adjust())
+            make.leading.equalToSuperview().inset(60.adjust()).priorityHigh()
             make.trailing.equalToSuperview()
             make.height.equalTo(50.adjust())
         }
@@ -251,12 +260,17 @@ class TimeSetSaveView: UIView {
         return view
     }()
     
-    let footerView: Footer = {
+    let cancelButton: FooterButton = {
+        return FooterButton(title: "footer_button_cancel".localized, type: .sub)
+    }()
+    
+    let confirmButton: FooterButton = {
+        return FooterButton(title: "footer_button_confirm".localized, type: .highlight)
+    }()
+    
+    private lazy var footerView: Footer = {
         let view = Footer()
-        view.buttons = [
-            FooterButton(title: "footer_button_cancel".localized, type: .sub),
-            FooterButton(title: "footer_button_confirm".localized, type: .highlight)
-        ]
+        view.buttons = [cancelButton, confirmButton]
         return view
     }()
     
@@ -313,15 +327,23 @@ class TimeSetSaveView: UIView {
     // MARK: - bind
     private func bind() {
         titleTextField.rx.textChanged
-            .filter { $0 != nil }
-            .map { !$0!.isEmpty }
+            .compactMap { $0 }
+            .map { !$0.isEmpty }
             .bind(to: titleHintLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
         titleTextField.rx.textChanged
-            .filter { $0 != nil }
-            .map { $0!.isEmpty }
+            .compactMap { $0 }
+            .map { $0.isEmpty }
             .bind(to: titleClearButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        titleTextField.rx.text
+            .orEmpty
+            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
+            .filter { [weak self] in $0.1 > (self?.MAX_TITLE_LENGTH ?? 0) }
+            .map { String($0.0.dropLast()) }
+            .bind(to: titleTextField.rx.text)
             .disposed(by: disposeBag)
     }
     

@@ -117,19 +117,27 @@
 "time_set_floating_time_set_repeat_info_format" = "(%d회 반복)";
 
 // MARK: - Time set
-"time_set_default_title" = "%d번째 생산성";
+"time_set_default_title" = "무제 타임셋";
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ 종료";
-"time_set_all_time_full_title" = "전체 시간";
+
+"time_set_all_time_title" = "타임셋 시간";
 "time_set_all_time_title_format" = "타임셋 시간 %02d:%02d:%02d";
-"time_set_end_time_full_title" = "종료 예정";
+
+"time_set_end_time_title" = "종료 예정";
 "time_set_end_time_title_format" = "종료 예정 %@";
 "time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
+
 "time_set_add_time_title" = "+1분";
+
 "time_set_memo_hint" = "메모를 입력하세요.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "작성 가능한 글자 수 초과";
+
+// MARK: - Timer
+"timer_alarm_title" = "사운드";
+"timer_comment_title" = "코멘트";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "타임셋 초기화";
