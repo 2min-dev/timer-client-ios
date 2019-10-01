@@ -13,12 +13,7 @@ import RealmSwift
 class TimeSetEditViewReactor: Reactor {
     // MARK: - constants
     static let MAX_TIME_INTERVAL = TimeInterval(99 * Constants.Time.hour + 59 * Constants.Time.minute + 59)
-    private let MAX_TIMER_COUNT: Int = 10
-    
-    private enum TimerBadgeExtraType {
-        case add
-        case `repeat`
-    }
+    static let MAX_TIMER_COUNT: Int = 10
     
     enum Action {
         /// Clear time set info
@@ -53,9 +48,6 @@ class TimeSetEditViewReactor: Reactor {
         
         /// Delete time set
         case deleteTimeSet
-        
-        /// Apply alarm to all timers
-        case applyAlarm(String)
     }
     
     enum Mutation {
@@ -68,14 +60,8 @@ class TimeSetEditViewReactor: Reactor {
         /// Set input time
         case setTime(Int)
         
-        /// Set timer list badge sections
-        case setSections([TimerBadgeSectionModel])
-        
         /// Set selected index
         case setSelectedIndex(Int)
-        
-        /// Set alert message
-        case setAlertMessage(String)
         
         /// Set should section reload `true`
         case sectionReload
@@ -86,45 +72,48 @@ class TimeSetEditViewReactor: Reactor {
     
     struct State {
         /// The time of timer
-        var endTime: TimeInterval = 0
+        var endTime: TimeInterval
         
         /// All time of time set
-        var allTime: TimeInterval = 0
+        var allTime: TimeInterval
         
         /// The time that user inputed
-        var time: Int = 0
+        var time: Int
+        
+        /// Section datasource to make sections
+        let sectionDataSource: TimerBadgeDataSource
         
         /// The timer list badge sections
-        var sections: [TimerBadgeSectionModel] = []
+        var sections: [TimerBadgeSectionModel] {
+            sectionDataSource.makeSections { reactors, type -> Bool in
+                switch type {
+                case .add:
+                    return reactors.count < TimeSetEditViewReactor.MAX_TIMER_COUNT && endTime > 0
+                    
+                case .repeat:
+                    return true
+                }
+            }
+        }
         
         /// Current selected timer index path
-        var selectedIndex: Int = 0
-        
-        /// Alert message
-        var alertMessage: String?
+        var selectedIndex: Int
         
         /// Need section reload
-        var shouldSectionReload: Bool = false
+        var shouldSectionReload: Bool
         
         /// Need to dismiss view
-        var shouldDismiss: Bool = false
+        var shouldDismiss: Bool
     }
     
     // MARK: - properties
-    var initialState: State = State()
+    var initialState: State
     private let timeSetService: TimeSetServiceProtocol
-
+    
     var timeSetInfo: TimeSetInfo
     
+    // Sub reactor
     let timerOptionViewReactor: TimerOptionViewReactor
-    
-    private var regularItems: [TimerBadgeCellReactor] = []
-    private lazy var extraItems: [TimerBadgeExtraType: TimerBadgeExtraCellType] = [
-        .add: .add,
-        .repeat: .repeat(TimerBadgeRepeatCellReactor(isRepeat: timeSetInfo.isRepeat))
-    ]
-    
-    private var itemId: Int = 0
     
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
@@ -137,21 +126,22 @@ class TimeSetEditViewReactor: Reactor {
         let timers = self.timeSetInfo.timers.toArray()
         let timer = timers.first
         
-        itemId = timers.count
-        regularItems = self.timeSetInfo.timers.enumerated().map {
-            TimerBadgeCellReactor(id: $0.offset,
-                                  time: $0.element.endTime,
-                                  index: $0.offset + 1,
-                                  count: timers.count,
-                                  isSelected: $0.offset == 0)
-        }
+        // Create section datasource
+        let dataSource = TimerBadgeDataSource(
+            timers: self.timeSetInfo.timers.toArray(),
+            extras: [
+                .add: .add,
+                .repeat: .repeat(TimerBadgeRepeatCellReactor(isRepeat: self.timeSetInfo.isRepeat))
+            ],
+            leftExtras: [.repeat],
+            rightExtras: [.add]
+        )
         
         initialState = State(endTime: timer?.endTime ?? 0,
                              allTime: self.timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
                              time: 0,
-                             sections: makeSections(regular: regularItems, time: timer?.endTime ?? 0),
+                             sectionDataSource: dataSource,
                              selectedIndex: 0,
-                             alertMessage: nil,
                              shouldSectionReload: true,
                              shouldDismiss: false)
     }
@@ -191,9 +181,6 @@ class TimeSetEditViewReactor: Reactor {
             
         case .deleteTimeSet:
             return actionDeleteTimeSet()
-            
-        case let .applyAlarm(alarm):
-            return actionApplyAlarm(alarm)
         }
     }
     
@@ -218,7 +205,6 @@ class TimeSetEditViewReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         state.shouldSectionReload = false
-        state.alertMessage = nil
         
         switch mutation {
         case let .setEndTime(time):
@@ -233,18 +219,11 @@ class TimeSetEditViewReactor: Reactor {
             state.time = time
             return state
             
-        case let .setSections(timers):
-            state.sections = timers
-            return state
-            
         case let .setSelectedIndex(index):
             let section: Int = TimerBadgeSectionType.regular.rawValue
             guard index >= 0 && index < state.sections[section].items.count else { return state }
-            state.selectedIndex = index
-            return state
             
-        case let .setAlertMessage(message):
-            state.alertMessage = message
+            state.selectedIndex = index
             return state
             
         case .sectionReload:
@@ -259,43 +238,40 @@ class TimeSetEditViewReactor: Reactor {
 
     // MARK: - action method
     private func actionClearTimeSet() -> Observable<Mutation> {
+        let state = currentState
+        
         // Clear time set
         timeSetInfo = TimeSetInfo(id: nil)
         
         // Clear timer items
-        regularItems = [regularItems.first].compactMap { $0 }
+        state.sectionDataSource.clear()
         
-        extraItems = [
-            .add: .add,
-            .repeat: .repeat(TimerBadgeRepeatCellReactor(isRepeat: timeSetInfo.isRepeat))
-        ]
+        // Clear time set repeat item
+        if case let .repeat(reactor) = state.sectionDataSource.extras[.repeat] {
+            reactor.action.onNext(.updateRepeat(false))
+        }
         
         let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems)))
         let setSelectedIndex: Observable<Mutation> = actionSelectTimer(at: 0)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setAllTime, setSections, setSelectedIndex, sectionReload)
+        return .concat(setAllTime, setSelectedIndex, sectionReload)
     }
     
     private func actionClearTimers() -> Observable<Mutation> {
-        guard let item = regularItems.first else { return .empty() }
-        
         // Clear default timers
         let timers = List<TimerInfo>()
         timers.append(TimerInfo())
         timeSetInfo.timers = timers
         
         // Clear timer items
-        item.action.onNext(.updateTime(0))
-        regularItems = [item]
+        currentState.sectionDataSource.clear()
         
         let setAllTime: Observable<Mutation> = .just(.setAllTime(0))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems)))
         let setSelectedIndex: Observable<Mutation> = actionSelectTimer(at: 0)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setAllTime, setSections, setSelectedIndex, sectionReload)
+        return .concat(setAllTime, setSelectedIndex, sectionReload)
     }
     
     private func actionClearTimer() -> Observable<Mutation> {
@@ -305,15 +281,14 @@ class TimeSetEditViewReactor: Reactor {
         timeSetInfo.timers[state.selectedIndex].endTime = 0
         
         // Update badge time
-        regularItems[state.selectedIndex].action.onNext(.updateTime(0))
+        state.sectionDataSource.regulars[state.selectedIndex].action.onNext(.updateTime(0))
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(0))
         let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.endTime))
         let setTime: Observable<Mutation> = .just(.setTime(0))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems)))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setAllTime, setTime, setSections, sectionReload)
+        return .concat(setEndTime, setAllTime, setTime, sectionReload)
     }
     
     private func actionUpdateTime(_ time: Int) -> Observable<Mutation> {
@@ -340,22 +315,21 @@ class TimeSetEditViewReactor: Reactor {
         timeSetInfo.timers[state.selectedIndex].endTime = timeInterval
         
         // Update badge time
-        regularItems[state.selectedIndex].action.onNext(.updateTime(timeInterval))
+        state.sectionDataSource.regulars[state.selectedIndex].action.onNext(.updateTime(timeInterval))
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(timeInterval))
         let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - state.endTime + timeInterval))
         let setTime: Observable<Mutation> = .just(.setTime(0))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems, time: timeInterval)))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setAllTime, setTime, setSections, sectionReload)
+        return .concat(setEndTime, setAllTime, setTime, sectionReload)
     }
     
     private func actionToggleRepeat() -> Observable<Mutation> {
         // Toggle time set repeat
         timeSetInfo.isRepeat.toggle()
         
-        if case let .repeat(reactor) = extraItems[.repeat] {
+        if case let .repeat(reactor) = currentState.sectionDataSource.extras[.repeat] {
             reactor.action.onNext(.updateRepeat(timeSetInfo.isRepeat))
         }
         
@@ -363,20 +337,19 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func actionAddTimer() -> Observable<Mutation> {
+        let state = currentState
+        
         // Create timer and append into time set info
         let info = TimerInfo()
         timeSetInfo.timers.append(info)
         
         // Create timer item and append into regular items
-        let count = timeSetInfo.timers.count
-        regularItems.append(TimerBadgeCellReactor(id: itemId, time: info.endTime, index: count, count: count))
-        itemId += 1
+        state.sectionDataSource.append(item: info)
         
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems, time: info.endTime)))
-        let setSelectIndex = actionSelectTimer(at: count - 1)
+        let setSelectIndex = actionSelectTimer(at: state.sectionDataSource.regulars.count - 1)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setSections, sectionReload, setSelectIndex)
+        return .concat(sectionReload, setSelectIndex)
     }
     
     private func actionDeleteTimer() -> Observable<Mutation> {
@@ -390,19 +363,17 @@ class TimeSetEditViewReactor: Reactor {
         timeSetInfo.timers.remove(at: index)
         
         // Remove a timer item
-        regularItems.remove(at: index)
+        state.sectionDataSource.remove(at: index)
         
         // Calculate selected index
         // If selected index is last index, adjust index to last index of removed list
         let selectIndex = index < timeSetInfo.timers.count ? index : index - 1
         
         let setAllTime: Observable<Mutation> = .just(.setAllTime(state.allTime - removedTimer.endTime))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems,
-                                                                                time: timeSetInfo.timers[selectIndex].endTime)))
         let setSelectIndex = actionSelectTimer(at: selectIndex)
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setAllTime, setSelectIndex, setSections, sectionReload)
+        return .concat(setAllTime, setSelectIndex, sectionReload)
     }
     
     private func actionMoveTimer(at sourceIndex: Int, to destinationIndex: Int) -> Observable<Mutation> {
@@ -412,9 +383,10 @@ class TimeSetEditViewReactor: Reactor {
         timeSetInfo.timers.swapAt(sourceIndex, destinationIndex)
         
         // Swap timer item & update index
-        regularItems.swapAt(sourceIndex, destinationIndex)
-        regularItems[sourceIndex].action.onNext(.updateIndex(sourceIndex + 1))
-        regularItems[destinationIndex].action.onNext(.updateIndex(destinationIndex + 1))
+        state.sectionDataSource.swap(at: sourceIndex, to: destinationIndex)
+        
+        state.sectionDataSource.regulars[sourceIndex].action.onNext(.updateIndex(sourceIndex))
+        state.sectionDataSource.regulars[destinationIndex].action.onNext(.updateIndex(destinationIndex))
         
         // Update selected index
         var setSelectedIndex: Observable<Mutation>
@@ -431,40 +403,41 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
+        guard index >= 0 && index < timeSetInfo.timers.count else { return .empty() }
+        
         let state = currentState
-        
         let previousIndex = state.selectedIndex
-        var index = index
         
+        var index = index
         if index != previousIndex && previousIndex < timeSetInfo.timers.count {
             // Update to previous item state
             if timeSetInfo.timers[previousIndex].endTime == 0 {
                 // If current selected timer's end time is 0
                 // Remove previous selected timer
                 timeSetInfo.timers.remove(at: previousIndex)
-                regularItems.remove(at: previousIndex)
+                state.sectionDataSource.remove(at: previousIndex)
                 
                 // Adjust index
                 index = index > previousIndex ? index - 1 : index
             } else {
                 // Deselect previous item
-                regularItems[previousIndex].action.onNext(.select(false))
+                state.sectionDataSource.regulars[previousIndex].action.onNext(.select(false))
             }
         }
         
-        let timer = timeSetInfo.timers[index]
-        
         // Select current item
-        regularItems[index].action.onNext(.select(true))
+        state.sectionDataSource.regulars[index].action.onNext(.select(true))
+        
+        // Update timer of timer option reactor
+        let timer = timeSetInfo.timers[index]
         timerOptionViewReactor.action.onNext(.updateTimer(timer, at: index))
         
         let setEndTime: Observable<Mutation> = .just(.setEndTime(timeSetInfo.timers[index].endTime))
         let setTime: Observable<Mutation> = .just(.setTime(0))
-        let setSections: Observable<Mutation> = .just(.setSections(makeSections(regular: regularItems, time: timer.endTime)))
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(index))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setEndTime, setTime, setSections, sectionReload, setSelectedIndex)
+        return .concat(setEndTime, setTime, sectionReload, setSelectedIndex)
     }
     
     private func actionDeleteTimeSet() -> Observable<Mutation> {
@@ -473,52 +446,9 @@ class TimeSetEditViewReactor: Reactor {
             .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
     }
     
-    private func actionApplyAlarm(_ alarm: String) -> Observable<Mutation> {
-        timeSetInfo.timers.forEach { $0.alarm = alarm }
-        return .just(.setAlertMessage("alert_alarm_all_apply_description".localized))
-    }
-    
     /// If current time set info doesn't asigned id(It is createing new), clear time set info due to save the time set
     private func actionTimeSetCreate() -> Observable<Mutation> {
         return actionClearTimeSet()
-    }
-    
-    // MARK: - private method
-    private func makeSections(regular: [TimerBadgeCellReactor], left: [TimerBadgeExtraType] = [.repeat], right: [TimerBadgeExtraType] = [.add], time: TimeInterval = 0) -> [TimerBadgeSectionModel] {
-    
-        let count = regular.count
-        let regularItem: [TimerBadgeCellType] = regular.enumerated().map { (offset, reactor) in
-            reactor.action.onNext(.updateIndex(offset + 1))
-            reactor.action.onNext(.updateCount(count))
-            
-            return .regular(reactor)
-        }
-        
-        let leftItems: [TimerBadgeCellType] = left
-            .filter { isExtraItemIncluded(type: $0, count: count, time: time) }
-            .compactMap { extraItems[$0] }
-            .map { .extra($0) }
-        
-        let rightItems: [TimerBadgeCellType] = right
-            .filter { isExtraItemIncluded(type: $0, count: count, time: time) }
-            .compactMap { extraItems[$0] }
-            .map { .extra($0) }
-        
-        return [
-            TimerBadgeSectionModel(model: .leftExtra, items: leftItems),
-            TimerBadgeSectionModel(model: .regular, items: regularItem),
-            TimerBadgeSectionModel(model: .rightExtra, items: rightItems)
-        ]
-    }
-    
-    private func isExtraItemIncluded(type: TimerBadgeExtraType, count: Int, time: TimeInterval) -> Bool {
-        switch type {
-        case .add:
-            return count < MAX_TIMER_COUNT && time > 0
-            
-        case .repeat:
-            return true
-        }
     }
     
     deinit {
