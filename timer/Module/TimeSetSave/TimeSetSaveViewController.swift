@@ -9,35 +9,43 @@
 import RxSwift
 import RxCocoa
 import ReactorKit
+import RxDataSources
 
-class TimeSetSaveViewController: BaseViewController, View {
-    // MARK: - constants
-    private let FOOTER_BUTTON_CANCEL = 0
-    private let FOOTER_BUTTON_CONFIRM = 1
-    
+class TimeSetSaveViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var timeSetSaveView: TimeSetSaveView { return view as! TimeSetSaveView }
     
-    private var headerView: CommonHeader { return timeSetSaveView.headerView }
-    private var contentView: UIView { return timeSetSaveView.contentView }
+    override var headerView: CommonHeader { return timeSetSaveView.headerView }
     
     private var titleTextField: UITextField { return timeSetSaveView.titleTextField }
     private var titleClearButton: UIButton { return timeSetSaveView.titleClearButton }
     private var titleHintLabel: UILabel { return timeSetSaveView.titleHintLabel }
     
-    private var allTimeLabel: UILabel { return timeSetSaveView.allTimeLabel}
+    private var allTimeLabel: UILabel { return timeSetSaveView.allTimeLabel }
     private var endOfTimeSetLabel: UILabel { return timeSetSaveView.endOfTimeSetLabel }
-    
-    private var timerOptionView: UIView { return timeSetSaveView.timerOptionView }
+    private var alarmLabel: UILabel { return timeSetSaveView.alarmLabel }
+    private var commentTextView: UITextView { return timeSetSaveView.commentTextView }
     
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetSaveView.timerBadgeCollectionView }
     
-    private var footerView: Footer { return timeSetSaveView.footerView }
+    private var cancelButton: FooterButton { return timeSetSaveView.cancelButton }
+    private var confirmButton: FooterButton { return timeSetSaveView.confirmButton }
     
     // MARK: - properties
     var coordinator: TimeSetSaveViewCoordinator
     
-    private var isDragging: Bool = false
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+        switch cellType {
+        case let .regular(reactor):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
+            cell.reactor = reactor
+            
+            return cell
+            
+        case .extra(_):
+            fatalError("This view can't present extra cells of timer badge collection view")
+        }
+    })
     
     // MARK: - constructor
     init(coordinator: TimeSetSaveViewCoordinator) {
@@ -66,57 +74,55 @@ class TimeSetSaveViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        headerView.rx.tap
-            .filter { $0 == .back }
-            .subscribe(onNext: { [weak self] _ in self?.navigationController?.popViewController(animated: true) })
+        rx.viewDidAppear
+            .subscribe(onNext: { [weak self] in self?.titleTextField.becomeFirstResponder() })
             .disposed(by: disposeBag)
         
         titleTextField.rx.text
-            .orEmpty
-            .skipUntil(rx.viewWillAppear)
+            .skip(1)
+            .compactMap { $0 }
             .map { Reactor.Action.updateTitle($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         titleClearButton.rx.tap
-            .map { Reactor.Action.clearTitle }
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .do(onNext: { [weak self] _ in self?.titleTextField.becomeFirstResponder() })
+            .map { Reactor.Action.clearTitle }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        // Timer badge collection view dragging
-        timerBadgeCollectionView.rx.willBeginDragging
-            .subscribe(onNext: { [weak self] in self?.isDragging = true })
-            .disposed(by: disposeBag)
-        
-        timerBadgeCollectionView.rx.didEndDecelerating
-            .subscribe(onNext: { [weak self] in self?.isDragging = false })
-            .disposed(by: disposeBag)
-        
-        timerBadgeCollectionView.rx.didScroll
-            .filter { [unowned self] in self.isDragging }
-            .map { [weak self] in self?.getIndexPathFromScrolling() }
-            .filter { $0 != nil }
-            .map { Reactor.Action.selectTimer(at: $0!) }
+        timerBadgeCollectionView.rx.itemSelected
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
+            .filter { $0.0.section == TimerBadgeSectionType.regular.rawValue }
+            .map { Reactor.Action.selectTimer(at: $0.0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        footerView.rx.tap
-            .subscribe(onNext: { [weak self] in self?.footerActionHandler(index: $0) })
+        cancelButton.rx.tap
+            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true) })
+            .disposed(by: disposeBag)
+        
+        confirmButton.rx.tap
+            .map { Reactor.Action.saveTimeSet }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Title
+        reactor.state
+            .map { $0.title }
+            .distinctUntilChanged()
+            .filter { [weak self] in self?.titleTextField.text != $0 }
+            .bind(to: titleTextField.rx.text)
+            .disposed(by: disposeBag)
+        
         // Hint of title text field
         reactor.state
             .map { $0.hint }
+            .distinctUntilChanged()
             .bind(to: titleHintLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Title of time set
-        reactor.state
-            .map { $0.title }
-            .filter { [weak self] in $0 != self?.titleTextField.text }
-            .bind(to: titleTextField.rx.text)
             .disposed(by: disposeBag)
         
         // All time
@@ -124,11 +130,8 @@ class TimeSetSaveViewController: BaseViewController, View {
             .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_all_time_title".localized,
-                                           info: String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2))
-            }
-            .bind(to: allTimeLabel.rx.attributedText)
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: allTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
         // End of time set
@@ -138,21 +141,39 @@ class TimeSetSaveViewController: BaseViewController, View {
                 .distinctUntilChanged(),
             Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .map { Date().addingTimeInterval($0.0) }
-            .map { [weak self] in
-                self?.getTimeSetInfoString(title: "time_set_end_time_title".localized,
-                                           info: getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)))
-            }
-            .bind(to: endOfTimeSetLabel.rx.attributedText)
+            .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Alert
+        let timer = reactor.state
+            .map { $0.timer }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        // Alarm
+        timer.map { $0.alarm }
+            .bind(to: alarmLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Comment
+        timer.map { $0.comment }
+            .bind(to: commentTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Timer badge
         reactor.state
-            .map { $0.alertMessage }
-            .filter { $0 != nil }
-            .map { $0! }
-            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
+            .filter { $0.shouldSectionReload }
+            .map { $0.sections }
+            .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
+        reactor.state
+            .map { $0.selectedIndex }
+            .distinctUntilChanged()
+            .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
+            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .disposed(by: disposeBag)
+
         // Time set saved
         reactor.state
             .map { $0.savedTimeSet }
@@ -161,66 +182,6 @@ class TimeSetSaveViewController: BaseViewController, View {
             .observeOn(MainScheduler.instance) // Ignore rx error
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
             .disposed(by: disposeBag)
-    }
-    
-    // MARK: - private method
-    private func footerActionHandler(index: Int) {
-        if index == FOOTER_BUTTON_CANCEL {
-            // Cancel -> Pop view controller
-            navigationController?.popViewController(animated: true)
-        } else if index == FOOTER_BUTTON_CONFIRM {
-            guard let reactor = reactor else { return }
-            // Confirm -> Save time set
-            reactor.action.onNext(.saveTimeSet)
-        }
-    }
-    
-    /// Get time set info's attributed string
-    private func getTimeSetInfoString(title: String, info: String) -> NSAttributedString {
-        let title = NSAttributedString(string: title,
-                                       attributes: [
-                                        .font: Constants.Font.Regular.withSize(12.adjust())
-        ])
-        let time = NSAttributedString(string: info,
-                                      attributes: [
-                                        .font: Constants.Font.Bold.withSize(12.adjust())
-        ])
-        
-        let attributedString = NSMutableAttributedString()
-        attributedString.append(title)
-        attributedString.append(time)
-        return attributedString
-    }
-    
-    /// Get index path from badge view scrolling
-    private func getIndexPathFromScrolling() -> IndexPath? {
-        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return nil }
-        let axisPoint = layout.axisPoint
-        
-        let frame = timerBadgeCollectionView.frame
-        let origin = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
-        let converted = self.contentView.convert(origin, to: timerBadgeCollectionView)
-        
-        return timerBadgeCollectionView.indexPathForItem(at: converted)
-    }
-    
-    /// Scroll to badge if can scroll
-    private func scrollToBadgeIfCan(at: IndexPath) {
-        guard !isDragging else { return }
-        timerBadgeCollectionView.scrollToBadge(at: at, animated: true)
-    }
-    
-    /// Show popup alert
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        // Alert view controller dismiss after 1 seconds
-        alert.rx.viewDidLoad
-            .delay(.seconds(1), scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak alert] in alert?.dismiss(animated: true) })
-            .disposed(by: disposeBag)
-        
-        // Present alert view controller
-        present(alert, animated: true)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

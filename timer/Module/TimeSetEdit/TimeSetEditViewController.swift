@@ -171,13 +171,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
 //            .bind(to: footerView.buttons[FOOTER_BUTTON_NEXT].rx.isEnabled)
 //            .disposed(by: disposeBag)
         
-        // Alert
-        reactor.state
-            .map { $0.alertMessage }
-            .filter { $0 != nil }
-            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0!) })
-            .disposed(by: disposeBag)
-        
         reactor.state
             .map { $0.shouldDismiss }
             .distinctUntilChanged()

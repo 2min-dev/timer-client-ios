@@ -117,19 +117,27 @@
 "time_set_floating_time_set_repeat_info_format" = "(%d repetations)";
 
 // MARK: - Time set
-"time_set_default_title" = "Time Set %d";
+"time_set_default_title" = "Utitled Time Set";
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ Ended";
-"time_set_all_time_full_title" = "All Time";
+
+"time_set_all_time_title" = "All Time";
 "time_set_all_time_title_format" = "All Time %02d:%02d:%02d";
-"time_set_end_time_full_title" = "End Exp ";
+
+"time_set_end_time_title" = "End Exp";
 "time_set_end_time_title_format" = "Exp %@";
 "time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
+
 "time_set_add_time_title" = "+1M";
+
 "time_set_memo_hint" = "Type memo about this time set.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "Exceeded the number of characters";
+
+// MARK: - Timer
+"timer_alarm_title" = "Sound";
+"timer_comment_title" = "Comment";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "Initialize Time Set";

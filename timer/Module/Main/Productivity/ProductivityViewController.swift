@@ -15,7 +15,6 @@ import JSReorderableCollectionView
 class ProductivityViewController: BaseHeaderViewController, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
-    private var contentView: UIView { return productivityView.contentView }
     
     override var headerView: CommonHeader { return productivityView.headerView }
     
@@ -43,7 +42,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
         switch cellType {
         case let .regular(reactor):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as! TimerBadgeCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
             cell.reactor = reactor
             
             return cell
@@ -126,10 +125,10 @@ class ProductivityViewController: BaseHeaderViewController, View {
                 return Observable.merge([
                     self.navigationController?.rx.didShow
                         .skip(1) // Skip until did finished drawing of tab bar controller
-                        .filter { ($0.viewController as? UITabBarController)?.selectedViewController == self }
+                        .filter { [weak self] in ($0.viewController as? UITabBarController)?.selectedViewController == self }
                         .map { _ in Void() },
                     self.tabBarController?.rx.didSelect
-                        .filter { $0 == self }
+                        .filter { [weak self] in $0 == self }
                         .map { _ in Void() }
                 ].compactMap { $0 })
             }
@@ -161,7 +160,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     
         keyPadView.rx.keyPadTap
             .filter { $0 != .cancel }
-            .map { [unowned self] in self.updateTime(key: $0) }
+            .compactMap { [weak self] in self?.updateTime(key: $0) }
             .map { Reactor.Action.updateTime($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -172,18 +171,18 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         timeKeyView.rx.tap
-            .map { [unowned self] in self.getBaseTime(from: $0) }
+            .compactMap { [weak self] in self?.getBaseTime(from: $0) }
             .map { Reactor.Action.addTime(base: $0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         let itemSelected = timerBadgeCollectionView.rx.itemSelected
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
             .share(replay: 1)
         
         itemSelected
             .compactMap { [weak self] in self?.selectBadge(at: $0.0) }
-            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -294,14 +293,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
             .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
             .disposed(by: disposeBag)
-        
-        // Alert
-        reactor.state
-            .map { $0.alertMessage }
-            .filter { $0 != nil }
-            .map { $0! }
-            .subscribe(onNext: { [weak self] in self?.showAlert(message: $0) })
-            .disposed(by: disposeBag)
     }
 
     // MARK: - action method
@@ -378,21 +369,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
         }
     }
     
-    /// Get index path from badge view scrolling
-    private func getIndexFromScrolling() -> Int? {
-        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return nil }
-        let axisPoint = layout.axisPoint
-        
-        let frame = timerBadgeCollectionView.frame
-        let point = CGPoint(x: axisPoint.x, y: frame.origin.y + frame.height / 2) // Get center point of axis
-        let convertedPoint = contentView.convert(point, to: timerBadgeCollectionView)
-        
-        guard let indexPath = timerBadgeCollectionView.indexPathForItem(at: convertedPoint),
-            indexPath.section == TimerBadgeSectionType.regular.rawValue else { return nil }
-        
-        return indexPath.item
-    }
-    
     // MARK: - state method
     /// Get enable time key from values of time & timer
     private func getEnableTimeKey(from time: Int, endTime: TimeInterval) -> TimeKeyPad.Key {
@@ -437,19 +413,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
     private func badgeScrollIfCan(at indexPath: IndexPath) {
         guard !isBadgeMoving else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
-    }
-    
-    /// Show popup alert
-    private func showAlert(message: String) {
-        let alert = AlertBuilder(message: message).build()
-        // Alert view controller dismiss after 1 seconds
-        alert.rx.viewDidLoad
-            .delay(.seconds(1), scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak alert] in alert?.dismiss(animated: true) })
-            .disposed(by: disposeBag)
-        
-        // Present alert view controller
-        present(alert, animated: true)
     }
     
     // MARK: - private method

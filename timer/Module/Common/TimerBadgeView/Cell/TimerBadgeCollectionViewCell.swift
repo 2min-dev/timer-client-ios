@@ -110,7 +110,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         
         Observable.combineLatest(
             reactor.state
-                .map { $0.index }
+                .map { $0.index + 1 }
                 .distinctUntilChanged(),
             reactor.state
                 .map { $0.count }
