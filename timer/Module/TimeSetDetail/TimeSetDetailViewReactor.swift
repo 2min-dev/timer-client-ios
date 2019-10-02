@@ -11,34 +11,22 @@ import ReactorKit
 
 class TimeSetDetailViewReactor: Reactor {
     enum Action {
-        /// Update time set info
-        case viewWillAppear
-        
         /// Toggle time set bookmark
         case toggleBookmark
         
-        /// Toggle time set repeat
-        case toggleRepeat
-        
         /// Select the timer
-        case selectTimer(at: IndexPath)
+        case selectTimer(at: Int)
     }
     
     enum Mutation {
         /// Set time set bookmark
         case setBookmark(Bool)
         
-        /// Set time set repeat
-        case setRepeat(Bool)
-        
         /// Set current timer
         case setTimer(TimerInfo)
         
-        /// Set selected index path
-        case setSelectedIndexPath(at: IndexPath)
-        
-        /// Set should section reload `true`
-        case sectionReload
+        /// Set selected index
+        case setSelectedIndex(at: Int)
     }
     
     struct State {
@@ -51,17 +39,19 @@ class TimeSetDetailViewReactor: Reactor {
         /// All time of time set
         let allTime: TimeInterval
         
-        /// Time set repeat mark
-        var isRepeat: Bool
-        
-        /// Timers of time set
-        let timers: [TimerInfo]
-        
         /// Current selected timer
         var timer: TimerInfo
         
-        /// Current selected timer index path
-        var selectedIndexPath: IndexPath
+        /// Section datasource to make sections
+        let sectionDataSource: TimerBadgeDataSource
+        
+        /// The timer list badge sections
+        var sections: [TimerBadgeSectionModel] {
+            sectionDataSource.makeSections()
+        }
+        
+        /// Current selected timer index
+        var selectedIndex: Int
         
         /// Need section reload
         var shouldSectionReload: Bool
@@ -78,30 +68,26 @@ class TimeSetDetailViewReactor: Reactor {
         self.timeSetService = timeSetService
         self.timeSetInfo = timeSetInfo
         
+        // Create seciont datasource
+        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray())
+        
         initialState = State(isBookmark: timeSetInfo.isBookmark,
-                                  title: timeSetInfo.title,
-                                  allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  isRepeat: timeSetInfo.isRepeat,
-                                  timers: timeSetInfo.timers.toArray(),
-                                  timer: timeSetInfo.timers[0],
-                                  selectedIndexPath: IndexPath(row: 0, section: 0),
-                                  shouldSectionReload: true)
+                             title: timeSetInfo.title,
+                             allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
+                             timer: timeSetInfo.timers.first ?? TimerInfo(),
+                             sectionDataSource: dataSource,
+                             selectedIndex: 0,
+                             shouldSectionReload: true)
     }
     
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewWillAppear:
-            return actionViewWillAppear()
-
         case .toggleBookmark:
             return actionToggleBookmark()
-            
-        case .toggleRepeat:
-            return actiontoggleRepeat()
 
-        case let .selectTimer(at: indexPath):
-            return actionSelectTimer(at: indexPath)
+        case let .selectTimer(at: index):
+            return actionSelectTimer(at: index)
         }
     }
     
@@ -114,29 +100,20 @@ class TimeSetDetailViewReactor: Reactor {
             state.isBookmark = isBookmark
             return state
             
-        case let .setRepeat(isRepeat):
-            state.isRepeat = isRepeat
-            return state
-            
         case let .setTimer(timer):
             state.timer = timer
             return state
             
-        case let .setSelectedIndexPath(at: indexPath):
-            state.selectedIndexPath = indexPath
-            return state
+        case let .setSelectedIndex(at: index):
+            let section: Int = TimerBadgeSectionType.regular.rawValue
+            guard index >= 0 && index < state.sections[section].items.count else { return state }
             
-        case .sectionReload:
-            state.shouldSectionReload = true
+            state.selectedIndex = index
             return state
         }
     }
     
     // MARK: - action method
-    private func actionViewWillAppear() -> Observable<Mutation> {
-        return .just(.setBookmark(timeSetInfo.isBookmark))
-    }
-    
     private func actionToggleBookmark() -> Observable<Mutation> {
         // Toggle time set bookmark
         timeSetInfo.isBookmark.toggle()
@@ -146,20 +123,22 @@ class TimeSetDetailViewReactor: Reactor {
             .map { .setBookmark($0.isBookmark) }
     }
     
-    private func actiontoggleRepeat() -> Observable<Mutation> {
-        // Toggle time set repeat option
-        timeSetInfo.isRepeat.toggle()
-    
-        return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
-            .do(onNext: { self.timeSetInfo = $0 })
-            .map { .setRepeat($0.isRepeat) }
-    }
-    
-    private func actionSelectTimer(at indexPath: IndexPath) -> Observable<Mutation> {
-        guard indexPath.row < timeSetInfo.timers.count else { return .empty() }
+    private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
+        guard index >= 0 && index < timeSetInfo.timers.count else { return .empty() }
         
-        return .concat(.just(.setSelectedIndexPath(at: indexPath)),
-                       .just(.setTimer(timeSetInfo.timers[indexPath.row])))
+        let state = currentState
+        let previousIndex = state.selectedIndex
+        
+        // Update selected timer state
+        if index != previousIndex {
+            state.sectionDataSource.regulars[previousIndex].action.onNext(.select(false))
+        }
+        state.sectionDataSource.regulars[index].action.onNext(.select(true))
+        
+        let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[index]))
+        
+        return .concat(setSelectedIndex, setTimer)
     }
     
     deinit {
