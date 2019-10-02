@@ -39,6 +39,7 @@ class TimerBadgeAddCollectionViewCell: UICollectionViewCell {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = Constants.Color.clear
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.snp.makeConstraints { make in

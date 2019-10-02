@@ -171,7 +171,11 @@ class ProductivityView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide).priorityHigh()
+            } else {
+                make.bottom.equalToSuperview().priorityHigh()
+            }
         }
         
         timerOptionView.snp.makeConstraints { make in

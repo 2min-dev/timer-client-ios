@@ -308,7 +308,7 @@ class TimeSetSaveView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalToSuperview().priorityHigh()
         }
         
         footerView.snp.makeConstraints { make in

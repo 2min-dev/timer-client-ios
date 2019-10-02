@@ -45,7 +45,11 @@ class LocalTimeSetView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().priorityHigh()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide).priorityHigh()
+            } else {
+                make.bottom.equalToSuperview().priorityHigh()
+            }
         }
         
         headerView.snp.makeConstraints { make in
