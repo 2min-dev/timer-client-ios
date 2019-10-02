@@ -53,11 +53,8 @@ class FooterButton: UIButton {
     override var isEnabled: Bool {
         didSet {
             backgroundLayer.removeFromSuperlayer()
-            if isEnabled {
-                backgroundLayer = type.backgroundLayer
-            } else {
-                backgroundLayer = FooterButtonType.normal.backgroundLayer
-            }
+            backgroundLayer = isEnabled ? type.backgroundLayer : FooterButtonType.normal.backgroundLayer
+            layer.insertSublayer(backgroundLayer, at: 0)
         }
     }
     

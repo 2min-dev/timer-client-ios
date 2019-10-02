@@ -189,7 +189,7 @@ class CommonHeader: Header {
         
         // Remake title constraint
         titleLabel.snp.remakeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(34.adjust()).priorityHigh()
+            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priorityHigh()
             make.trailing.equalTo(additionalButtonsStackView.snp.leading).offset(-5.adjust())
             make.centerY.equalToSuperview()
         }
