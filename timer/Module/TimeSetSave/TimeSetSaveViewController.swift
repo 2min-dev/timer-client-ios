@@ -102,7 +102,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true) })
+            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
