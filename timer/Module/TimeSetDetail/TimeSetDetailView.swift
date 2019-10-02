@@ -12,7 +12,7 @@ class TimeSetDetailView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
-        view.additionalButtons = [.share, .bookmark, .home]
+        view.additionalButtons = [.bookmark]
         return view
     }()
     
@@ -23,111 +23,143 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    private let allTimeTitleLabel: UILabel = {
+    let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_all_time_full_title".localized
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        view.text = "time_set_all_time_title".localized
         return view
     }()
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
         return view
     }()
     
-    private let endOfTimeSetTitleLabel: UILabel = {
+    private lazy var allTimeStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [allTimeTitleLabel, allTimeLabel])
+        view.axis = .horizontal
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        allTimeTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
+        }
+        
+        return view
+    }()
+    
+    let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.text = "time_set_end_time_full_title".localized
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        view.text = "time_set_end_time_title".localized
         return view
     }()
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
         return view
     }()
     
-    let repeatButton: UIButton = {
-        let view = UIButton()
-        view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
-        view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
-        return view
-    }()
-    
-    private let addTimeButton: UIButton = {
-        let view = UIButton()
-        view.titleLabel?.font = Constants.Font.Bold.withSize(12.adjust())
-        view.setTitleColor(Constants.Color.codGray, for: .normal)
-        view.setTitleColor(Constants.Color.silver, for: .disabled)
-        view.setTitle("time_set_add_time_title".localized, for: .normal)
-        view.isEnabled = false
-        return view
-    }()
-    
-    private lazy var timeSetInfoView: UIView = {
-        let view = UIView()
-        
-        let divider = UIView()
-        divider.backgroundColor = Constants.Color.codGray
+    private lazy var endOfTimeSetStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [endOfTimeSetTitleLabel, endOfTimeSetLabel])
+        view.axis = .horizontal
+        view.spacing = 20.adjust()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([allTimeTitleLabel, allTimeLabel, endOfTimeSetTitleLabel, endOfTimeSetLabel, addTimeButton, repeatButton, divider])
-        allTimeTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(11.adjust())
-            make.leading.equalToSuperview()
-            make.trailing.equalTo(endOfTimeSetTitleLabel)
-        }
-        
-        allTimeLabel.snp.makeConstraints { make in
-            make.top.equalTo(allTimeTitleLabel)
-            make.leading.equalTo(allTimeTitleLabel.snp.trailing).offset(10.adjust())
-            make.bottom.equalTo(allTimeTitleLabel)
-        }
-        
         endOfTimeSetTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(allTimeTitleLabel.snp.bottom).offset(10.adjust())
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().inset(16.adjust())
+            make.width.equalTo(60.adjust())
         }
         
-        endOfTimeSetLabel.snp.makeConstraints { make in
-            make.top.equalTo(endOfTimeSetTitleLabel)
-            make.leading.equalTo(endOfTimeSetTitleLabel.snp.trailing).offset(10.adjust())
-            make.bottom.equalTo(endOfTimeSetTitleLabel)
+        return view
+    }()
+    
+    let alarmTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        view.text = "timer_alarm_title".localized
+        return view
+    }()
+    
+    let alarmLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        return view
+    }()
+    
+    private lazy var alarmStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [alarmTitleLabel, alarmLabel])
+        view.axis = .horizontal
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        alarmTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
         }
         
-        addTimeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalToSuperview().inset(10.adjust())
-            make.width.equalTo(36.adjust())
-            make.height.equalTo(addTimeButton.snp.width)
-        }
-
-        repeatButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalTo(addTimeButton.snp.leading).offset(-10.adjust())
-            make.width.equalTo(36.adjust())
-            make.height.equalTo(addTimeButton.snp.width)
-        }
-
-        divider.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.height.equalTo(1)
+        return view
+    }()
+    
+    let commentTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.textColor = Constants.Color.doveGray
+        view.text = "timer_comment_title".localized
+        return view
+    }()
+    
+    let commentTextView: UITextView = {
+        let view = UITextView()
+        view.backgroundColor = Constants.Color.clear
+        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.isEditable = false
+        view.isSelectable = false
+        view.textContainer.lineFragmentPadding = 0
+        view.textContainerInset = .zero
+    
+        // Set line height of text view
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 7.adjust()
+        
+        view.typingAttributes = [.foregroundColor: Constants.Color.doveGray,
+                                 .paragraphStyle: paragraphStyle]
+        return view
+    }()
+    
+    private lazy var commentStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [commentTitleLabel, commentTextView])
+        view.axis = .horizontal
+        view.alignment = .top
+        view.spacing = 20.adjust()
+        
+        // Set constraint of subviews
+        commentTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(60.adjust())
         }
         
+        commentTextView.snp.makeConstraints { make in
+            make.height.equalTo(34.adjust())
+        }
+        
+        return view
+    }()
+    
+    private lazy var infoStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [allTimeStackView, endOfTimeSetStackView, alarmStackView, commentStackView])
+        view.axis = .vertical
+        view.spacing = 10.adjust()
         return view
     }()
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
-        let view = TimerBadgeCollectionView()
+        let view = TimerBadgeCollectionView(frame: .zero)
         if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
             layout.axisPoint = CGPoint(x: 60.adjust(), y: 0)
             layout.axisAlign = .left
@@ -141,115 +173,34 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let alarmLabel: UILabel = {
-        let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
-        return view
-    }()
-    
-    private lazy var alarmView: UIView = {
-        let view = UIView()
-        
-        // Set constraint of subviews
-        view.addAutolayoutSubviews([alarmIconImageView, alarmLabel])
-        alarmIconImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.width.equalTo(36.adjust())
-            make.height.equalTo(alarmIconImageView.snp.width)
-        }
-        
-        alarmLabel.snp.makeConstraints { make in
-            make.leading.equalTo(alarmIconImageView.snp.trailing).offset(5.adjust())
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview()
-        }
-        
-        return view
-    }()
-    
-    private let commentIconImageView: UIImageView = {
-        let view = UIImageView()
-        view.image = UIImage(named: "icon_comment")
-        return view
-    }()
-    
-    let commentTextView: UITextView = {
-        let view = UITextView()
-        view.backgroundColor = Constants.Color.white
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
-        view.textContainer.lineFragmentPadding = 0
-        view.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        view.isEditable = false
-        return view
-    }()
-    
-    private lazy var commentView: UIView = {
-        let view = UIView()
-        
-        // Set constraint of subviews
-        view.addAutolayoutSubviews([commentIconImageView, commentTextView])
-        commentIconImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.width.equalTo(36.adjust())
-            make.height.equalTo(commentIconImageView.snp.width)
-        }
-        
-        commentTextView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(11.33.adjust())
-            make.leading.equalTo(commentIconImageView.snp.trailing).offset(5.adjust())
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
-        return view
-    }()
-    
     private lazy var contentView: UIView = {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleLabel, timeSetInfoView, timerBadgeCollectionView, alarmView, commentView])
+        view.addAutolayoutSubviews([titleLabel, infoStackView, timerBadgeCollectionView])
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(35.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
-            make.trailing.equalToSuperview().inset(10.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
         }
 
-        timeSetInfoView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(247.adjust())
+        infoStackView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(173.adjust())
             make.leading.equalTo(titleLabel)
-            make.trailing.equalToSuperview()
+            make.trailing.equalTo(titleLabel)
         }
 
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timeSetInfoView.snp.bottom).offset(8.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(23.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-        }
-
-        alarmView.snp.makeConstraints { make in
-            make.top.equalTo(timerBadgeCollectionView.snp.bottom).offset(14.adjust())
-            make.leading.equalToSuperview().inset(50.adjust())
-            make.trailing.equalToSuperview().inset(10.adjust())
-        }
-
-        commentView.snp.makeConstraints { make in
-            make.top.equalTo(alarmView.snp.bottom).inset(9.adjust())
-            make.leading.equalToSuperview().inset(50.adjust())
-            make.trailing.equalToSuperview().inset(10.adjust())
-            make.bottom.equalToSuperview()
         }
         
         return view
     }()
     
     let editButton: FooterButton = {
-        return FooterButton(title: "footer_button_edit".localized, type: .normal)
+        return FooterButton(title: "footer_button_edit".localized, type: .sub)
     }()
     
     let startButton: FooterButton = {
@@ -282,7 +233,7 @@ class TimeSetDetailView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(footerView.snp.top).offset(-10.adjust())
+            make.bottom.equalTo(footerView.snp.top).priorityHigh()
         }
         
         footerView.snp.makeConstraints { make in

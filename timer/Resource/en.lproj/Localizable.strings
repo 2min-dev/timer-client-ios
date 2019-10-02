@@ -121,11 +121,11 @@
 "time_set_time_format" = "%02d:%02d:%02d";
 "time_set_end_title_format" = "%@ Ended";
 
-"time_set_all_time_title" = "All Time";
-"time_set_all_time_title_format" = "All Time %02d:%02d:%02d";
+"time_set_all_time_title" = "Time Set";
+"time_set_all_time_title_format" = "Time Set %02d:%02d:%02d";
 
 "time_set_end_time_title" = "End Exp";
-"time_set_end_time_title_format" = "Exp %@";
+"time_set_end_time_title_format" = "End Exp %@";
 "time_set_end_time_format" = "h:mm a";
 "time_set_end_time_full_format" = "HH:mm:ss";
 

@@ -75,6 +75,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         rx.viewDidAppear
+            .take(1)
             .subscribe(onNext: { [weak self] in self?.titleTextField.becomeFirstResponder() })
             .disposed(by: disposeBag)
         

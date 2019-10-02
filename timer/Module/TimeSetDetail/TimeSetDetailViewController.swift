@@ -9,6 +9,7 @@
 import RxSwift
 import RxCocoa
 import ReactorKit
+import RxDataSources
 
 class TimeSetDetailViewController: BaseHeaderViewController, View {
     // MARK: - constraints
@@ -21,20 +22,32 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
     override var headerView: CommonHeader { return timeSetDetailView.headerView }
     
     private var titleLabel: UILabel { return timeSetDetailView.titleLabel }
+    
     private var allTimeLabel: UILabel { return timeSetDetailView.allTimeLabel }
     private var endOfTimeSetLabel: UILabel { return timeSetDetailView.endOfTimeSetLabel }
-    private var repeatButton: UIButton { return timeSetDetailView.repeatButton }
-    
-    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetDetailView.timerBadgeCollectionView }
-    
     private var alarmLabel: UILabel { return timeSetDetailView.alarmLabel }
     private var commentTextView: UITextView { return timeSetDetailView.commentTextView }
+    
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetDetailView.timerBadgeCollectionView }
     
     private var editButton: FooterButton { return timeSetDetailView.editButton }
     private var startButton: FooterButton { return timeSetDetailView.startButton }
     
     // MARK: - properties
     var coordinator: TimeSetDetailViewCoordinator
+    
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+        switch cellType {
+        case let .regular(reactor):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
+            cell.reactor = reactor
+            
+            return cell
+            
+        case .extra(_):
+            fatalError("This view can't present extra cells of timer badge collection view")
+        }
+    })
     
     // MARK: - constructor
     init(coordinator: TimeSetDetailViewCoordinator) {
@@ -58,13 +71,11 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetDetailViewReactor) {
         // MARK: action
-        rx.viewWillAppear
-            .map { Reactor.Action.viewWillAppear }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        repeatButton.rx.tap
-            .map { Reactor.Action.toggleRepeat }
+        timerBadgeCollectionView.rx.itemSelected
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
+            .filter { $0.0.section == TimerBadgeSectionType.regular.rawValue }
+            .map { Reactor.Action.selectTimer(at: $0.0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -74,7 +85,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         
         startButton.rx.tap
             .withLatestFrom(reactor.state
-                .map { $0.selectedIndexPath.row }
+                .map { $0.selectedIndex }
                 .distinctUntilChanged())
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: $0)) })
             .disposed(by: disposeBag)
@@ -100,7 +111,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .map { $0.allTime }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
-            .map { String(format: "time_set_all_time_format".localized, $0.0, $0.1, $0.2) }
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
             .bind(to: allTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -114,13 +125,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .map { Date().addingTimeInterval($0.0) }
             .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: endOfTimeSetLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Repeat
-        reactor.state
-            .map { $0.isRepeat }
-            .distinctUntilChanged()
-            .bind(to: repeatButton.rx.isSelected)
             .disposed(by: disposeBag)
         
         // Alarm
@@ -138,6 +142,20 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .map { $0.comment }
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
+        
+        // Timer badge
+        reactor.state
+            .filter { $0.shouldSectionReload }
+            .map { $0.sections }
+            .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedIndex }
+            .distinctUntilChanged()
+            .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
+            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - action method
@@ -147,11 +165,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         
         switch action {
         case .bookmark:
-            guard let reactor = reactor else { return }
-            reactor.action.onNext(.toggleBookmark)
-            
-        case .home:
-            _ = coordinator.present(for: .home)
+            reactor?.action.onNext(.toggleBookmark)
             
         default:
             break

@@ -21,6 +21,8 @@ class BaseHeaderViewController: BaseViewController {
     }
 
     func handleHeaderAction(_ action: Header.Action) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        
         // Implement default header action
         switch action {
         case .back,
