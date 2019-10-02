@@ -21,7 +21,9 @@ class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
         paragraphStyle.lineSpacing = 10.adjust()
         
         // Set attributed string
-        view.attributedText = NSAttributedString(string: "local_header_title".localized, attributes: [.paragraphStyle: paragraphStyle])
+        view.attributedText = NSAttributedString(string: "local_header_title".localized,
+                                                 attributes: [.paragraphStyle: paragraphStyle,
+                                                              .kern: -0.45])
         
         return view
     }()

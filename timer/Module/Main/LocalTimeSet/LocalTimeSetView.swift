@@ -13,7 +13,7 @@ class LocalTimeSetView: UIView {
     let headerView: CommonHeader = {
         let view = CommonHeader()
         view.backButton.isHidden = true
-        view.additionalButtons = [.search, .history, .setting]
+        view.additionalButtons = [.history, .setting]
         view.title = "local_time_set_title".localized
         return view
     }()
@@ -25,7 +25,7 @@ class LocalTimeSetView: UIView {
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 30.adjust(), right: 0)
+        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 30.adjust(), right: 0)
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
         layout.minimumInteritemSpacing = 5.adjust()
         

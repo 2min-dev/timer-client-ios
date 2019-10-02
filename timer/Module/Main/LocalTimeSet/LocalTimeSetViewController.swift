@@ -44,7 +44,6 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
             } else {
                 // Bookmared time set
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmaredTimeSetCollectionViewCell.name, for: indexPath) as? BookmaredTimeSetCollectionViewCell else { return UICollectionViewCell() }
-                cell.dividerType = indexPath.row == 0 ? .both : .bottom
                 cell.reactor = reactor
                 return cell
             }
@@ -257,7 +256,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return section == LocalTimeSetSectionType.saved.rawValue ? 10.adjust() : 0
+        return 10.adjust()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -284,7 +283,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     
     func referenceSizeForHeader(in collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 93.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 87.adjust())
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {

@@ -11,13 +11,6 @@ import RxSwift
 import ReactorKit
 
 class BookmaredTimeSetCollectionViewCell: UICollectionViewCell, View {
-    enum DividerType {
-        case none
-        case top
-        case bottom
-        case both
-    }
-    
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
@@ -57,23 +50,7 @@ class BookmaredTimeSetCollectionViewCell: UICollectionViewCell, View {
         return view
     }()
     
-    private let topDivider: UIView = {
-        let view = UIView()
-        view.backgroundColor = Constants.Color.gallery
-        return view
-    }()
-    
-    private let bottomDivider: UIView = {
-        let view = UIView()
-        view.backgroundColor = Constants.Color.gallery
-        return view
-    }()
-    
     // MARK: - properties
-    var dividerType: DividerType = .none {
-        didSet { setDividerType(dividerType) }
-    }
-    
     var disposeBag = DisposeBag()
     
     // MARK: - constructor
@@ -81,27 +58,20 @@ class BookmaredTimeSetCollectionViewCell: UICollectionViewCell, View {
         super.init(frame: frame)
         
         // Set constraint of subviews
-        addAutolayoutSubviews([topDivider, timeLabel, endOfTimeSetLabel, titleLabel, timerIconImageView, timerCountLabel, bottomDivider])
-        topDivider.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.height.equalTo(1)
-        }
-        
+        addAutolayoutSubviews([timeLabel, endOfTimeSetLabel, titleLabel, timerIconImageView, timerCountLabel])
         timeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(20.adjust())
-            make.leading.equalToSuperview().inset(10.adjust())
+            make.leading.equalToSuperview().inset(11.adjust())
             make.trailing.equalTo(endOfTimeSetLabel.snp.leading).inset(-10.adjust())
         }
         
         endOfTimeSetLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(10.adjust())
+            make.trailing.equalToSuperview().inset(9.adjust())
             make.centerY.equalTo(timeLabel)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(10.adjust())
+            make.leading.equalToSuperview().inset(11.adjust())
             make.trailing.equalTo(timerIconImageView.snp.leading)
             make.bottom.equalToSuperview().inset(20.adjust())
         }
@@ -114,15 +84,8 @@ class BookmaredTimeSetCollectionViewCell: UICollectionViewCell, View {
         }
         
         timerCountLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(10.adjust())
+            make.trailing.equalToSuperview().inset(9.adjust())
             make.centerY.equalTo(titleLabel).offset(1)
-        }
-        
-        bottomDivider.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.height.equalTo(1)
         }
         
         initLayout()
@@ -177,26 +140,11 @@ class BookmaredTimeSetCollectionViewCell: UICollectionViewCell, View {
     // MARK: - private method
     private func initLayout() {
         backgroundColor = Constants.Color.white
-    }
-    
-    // MARK: - private method
-    private func setDividerType(_ type: DividerType) {
-        topDivider.isHidden = true
-        bottomDivider.isHidden = true
         
-        switch type {
-        case .top:
-            topDivider.isHidden = false
-            
-        case .bottom:
-            bottomDivider.isHidden = false
-            
-        case .both:
-            topDivider.isHidden = false
-            bottomDivider.isHidden = false
-            
-        default:
-            break
-        }
+        layer.cornerRadius = 20.adjust()
+        
+        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderWidth = 1
+        layer.shadow(alpha: 0.02, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
     }
 }
