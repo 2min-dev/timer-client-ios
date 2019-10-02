@@ -1,4 +1,4 @@
-# Chang log
+# Change log
 - Write down what is changed
 
 # Description
