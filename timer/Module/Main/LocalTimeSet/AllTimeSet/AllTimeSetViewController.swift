@@ -43,7 +43,6 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
         } else {
             // Bookmared time set
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmaredTimeSetCollectionViewCell.name, for: indexPath) as? BookmaredTimeSetCollectionViewCell else { return UICollectionViewCell() }
-            cell.dividerType = indexPath.row == 0 ? .both : .bottom
             cell.reactor = cellReactor
             return cell
         }
@@ -192,18 +191,17 @@ extension AllTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        guard let reactor = reactor else { return 0 }
-        return reactor.currentState.type == .saved ? 10.adjust() : 0
+        return 10.adjust()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 79.adjust())
     }
     
     func referenceSizeForHeader(in collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 93.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 87.adjust())
     }
 }
 

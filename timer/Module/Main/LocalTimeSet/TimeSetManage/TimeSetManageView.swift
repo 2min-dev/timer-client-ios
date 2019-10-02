@@ -18,7 +18,7 @@ class TimeSetManageView: UIView {
     
     let timeSetCollectionView: JSReorderableCollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset.top = 16.adjust()
+        layout.globalInset.top = 10.adjust()
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 40.adjust(), right: 0)
         
         let view = JSReorderableCollectionView(frame: .zero, collectionViewLayout: layout)

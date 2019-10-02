@@ -228,8 +228,6 @@ extension TimeSetManageViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard section > 0 else { return .zero }
-        
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 12.adjust())
     }

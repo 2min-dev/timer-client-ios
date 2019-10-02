@@ -17,7 +17,7 @@ class AllTimeSetView: UIView {
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 40.adjust(), right: 0)
+        layout.globalInset = UIEdgeInsets(top: 0, left: 0, bottom: 30.adjust(), right: 0)
         layout.sectionInset.top = 10.adjust()
         layout.minimumInteritemSpacing = 5.adjust()
         
