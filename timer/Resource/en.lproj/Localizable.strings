@@ -92,7 +92,8 @@
 "timer_option_comment_bytes_format" = "%d/%d bytes";
 
 // MARK: - Time set process
-"time_set_process_extra_time_format" = "+%dM";
+"time_set_process_extra_time_format" = "x %d";
+"time_set_process_add_time_title" = "+1M";
 "time_set_process_memo_title" = "Memo";
 
 // MARK: - Time set badge

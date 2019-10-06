@@ -49,6 +49,7 @@
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
 		F3524F2C2343E1B50042ABF6 /* TimerBadgeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3524F2B2343E1B50042ABF6 /* TimerBadgeSection.swift */; };
 		F35E05FF22FF023D00A66ED9 /* TimeKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */; };
+		F3606A5A2349D51F00E09A2C /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3606A592349D51F00E09A2C /* RoundButton.swift */; };
 		F37041C9226B65550012EA16 /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerInfo.swift */; };
 		F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimeSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimeSetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimeSetInfo.swift */; };
@@ -91,8 +92,6 @@
 		F3ADF6842300672800F0FC67 /* TimeSetProcessViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */; };
 		F3ADF6852300672800F0FC67 /* TimeSetProcessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */; };
 		F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */; };
-		F3ADF689230079F000F0FC67 /* TimeSetBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF688230079F000F0FC67 /* TimeSetBadge.swift */; };
-		F3ADF68B23015CB200F0FC67 /* MemoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF68A23015CB200F0FC67 /* MemoButton.swift */; };
 		F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */; };
 		F3AEA730228B1D7500D563E0 /* TabBarInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */; };
 		F3C0DF8823333F9F00E49425 /* CountdownSettingViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C0DF8423333F9F00E49425 /* CountdownSettingViewCoordinator.swift */; };
@@ -265,6 +264,7 @@
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
 		F3524F2B2343E1B50042ABF6 /* TimerBadgeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeSection.swift; sourceTree = "<group>"; };
 		F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeKeyPad.swift; sourceTree = "<group>"; };
+		F3606A592349D51F00E09A2C /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		F37041C8226B65550012EA16 /* TimerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimeSetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInfo.swift; sourceTree = "<group>"; };
@@ -309,8 +309,6 @@
 		F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewReactor.swift; sourceTree = "<group>"; };
 		F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewController.swift; sourceTree = "<group>"; };
 		F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessView.swift; sourceTree = "<group>"; };
-		F3ADF688230079F000F0FC67 /* TimeSetBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetBadge.swift; sourceTree = "<group>"; };
-		F3ADF68A23015CB200F0FC67 /* MemoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoButton.swift; sourceTree = "<group>"; };
 		F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarAnimator.swift; sourceTree = "<group>"; };
 		F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarInteractor.swift; sourceTree = "<group>"; };
 		F3C0DF8423333F9F00E49425 /* CountdownSettingViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownSettingViewCoordinator.swift; sourceTree = "<group>"; };
@@ -756,10 +754,9 @@
 			isa = PBXGroup;
 			children = (
 				F3060F93230E9ADB002A2E0E /* TimeSetEndView */,
-				F3ADF688230079F000F0FC67 /* TimeSetBadge.swift */,
-				F3ADF68A23015CB200F0FC67 /* MemoButton.swift */,
 				F321B99E231503B700A7D9FF /* TimeSetPopup.swift */,
 				F321B9A023166EEA00A7D9FF /* TimeSetAlert.swift */,
+				F3606A592349D51F00E09A2C /* RoundButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1409,14 +1406,12 @@
 				F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */,
 				F3DD7AD623216293000E3BB9 /* BookmaredTimeSetCollectionViewCell.swift in Sources */,
 				F3F5F876233155E8003271B3 /* AllTimeSetViewController.swift in Sources */,
-				F3ADF68B23015CB200F0FC67 /* MemoButton.swift in Sources */,
 				F352034E227FCD0E00E05E2E /* CheckBox.swift in Sources */,
 				F3C0DFA0233369CE00E49425 /* NoticeListViewCoordinator.swift in Sources */,
 				F3ADF6832300672800F0FC67 /* TimeSetProcessViewCoordinator.swift in Sources */,
 				F3AA90592337CC0D00CBB8EE /* TimerBadgeRepeatCollectionViewCell.swift in Sources */,
 				F3D1F7B4225CC2CC006DC162 /* IntroView.swift in Sources */,
 				F3C0DFA8233370E300E49425 /* NoticeListTableViewCell.swift in Sources */,
-				F3ADF689230079F000F0FC67 /* TimeSetBadge.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */,
 				F3DD7AD8232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* LocalTimeSetViewCoordinator.swift in Sources */,
@@ -1431,6 +1426,7 @@
 				F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */,
 				F387AF3022F18215002ABDB6 /* TimeSetSaveViewCoordinator.swift in Sources */,
 				F303F275225CCBA100A11FAF /* SettingViewController.swift in Sources */,
+				F3606A5A2349D51F00E09A2C /* RoundButton.swift in Sources */,
 				F3C0DF8B23333F9F00E49425 /* CountdownSettingView.swift in Sources */,
 				F38702BA22F970E80099241C /* TimeSetDetailView.swift in Sources */,
 				F3F800A7226A0981003D1D88 /* Constants.swift in Sources */,

@@ -92,8 +92,9 @@
 "timer_option_comment_bytes_format" = "%d/%d bytes";
 
 // MARK: - Time set process
-"time_set_process_extra_time_format" = "+%d분";
-"time_set_process_memo_title" = "메모";
+"time_set_process_extra_time_format" = "x %d";
+"time_set_process_add_time_title" = "+1분";
+"time_set_process_memo_title" = "메모 입력";
 
 // MARK: - Time set badge
 "time_set_badge_type_countdown_format" = "시작 %d초 전";

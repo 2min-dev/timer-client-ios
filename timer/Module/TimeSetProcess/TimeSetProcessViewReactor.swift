@@ -78,8 +78,8 @@ class TimeSetProcessViewReactor: Reactor {
         /// Set current timer
         case setTimer(TimerInfo)
         
-        /// Set current selected index path
-        case setSelectedIndexPath(at: IndexPath)
+        /// Set current selected index
+        case setSelectedIndex(at: Int)
         
         /// Set should section reload value to `true`
         case sectionReload
@@ -119,14 +119,19 @@ class TimeSetProcessViewReactor: Reactor {
         /// Current state of time set
         var timeSetState: TimeSet.State
         
-        /// All timers info of time set
-        let timers: [TimerInfo]
+        /// Section datasource to make sections
+        let sectionDataSource: TimerBadgeDataSource
+        
+        /// The timer list badge sections
+        var sections: [TimerBadgeSectionModel] {
+            sectionDataSource.makeSections()
+        }
         
         /// Current running timer info
         var timer: TimerInfo
         
-        /// Index path of current selected timer
-        var selectedIndexPath: IndexPath
+        /// Index of current selected timer
+        var selectedIndex: Int
         
         /// Flag that represent need to section reload
         var shouldSectionReload: Bool
@@ -184,6 +189,9 @@ class TimeSetProcessViewReactor: Reactor {
         let remainedTime = self.remainedTime + (timer.endTime + timer.extraTime - timer.currentTime)
         let extraTime = timeSet.info.timers.reduce(0) { $0 + $1.extraTime }
         
+        // Create seciont datasource
+        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray())
+        
         initialState = State(title: timeSet.info.title,
                                   time: timer.endTime - floor(timer.currentTime),
                                   allTime: allTime,
@@ -194,9 +202,9 @@ class TimeSetProcessViewReactor: Reactor {
                                   extraTime: extraTime,
                                   countdownState: timeSet.state == .initialize ? .stop : .done,
                                   timeSetState: timeSet.state,
-                                  timers: timeSet.info.timers.toArray(),
+                                  sectionDataSource: dataSource,
                                   timer: timer,
-                                  selectedIndexPath: IndexPath(row: index, section: 0),
+                                  selectedIndex: index,
                                   shouldSectionReload: true,
                                   shouldDismiss: false)
     }
@@ -250,7 +258,7 @@ class TimeSetProcessViewReactor: Reactor {
         let timeSetEventMutation = timeSet.event
             .flatMap { [weak self] in self?.mutate(timeSetEvent: $0) ?? .empty() }
         
-        return .merge(mutation, timeSetEventMutation)
+        return .merge(mutation.debug(), timeSetEventMutation)
     }
     
     // MARK: - reduce
@@ -295,8 +303,8 @@ class TimeSetProcessViewReactor: Reactor {
             state.timer = timer
             return state
             
-        case let .setSelectedIndexPath(at: indexPath):
-            state.selectedIndexPath = indexPath
+        case let .setSelectedIndex(at: index):
+            state.selectedIndex = index
             return state
             
         case .sectionReload:
@@ -320,7 +328,7 @@ class TimeSetProcessViewReactor: Reactor {
         var startedTimeSet: Observable<Mutation> = .empty()
         if state.countdownState == .stop {
             // Start time set if countdown state is `stop` (time set has never been start)
-            startedTimeSet = actionStartTimeSet(at: state.selectedIndexPath.row)
+            startedTimeSet = actionStartTimeSet(at: state.selectedIndex)
         }
         
         return .concat(setBookmark, startedTimeSet)
@@ -341,12 +349,12 @@ class TimeSetProcessViewReactor: Reactor {
     private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
         let state = currentState
         
-        guard index < state.timers.count else { return .empty() }
+        guard index < timeSetInfo.timers.count else { return .empty() }
         
-        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(at: IndexPath(row: index, section: 0)))
-        let setTimer: Observable<Mutation> = .just(.setTimer(state.timers[index]))
+        let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[index]))
         
-        return .concat(setSelectedIndexPath, setTimer)
+        return .concat(setSelectedIndex, setTimer)
     }
     
     private func actionStartTimeSet(at index: Int?) -> Observable<Mutation> {
@@ -362,7 +370,7 @@ class TimeSetProcessViewReactor: Reactor {
         }
         
         if let index = index {
-            guard index < state.timers.count else { return .empty() }
+            guard index < timeSetInfo.timers.count else { return .empty() }
             
             if state.timeSetState != .initialize {
                 // Ignore countdown if time set isn't init state
@@ -373,7 +381,7 @@ class TimeSetProcessViewReactor: Reactor {
             timeSet.reset()
             
             let selectTimer: Observable<Mutation> = actionSelectTimer(at: index)
-            let setTime: Observable<Mutation> = .just(.setTime(state.timers[index].endTime))
+            let setTime: Observable<Mutation> = .just(.setTime(timeSetInfo.timers[index].endTime))
             let setExtraTime: Observable<Mutation> = .just(.setExtraTime(0))
             let startedCountdown: Observable<Mutation> = startCountdown(reset: countdown > 0)
                 .do(onNext: { startTimeSet($0, index) })
@@ -384,7 +392,7 @@ class TimeSetProcessViewReactor: Reactor {
             if state.timeSetState == .initialize {
                 // Resume countdown
                 return startCountdown()
-                    .do(onNext: { startTimeSet($0, state.selectedIndexPath.row) })
+                    .do(onNext: { startTimeSet($0, state.selectedIndex) })
             } else {
                 // Resume time set
                 timeSet.start()
@@ -465,7 +473,7 @@ class TimeSetProcessViewReactor: Reactor {
 
     private func actionTimeSetTimerChanged(_ timer: TimerInfo, at index: Int) -> Observable<Mutation> {
         // Calculate remained time
-        remainedTime = currentState.timers.enumerated()
+        remainedTime = timeSetInfo.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.endTime }
         
