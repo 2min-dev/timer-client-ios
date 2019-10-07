@@ -134,7 +134,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .share(replay: 1)
         
         // Alarm
-        timer.map { $0.alarm }
+        timer.map { $0.alarm.title }
             .bind(to: alarmLabel.rx.text)
             .disposed(by: disposeBag)
         

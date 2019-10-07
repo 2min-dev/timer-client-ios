@@ -42,10 +42,10 @@ class CountdownSettingViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let appService: AppServicePorotocol
+    private let appService: AppServiceProtocol
     
     // MARK: - constructor
-    init(appService: AppServicePorotocol) {
+    init(appService: AppServiceProtocol) {
         self.appService = appService
         initialState = State(selectedIndexPath: IndexPath(item: 0, section: 0),
                                   sections: [],

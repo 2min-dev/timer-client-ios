@@ -22,12 +22,17 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     enum Key: String {
         case timeSetId
         case countdown
+        case alarm
         
         var type: Any.Type {
             switch self {
             case .timeSetId:
                 return Int.self
+                
             case .countdown:
+                return Int.self
+                
+            case .alarm:
                 return Int.self
             }
         }

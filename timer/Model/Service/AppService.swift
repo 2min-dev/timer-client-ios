@@ -12,14 +12,19 @@ enum AppEvent {
     
 }
 
-protocol AppServicePorotocol {
+protocol AppServiceProtocol {
     var event: PublishSubject<AppEvent> { get }
     
+    // Default alarm
+    func setAlarm(_ alarm: Alarm)
+    func getAlarm() -> Alarm
+    
+    // Countdown
     func setCountdown(_ countdown: Int)
     func getCountdown() -> Int
 }
 
-class AppService: BaseService, AppServicePorotocol {
+class AppService: BaseService, AppServiceProtocol {
     // MARK: global state event
     var event: PublishSubject<AppEvent> = PublishSubject()
     
@@ -35,11 +40,20 @@ class AppService: BaseService, AppServicePorotocol {
     private func registerUserDefaultDomain() {
         provider.userDefaultService.register(defaults: [
             .timeSetId: 1,
-            .countdown: 5
+            .countdown: 5,
+            .alarm: 0
         ])
     }
     
     // MARK: - public method
+    func setAlarm(_ alarm: Alarm) {
+        provider.userDefaultService.set(alarm.rawValue, key: .alarm)
+    }
+    
+    func getAlarm() -> Alarm {
+        return Alarm(rawValue: provider.userDefaultService.integer(.alarm)) ?? .default
+    }
+    
     func setCountdown(_ countdown: Int) {
         provider.userDefaultService.set(countdown, key: .countdown)
     }

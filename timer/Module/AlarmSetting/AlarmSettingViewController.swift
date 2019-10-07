@@ -102,12 +102,4 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
 }
 
 // MARK: - alarm setting datasource
-typealias AlarmSettingSectionModel = SectionModel<Void, AlarmSettingMenu>
-
-struct AlarmSettingMenu {
-    let title: String
-    
-    init(title: String) {
-        self.title = title
-    }
-}
+typealias AlarmSettingSectionModel = SectionModel<Void, Alarm>

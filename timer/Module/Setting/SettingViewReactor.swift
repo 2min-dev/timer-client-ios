@@ -33,12 +33,12 @@ class SettingViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let appService: AppServicePorotocol
+    private let appService: AppServiceProtocol
     
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(appService: AppServicePorotocol) {
+    init(appService: AppServiceProtocol) {
         self.appService = appService
         initialState = State(sections: [], shouldSectionReload: true)
     }
@@ -69,11 +69,12 @@ class SettingViewReactor: Reactor {
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
+        let alarm = appService.getAlarm()
         let countdown = appService.getCountdown()
         
         let items: [SettingMenu] = [
             .notice,
-            .alarm("기본음"),
+            .alarm(alarm.title),
             .countdown(countdown),
             .teamInfo,
             .license

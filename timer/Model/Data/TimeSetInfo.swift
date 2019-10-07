@@ -61,7 +61,6 @@ class TimeSetInfo: Object, Codable, NSCopying {
                      sortingKey: Int,
                      bookmarkSortingKey: Int) {
         self.init()
-        
         self.id = id
         self.title = title
         self.memo = memo
@@ -76,19 +75,11 @@ class TimeSetInfo: Object, Codable, NSCopying {
         self.overtimer = overtimer
         self.sortingKey = sortingKey
         self.bookmarkSortingKey = bookmarkSortingKey
-        
-        if self.timers.isEmpty {
-            // Add a default timer if timers is empty
-            self.timers.append(TimerInfo())
-        }
     }
     
     convenience init(id: String?) {
         self.init()
-        
         self.id = id
-        // Add default timer info
-        self.timers.append(TimerInfo())
     }
     
     // MARK: - realm method

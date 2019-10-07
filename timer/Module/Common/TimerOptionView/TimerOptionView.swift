@@ -13,9 +13,9 @@ import ReactorKit
 
 class TimerOptionView: UIView, View {
     enum AlarmType: Int {
-        case silence = 0
+        case `default` = 0
         case vibrate
-        case `default`
+        case silence
         
         var button: UIButton {
             let button = UIButton()
@@ -24,17 +24,30 @@ class TimerOptionView: UIView, View {
             button.setTitleColor(Constants.Color.codGray, for: .normal)
             
             switch self {
-            case .silence:
-                button.setTitle("timer_option_alarm_silence_title".localized, for: .normal)
+            case .default:
+                button.setTitle("timer_option_alarm_default_title".localized, for: .normal)
                 
             case .vibrate:
                 button.setTitle("timer_option_alarm_vibrate_title".localized, for: .normal)
                 
-            case .default:
-                button.setTitle("timer_option_alarm_default_title".localized, for: .normal)
+            case .silence:
+                button.setTitle("timer_option_alarm_silence_title".localized, for: .normal)
             }
             
             return button
+        }
+        
+        var alarm: Alarm {
+            switch self {
+            case .default:
+                return .default
+                
+            case .vibrate:
+                return .vibrate
+                
+            case .silence:
+                return .silence
+            }
         }
     }
     
@@ -175,7 +188,7 @@ class TimerOptionView: UIView, View {
             make.leading.equalTo(alarmIconImageView.snp.trailing).offset(5)
             make.centerY.equalToSuperview()
         }
-
+        
         alarmApplyAllButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalToSuperview().inset(10.adjust())
@@ -202,7 +215,7 @@ class TimerOptionView: UIView, View {
         view.textColor = Constants.Color.codGray
         return view
     }()
-        
+    
     let deleteButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_delete_mini"), for: .normal)
@@ -270,7 +283,7 @@ class TimerOptionView: UIView, View {
         
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let doneButton = UIBarButtonItem(title: "keyboard_accessory_done_title".localized, style: .done, target: self, action: #selector(touchCommentDone(_:)))
-
+        
         view.items = [flexibleSpace, doneButton]
         return view
     }()
@@ -320,7 +333,7 @@ class TimerOptionView: UIView, View {
             alarmButtonsStackView.arrangedSubviews
                 .compactMap { $0 as? UIButton }
                 .map { button -> Observable<AlarmType> in button.rx.tap.compactMap { AlarmType(rawValue: button.tag) } }
-            )
+        )
             .subscribe(onNext: { [weak self] in self?.setAlarmType($0) })
             .disposed(by: disposeBag)
         
@@ -347,6 +360,14 @@ class TimerOptionView: UIView, View {
         commentTextView.rx.text
             .orEmpty
             .compactMap { Reactor.Action.updateComment($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        Observable.merge(alarmButtonsStackView.arrangedSubviews
+            .compactMap { $0 as? UIButton }
+            .map { button in button.rx.tap.compactMap { AlarmType(rawValue: button.tag) } })
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .updateAlarm($0.alarm) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -403,6 +424,24 @@ class TimerOptionView: UIView, View {
             .filter { $0 }
             .debounce(.seconds(3), scheduler: MainScheduler.instance)
             .bind(to: commentExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        // Alarm
+        reactor.state
+            .map { $0.alarm }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in
+                switch $0 {
+                case .silence:
+                    self?.setAlarmType(.silence)
+                
+                case .vibrate:
+                    self?.setAlarmType(.vibrate)
+                    
+                case .default:
+                    self?.setAlarmType(.default)
+                }
+            })
             .disposed(by: disposeBag)
     }
     

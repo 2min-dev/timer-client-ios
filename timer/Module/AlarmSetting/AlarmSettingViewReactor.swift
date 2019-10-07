@@ -42,10 +42,10 @@ class AlarmSettingViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let appService: AppServicePorotocol
+    private let appService: AppServiceProtocol
     
     // MARK: - constructor
-    init(appService: AppServicePorotocol) {
+    init(appService: AppServiceProtocol) {
         self.appService = appService
         initialState = State(selectedIndexPath: IndexPath(item: 0, section: 0),
                              sections: [],
@@ -85,20 +85,28 @@ class AlarmSettingViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewDidLoad() -> Observable<Mutation> {
-        let items: [AlarmSettingMenu] = [
-            AlarmSettingMenu(title: "기본음"),
-            AlarmSettingMenu(title: "진동"),
-            AlarmSettingMenu(title: "무음")
-        ]
+        let items = Alarm.allCases
+        
+        var indexPath = IndexPath(item: 0, section: 0)
+        if let index = items.firstIndex(of: appService.getAlarm()) {
+            indexPath = IndexPath(item: index, section: 0)
+        }
         
         let setSections: Observable<Mutation> = .just(.setSections([AlarmSettingSectionModel(model: Void(), items: items)]))
+        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
-        return .concat(setSections, sectionReload)
+        return .concat(setSections, setSelectedIndexPath, sectionReload)
     }
     
     private func actionSelect(indexPath: IndexPath) -> Observable<Mutation> {
-        // TODO: Save selected default alarm
+        let state = currentState
+        guard indexPath.item >= 0 && indexPath.item < state.sections[indexPath.section].items.count else { return .empty() }
+        
+        // Save selected alarm
+        let alarm = state.sections[indexPath.section].items[indexPath.item]
+        appService.setAlarm(alarm)
+        
         return .just(.setSelectedIndexPath(indexPath))
     }
     

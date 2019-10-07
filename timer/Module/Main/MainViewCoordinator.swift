@@ -47,7 +47,7 @@ class MainViewCoordinator: CoordinatorProtocol {
         switch route {
         case .productivity:
             let coordinator = ProductivityViewCoordinator(provider: provider)
-            let reactor = TimeSetEditViewReactor(timeSetService: provider.timeSetService)
+            let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
             let viewController = ProductivityViewController(coordinator: coordinator)
             
             // DI

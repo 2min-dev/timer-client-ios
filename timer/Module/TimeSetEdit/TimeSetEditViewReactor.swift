@@ -108,6 +108,7 @@ class TimeSetEditViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let appService: AppServiceProtocol
     private let timeSetService: TimeSetServiceProtocol
     
     var timeSetInfo: TimeSetInfo
@@ -116,9 +117,19 @@ class TimeSetEditViewReactor: Reactor {
     let timerOptionViewReactor: TimerOptionViewReactor
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
+    init(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil) {
+        self.appService = appService
         self.timeSetService = timeSetService
-        self.timeSetInfo = timeSetInfo ?? TimeSetInfo(id: nil)
+        
+        if let timeSetInfo = timeSetInfo {
+            self.timeSetInfo = timeSetInfo
+        } else {
+            // Create new time set info
+            let timeSetInfo = TimeSetInfo(id: nil)
+            timeSetInfo.timers.append(TimerInfo(alarm: appService.getAlarm()))
+            
+            self.timeSetInfo = timeSetInfo
+        }
         
         // Create sub reactor
         timerOptionViewReactor = TimerOptionViewReactor()
@@ -242,6 +253,7 @@ class TimeSetEditViewReactor: Reactor {
         
         // Clear time set
         timeSetInfo = TimeSetInfo(id: nil)
+        timeSetInfo.timers.append(TimerInfo(alarm: appService.getAlarm()))
         
         // Clear timer items
         state.sectionDataSource.clear()
@@ -261,7 +273,7 @@ class TimeSetEditViewReactor: Reactor {
     private func actionClearTimers() -> Observable<Mutation> {
         // Clear default timers
         let timers = List<TimerInfo>()
-        timers.append(TimerInfo())
+        timers.append(TimerInfo(alarm: appService.getAlarm()))
         timeSetInfo.timers = timers
         
         // Clear timer items
@@ -340,7 +352,7 @@ class TimeSetEditViewReactor: Reactor {
         let state = currentState
         
         // Create timer and append into time set info
-        let info = TimerInfo()
+        let info = TimerInfo(alarm: appService.getAlarm())
         timeSetInfo.timers.append(info)
         
         // Create timer item and append into regular items
