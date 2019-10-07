@@ -143,6 +143,7 @@
 		F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
 		F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C3225CC3D7006DC162 /* Functions.swift */; };
 		F3D49924227F273E00AC4B2B /* NumberKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */; };
+		F3D8EDFF234B7F06003CAF08 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D8EDFE234B7F06003CAF08 /* Alarm.swift */; };
 		F3DAF59E2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DAF59D2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift */; };
 		F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */; };
 		F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */; };
@@ -363,6 +364,7 @@
 		F3D1F7C2225CC3D7006DC162 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F3D1F7C3225CC3D7006DC162 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberKeyPad.swift; sourceTree = "<group>"; };
+		F3D8EDFE234B7F06003CAF08 /* Alarm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alarm.swift; sourceTree = "<group>"; };
 		F3DAF59D2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageSectionCollectionReusableView.swift; sourceTree = "<group>"; };
 		F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetHighlightCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -830,6 +832,7 @@
 				F373CCD52265FA33007ECCA0 /* TMTimer.swift */,
 				F37041CC226C35B80012EA16 /* TimeSetInfo.swift */,
 				F37041CA226B81B00012EA16 /* TimeSet.swift */,
+				F3D8EDFE234B7F06003CAF08 /* Alarm.swift */,
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 			);
 			path = Data;
@@ -1456,6 +1459,7 @@
 				F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */,
 				F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */,
 				F3C0DF8923333F9F00E49425 /* CountdownSettingViewReactor.swift in Sources */,
+				F3D8EDFF234B7F06003CAF08 /* Alarm.swift in Sources */,
 				F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */,
 				F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */,
 				F3F5F874233155E8003271B3 /* AllTimeSetViewCoordinator.swift in Sources */,
