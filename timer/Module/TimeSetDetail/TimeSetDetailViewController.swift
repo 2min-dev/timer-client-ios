@@ -127,19 +127,19 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Alarm
-        reactor.state
+        
+        let timer = reactor.state
             .map { $0.timer }
-            .distinctUntilChanged { $0 === $1 }
-            .map { $0.alarm }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        // Alarm
+        timer.map { $0.alarm }
             .bind(to: alarmLabel.rx.text)
             .disposed(by: disposeBag)
         
         // Comment
-        reactor.state
-            .map { $0.timer }
-            .distinctUntilChanged { $0 === $1 }
-            .map { $0.comment }
+        timer.map { $0.comment }
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
         

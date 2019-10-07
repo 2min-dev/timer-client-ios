@@ -95,9 +95,8 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
         
         timerBadgeCollectionView.rx.itemSelected
             .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
-            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
-            .filter { $0.0.section == TimerBadgeSectionType.regular.rawValue }
-            .map { Reactor.Action.selectTimer(at: $0.0.item) }
+            .filter { $0.section == TimerBadgeSectionType.regular.rawValue }
+            .map { Reactor.Action.selectTimer(at: $0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

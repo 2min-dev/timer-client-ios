@@ -14,7 +14,7 @@ class MainViewCoordinator: CoordinatorProtocol {
     enum Route {
         case productivity
         case local
-        case timeSetProcess
+        case timeSetProcess(TimeSetInfo)
     }
     
     weak var viewController: MainViewController!
@@ -67,9 +67,9 @@ class MainViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case .timeSetProcess:
+        case let .timeSetProcess(timeSetInfo):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService) else { return nil }
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI

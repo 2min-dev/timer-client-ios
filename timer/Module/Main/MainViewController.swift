@@ -8,9 +8,8 @@
 
 import UIKit
 import RxSwift
-import ReactorKit
 
-class MainViewController: UITabBarController, View {
+class MainViewController: UITabBarController {
     // MARK: - constants
     enum TabType: Int {
         case productivity = 0
@@ -38,15 +37,7 @@ class MainViewController: UITabBarController, View {
         didSet { panGestureRecognizer.isEnabled = swipeEnable }
     }
     
-    private var timeSetProcessFloatingView: TimeSetProcessFloatingView? {
-        didSet { oldValue?.removeFromSuperview() }
-    }
-    
     var coordinator: MainViewCoordinator
-    
-    // Dispose bags
-    var disposeBag = DisposeBag()
-    private var floatingViewDisposeBag = DisposeBag()
     
     init(coordinator: MainViewCoordinator) {
         self.coordinator = coordinator
@@ -96,53 +87,6 @@ class MainViewController: UITabBarController, View {
                 $0.view.frame.size.height = self.view.bounds.height - self._tabBar.bounds.height
             }
         }
-    }
-    
-    // MARK: - bind
-    func bind(reactor: MainViewReactor) {
-        // MARK: action
-        // MARK: state
-        reactor.state
-            .map { $0.runningTimeSet }
-            .subscribe(onNext: { [weak self] in
-                if let timeSet = $0 {
-                    self?.showTimeSetProcessFloatingView(timeSet: timeSet)
-                } else {
-                    self?.timeSetProcessFloatingView = nil
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-
-    private func bind(floatingView: TimeSetProcessFloatingView) {
-        floatingViewDisposeBag = DisposeBag()
-        
-        floatingView.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess) })
-            .disposed(by: floatingViewDisposeBag)
-    }
-    
-    // MARK: - state method
-    /// Show time set process floating view
-    private func showTimeSetProcessFloatingView(timeSet: TimeSet) {
-        // Create time set process floating view
-        let timeSetProcessFloatingView = TimeSetProcessFloatingView()
-        
-        // Inject reactor
-        timeSetProcessFloatingView.reactor = TimeSetProcessFloatingViewReactor(timeSet: timeSet)
-        
-        // Bind evnets
-        bind(floatingView: timeSetProcessFloatingView)
-        
-        // Set constraints of subview
-        view.addAutolayoutSubview(timeSetProcessFloatingView)
-        timeSetProcessFloatingView.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalTo(_tabBar.snp.top)
-        }
-        
-        self.timeSetProcessFloatingView = timeSetProcessFloatingView
     }
     
     // MARK: - private method
