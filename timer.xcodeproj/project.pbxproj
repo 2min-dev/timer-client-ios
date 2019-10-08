@@ -908,12 +908,9 @@
 		F3D1F78A225CB6C1006DC162 /* timer */ = {
 			isa = PBXGroup;
 			children = (
-				F3D1F7C0225CC3BE006DC162 /* Common */,
-				F3D1F7B5225CC322006DC162 /* Extension */,
-				F3D1F79D225CBC1D006DC162 /* Model */,
-				F3735C9322CFA7B500DC247C /* Module */,
-				F3735C9222CFA78100DC247C /* Support */,
 				F303F259225CC56800A11FAF /* Resource */,
+				F3DF50A4234CDC5D0000AD60 /* Source */,
+				F3735C9222CFA78100DC247C /* Support */,
 			);
 			path = timer;
 			sourceTree = "<group>";
@@ -1001,6 +998,17 @@
 				F3124B2523267B8D00CB8B85 /* TimeSetCollectionViewCellReactor.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		F3DF50A4234CDC5D0000AD60 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F7C0225CC3BE006DC162 /* Common */,
+				F3D1F7B5225CC322006DC162 /* Extension */,
+				F3D1F79D225CBC1D006DC162 /* Model */,
+				F3735C9322CFA7B500DC247C /* Module */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		F3F21F69233389F80000597B /* NoticeDetail */ = {
