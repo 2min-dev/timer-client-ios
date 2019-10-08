@@ -24,11 +24,8 @@ class TimeSetAlert: UIView {
         return view
     }()
     
-    let confirmButton: UIButton = {
+    lazy var confirmButton: UIButton = {
         let view = UIButton()
-        view.backgroundColor = Constants.Color.carnation
-        view.layer.borderColor = Constants.Color.codGray.cgColor
-        view.layer.borderWidth = 1
         view.setImage(UIImage(named: "btn_confirm_white"), for: .normal)
         return view
     }()
@@ -41,9 +38,18 @@ class TimeSetAlert: UIView {
         return layer
     }()
     
+    private let confirmLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.fillColor = Constants.Color.carnation.cgColor
+        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.lineWidth = 1
+        return layer
+    }()
+    
     private lazy var containerView: UIView = {
         let view = UIView()
         view.layer.addSublayer(containerLayer)
+        view.layer.addSublayer(confirmLayer)
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([textLabel, cancelButton, confirmButton])
@@ -117,27 +123,96 @@ class TimeSetAlert: UIView {
     
     // MARK: - lifecycle
     override func draw(_ rect: CGRect) {
-        containerLayer.path = drawAlertLayer(frame: containerView.frame).cgPath
+        containerLayer.frame = containerView.bounds
+        containerLayer.path = drawContrainerBorderLayer(frame: containerView.frame, corner: 5.adjust()).cgPath
+        
+        confirmLayer.frame = confirmButton.bounds
+        confirmLayer.path = drawConfirmBorderLayer(frame: confirmButton.frame, corner: 5.adjust()).cgPath
     }
     
     // MARK: - private method
     /// Draw alert layer. (+ 0.5 pt is revision for prevent anti-aliasing of layer path)
-    private func drawAlertLayer(frame: CGRect) -> UIBezierPath {
-        let edgePoints: [CGPoint] = [
-            CGPoint(x: 0.5, y: frame.height - 0.5), // bottom-left
-            CGPoint(x: tailPosition.x - tailSize.width / 2, y: frame.height - 0.5), // tail top-left
-            CGPoint(x: tailPosition.x, y: tailPosition.y + tailSize.height - 0.5), // tail bottom-center
-            CGPoint(x: tailPosition.x + tailSize.width / 2, y: frame.height - 0.5), // tail top-right
-            CGPoint(x: frame.width, y: frame.height - 0.5), // bottom-right
-            CGPoint(x: frame.width, y: 0.5), // top-right
-            CGPoint(x: 0.5, y: 0.5) // top-left
+    private func drawContrainerBorderLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
+        // Initial point of border path
+        let initialPoint = CGPoint(x: radius, y: frame.height)
+        // Tail points
+        let tailPoints: [CGPoint] = [
+            CGPoint(x: tailPosition.x - tailSize.width / 2, y: frame.height), // tail top-left
+            CGPoint(x: tailPosition.x, y: tailPosition.y + tailSize.height), // tail bottom-center
+            CGPoint(x: tailPosition.x + tailSize.width / 2, y: frame.height) // tail top-right
+        ]
+        // Round corner points
+        let cornerPoints: [(CGPoint, CGPoint?, CGPoint?)] = [
+            // Right-Bottom
+            (CGPoint(x: frame.width - radius, y: frame.height), nil, nil),
+            (CGPoint(x: frame.width, y: frame.height - radius),
+             CGPoint(x: frame.width - radius * 0.5, y: frame.height),
+             CGPoint(x: frame.width, y: frame.height - radius * 0.5)),
+            // Right-Top
+            (CGPoint(x: frame.width, y: radius), nil, nil),
+            (CGPoint(x: frame.width - radius, y: 0),
+             CGPoint(x: frame.width, y: radius * 0.5),
+             CGPoint(x: frame.width - radius * 0.5, y: 0)),
+            // Left-Top
+            (CGPoint(x: radius, y: 0), nil, nil),
+            (CGPoint(x: 0, y: radius),
+             CGPoint(x: radius * 0.5, y: 0),
+             CGPoint(x: 0, y: radius * 0.5)),
+            // Left-Bottom
+            (CGPoint(x: 0, y: frame.height - radius), nil, nil),
+            (CGPoint(x: radius, y: frame.height),
+             CGPoint(x: 0, y: frame.height - radius * 0.5),
+             CGPoint(x: radius * 0.5, y: frame.height))
         ]
         
-        // Move starting point
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0.5, y: 0.5)) // top-left
         // Draw path
-        edgePoints.forEach { path.addLine(to: $0) }
+        let path = UIBezierPath()
+        path.move(to: initialPoint)
+        
+        tailPoints.forEach { path.addLine(to: $0) }
+        cornerPoints.forEach {
+            if let controlPoint1 = $0.1, let controlPoint2 = $0.2 {
+                path.addCurve(to: $0.0, controlPoint1: controlPoint1, controlPoint2: controlPoint2)
+            } else {
+                path.addLine(to: $0.0)
+            }
+        }
+        
+        return path
+    }
+    
+    private func drawConfirmBorderLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
+        // Initial point of border path
+        let initialPoint = CGPoint(x: frame.origin.x, y: frame.height)
+        // Round corner points
+        let cornerPoints: [(CGPoint, CGPoint?, CGPoint?)] = [
+            // Right-Bottom
+            (CGPoint(x: frame.origin.x + frame.width - radius, y: frame.height), nil, nil),
+            (CGPoint(x: frame.origin.x + frame.width, y: frame.height - radius),
+             CGPoint(x: frame.origin.x + frame.width - radius * 0.5, y: frame.height),
+             CGPoint(x: frame.origin.x + frame.width, y: frame.height - radius * 0.5)),
+            // Right-Top
+            (CGPoint(x: frame.origin.x + frame.width, y: radius), nil, nil),
+            (CGPoint(x: frame.origin.x + frame.width - radius, y: 0),
+             CGPoint(x: frame.origin.x + frame.width, y: radius * 0.5),
+             CGPoint(x: frame.origin.x + frame.width - radius * 0.5, y: 0)),
+            // Left-Top
+            (CGPoint(x: frame.origin.x, y: 0), nil, nil),
+            // Left-Bottom
+            (initialPoint, nil, nil)
+        ]
+        
+        // Draw path
+        let path = UIBezierPath()
+        path.move(to: initialPoint)
+        
+        cornerPoints.forEach {
+            if let controlPoint1 = $0.1, let controlPoint2 = $0.2 {
+                path.addCurve(to: $0.0, controlPoint1: controlPoint1, controlPoint2: controlPoint2)
+            } else {
+                path.addLine(to: $0.0)
+            }
+        }
         
         return path
     }
