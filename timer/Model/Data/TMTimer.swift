@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import RxCocoa
-import AVFoundation
 
 /// the timer process object
 class TMTimer: EventStreamProtocol {
@@ -36,7 +35,7 @@ class TMTimer: EventStreamProtocol {
     
     // MARK: - properties
     var info: TimerInfo // The model data of the timer
-    let type: RecordType // Recode type of the timer
+    let recordType: RecordType // Recode type of the timer
     
     // The timer state
     var state: State = .stop {
@@ -48,7 +47,7 @@ class TMTimer: EventStreamProtocol {
     // MARK: - constructor
     init(info: TimerInfo, type: RecordType = .regular) {
         self.info = info
-        self.type = type
+        self.recordType = type
     }
     
     // MARK: - private method
@@ -58,7 +57,7 @@ class TMTimer: EventStreamProtocol {
         event.onNext(.timeChanged(current: info.currentTime, end: info.endTime + info.extraTime))
         
         // End timer when current time interval of the timer is equal end time interval
-        if type != .overtime && info.currentTime >= info.endTime + info.extraTime {
+        if recordType != .overtime && info.currentTime >= info.endTime + info.extraTime {
             end()
         }
     }
@@ -71,11 +70,7 @@ class TMTimer: EventStreamProtocol {
         info.currentTime = info.endTime + info.extraTime
         state = .end
         
-        playAlarm()
-    }
-    
-    private func playAlarm() {
-        AudioServicesPlaySystemSound(1005)
+        info.alarm.alert()
     }
     
     // MARK: - public method

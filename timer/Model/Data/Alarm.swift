@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 @objc enum Alarm: Int, CaseIterable, Codable {
     case `default` = 0
@@ -33,6 +34,22 @@ import Foundation
             
         case .silence, .vibrate:
             return nil
+        }
+    }
+    
+    func alert() {
+        switch self {
+        case .silence:
+            // Nothing
+            break
+            
+        case .vibrate:
+            // Play vibration on device
+            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+            
+        case .default:
+            // Play alarm sound if timer alarm is default only
+            AudioServicesPlaySystemSound(1005)
         }
     }
 }
