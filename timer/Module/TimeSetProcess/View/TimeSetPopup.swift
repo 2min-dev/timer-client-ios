@@ -41,11 +41,9 @@ class TimeSetPopup: UIView {
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.white
-        view.layer.borderColor = Constants.Color.carnation.cgColor
-        view.layer.borderWidth = 1
+        view.backgroundColor = Constants.Color.gallery
         view.layer.cornerRadius = 6.adjust()
-        view.layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 2.adjust()), blur: 6)
+        view.layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 6)
     
         let wrapView = UIView()
         // Set constraint of subviews
@@ -56,7 +54,7 @@ class TimeSetPopup: UIView {
         }
         
         timerIconImageView.snp.makeConstraints { make in
-            make.leading.equalTo(titleLabel.snp.trailing).inset(1.adjust())
+            make.leading.equalTo(titleLabel.snp.trailing).offset(8.adjust())
             make.centerY.equalToSuperview()
             make.width.equalTo(36.adjust())
             make.height.equalTo(timerIconImageView.snp.width)
