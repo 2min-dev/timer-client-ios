@@ -11,21 +11,18 @@ import RxCocoa
 import ReactorKit
 
 class TimeSetMemoViewController: BaseHeaderViewController, View {
+    // MARK: - constants
+    private let MAX_MEMO_LENGTH: Int = 1000
+    
     // MARK: - view properties
     private var timeSetMemoView: TimeSetMemoView { return view as! TimeSetMemoView }
     
     override var headerView: CommonHeader { return timeSetMemoView.headerView }
     
-    private var titleLabel: UILabel { return timeSetMemoView.titleLabel }
-    private var timeLabel: UILabel { return timeSetMemoView.timeLabel }
-    
     private var memoTextView: UITextView { return timeSetMemoView.memoTextView }
-    private var memoLengthExcessLabel: UILabel { return timeSetMemoView.memoLengthExcessLabel }
+    private var memoHintLabel: UILabel { return timeSetMemoView.memoHintLabel }
+    private var memoExcessLabel: UILabel { return timeSetMemoView.memoExcessLabel }
     private var memoLengthLabel: UILabel { return timeSetMemoView.memoLengthLabel }
-    
-    private var cancelButton: FooterButton { return timeSetMemoView.cancelButton }
-    private var pauseButton: FooterButton { return timeSetMemoView.pauseButton }
-    private var restartButton: FooterButton { return timeSetMemoView.restartButton }
     
     // MARK: - properties
     var coordinator: TimeSetMemoViewCoordinator
@@ -52,38 +49,31 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
     // MARK: - bine
     func bind(reactor: TimeSetMemoViewReactor) {
         // MARK: action
+        rx.viewDidAppear
+            .take(1)
+            .subscribe(onNext: { [weak self] in self?.memoTextView.becomeFirstResponder() })
+            .disposed(by: disposeBag)
+        
+        memoTextView.rx.text
+            .map { !$0!.isEmpty }
+            .bind(to: memoHintLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
         memoTextView.rx.text
             .orEmpty
-            .filter { !$0.isEmpty }
-            .map { Reactor.Action.updateMemo($0) }
+            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
+            .filter { [weak self] in $0.1 > (self?.MAX_MEMO_LENGTH ?? 0) }
+            .map { String($0.0.dropLast()) }
+            .bind(to: memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        memoTextView.rx.text
+            .orEmpty
+            .compactMap { Reactor.Action.updateMemo($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
-        // Bookmark
-        reactor.state
-            .map { $0.isBookmark }
-            .distinctUntilChanged()
-            .filter { [weak self] _ in self?.headerView.buttons[.bookmark] != nil }
-            .bind(to: headerView.buttons[.bookmark]!.rx.isSelected)
-            .disposed(by: disposeBag)
-        
-        // Title
-        reactor.state
-            .map { $0.title }
-            .distinctUntilChanged()
-            .bind(to: titleLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Remained time
-        reactor.state
-            .map { $0.remainedTime }
-            .distinctUntilChanged()
-            .map { getTime(interval: $0) }
-            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
-            .bind(to: timeLabel.rx.text)
-            .disposed(by: disposeBag)
-        
         // Memo
         reactor.state
             .map { $0.memo }
@@ -92,13 +82,33 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         // Memo length
-        reactor.state
+        let lengthOfBytes = reactor.state
             .map { $0.memo }
-            .map { $0.lengthOfBytes(using: .unicode) }
+            .map { $0.lengthOfBytes(using: .utf16) }
             .distinctUntilChanged()
-            .do(onNext: { [weak self] in self?.memoLengthExcessLabel.isHidden = $0 < TimeSetEndViewReactor.MAX_MEMO_LENGTH })
-            .map { String(format: "time_set_memo_bytes_format".localized, $0, TimeSetEndViewReactor.MAX_MEMO_LENGTH) }
-            .bind(to: memoLengthLabel.rx.text)
+            .share(replay: 1)
+        
+        let isMemoExceeded = lengthOfBytes
+            .map { [weak self] in $0 >= self?.MAX_MEMO_LENGTH ?? 0 }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        // Length text
+        Observable.combineLatest(lengthOfBytes, isMemoExceeded)
+            .compactMap { [weak self] in self?.getMemoLengthAttributedString(length: $0, isExcess: $1) }
+            .bind(to: memoLengthLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+        
+        // Exceeded info
+        isMemoExceeded
+            .map { !$0 }
+            .bind(to: memoExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        isMemoExceeded
+            .filter { $0 }
+            .debounce(.seconds(3), scheduler: MainScheduler.instance)
+            .bind(to: memoExcessLabel.rx.isHidden)
             .disposed(by: disposeBag)
     }
     
@@ -108,16 +118,27 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
         super.handleHeaderAction(action)
         
         switch action {
-        case .bookmark:
-            guard let reactor = reactor else { return }
-            reactor.action.onNext(.toggleBookmark)
-            
-        case .home:
-            _ = coordinator.present(for: .home)
+        case .close:
+            dismissOrPopViewController(animated: true)
             
         default:
             break
         }
+    }
+    
+    // MARK: - state method
+    /// Get memo length attributed string
+    private func getMemoLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {
+        let lengthString = String(format: "time_set_memo_bytes_format".localized, length, MAX_MEMO_LENGTH)
+        let attributedString = NSMutableAttributedString(string: lengthString)
+        
+        if isExcess {
+            // Highlight length text
+            let range = NSString(string: lengthString).range(of: String(length))
+            attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
+        }
+        
+        return attributedString
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

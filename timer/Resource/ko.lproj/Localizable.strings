@@ -41,6 +41,7 @@
 // MARK: - Screen title
 "time_set_save_title" = "타임셋 저장";
 "time_set_edit_title" = "타임셋 편집";
+"time_set_memo_title" = "메모 입력";
 "local_time_set_title" = "마이 타임셋";
 "saved_time_set_title" = "저장된 타임셋 모두보기";
 "saved_time_set_management_title" = "저장한 타임셋 관리";
@@ -124,7 +125,7 @@
 
 "time_set_memo_hint" = "메모를 입력하세요.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
-"time_set_memo_excess_title" = "작성 가능한 글자 수 초과";
+"time_set_memo_excess_title" = "작성 가능한 글자 수가 초과됐어요";
 
 "time_set_state_countdown_format" = "시작 %d초 전";
 "time_set_state_pause_title" = "일시정지";

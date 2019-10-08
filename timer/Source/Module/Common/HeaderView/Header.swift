@@ -23,6 +23,7 @@ class Header: UIView {
         case share
         case delete
         case additional
+        case close
     }
     
     // MARK: - properties

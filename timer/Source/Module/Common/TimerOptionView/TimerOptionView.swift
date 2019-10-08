@@ -58,7 +58,6 @@ class TimerOptionView: UIView, View {
     lazy var commentTextView: UITextView = {
         let view = UITextView()
         view.backgroundColor = Constants.Color.clear
-        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textContainerInset = UIEdgeInsets(top: 5.adjust(), left: 0, bottom: 0, right: 0) // Vertical padding
         view.textContainer.lineFragmentPadding = 5.adjust() // Horizontal padding
         
@@ -70,7 +69,8 @@ class TimerOptionView: UIView, View {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 10.adjust()
         
-        view.typingAttributes = [.foregroundColor: Constants.Color.codGray,
+        view.typingAttributes = [.font: Constants.Font.Regular.withSize(12.adjust()),
+                                 .foregroundColor: Constants.Color.codGray,
                                  .paragraphStyle: paragraphStyle]
         return view
     }()
@@ -332,8 +332,7 @@ class TimerOptionView: UIView, View {
         Observable.merge(
             alarmButtonsStackView.arrangedSubviews
                 .compactMap { $0 as? UIButton }
-                .map { button -> Observable<AlarmType> in button.rx.tap.compactMap { AlarmType(rawValue: button.tag) } }
-        )
+                .map { button -> Observable<AlarmType> in button.rx.tap.compactMap { AlarmType(rawValue: button.tag) } })
             .subscribe(onNext: { [weak self] in self?.setAlarmType($0) })
             .disposed(by: disposeBag)
         
@@ -408,7 +407,7 @@ class TimerOptionView: UIView, View {
             .distinctUntilChanged()
             .share(replay: 1)
         
-        // legnth text
+        // Legnth text
         Observable.combineLatest(lengthOfBytes, isCommentExceeded)
             .compactMap { [weak self] in self?.getCommentLengthAttributedString(length: $0, isExcess: $1) }
             .bind(to: commentLengthLabel.rx.attributedText)

@@ -129,7 +129,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: reactor.timeSetInfo)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.info)) })
             .disposed(by: disposeBag)
         
         repeatButton.rx.tap

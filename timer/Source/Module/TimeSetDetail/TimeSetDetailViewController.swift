@@ -127,7 +127,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         
-        
         let timer = reactor.state
             .map { $0.timer }
             .distinctUntilChanged()

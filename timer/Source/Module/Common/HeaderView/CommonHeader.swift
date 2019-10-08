@@ -20,6 +20,7 @@ class CommonHeader: Header {
         case bookmark
         case share
         case delete
+        case close
         
         var button: UIButton {
             let button = UIButton()
@@ -28,21 +29,31 @@ class CommonHeader: Header {
             switch self {
             case .back:
                 button.setImage(UIImage(named: "btn_back"), for: .normal)
+                
             case .home:
                 button.setImage(UIImage(named: "btn_home"), for: .normal)
+                
             case .setting:
                 button.setImage(UIImage(named: "btn_setting"), for: .normal)
+                
             case .history:
                 button.setImage(UIImage(named: "btn_history"), for: .normal)
+                
             case .search:
                 button.setImage(UIImage(named: "btn_search"), for: .normal)
+                
             case .bookmark:
                 button.setImage(UIImage(named: "btn_bookmark_off"), for: .normal)
                 button.setImage(UIImage(named: "btn_bookmark_on"), for: .selected)
+                
             case .share:
                 button.setImage(UIImage(named: "btn_share"), for: .normal)
+                
             case .delete:
                 button.setImage(UIImage(named: "btn_delete"), for: .normal)
+                
+            case .close:
+                button.setImage(UIImage(named: "btn_clear"), for: .normal)
             }
             
             return button
@@ -52,20 +63,30 @@ class CommonHeader: Header {
             switch self {
             case .back:
                 return .back
+                
             case .home:
                 return .home
+                
             case .bookmark:
                 return .bookmark
+                
             case .delete:
                 return .delete
+                
             case .history:
                 return .history
+                
             case .search:
                 return .search
+                
             case .setting:
                 return .setting
+                
             case .share:
                 return .share
+                
+            case .close:
+                return .close
             }
         }
     }

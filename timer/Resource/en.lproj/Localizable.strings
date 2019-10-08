@@ -41,6 +41,7 @@
 // MARK: - Screen title
 "time_set_save_title" = "Time Set Save";
 "time_set_edit_title" = "Time Set Edit";
+"time_set_memo_title" = "Memo";
 "local_time_set_title" = "My Time Set";
 "saved_time_set_title" = "Saved Time Set";
 "saved_time_set_management_title" = "Saved Time Set Management";
