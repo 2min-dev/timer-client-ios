@@ -33,10 +33,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetProcessView.timerBadgeCollectionView }
     
     private var startButton: FooterButton { return timeSetProcessView.startButton }
-    private var restartButton: FooterButton { return timeSetProcessView.restartButton }
     private var stopButton: FooterButton { return timeSetProcessView.stopButton }
     private var quitButton: FooterButton { return timeSetProcessView.quitButton }
     private var pauseButton: FooterButton { return timeSetProcessView.pauseButton }
+    
     private var footerView: Footer { return timeSetProcessView.footerView }
     
     private var timeSetPopup: TimeSetPopup? {
@@ -64,7 +64,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         case let .regular(reactor):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
             cell.reactor = reactor
-            
             return cell
             
         case .extra(_):
@@ -96,9 +95,20 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         view.setNeedsLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Set navigation controller's pop gesture disable
+        (navigationController as? RootViewController)?.isSwipeable = false
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        // Set navigation controller's pop gesture enable
+        (navigationController as? RootViewController)?.isSwipeable = true
+        
         UIApplication.shared.isIdleTimerDisabled = true
+        
     }
     
     // MARK: - bine
@@ -118,23 +128,33 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         memoButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: reactor.timeSetInfo))
-            })
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet, origin: reactor.timeSetInfo)) })
             .disposed(by: disposeBag)
         
         repeatButton.rx.tap
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .map { Reactor.Action.toggleRepeat }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         addTimeButton.rx.tap
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .map { Reactor.Action.addExtraTime(TimeInterval(Constants.Time.minute)) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        timerBadgeCollectionView.rx.itemSelected
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .filter { $0.section == TimerBadgeSectionType.regular.rawValue }
+            .withLatestFrom(reactor.state.map { $0.timeSetState }.distinctUntilChanged(), resultSelector: { ($0, $1) })
+            .compactMap { [weak self] in self?.badgeSelect(at: $0.0, withTimeSetState: $0.1) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         startButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
+            .map { Reactor.Action.startTimeSet(at: nil) }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         Observable.merge(stopButton.rx.tap.asObservable(),
@@ -165,6 +185,35 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // Repeat
+        reactor.state
+            .map { $0.isRepeat }
+            .distinctUntilChanged()
+            .bind(to: repeatButton.rx.isSelected)
+            .disposed(by: disposeBag)
+        
+        // Add time
+//        reactor.state
+//            .map { $0.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME }
+//            .distinctUntilChanged()
+//            .bind(to: addTimeButton.rx.isEnabled)
+//            .disposed(by: disposeBag)
+        
+        // Extra time
+        reactor.state
+            .map { $0.extraTime == 0 }
+            .distinctUntilChanged()
+            .bind(to: extraTimeLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.extraTime }
+            .distinctUntilChanged()
+            .map { Int($0 / Constants.Time.minute) }
+            .map { String(format: "time_set_process_extra_time_format".localized, $0) }
+            .bind(to: extraTimeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
         // All time
         reactor.state
             .map { $0.allTime }
@@ -176,16 +225,15 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         // End of time set
         Observable.combineLatest(
-            reactor.state
-                .map { $0.timeSetState }
-                .distinctUntilChanged(),
-            reactor.state
-                .map { $0.remainedTime }
-                .distinctUntilChanged(),
+            reactor.state.map { $0.remainedTime }.distinctUntilChanged(),
             Observable<Int>.timer(.seconds(0), period: .seconds(30), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .observeOn(MainScheduler.instance)
-            .filter { [weak self] in !(self?.isTimeSetEnded(state: $0.0) ?? true) }
-            .map { Date().addingTimeInterval($0.1) }
+            .takeUntil( // Take until time set is running
+                reactor.state
+                    .map { $0.timeSetState }
+                    .distinctUntilChanged()
+                    .filter { [weak self] in self?.isTimeSetEnded(state: $0) ?? false })
+            .map { Date().addingTimeInterval($0.0) }
             .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
@@ -194,7 +242,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.timer }
             .distinctUntilChanged { $0 === $1 }
-            .map { $0.alarm }
+            .map { $0.alarm.title }
             .bind(to: alarmLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -217,59 +265,31 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .map { $0.selectedIndex }
             .distinctUntilChanged()
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
-            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .subscribe(onNext: { [weak self] in self?.scrollBadgeIfCan(at: $0) })
             .disposed(by: disposeBag)
-        
-        // Extra time
-        reactor.state
-            .map { $0.extraTime == 0 }
-            .distinctUntilChanged()
-            .bind(to: extraTimeLabel.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.extraTime }
-            .distinctUntilChanged()
-            .map { Int($0 / Constants.Time.minute) }
-            .map { String(format: "time_set_process_extra_time_format".localized, $0) }
-            .bind(to: extraTimeLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Repeat
-        reactor.state
-            .map { $0.isRepeat }
-            .distinctUntilChanged()
-            .bind(to: repeatButton.rx.isSelected)
-            .disposed(by: disposeBag)
-        
-        // Time set badge
-//        reactor.state
-//            .map { $0.repeatCount }
-//            .distinctUntilChanged()
-//            .do(onNext: { [weak self] in self?.timeSetBadge.isHidden = $0 == 0 })
-//            .filter { $0 > 0 }
-//            .map { TimeSetBadge.BadgeType.repeat(count: $0) }
-//            .bind(to: timeSetBadge.rx.type)
-//            .disposed(by: disposeBag)
-        
-        // Add time
-//        reactor.state
-//            .map { $0.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME }
-//            .distinctUntilChanged()
-//            .bind(to: addTimeButton.rx.isEnabled)
-//            .disposed(by: disposeBag)
 
         // Timer end popup
-//        reactor.state
-//            .map { $0.selectedIndexPath }
-//            .distinctUntilChanged()
-//            .skipUntil(rx.viewWillAppear)
-//            .withLatestFrom(reactor.state.map { ($0.timers.count, $0.timeSetState) }, resultSelector: { ($0.row, $1.0, $1.1) })
-//            .filter { $2 == .run(detail: .normal) }
-//            .subscribe(onNext: { [weak self] in
-//                self?.showTimeSetPopup(title: String(format: "time_set_popup_timer_end_title_format".localized, $0.0),
-//                                       subtitle: String(format: "time_set_popup_timer_end_info_format".localized, $0.0, $0.1)) })
-//            .disposed(by: disposeBag)
+        reactor.state
+            .map { $0.selectedIndex }
+            .distinctUntilChanged()
+            .skip(1)
+            .withLatestFrom(reactor.state.map { ($0.sections[TimerBadgeSectionType.regular.rawValue].items.count, $0.timeSetState) },
+                            resultSelector: { ($0, $1.0, $1.1) })
+            .filter { $2 == .run(detail: .normal) }
+            .subscribe(onNext: { [weak self] in
+                self?.showTimeSetPopup(title: String(format: "time_set_popup_timer_end_title_format".localized, $0.0),
+                                       subtitle: String(format: "time_set_popup_timer_end_info_format".localized, $0.0, $0.1)) })
+            .disposed(by: disposeBag)
+        
+        // Time set state
+        Observable.combineLatest(
+            reactor.state.map { $0.countdown }.distinctUntilChanged(),
+            reactor.state.map { $0.countdownState }.distinctUntilChanged(),
+            reactor.state.map { $0.repeatCount }.distinctUntilChanged(),
+            reactor.state.map { $0.timeSetState }.distinctUntilChanged())
+            .compactMap { [weak self] in self?.getTimeSetState(countdown: $0.0, countdownState: $0.1, repeatCount: $0.2, timeSetState: $0.3) }
+            .bind(to: stateLabel.rx.attributedText)
+            .disposed(by: disposeBag)
         
         Observable.combineLatest(
             reactor.state
@@ -356,36 +376,24 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
-        switch action {
-        case .bookmark:
-            reactor?.action.onNext(.toggleBookmark)
-            
-        case .home:
-            _ = coordinator.present(for: .home)
-            
-        default:
-            break
-        }
-    }
-    
     /// Handle badge select action with time set state
-    private func badgeSelect(at indexPath: IndexPath, withTimeSetState state: TimeSet.State) {
+    private func badgeSelect(at indexPath: IndexPath, withTimeSetState state: TimeSet.State) -> TimeSetProcessViewReactor.Action? {
         switch state {
         case .initialize,
+             .pause,
              .run(detail: .normal):
             timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
             showTimerStartAlert(at: indexPath)
             
         case .run(detail: .overtime),
              .end(detail: _):
-            reactor?.action.onNext(.selectTimer(at: indexPath.row))
+            return .selectTimer(at: indexPath.row)
             
         default:
-            return
+            break
         }
+        
+        return nil
     }
     
     /// Timer bage view scroll to selected badge if can
@@ -396,26 +404,17 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     
     /// Show start timer with selected index alert
     private func showTimerStartAlert(at indexPath: IndexPath) {
-        guard let layout = timerBadgeCollectionView.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout else { return }
-        
         // Create alert & binding
         let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))
         bind(alert: timeSetAlert) { [weak self] in
             self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row))
         }
         
-        // Get selected cell size
-        let cellSize = timerBadgeCollectionView.collectionView(timerBadgeCollectionView,
-                                                               layout: layout,
-                                                               sizeForItemAt: indexPath)
-        let revisedXPos = layout.axisPoint.x + cellSize.width / 2 - timeSetAlert.tailPosition.x
-        let revisedYPos = 15.adjust() + timeSetAlert.tailSize.height // Half of badge height (30 / 2)
-        
         // Set constraint of alert
         view.addAutolayoutSubview(timeSetAlert)
         timeSetAlert.snp.makeConstraints { make in
-            make.leading.equalTo(timerBadgeCollectionView).offset(revisedXPos)
-            make.bottom.equalTo(timerBadgeCollectionView.snp.centerY).inset(-revisedYPos)
+            make.leading.equalTo(timerBadgeCollectionView).inset(60.adjust())
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-3.adjust())
         }
 
         self.timeSetAlert = timeSetAlert
@@ -428,14 +427,72 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         return true
     }
     
+    /// Scroll badge if view can scroll
+    private func scrollBadgeIfCan(at indexPath: IndexPath) {
+        guard timeSetAlert == nil else { return }
+        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+    }
+    
+    /// Get current time set state string
+    /// - parameters:
+    ///   - countdown: remained countdown time of the time set
+    ///   - countdownState: current state of the countdown timer
+    ///   - repeatCount: repeated count of the time set
+    ///   - timeSetState: current state of the time set
+    /// - returns: the attributed string text of current time set state
+    private func getTimeSetState(countdown: Int, countdownState: TMTimer.State, repeatCount: Int, timeSetState: TimeSet.State) -> NSAttributedString {
+        var attributes: [NSAttributedString.Key: Any] = [
+            .font: Constants.Font.Regular.withSize(10.adjust()),
+            .foregroundColor: Constants.Color.codGray]
+        
+        switch countdownState {
+        case .run:
+            if countdown > 0 {
+                return NSAttributedString(string: String(format: "time_set_state_countdown_format".localized, countdown), attributes: attributes)
+            }
+            
+        case .pause:
+            return NSAttributedString(string: "time_set_state_pause_title".localized, attributes: attributes)
+            
+        default:
+            break
+        }
+        
+        var currentState: String
+        switch timeSetState {
+        case .pause:
+            return NSAttributedString(string: "time_set_state_pause_title".localized, attributes: attributes)
+            
+        case .run(detail: .overtime),
+             .end(detail: .overtime):
+            currentState = "time_set_state_overtime_title".localized
+            attributes = [
+                .font: Constants.Font.Bold.withSize(10.adjust()),
+                .foregroundColor: Constants.Color.carnation]
+            
+        default:
+            currentState = ""
+        }
+        
+        if repeatCount > 0 {
+            if !currentState.isEmpty {
+                currentState += ", "
+            }
+            
+            currentState += String(format: "time_set_state_repeat_format".localized, repeatCount)
+        }
+        
+        return NSAttributedString(string: currentState, attributes: attributes)
+    }
+    
     /// Update layout by countdown state
-    private func updateLayoutByCountdownState(_ state: TimeSetProcessViewReactor.CountdownState) {
+    private func updateLayoutByCountdownState(_ state: TMTimer.State) {
         switch state {
-        case let .run(countdown: time):
+        case .run:
             footerView.buttons = [stopButton, pauseButton]
             
-//            timeSetBadge.isHidden = time == 0
-//            timeSetBadge.setBadgeType(.countdown(time: time))
+        case .pause:
+            footerView.buttons = [stopButton, startButton]
             
         default:
             break
@@ -445,12 +502,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Update layout by current state of time set
     private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
         UIApplication.shared.isIdleTimerDisabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch state {
-        case .initialize: break
-//            addTimeButton.isEnabled = false
-
         case let .stop(repeat: count):
             if count > 0 {
                 // Show time set repeat popup
@@ -465,79 +518,29 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             if runState == .normal {
                 // Running time set
                 footerView.buttons = [stopButton, pauseButton]
-                
-//                addTimeButton.isEnabled = true
             } else {
-                // Set disable that navigation controller pop gesture recognizer during overtime recording
-                navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-                
                 // Running overtime recording
                 footerView.buttons = [quitButton, pauseButton]
                 
-                // Set overtime badge
-//                timeSetBadge.isHidden = false
-//                timeSetBadge.setBadgeType(.overtime)
-                
                 timeLabel.textColor = Constants.Color.carnation
-//                timeSetProcessView.setEnable(false)
             }
             
         case .pause:
             // Update hightlight button to restart button
             guard let button = footerView.buttons.first else { return }
-            footerView.buttons = [button, restartButton]
+            footerView.buttons = [button, startButton]
         
-        case let .end(detail: endState):
-//            timeSetProcessView.setEnable(true)
-//            addTimeButton.isEnabled = false // Disable add time button because time set ended
+        case .end(detail: .normal):
+            // Remove alert
+            timeSetAlert = nil
+            showTimeSetEndView()
             
-            switch endState {
-            case .cancel:
-//                timeSetBadge.isHidden = false
-//                timeSetBadge.setBadgeType(.cancel)
-                // Show time set memo induce alert
-                showTimeSetMemoAlert(text: "time_set_alert_cancel_title".localized)
-                
-            case .normal:
-                // Remove alert
-                timeSetAlert = nil
-                showTimeSetEndView()
-                
-            case .overtime:
-                // Show time set memo induce alert
-                showTimeSetMemoAlert(text: "time_set_alert_overtime_title".localized)
-                
-            default:
-                break
-            }
+        default:
+            break
         }
     }
     
     // MARK: - private method
-    /// Show time set canceled alert
-    private func showTimeSetMemoAlert(text: String) {
-        // Create alert & binding
-        let timeSetAlert = TimeSetAlert(text: text)
-        bind(alert: timeSetAlert) { [weak self] in
-            guard let timeSet = self?.reactor?.timeSet,
-                let timeSetInfo = self?.reactor?.timeSetInfo else { return }
-            _ = self?.coordinator.present(for: .timeSetMemo(timeSet, origin: timeSetInfo))
-        }
-        
-        let revisedXPos = timeSetAlert.tailPosition.x - 8.adjust()
-        let revisedYPos = timeSetAlert.tailSize.height
-        
-        // Set constraint of alert
-        view.addAutolayoutSubview(timeSetAlert)
-        timeSetAlert.snp.makeConstraints { make in
-//            make.leading.equalTo(memoButton.snp.centerX).inset(-revisedXPos)
-//            make.bottom.equalTo(memoButton.snp.top).inset(-revisedYPos)
-        }
-        
-        self.timeSetAlert?.removeFromSuperview()
-        self.timeSetAlert = timeSetAlert
-    }
-    
     /// Show timer & time set info popup
     private func showTimeSetPopup(title: String, subtitle: String) {
         // Create popup view

@@ -96,12 +96,6 @@
 "time_set_process_add_time_title" = "+1분";
 "time_set_process_memo_title" = "메모 입력";
 
-// MARK: - Time set badge
-"time_set_badge_type_countdown_format" = "시작 %d초 전";
-"time_set_badge_type_repeat_format" = "%d회 반복";
-"time_set_badge_type_cancel_title" = "취소 타임셋";
-"time_set_badge_type_overtime_title" = "초과 타임셋";
-
 // MARK: - Time set alert
 "time_set_alert_timer_start_title_format" = "%d번째 타이머부터 시작하시겠어요?";
 "time_set_alert_cancel_title" = "타임셋을 취소한 이유를\n기록해보세요! :)";
@@ -112,10 +106,6 @@
 "time_set_popup_timer_end_info_format" = "%d/%d";
 "time_set_popup_time_set_repeat_title" = "반복 타임셋 종료";
 "time_set_popup_time_set_repeat_info_format" = "%d회 반복";
-
-// MARK: - Time set floating view
-"time_set_floating_timer_end_info_format" = "%d/%d";
-"time_set_floating_time_set_repeat_info_format" = "(%d회 반복)";
 
 // MARK: - Time set
 "time_set_default_title" = "무제 타임셋";
@@ -136,9 +126,19 @@
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "작성 가능한 글자 수 초과";
 
+"time_set_state_countdown_format" = "시작 %d초 전";
+"time_set_state_pause_title" = "일시정지";
+"time_set_state_repeat_format" = "반복 %d회";
+"time_set_state_overtime_title" = "초과 타임셋";
+
 // MARK: - Timer
 "timer_alarm_title" = "사운드";
 "timer_comment_title" = "코멘트";
+
+// MARK: - Alarm
+"alarm_silence_title" = "무음";
+"alarm_vibrate_title" = "진동";
+"alarm_default_title" = "기본음";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "타임셋 초기화";

@@ -190,7 +190,7 @@ class TimeSetProcessView: UIView {
         }
         
         commentTextView.snp.makeConstraints { make in
-            make.height.equalTo(34.adjust())
+            make.height.equalTo(55.adjust())
         }
         
         return view
@@ -245,13 +245,13 @@ class TimeSetProcessView: UIView {
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(133.adjust())
+            make.top.equalTo(timeLabel.snp.bottom).offset(123.adjust())
             make.leading.equalTo(timeLabel)
             make.trailing.equalToSuperview().inset(20.adjust())
         }
 
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(254.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(8.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -261,10 +261,6 @@ class TimeSetProcessView: UIView {
     
     let startButton: FooterButton = {
         return FooterButton(title: "footer_button_start".localized, type: .highlight)
-    }()
-    
-    let restartButton: FooterButton = {
-        return FooterButton(title: "footer_button_restart", type: .normal)
     }()
     
     let stopButton: FooterButton = {
