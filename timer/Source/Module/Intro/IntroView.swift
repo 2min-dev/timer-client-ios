@@ -11,24 +11,26 @@ import SnapKit
 
 class IntroView: UIView {
     // MARK: - view propeties
-    let view: UIView = {
-        let view = UIView()
+    let splashIconImageView: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "icon_app"))
         return view
     }()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
-        addAutolayoutSubview(view)
+        addAutolayoutSubview(splashIconImageView)
         
-        view.snp.makeConstraints({ make in
+        splashIconImageView.snp.makeConstraints({ make in
             if #available(iOS 11.0, *) {
-                make.edges.equalTo(safeAreaLayoutGuide)
+                make.center.equalTo(safeAreaLayoutGuide)
             } else {
-                make.edges.equalToSuperview()
+                make.center.equalToSuperview()
             }
+            make.width.equalTo(60.adjust())
+            make.height.equalTo(splashIconImageView.snp.width)
         })
     }
     

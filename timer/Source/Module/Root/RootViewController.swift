@@ -22,8 +22,6 @@ class RootViewController: UINavigationController {
         isNavigationBarHidden = true
         // Set default swipe back gesture because if isNavigationBarHidden property is true, interactive gesture isn't work
         interactivePopGestureRecognizer?.delegate = self
-        // Set delegate about `UINavigationControllerDelegate`
-        delegate = self
     }
     
     deinit {
@@ -32,13 +30,6 @@ class RootViewController: UINavigationController {
 }
 
 // MARK: - extension
-extension RootViewController: UINavigationControllerDelegate {
-    // Called when view controller did show by navigation transition
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        // Not implements
-    }
-}
-
 extension RootViewController: UIGestureRecognizerDelegate {
     // when a gesture recognizer attempts to transition out of the UIGestureRecognizer.State.possible state
     // Returning false causes the gesture recognizer to transition to the UIGestureRecognizer.State.failed state.

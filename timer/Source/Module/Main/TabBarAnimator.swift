@@ -35,10 +35,6 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         guard let fromVC = transitionContext.viewController(forKey: .from) else { return UIViewPropertyAnimator() }
         guard let toVC = transitionContext.viewController(forKey: .to) else { return UIViewPropertyAnimator() }
         
-//        // Get index of view controller on tab bar controller
-//        guard let fromIndex = getIndex(viewController: fromVC),
-//            let toIndex = getIndex(viewController: toVC) else { return UIViewPropertyAnimator() }
-        
         // Add view
         transitionContext.containerView.addSubview(toVC.view)
         
@@ -82,19 +78,4 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func animationEnded(_ transitionCompleted: Bool) {
         tabBarController.delegate?.tabBarController?(tabBarController, didSelect: tabBarController.selectedViewController!)
     }
-    
-    /**
-     Get index of view controller in tab bar controller
-     
-     - parameters:
-       - viewController: view controller to get index
-     - returns: tab index (optional)
-     */
-//    func getIndex(viewController: UIViewController) -> Int? {
-//        guard let viewControllers = tabBarController.viewControllers else { return nil }
-//        for (index, vc) in viewControllers.enumerated() {
-//            if vc == viewController { return index }
-//        }
-//        return nil
-//    }
 }
