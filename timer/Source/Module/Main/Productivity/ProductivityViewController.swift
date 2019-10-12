@@ -223,6 +223,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.endTime }
             .distinctUntilChanged()
+            .do(onNext: { [weak self] _ in self?.isTimerOptionVisible.accept(false) })
             .bind(to: timerInputView.rx.timer)
             .disposed(by: disposeBag)
         

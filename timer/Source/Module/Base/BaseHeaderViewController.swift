@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 /// - warning: Shouldn't use `Base` controller not inherited
 class BaseHeaderViewController: BaseViewController {
@@ -46,5 +48,11 @@ extension BaseHeaderViewController: UIScrollViewDelegate {
         headerView.layer.shadow(alpha: 0.04,
                                 offset: CGSize(width: 0, height: min(scrollView.contentOffset.y / weight, offsetThreshold)),
                                 blur: min(scrollView.contentOffset.y / weight, blurThreshold))
+    }
+}
+
+extension Reactive where Base: BaseHeaderViewController {
+    var tapHeader: ControlEvent<Header.Action> {
+        return ControlEvent(events: base.headerView.rx.tap)
     }
 }

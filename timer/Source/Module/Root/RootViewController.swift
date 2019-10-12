@@ -11,9 +11,6 @@ import RxSwift
 import RxCocoa
 
 class RootViewController: UINavigationController {
-    // MARK: - properties
-    var isSwipeable: Bool = true
-    
     // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +32,7 @@ extension RootViewController: UIGestureRecognizerDelegate {
     // Returning false causes the gesture recognizer to transition to the UIGestureRecognizer.State.failed state.
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         // prevent interactivePopGesture if view controller is top controller
-        return isSwipeable && viewControllers.count > 1 ? true : false
+        return viewControllers.count > 1 ? true : false
     }
     
     // when return false (default is true), gesture recognizer doesn't notified touch event accured

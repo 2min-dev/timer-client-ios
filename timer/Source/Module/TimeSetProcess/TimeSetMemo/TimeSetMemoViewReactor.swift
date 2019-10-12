@@ -16,6 +16,7 @@ class TimeSetMemoViewReactor: Reactor {
     }
     
     enum Mutation {
+        /// Set memo of the time set
         case setMemo(String)
     }
     
@@ -43,6 +44,7 @@ class TimeSetMemoViewReactor: Reactor {
         }
     }
     
+    // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         

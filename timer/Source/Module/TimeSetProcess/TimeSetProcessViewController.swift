@@ -91,17 +91,16 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Set navigation controller's pop gesture disable
-        (navigationController as? RootViewController)?.isSwipeable = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         // Set navigation controller's pop gesture enable
-        (navigationController as? RootViewController)?.isSwipeable = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         UIApplication.shared.isIdleTimerDisabled = true
-        
     }
     
     // MARK: - bine
@@ -122,7 +121,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.info)) })
+            .subscribe(onNext: { [weak self] in
+                guard let viewController = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.info)) as? TimeSetMemoViewController else { return }
+                self?.bind(memo: viewController)
+            })
             .disposed(by: disposeBag)
         
         repeatButton.rx.tap
@@ -308,22 +310,38 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
     }
     
-    func bind(endView: TimeSetEndViewController) {
+    func bind(memo viewController: TimeSetMemoViewController) {
         guard let reactor = reactor else { return }
         
         // Close
-        endView.rx.tapClose
-            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: false) })
+        viewController.rx.tapHeader
+            .filter { $0 == .close }
+            .withLatestFrom(reactor.state.map { $0.timeSetState })
+            .filter { $0 == .end(detail: .normal) }
+            .subscribe(onNext: { [weak self] _ in
+                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.info)) as? TimeSetEndViewController else { return }
+                self?.bind(end: viewController)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func bind(end viewController: TimeSetEndViewController) {
+        guard let reactor = reactor else { return }
+        
+        // Close
+        viewController.rx.tapHeader
+            .filter { $0 == .close }
+            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: false) })
             .disposed(by: disposeBag)
         
         // Overtime record
-        endView.rx.tapOvertime
+        viewController.rx.tapOvertime
             .map { Reactor.Action.startOvertimeRecord }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // Restart
-        endView.rx.tapRestart
+        viewController.rx.tapRestart
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
             .disposed(by: disposeBag)
     }
@@ -515,11 +533,13 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             footerView.buttons = [button, startButton]
         
         case .end(detail: .normal):
-            guard let reactor = reactor,
-                let viewController = coordinator.present(for: .timeSetEnd(reactor.timeSet.info)) as? TimeSetEndViewController else { return }
             // Remove alert
             timeSetAlert = nil
-            bind(endView: viewController)
+            
+            guard self.presentedViewController == nil,
+                let reactor = reactor,
+                let viewController = coordinator.present(for: .timeSetEnd(reactor.timeSet.info)) as? TimeSetEndViewController else { return }
+            bind(end: viewController)
             
         default:
             break

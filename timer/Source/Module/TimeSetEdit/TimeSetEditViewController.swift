@@ -100,13 +100,13 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Set navigation controller's pop gesture disable
-        (navigationController as? RootViewController)?.isSwipeable = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         // Set navigation controller's pop gesture enable
-        (navigationController as? RootViewController)?.isSwipeable = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
     // MARK: - bind

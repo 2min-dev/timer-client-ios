@@ -89,7 +89,7 @@ class TimeSetEndView: UIView {
         memoTextView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
-            make.trailing.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
             make.bottom.equalTo(divider.snp.top).inset(-10.adjust())
         }
         
@@ -164,19 +164,19 @@ class TimeSetEndView: UIView {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
-            make.trailing.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
         }
         
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom).offset(27.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
-            make.trailing.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
         }
         
         memoInputView.snp.makeConstraints { make in
             make.top.equalTo(dateLabel.snp.bottom).offset(20.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().priorityHigh()
             make.height.equalTo(170.adjust())
         }
         

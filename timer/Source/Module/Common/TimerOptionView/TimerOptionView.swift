@@ -139,6 +139,7 @@ class TimerOptionView: UIView, View {
     private lazy var alarmButtonsStackView: UIStackView = {
         let buttons: [AlarmType] = [.silence, .vibrate, .default]
         let view = UIStackView(arrangedSubviews: buttons.map { $0.button })
+        view.alignment = .center
         view.spacing = 10.adjust()
         return view
     }()
@@ -463,12 +464,14 @@ class TimerOptionView: UIView, View {
     /// Set timer alarm type
     private func setAlarmType(_ type: AlarmType) {
         guard let view = alarmButtonsStackView.arrangedSubviews.first(where: { $0.tag == type.rawValue }) else { return }
-        // Convert button frame to coordinate space of alarm buttons stack view
-        let origin = alarmButtonsStackView.convert(view.frame.origin, to: alarmSettingView)
         
-        // Set indicator view frame
-        alarmIndicatorView.frame.origin.x = origin.x
-        alarmIndicatorView.frame.size.width = view.bounds.width
+        // Remake constraints of indicator view to fit selected alarm view
+        alarmIndicatorView.snp.remakeConstraints { make in
+            make.leading.equalTo(view)
+            make.trailing.equalTo(view)
+            make.bottom.equalTo(view).inset(4.adjust())
+            make.height.equalTo(6.adjust())
+        }
     }
     
     /// Draw timer option view border layer

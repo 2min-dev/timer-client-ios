@@ -153,10 +153,6 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
 }
 
 extension Reactive where Base: TimeSetEndViewController {
-    var tapClose: ControlEvent<Void> {
-        return ControlEvent(events: base.headerView.rx.tap.filter { $0 == .close }.map { _ in Void() })
-    }
-    
     var tapOvertime: ControlEvent<Void> {
         return ControlEvent(events: base.overtimeButton.rx.tap)
     }
