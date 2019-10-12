@@ -14,6 +14,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
         case home
         case timeSetProcess(TimeSetInfo)
         case timeSetMemo(TimeSetInfo)
+        case timeSetEnd(TimeSetInfo)
     }
     
     // MARK: - properties
@@ -40,9 +41,13 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
                 return nil
             }
             let viewControllers = [rootViewController, viewController]
-            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            self.viewController.navigationController?.setViewControllers(viewControllers, animated: false)
             
         case .timeSetMemo(_):
+            viewController.modalPresentationStyle = .fullScreen
+            self.viewController.present(viewController, animated: true)
+            
+        case .timeSetEnd(_):
             viewController.modalPresentationStyle = .fullScreen
             self.viewController.present(viewController, animated: true)
         }
@@ -70,6 +75,17 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetMemoViewCoordinator(provider: provider)
             let reactor = TimeSetMemoViewReactor(timeSetInfo: timeSetInfo)
             let viewController = TimeSetMemoViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case let .timeSetEnd(timeSetInfo):
+            let coordinator = TimeSetEndViewCoordinator(provider: provider)
+            let reactor = TimeSetEndViewReactor(timeSetInfo: timeSetInfo)
+            let viewController = TimeSetEndViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

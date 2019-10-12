@@ -48,13 +48,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil
         }
     }
-    private var timeSetEndView: TimeSetEndView? {
-        didSet {
-            oldValue?.dismiss(animated: false) {
-                oldValue?.removeFromSuperview()
-            }
-        }
-   }
     
     // MARK: - properties
     var coordinator: TimeSetProcessViewCoordinator
@@ -315,6 +308,26 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
     }
     
+    func bind(endView: TimeSetEndViewController) {
+        guard let reactor = reactor else { return }
+        
+        // Close
+        endView.rx.tapClose
+            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: false) })
+            .disposed(by: disposeBag)
+        
+        // Overtime record
+        endView.rx.tapOvertime
+            .map { Reactor.Action.startOvertimeRecord }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // Restart
+        endView.rx.tapRestart
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
+            .disposed(by: disposeBag)
+    }
+    
     func bind(popup: TimeSetPopup) {
         // Dispose previous event stream
         popupDisposeBag = DisposeBag()
@@ -344,35 +357,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
                 confirmHandler()
             })
             .disposed(by: alertDisposeBag)
-    }
-    
-    func bind(endView: TimeSetEndView, reactor: TimeSetEndViewReactor) {
-        guard let timeSetProcessReactor = self.reactor,
-            let timeSet = self.reactor?.timeSet else { return }
-
-        rx.viewWillAppear
-            .map { TimeSetEndViewReactor.Action.updateMemo(timeSet.info.memo) }
-            .bind(to: reactor.action)
-            .disposed(by: endView.disposeBag)
-        
-        endView.closeButton.rx.tap
-            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
-            .subscribe(onNext: { [weak self] in self?.navigationController?.popViewController(animated: true)})
-            .disposed(by: endView.disposeBag)
-        
-        endView.overtimeButton.rx.tap
-            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
-            .map { Reactor.Action.startOvertimeRecord }
-            .bind(to: timeSetProcessReactor.action)
-            .disposed(by: endView.disposeBag)
-        
-        endView.restartButton.rx.tap
-            .do(onNext: { [weak self] in self?.dissmissTimeSetEndView() })
-            .subscribe(onNext: { [weak self] in
-                guard let reactor = self?.reactor else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo))
-            })
-            .disposed(by: endView.disposeBag)
     }
     
     // MARK: - action method
@@ -531,9 +515,11 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             footerView.buttons = [button, startButton]
         
         case .end(detail: .normal):
+            guard let reactor = reactor,
+                let viewController = coordinator.present(for: .timeSetEnd(reactor.timeSet.info)) as? TimeSetEndViewController else { return }
             // Remove alert
             timeSetAlert = nil
-            showTimeSetEndView()
+            bind(endView: viewController)
             
         default:
             break
@@ -566,34 +552,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Dismiss view with animation
         timeSetPopup?.dismiss {
             self.timeSetPopup = nil
-        }
-    }
-    
-    /// Show time set end view
-    private func showTimeSetEndView() {
-        guard let reactor = reactor, timeSetEndView == nil else { return }
-        
-        // Create time set end view
-        let timeSetEndView = TimeSetEndView()
-        
-        // Inject reactor
-        timeSetEndView.reactor = TimeSetEndViewReactor(timeSet: reactor.timeSet)
-        
-        // Add sub view and bind events
-        view.addSubview(timeSetEndView)
-        bind(endView: timeSetEndView, reactor: timeSetEndView.reactor!)
-        
-        // Show view with animation
-        timeSetEndView.show {
-            self.timeSetEndView = timeSetEndView
-        }
-    }
-    
-    /// Dismiss time set end view
-    private func dissmissTimeSetEndView() {
-        // Dismiss view with animation
-        timeSetEndView?.dismiss(animated: true) {
-            self.timeSetEndView = nil
         }
     }
     

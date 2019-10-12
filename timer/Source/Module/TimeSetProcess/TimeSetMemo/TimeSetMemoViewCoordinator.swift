@@ -11,7 +11,7 @@ import UIKit
 class TimeSetMemoViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
-        case home
+        case empty
     }
     
     // MARK: - properties
@@ -25,20 +25,10 @@ class TimeSetMemoViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
-        
-        switch route {
-        case .home:
-            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
-        }
-        
-        return viewController
+        return get(for: route)
     }
     
     func get(for route: Route) -> UIViewController? {
-        switch route {
-        case .home:
-            return self.viewController.navigationController?.viewControllers.first
-        }
+        return nil
     }
 }

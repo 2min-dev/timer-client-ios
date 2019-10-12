@@ -32,7 +32,6 @@ class TimeSetMemoViewReactor: Reactor {
     // MARK: - constructor
     init(timeSetInfo: TimeSetInfo) {
         self.timeSetInfo = timeSetInfo
-        
         initialState = State(memo: timeSetInfo.memo)
     }
     

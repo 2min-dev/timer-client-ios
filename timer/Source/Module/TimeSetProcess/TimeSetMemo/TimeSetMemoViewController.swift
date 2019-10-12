@@ -69,6 +69,7 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
         
         memoTextView.rx.text
             .orEmpty
+            .skip(1)
             .compactMap { Reactor.Action.updateMemo($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -113,19 +114,6 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
-        switch action {
-        case .close:
-            dismissOrPopViewController(animated: true)
-            
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     /// Get memo length attributed string
     private func getMemoLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {

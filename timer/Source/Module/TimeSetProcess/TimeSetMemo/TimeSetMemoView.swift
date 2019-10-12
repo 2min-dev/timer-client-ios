@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RxSwift
 
 class TimeSetMemoView: UIView {
     // MARK: - view properties
@@ -114,9 +113,6 @@ class TimeSetMemoView: UIView {
         view.items = [flexibleSpace, doneButton]
         return view
     }()
-    
-    // MARK: - properties
-    private var disposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(frame: CGRect) {
