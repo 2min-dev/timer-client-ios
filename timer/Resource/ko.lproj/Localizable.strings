@@ -42,6 +42,7 @@
 "time_set_save_title" = "타임셋 저장";
 "time_set_edit_title" = "타임셋 편집";
 "time_set_memo_title" = "메모 입력";
+"time_set_end_title" = "타임셋 종료";
 "local_time_set_title" = "마이 타임셋";
 "saved_time_set_title" = "저장된 타임셋 모두보기";
 "saved_time_set_management_title" = "저장한 타임셋 관리";

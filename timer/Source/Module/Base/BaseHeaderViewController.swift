@@ -26,7 +26,8 @@ class BaseHeaderViewController: BaseViewController {
         // Implement default header action
         switch action {
         case .back,
-             .cancel:
+             .cancel,
+             .close:
             dismissOrPopViewController(animated: true)
             
         default:

@@ -10,9 +10,6 @@ import RxSwift
 import ReactorKit
 
 class TimeSetEndViewReactor: Reactor {
-    // MARK: - Constants
-    static let MAX_MEMO_LENGTH = 1000
-    
     enum Action {
         /// Update memo of current time set
         case updateMemo(String)
@@ -27,35 +24,20 @@ class TimeSetEndViewReactor: Reactor {
         /// Title of time set
         let title: String
         
-        /// Running time of time set
-        let runningTime: TimeInterval
-        
-        /// Ended timer index of time set
-        let endIndex: Int
-        
-        /// All count of timers of time set
-        let timerCount: Int
-        
-        /// Repeat count of time set
-        let repeatCount: Int
-        
         /// Memo of time set
         var memo: String
     }
     
     // MARK: - properties
     var initialState: State
-    private let timeSet: TimeSet
+    
+    private let timeSetInfo: TimeSetInfo
     
     // MARK: - constructor
-    init(timeSet: TimeSet) {
-        self.timeSet = timeSet
-        self.initialState = State(title: timeSet.info.title,
-                                  runningTime: timeSet.info.runningTime,
-                                  endIndex: timeSet.currentIndex,
-                                  timerCount: timeSet.info.timers.count,
-                                  repeatCount: timeSet.info.repeatCount,
-                                  memo: timeSet.info.memo)
+    init(timeSetInfo: TimeSetInfo) {
+        self.timeSetInfo = timeSetInfo
+        initialState = State(title: timeSetInfo.title,
+                             memo: timeSetInfo.memo)
     }
     
     // MARK: - Mutate
@@ -80,14 +62,7 @@ class TimeSetEndViewReactor: Reactor {
     // MARK: - action method
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
-        let length = memo.lengthOfBytes(using: .utf16)
-        
-        guard length <= TimeSetEndViewReactor.MAX_MEMO_LENGTH else {
-            return .just(.setMemo(timeSet.info.memo))
-        }
-        
-        timeSet.info.memo = memo
-        
+        timeSetInfo.memo = memo
         return .just(.setMemo(memo))
     }
     

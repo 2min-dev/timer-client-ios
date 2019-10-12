@@ -42,6 +42,7 @@
 "time_set_save_title" = "Time Set Save";
 "time_set_edit_title" = "Time Set Edit";
 "time_set_memo_title" = "Memo";
+"time_set_end_title" = "Time Set End";
 "local_time_set_title" = "My Time Set";
 "saved_time_set_title" = "Saved Time Set";
 "saved_time_set_management_title" = "Saved Time Set Management";
