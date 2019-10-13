@@ -92,7 +92,7 @@ class TimeSetEditView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyPadView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyPadView, dimedView, timerBadgeCollectionView])
         timerInputView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -130,6 +130,10 @@ class TimeSetEditView: UIView {
             make.trailing.equalToSuperview()
         }
         
+        dimedView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         return view
     }()
     
@@ -151,10 +155,24 @@ class TimeSetEditView: UIView {
         return view
     }()
     
+    let dimedView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Constants.Color.alabaster
+        view.alpha = 0
+        return view
+    }()
+    
+    // MARK: - properties
+    var isEnabled: Bool = true {
+        didSet {
+            showDimedView(isShow: !isEnabled, animated: true)
+        }
+    }
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         addAutolayoutSubviews([headerView, contentView, timerOptionView, footerView])
         headerView.snp.makeConstraints { make in
@@ -188,6 +206,17 @@ class TimeSetEditView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - private method
+    private func showDimedView(isShow: Bool, animated: Bool) {
+        if animated {
+            UIView.animate(withDuration: 0.3) {
+                self.dimedView.alpha = isShow ? 0.8 : 0
+            }
+        } else {
+            dimedView.alpha = isShow ? 0.8 : 0
+        }
     }
     
     // MARK: - selector

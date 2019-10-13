@@ -17,7 +17,7 @@ class NoticeDetailView: UIView {
     
     let noticeTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.white
+        view.backgroundColor = Constants.Color.clear
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.carnation
         view.isEditable = false
@@ -29,7 +29,7 @@ class NoticeDetailView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         // Set constrain of subviews
         addAutolayoutSubviews([noticeTextView, headerView])

@@ -291,7 +291,7 @@ class TimeSetSaveView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         addAutolayoutSubviews([headerView, contentView, footerView])
         headerView.snp.makeConstraints { make in

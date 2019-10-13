@@ -38,6 +38,7 @@ class LocalTimeSetView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = Constants.Color.alabaster
         
         // Set contraints of subviews
         addAutolayoutSubviews([timeSetCollectionView, headerView])

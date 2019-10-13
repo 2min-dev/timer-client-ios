@@ -142,6 +142,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         isTimerOptionVisible
             .map { !$0 }
+            .do(onNext: { [weak self] in self?.productivityView.isEnabled = $0 })
             .do(onNext: { [weak self] in self?.timerBadgeCollectionView.isScrollEnabled = $0 })
             .bind(to: timerOptionView.rx.isHidden)
             .disposed(by: disposeBag)
@@ -206,7 +207,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         // MARK: state
         // Can time set start
         reactor.state
-            .map { $0.allTime > 0 && $0.endTime > 0 }
+            .map { $0.allTime > 0 }
             .distinctUntilChanged()
             .bind(to: canTimeSetStart)
             .disposed(by: disposeBag)

@@ -33,7 +33,7 @@ class SettingTableViewCell: UITableViewCell {
     // MARK: - constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.clear
         selectionStyle = .none
         
         let divider = UIView()

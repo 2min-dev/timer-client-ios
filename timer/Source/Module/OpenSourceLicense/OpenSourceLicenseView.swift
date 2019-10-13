@@ -18,7 +18,7 @@ class OpenSourceLicenseView: UIView {
     
     let openSourceTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.white
+        view.backgroundColor = Constants.Color.clear
         view.isEditable = false
         view.textContainer.lineFragmentPadding = 30
         view.textContainerInset = UIEdgeInsets(top: 22.adjust(), left: 0, bottom: 22.adjust(), right: 0)
@@ -28,7 +28,7 @@ class OpenSourceLicenseView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         // Set constrain of subviews
         addAutolayoutSubviews([openSourceTextView, headerView])

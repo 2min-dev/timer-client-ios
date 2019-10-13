@@ -18,7 +18,7 @@ class NoticeListView: UIView {
     
     let noticeTableView: UITableView = {
         let view = UITableView()
-        view.backgroundColor = Constants.Color.white
+        view.backgroundColor = Constants.Color.clear
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
         return view
@@ -57,7 +57,7 @@ class NoticeListView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([noticeTableView, headerView])

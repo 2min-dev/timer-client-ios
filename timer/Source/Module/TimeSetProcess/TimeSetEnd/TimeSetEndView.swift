@@ -147,7 +147,7 @@ class TimeSetEndView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([headerView, titleLabel, dateLabel, memoInputView, footerView])

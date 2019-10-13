@@ -216,7 +216,7 @@ class TimeSetProcessView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleLabel, stateLabel, timeLabel, buttonStackView, extraTimeLabel, infoStackView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([titleLabel, stateLabel, timeLabel, repeatButton, addTimeButton, extraTimeLabel, infoStackView, timerBadgeCollectionView, dimedView, memoButton])
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(85.adjust())
             make.leading.equalTo(timeLabel)
@@ -234,14 +234,24 @@ class TimeSetProcessView: UIView {
             make.trailing.equalToSuperview()
         }
         
-        buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(10.adjust())
+        memoButton.snp.makeConstraints { make in
+            make.top.equalTo(timeLabel.snp.bottom).offset(10.adjust()).priorityHigh()
             make.leading.equalTo(timeLabel)
         }
         
+        repeatButton.snp.makeConstraints { make in
+            make.leading.equalTo(memoButton.snp.trailing).offset(10.adjust())
+            make.centerY.equalTo(memoButton)
+        }
+        
+        addTimeButton.snp.makeConstraints { make in
+            make.leading.equalTo(repeatButton.snp.trailing).offset(10.adjust())
+            make.centerY.equalTo(repeatButton)
+        }
+        
         extraTimeLabel.snp.makeConstraints { make in
-            make.leading.equalTo(buttonStackView.snp.trailing).offset(5.adjust())
-            make.centerY.equalTo(buttonStackView)
+            make.leading.equalTo(addTimeButton.snp.trailing).offset(5.adjust())
+            make.centerY.equalTo(addTimeButton)
         }
         
         infoStackView.snp.makeConstraints { make in
@@ -254,6 +264,13 @@ class TimeSetProcessView: UIView {
             make.top.equalTo(infoStackView.snp.bottom).offset(8.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+        }
+        
+        dimedView.snp.makeConstraints { make in
+            make.top.equalTo(memoButton)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         return view
@@ -281,10 +298,24 @@ class TimeSetProcessView: UIView {
         return view
     }()
     
+    let dimedView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Constants.Color.alabaster
+        view.alpha = 0
+        return view
+    }()
+    
+    // MARK: - properties
+    var isEnabled: Bool = true {
+        didSet {
+            dimedView.alpha = isEnabled ? 0 : 0.8
+        }
+    }
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([contentView, footerView])

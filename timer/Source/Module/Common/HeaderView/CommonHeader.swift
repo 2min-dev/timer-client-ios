@@ -142,7 +142,7 @@ class CommonHeader: Header {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         // Set consraint of subviews
         addAutolayoutSubviews([backButton, titleLabel, additionalButtonsStackView, additionalTextLabel])

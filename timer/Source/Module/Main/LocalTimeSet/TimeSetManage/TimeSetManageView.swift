@@ -31,7 +31,7 @@ class TimeSetManageView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = Constants.Color.alabaster
         
         addAutolayoutSubviews([timeSetCollectionView, headerView])
         timeSetCollectionView.snp.makeConstraints { make in

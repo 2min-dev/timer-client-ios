@@ -504,6 +504,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Update layout by current state of time set
     private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
         UIApplication.shared.isIdleTimerDisabled = false
+        timeSetProcessView.isEnabled = true
         
         switch state {
         case let .stop(repeat: count):
@@ -524,6 +525,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
                 // Running overtime recording
                 footerView.buttons = [quitButton, pauseButton]
                 
+                // Set view disabled
+                timeSetProcessView.isEnabled = false
                 timeLabel.textColor = Constants.Color.carnation
             }
             

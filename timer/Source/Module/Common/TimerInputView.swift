@@ -63,6 +63,8 @@ class TimerInputView: UIView {
     
     // MARK: - private method
     private func initLayout() {
+        backgroundColor = Constants.Color.white
+        
         layer.borderWidth = 1.adjust()
         layer.borderColor = Constants.Color.gallery.cgColor
     }
