@@ -41,6 +41,8 @@
 // MARK: - Screen title
 "time_set_save_title" = "Time Set Save";
 "time_set_edit_title" = "Time Set Edit";
+"time_set_memo_title" = "Memo";
+"time_set_end_title" = "Time Set End";
 "local_time_set_title" = "My Time Set";
 "saved_time_set_title" = "Saved Time Set";
 "saved_time_set_management_title" = "Saved Time Set Management";
@@ -92,14 +94,9 @@
 "timer_option_comment_bytes_format" = "%d/%d bytes";
 
 // MARK: - Time set process
-"time_set_process_extra_time_format" = "+%dM";
+"time_set_process_extra_time_format" = "x %d";
+"time_set_process_add_time_title" = "+1M";
 "time_set_process_memo_title" = "Memo";
-
-// MARK: - Time set badge
-"time_set_badge_type_countdown_format" = "%d sec before start";
-"time_set_badge_type_repeat_format" = "%d repetitions";
-"time_set_badge_type_cancel_title" = "Canceled";
-"time_set_badge_type_overtime_title" = "Overtimed";
 
 // MARK: - Time set alert
 "time_set_alert_timer_start_title_format" = "Do you want to start\nwith %d timer?";
@@ -111,10 +108,6 @@
 "time_set_popup_timer_end_info_format" = "%d/%d";
 "time_set_popup_time_set_repeat_title" = "Repeat Time Set End";
 "time_set_popup_time_set_repeat_info_format" = "%d repetations";
-
-// MARK: - Time set floating view
-"time_set_floating_timer_end_info_format" = "%d/%d";
-"time_set_floating_time_set_repeat_info_format" = "(%d repetations)";
 
 // MARK: - Time set
 "time_set_default_title" = "Utitled Time Set";
@@ -135,9 +128,19 @@
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "Exceeded the number of characters";
 
+"time_set_state_countdown_format" = "%d sec before start";
+"time_set_state_pause_title" = "Paused";
+"time_set_state_repeat_format" = "%d repetitions";
+"time_set_state_overtime_title" = "Overtimed";
+
 // MARK: - Timer
 "timer_alarm_title" = "Sound";
 "timer_comment_title" = "Comment";
+
+// MARK: - Alarm
+"alarm_silence_title" = "Silence";
+"alarm_vibrate_title" = "Vibrate";
+"alarm_default_title" = "Default";
 
 // MARK: - Alert
 "alert_warning_time_set_init_title" = "Initialize Time Set";
