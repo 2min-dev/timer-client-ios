@@ -80,6 +80,10 @@
 		F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */; };
 		F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */; };
 		F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */; };
+		F3A218F923535FB5007ABE3F /* HistoryListViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */; };
+		F3A218FA23535FB5007ABE3F /* HistoryListViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */; };
+		F3A218FB23535FB5007ABE3F /* HistoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */; };
+		F3A218FC23535FB5007ABE3F /* HistoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F823535FB5007ABE3F /* HistoryListView.swift */; };
 		F3A23D7A2320D7DA003856AB /* Realm+convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A23D792320D7DA003856AB /* Realm+convert.swift */; };
 		F3A7940F22FDC0AC007D5D40 /* UserDefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */; };
 		F3AA90592337CC0D00CBB8EE /* TimerBadgeRepeatCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AA90582337CC0D00CBB8EE /* TimerBadgeRepeatCollectionViewCell.swift */; };
@@ -280,6 +284,10 @@
 		F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
 		F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
 		F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
+		F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewCoordinator.swift; sourceTree = "<group>"; };
+		F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewReactor.swift; sourceTree = "<group>"; };
+		F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewController.swift; sourceTree = "<group>"; };
+		F3A218F823535FB5007ABE3F /* HistoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListView.swift; sourceTree = "<group>"; };
 		F3A23D792320D7DA003856AB /* Realm+convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+convert.swift"; sourceTree = "<group>"; };
 		F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultService.swift; sourceTree = "<group>"; };
 		F3AA90582337CC0D00CBB8EE /* TimerBadgeRepeatCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -536,6 +544,7 @@
 				F387AF2B22F181FA002ABDB6 /* TimeSetSave */,
 				F38702B222F970D20099241C /* TimeSetDetail */,
 				F3ADF67E2300671400F0FC67 /* TimeSetProcess */,
+				F3A218F423535FA1007ABE3F /* HistoryList */,
 				F3735C9C22CFAA8200DC247C /* Setting */,
 				F3C0DF9B233369A400E49425 /* NoticeList */,
 				F3C0DF8F2333500D00E49425 /* AlarmSetting */,
@@ -694,6 +703,17 @@
 				F389657822759BAA0043E177 /* Info.plist */,
 			);
 			path = test;
+			sourceTree = "<group>";
+		};
+		F3A218F423535FA1007ABE3F /* HistoryList */ = {
+			isa = PBXGroup;
+			children = (
+				F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */,
+				F3A218F823535FB5007ABE3F /* HistoryListView.swift */,
+				F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */,
+				F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */,
+			);
+			path = HistoryList;
 			sourceTree = "<group>";
 		};
 		F3ADF4302312943E00FA9277 /* TimeSetMemo */ = {
@@ -1285,6 +1305,7 @@
 				F3F21F6E23338A100000597B /* NoticeDetailViewCoordinator.swift in Sources */,
 				F3F5F877233155E8003271B3 /* AllTimeSetView.swift in Sources */,
 				F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */,
+				F3A218FA23535FB5007ABE3F /* HistoryListViewReactor.swift in Sources */,
 				F3060F95230E9B12002A2E0E /* TimeSetEndViewReactor.swift in Sources */,
 				F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */,
 				F3D1F7BE225CC357006DC162 /* UIView+autolayout.swift in Sources */,
@@ -1328,6 +1349,7 @@
 				F3F5F87A233221D7003271B3 /* SettingTableViewCell.swift in Sources */,
 				F303F27D225CCE2400A11FAF /* ProductivityView.swift in Sources */,
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
+				F3A218FB23535FB5007ABE3F /* HistoryListViewController.swift in Sources */,
 				F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */,
 				F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */,
 				F387AF3022F18215002ABDB6 /* TimeSetSaveViewCoordinator.swift in Sources */,
@@ -1349,6 +1371,7 @@
 				F303F26F225CCAF500A11FAF /* LocalTimeSetView.swift in Sources */,
 				F30B9CE2233274DC003496A9 /* OpenSourceLicenseViewCoordinator.swift in Sources */,
 				F3282C9722F30D2200824F8A /* UITextField+rx.swift in Sources */,
+				F3A218F923535FB5007ABE3F /* HistoryListViewCoordinator.swift in Sources */,
 				F3FBFFE722F420B6001E369E /* Footer.swift in Sources */,
 				F3D1F7AE225CC22E006DC162 /* IntroViewCoordinator.swift in Sources */,
 				F3ADF4382312945600FA9277 /* TimeSetMemoView.swift in Sources */,
@@ -1391,6 +1414,7 @@
 				F3C0DF9A2333511C00E49425 /* AlarmSettingTableViewCell.swift in Sources */,
 				F3C0DF972333501F00E49425 /* AlarmSettingView.swift in Sources */,
 				F3C0DF8E233342C800E49425 /* CountdownSettingTableViewCell.swift in Sources */,
+				F3A218FC23535FB5007ABE3F /* HistoryListView.swift in Sources */,
 				F3A23D7A2320D7DA003856AB /* Realm+convert.swift in Sources */,
 				F3F21F7023338A100000597B /* NoticeDetailViewController.swift in Sources */,
 				F3CD184622F61776008DB221 /* FooterButton.swift in Sources */,
