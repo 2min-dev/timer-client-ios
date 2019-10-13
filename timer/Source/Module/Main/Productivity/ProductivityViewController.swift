@@ -70,6 +70,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         reactor.action.onNext(.moveTimer(at: sourceIndexPath.item, to: destinationIndexPath.item))
     })
     
+    private let routeType: PublishRelay<ProductivityViewCoordinator.Route> = PublishRelay()
     private let canTimeSetStart: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private let isTimerOptionVisible: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private var isBadgeMoving: Bool = false
@@ -135,7 +136,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .withLatestFrom(canTimeSetStart)
             .subscribe(onNext: { [weak self] in self?.showFooterView(isShow: $0) })
             .disposed(by: disposeBag)
-
+        
         canTimeSetStart
             .subscribe(onNext: { [weak self] in self?.updateLayoutFrom(canTimeSetStart: $0) })
             .disposed(by: disposeBag)
@@ -193,14 +194,18 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { [weak self] _ in !(self?.isTimerOptionVisible.value ?? true) }
             .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
-        
-        saveButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetInfo)) })
+    
+        let routeButtonTap: Observable<ProductivityViewCoordinator.Route> = Observable.merge(
+            saveButton.rx.tap.map { .timeSetSave(reactor.timeSetInfo) },
+            startButton.rx.tap.map { .timeSetProcess(reactor.timeSetInfo) })
+            .share(replay: 1)
+            
+        routeButtonTap
+            .bind(to: routeType)
             .disposed(by: disposeBag)
         
-        startButton.rx.tap
-            .do(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
-            .map { Reactor.Action.clearTimeSet }
+        routeButtonTap
+            .map { _ in Reactor.Action.validate }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -286,6 +291,16 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .do(onNext: { [weak self] _ in self?.isTimerOptionVisible.accept(false) })
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
             .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
+            .disposed(by: disposeBag)
+        
+        // Route after timer list validated
+        reactor.state
+            .map { $0.isValidated }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .withLatestFrom(routeType)
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in self?.present(for: $0) })
             .disposed(by: disposeBag)
         
         // Scroll to selected badge when timer option view visible
@@ -415,6 +430,19 @@ class ProductivityViewController: BaseHeaderViewController, View {
     private func badgeScrollIfCan(at indexPath: IndexPath) {
         guard !isBadgeMoving else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+    }
+    
+    /// Present view from route type
+    private func present(for route: ProductivityViewCoordinator.Route) {
+        guard let reactor = reactor else { return }
+        
+        // Present view from route type
+        _ = coordinator.present(for: route)
+        
+        if case .timeSetProcess(_) = route {
+            // If route type is start time set, clear current time set data
+            reactor.action.onNext(.clearTimeSet)
+        }
     }
     
     // MARK: - private method
