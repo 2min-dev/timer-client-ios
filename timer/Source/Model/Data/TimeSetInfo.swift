@@ -30,8 +30,6 @@ class TimeSetInfo: Object, Codable, NSCopying {
     @objc dynamic var isBookmark: Bool = false          // Is bookmark of the time set
     
     // History record properties of the time set
-    @objc dynamic var startDate: Date?                  // Start date of time set
-    @objc dynamic var endDate: Date?                    // End date of time set
     @objc dynamic var repeatCount: Int = 0              // Repeat count of time set
     @objc dynamic var runningTime: TimeInterval = 0     // All running time of time set
     @objc dynamic var endState: EndState = .none        // End state of time set
@@ -51,8 +49,6 @@ class TimeSetInfo: Object, Codable, NSCopying {
                      memo: String,
                      isBookmark: Bool,
                      isRepeat: Bool,
-                     startDate: Date?,
-                     endDate: Date?,
                      repeatCount: Int,
                      runningTime: TimeInterval,
                      endState: EndState,
@@ -66,8 +62,6 @@ class TimeSetInfo: Object, Codable, NSCopying {
         self.memo = memo
         self.isBookmark = isBookmark
         self.isRepeat = isRepeat
-        self.startDate = startDate
-        self.endDate = endDate
         self.repeatCount = repeatCount
         self.runningTime = runningTime
         self.endState = endState
@@ -97,8 +91,6 @@ class TimeSetInfo: Object, Codable, NSCopying {
                            memo: memo,
                            isBookmark: isBookmark,
                            isRepeat: isRepeat,
-                           startDate: startDate,
-                           endDate: endDate,
                            repeatCount: repeatCount,
                            runningTime: runningTime,
                            endState: endState,
