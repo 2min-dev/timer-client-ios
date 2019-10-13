@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1236FB8BB1172A8260339148 /* Pods_test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */; };
-		62F447025DA9571328264AAF /* Pods_widget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08C6E86474A099E3080F5433 /* Pods_widget.framework */; };
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
 		F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* TMTabBar.swift */; };
 		F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* TMTabBarItem.swift */; };
@@ -158,10 +157,6 @@
 		F3F21F7023338A100000597B /* NoticeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */; };
 		F3F21F7123338A100000597B /* NoticeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F6D23338A100000597B /* NoticeDetailView.swift */; };
 		F3F21F752333A8850000597B /* BaseHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F21F742333A8850000597B /* BaseHeaderViewController.swift */; };
-		F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F342AD226751A300A226C0 /* NotificationCenter.framework */; };
-		F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342B0226751A300A226C0 /* TodayViewController.swift */; };
-		F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F3F342AC226751A300A226C0 /* widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		F3F342C02267552100A226C0 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F342BF2267552100A226C0 /* TodayView.swift */; };
 		F3F5413D232778D100D618D2 /* TimeSetManageViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F54139232778D100D618D2 /* TimeSetManageViewCoordinator.swift */; };
 		F3F5413E232778D100D618D2 /* TimeSetManageViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5413A232778D100D618D2 /* TimeSetManageViewReactor.swift */; };
 		F3F5413F232778D100D618D2 /* TimeSetManageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F5413B232778D100D618D2 /* TimeSetManageViewController.swift */; };
@@ -176,13 +171,6 @@
 		F3F800A7226A0981003D1D88 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
 		F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F3F800B3226A0C15003D1D88 /* Localizable.strings */; };
 		F3F800B6226A0D0F003D1D88 /* String+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F800B5226A0D0F003D1D88 /* String+localized.swift */; };
-		F3F800B7226A0D68003D1D88 /* String+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F800B5226A0D0F003D1D88 /* String+localized.swift */; };
-		F3F800B8226A0D79003D1D88 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C2225CC3D7006DC162 /* Constants.swift */; };
-		F3F800B9226A107B003D1D88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F3F800B3226A0C15003D1D88 /* Localizable.strings */; };
-		F3F800BA226A1109003D1D88 /* Primitive+adjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */; };
-		F3F800BB226A2CFE003D1D88 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7C1225CC3D7006DC162 /* Logger.swift */; };
-		F3F800BC226A2D19003D1D88 /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */; };
-		F3F800BD226A2D1B003D1D88 /* UIView+autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */; };
 		F3FBFFE722F420B6001E369E /* Footer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3FBFFE622F420B6001E369E /* Footer.swift */; };
 /* End PBXBuildFile section */
 
@@ -194,13 +182,6 @@
 			remoteGlobalIDString = F3D1F787225CB6C1006DC162;
 			remoteInfo = timer;
 		};
-		F3F342B6226751A300A226C0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F3D1F780225CB6C1006DC162 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F3F342AB226751A300A226C0;
-			remoteInfo = widget;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -210,7 +191,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				F3F342B8226751A300A226C0 /* widget.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,19 +354,13 @@
 		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionCollectionReusableView.swift; sourceTree = "<group>"; };
 		F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCellReactor.swift; sourceTree = "<group>"; };
 		F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModelProtocol.swift; sourceTree = "<group>"; };
-		F3E4383F227421FF00FA1246 /* timer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = timer.entitlements; path = timer/timer.entitlements; sourceTree = "<group>"; };
-		F3E438402274220500FA1246 /* widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widget.entitlements; sourceTree = "<group>"; };
 		F3E5C3512296E52000148139 /* UITabBar+height.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+height.swift"; sourceTree = "<group>"; };
 		F3F21F6A23338A100000597B /* NoticeDetailViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewCoordinator.swift; sourceTree = "<group>"; };
 		F3F21F6B23338A100000597B /* NoticeDetailViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewReactor.swift; sourceTree = "<group>"; };
 		F3F21F6C23338A100000597B /* NoticeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewController.swift; sourceTree = "<group>"; };
 		F3F21F6D23338A100000597B /* NoticeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailView.swift; sourceTree = "<group>"; };
 		F3F21F742333A8850000597B /* BaseHeaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseHeaderViewController.swift; sourceTree = "<group>"; };
-		F3F342AC226751A300A226C0 /* widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3F342AD226751A300A226C0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
-		F3F342B0226751A300A226C0 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
-		F3F342B5226751A300A226C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F3F342BF2267552100A226C0 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		F3F54139232778D100D618D2 /* TimeSetManageViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageViewCoordinator.swift; sourceTree = "<group>"; };
 		F3F5413A232778D100D618D2 /* TimeSetManageViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageViewReactor.swift; sourceTree = "<group>"; };
 		F3F5413B232778D100D618D2 /* TimeSetManageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageViewController.swift; sourceTree = "<group>"; };
@@ -418,15 +392,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F3F342A9226751A300A226C0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F3F342AE226751A300A226C0 /* NotificationCenter.framework in Frameworks */,
-				62F447025DA9571328264AAF /* Pods_widget.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,9 +853,7 @@
 		F3D1F77F225CB6C1006DC162 = {
 			isa = PBXGroup;
 			children = (
-				F3E4383F227421FF00FA1246 /* timer.entitlements */,
 				F3D1F78A225CB6C1006DC162 /* timer */,
-				F3F342AF226751A300A226C0 /* widget */,
 				F389657522759BAA0043E177 /* test */,
 				F3D1F789225CB6C1006DC162 /* Products */,
 				148CF5699B4175487BC4AAAF /* Frameworks */,
@@ -902,7 +865,6 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F788225CB6C1006DC162 /* timer.app */,
-				F3F342AC226751A300A226C0 /* widget.appex */,
 				F389657422759BAA0043E177 /* test.xctest */,
 			);
 			name = Products;
@@ -1025,17 +987,6 @@
 			path = NoticeDetail;
 			sourceTree = "<group>";
 		};
-		F3F342AF226751A300A226C0 /* widget */ = {
-			isa = PBXGroup;
-			children = (
-				F3E438402274220500FA1246 /* widget.entitlements */,
-				F3F342B0226751A300A226C0 /* TodayViewController.swift */,
-				F3F342BF2267552100A226C0 /* TodayView.swift */,
-				F3F342B5226751A300A226C0 /* Info.plist */,
-			);
-			path = widget;
-			sourceTree = "<group>";
-		};
 		F3F54138232778BC00D618D2 /* TimeSetManage */ = {
 			isa = PBXGroup;
 			children = (
@@ -1116,30 +1067,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				F3F342B7226751A300A226C0 /* PBXTargetDependency */,
 			);
 			name = timer;
 			productName = "timerset-ios";
 			productReference = F3D1F788225CB6C1006DC162 /* timer.app */;
 			productType = "com.apple.product-type.application";
-		};
-		F3F342AB226751A300A226C0 /* widget */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F3F342BB226751A300A226C0 /* Build configuration list for PBXNativeTarget "widget" */;
-			buildPhases = (
-				F0BA87F911D063343B396E9A /* [CP] Check Pods Manifest.lock */,
-				F3F342A8226751A300A226C0 /* Sources */,
-				F3F342A9226751A300A226C0 /* Frameworks */,
-				F3F342AA226751A300A226C0 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = widget;
-			productName = widget;
-			productReference = F3F342AC226751A300A226C0 /* widget.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -1156,14 +1088,6 @@
 						TestTargetID = F3D1F787225CB6C1006DC162;
 					};
 					F3D1F787225CB6C1006DC162 = {
-						CreatedOnToolsVersion = 10.2;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
-					F3F342AB226751A300A226C0 = {
 						CreatedOnToolsVersion = 10.2;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1188,7 +1112,6 @@
 			projectRoot = "";
 			targets = (
 				F3D1F787225CB6C1006DC162 /* timer */,
-				F3F342AB226751A300A226C0 /* widget */,
 				F389657322759BAA0043E177 /* test */,
 			);
 		};
@@ -1214,14 +1137,6 @@
 				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 				F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F3F342AA226751A300A226C0 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F3F800B9226A107B003D1D88 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1304,28 +1219,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-test/Pods-test-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F0BA87F911D063343B396E9A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-widget-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F3D1F7A6225CBEA8006DC162 /* ShellScript */ = {
@@ -1517,21 +1410,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F3F342A8226751A300A226C0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F3F800BC226A2D19003D1D88 /* UIColor+hex.swift in Sources */,
-				F3F342C02267552100A226C0 /* TodayView.swift in Sources */,
-				F3F800BB226A2CFE003D1D88 /* Logger.swift in Sources */,
-				F3F800BA226A1109003D1D88 /* Primitive+adjust.swift in Sources */,
-				F3F800B7226A0D68003D1D88 /* String+localized.swift in Sources */,
-				F3F800BD226A2D1B003D1D88 /* UIView+autolayout.swift in Sources */,
-				F3F342B1226751A300A226C0 /* TodayViewController.swift in Sources */,
-				F3F800B8226A0D79003D1D88 /* Constants.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1539,11 +1417,6 @@
 			isa = PBXTargetDependency;
 			target = F3D1F787225CB6C1006DC162 /* timer */;
 			targetProxy = F389657922759BAA0043E177 /* PBXContainerItemProxy */;
-		};
-		F3F342B7226751A300A226C0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F3F342AB226751A300A226C0 /* widget */;
-			targetProxy = F3F342B6226751A300A226C0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1737,7 +1610,6 @@
 			baseConfigurationReference = 8DAA476B776A79A887A8BAB2 /* Pods-timer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = timer/timer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
@@ -1747,9 +1619,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jsilver.project.timer;
+				PRODUCT_BUNDLE_IDENTIFIER = team.project.timeset;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = jsilver.project.timer;
+				PROVISIONING_PROFILE_SPECIFIER = 2min;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1760,7 +1632,6 @@
 			baseConfigurationReference = E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = timer/timer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6VSLC69397;
@@ -1770,57 +1641,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jsilver.project.timer;
+				PRODUCT_BUNDLE_IDENTIFIER = team.project.timeset;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = jsilver.project.timer;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		F3F342B9226751A300A226C0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 024E0A6DB88C102F5B7ADDBF /* Pods-widget.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = widget/widget.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 6VSLC69397;
-				INFOPLIST_FILE = widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = jsilver.project.timer.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = jsilver.project.timer.widget;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		F3F342BA226751A300A226C0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 488658218883DE882F12C592 /* Pods-widget.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = widget/widget.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 6VSLC69397;
-				INFOPLIST_FILE = widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = jsilver.project.timer.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = jsilver.project.timer.widget;
-				SKIP_INSTALL = YES;
+				PROVISIONING_PROFILE_SPECIFIER = 2min;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1852,15 +1675,6 @@
 			buildConfigurations = (
 				F3D1F79B225CB6C2006DC162 /* Debug */,
 				F3D1F79C225CB6C2006DC162 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F3F342BB226751A300A226C0 /* Build configuration list for PBXNativeTarget "widget" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F3F342B9226751A300A226C0 /* Debug */,
-				F3F342BA226751A300A226C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
