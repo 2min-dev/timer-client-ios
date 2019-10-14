@@ -14,6 +14,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     enum Route {
         case timeSetSave(TimeSetInfo)
         case timeSetProcess(TimeSetInfo?)
+        case history
         case setting
     }
 
@@ -32,6 +33,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         switch route {
         case .timeSetSave(_),
              .timeSetProcess(_),
+             .history,
              .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
@@ -56,6 +58,17 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
             guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case .history:
+            let coordinator = HistoryListViewCoordinator(provider: provider)
+            let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)
+            let viewController = HistoryListViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

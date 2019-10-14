@@ -15,6 +15,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
         case timeSetManage(TimeSetManageViewReactor.TimeSetType)
         case allTimeSet(AllTimeSetViewReactor.TimeSetType)
         case timeSetDetail(TimeSetInfo)
+        case history
         case setting
     }
     
@@ -36,6 +37,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
              
         case .allTimeSet(_),
              .timeSetDetail(_),
+             .history,
              .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
@@ -71,6 +73,17 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
             let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
             let viewController = TimeSetDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+
+        case .history:
+            let coordinator = HistoryListViewCoordinator(provider: provider)
+            let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)
+            let viewController = HistoryListViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController
