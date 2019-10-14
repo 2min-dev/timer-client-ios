@@ -59,6 +59,9 @@
 		F379A71A231D36BA007E69A0 /* TimeSetProcessFloatingViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F379A716231D36BA007E69A0 /* TimeSetProcessFloatingViewReactor.swift */; };
 		F379A71C231D36BA007E69A0 /* TimeSetProcessFloatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F379A718231D36BA007E69A0 /* TimeSetProcessFloatingView.swift */; };
 		F37AF0E622F8211800509F5F /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37AF0E522F8211800509F5F /* AlertBuilder.swift */; };
+		F37FF50B23536E07009F6156 /* HistoryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */; };
+		F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */; };
+		F37FF50F23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50E23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift */; };
 		F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702AE22F899C50099241C /* ConfirmHeader.swift */; };
 		F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B322F970E80099241C /* TimeSetDetailViewCoordinator.swift */; };
 		F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B422F970E80099241C /* TimeSetDetailViewReactor.swift */; };
@@ -261,6 +264,9 @@
 		F379A716231D36BA007E69A0 /* TimeSetProcessFloatingViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessFloatingViewReactor.swift; sourceTree = "<group>"; };
 		F379A718231D36BA007E69A0 /* TimeSetProcessFloatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessFloatingView.swift; sourceTree = "<group>"; };
 		F37AF0E522F8211800509F5F /* AlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBuilder.swift; sourceTree = "<group>"; };
+		F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListCollectionViewCell.swift; sourceTree = "<group>"; };
+		F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListCollectionViewCellReactor.swift; sourceTree = "<group>"; };
+		F37FF50E23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListEmptyCollectionReusableView.swift; sourceTree = "<group>"; };
 		F38702AE22F899C50099241C /* ConfirmHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmHeader.swift; sourceTree = "<group>"; };
 		F38702B322F970E80099241C /* TimeSetDetailViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetDetailViewCoordinator.swift; sourceTree = "<group>"; };
 		F38702B422F970E80099241C /* TimeSetDetailViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetDetailViewReactor.swift; sourceTree = "<group>"; };
@@ -664,6 +670,16 @@
 			path = TimeSetProcessFloatingView;
 			sourceTree = "<group>";
 		};
+		F37FF50923536DE8009F6156 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */,
+				F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */,
+				F37FF50E23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		F38702AD22F899720099241C /* HeaderView */ = {
 			isa = PBXGroup;
 			children = (
@@ -708,6 +724,7 @@
 		F3A218F423535FA1007ABE3F /* HistoryList */ = {
 			isa = PBXGroup;
 			children = (
+				F37FF50923536DE8009F6156 /* Cell */,
 				F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */,
 				F3A218F823535FB5007ABE3F /* HistoryListView.swift */,
 				F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */,
@@ -1274,6 +1291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */,
+				F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */,
 				F30B9CE5233274DC003496A9 /* OpenSourceLicenseView.swift in Sources */,
 				F3C1270023000C42006D736A /* JSONCodec.swift in Sources */,
 				F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */,
@@ -1285,6 +1303,7 @@
 				F3C2E7B9228318C500C69FF2 /* TimerBadgeCellReactor.swift in Sources */,
 				F373CCD62265FA33007ECCA0 /* TMTimer.swift in Sources */,
 				F3C18752226204F700B2C644 /* TeamInfoViewCoordinator.swift in Sources */,
+				F37FF50B23536E07009F6156 /* HistoryListCollectionViewCell.swift in Sources */,
 				F3ADF67D230015CD00F0FC67 /* BaseService.swift in Sources */,
 				F3C0DFA2233369CE00E49425 /* NoticeListViewController.swift in Sources */,
 				F3ADF4362312945600FA9277 /* TimeSetMemoViewReactor.swift in Sources */,
@@ -1350,6 +1369,7 @@
 				F303F27D225CCE2400A11FAF /* ProductivityView.swift in Sources */,
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
 				F3A218FB23535FB5007ABE3F /* HistoryListViewController.swift in Sources */,
+				F37FF50F23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift in Sources */,
 				F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */,
 				F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */,
 				F387AF3022F18215002ABDB6 /* TimeSetSaveViewCoordinator.swift in Sources */,
