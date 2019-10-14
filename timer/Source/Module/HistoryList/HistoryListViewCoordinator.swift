@@ -11,7 +11,7 @@ import UIKit
 class HistoryListViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
-        case empty
+        case productivity
     }
     
     // MARK: - properties
@@ -25,10 +25,23 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
     
     // MARK: - presentation
     func present(for route: Route) -> UIViewController? {
-        return get(for: route)
+        guard let viewController = get(for: route) else { return nil }
+        
+        switch route {
+        case .productivity:
+            guard let mainViewController = viewController as? MainViewController else { return nil }
+            // Select productivity tab
+            mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
+            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+        }
+        
+        return viewController
     }
     
     func get(for route: Route) -> UIViewController? {
-        return nil
+        switch route {
+        case .productivity:
+            return self.viewController.navigationController?.viewControllers.first
+        }
     }
 }
