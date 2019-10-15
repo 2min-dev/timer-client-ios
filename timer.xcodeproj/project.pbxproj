@@ -83,6 +83,7 @@
 		F39BFF892354D32D0057816B /* HistoryDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF852354D32D0057816B /* HistoryDetailViewReactor.swift */; };
 		F39BFF8A2354D32D0057816B /* HistoryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF862354D32D0057816B /* HistoryDetailViewController.swift */; };
 		F39BFF8B2354D32D0057816B /* HistoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF872354D32D0057816B /* HistoryDetailView.swift */; };
+		F39BFF8D2355F9EA0057816B /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF8C2355F9EA0057816B /* History.swift */; };
 		F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */; };
 		F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */; };
 		F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */; };
@@ -294,6 +295,7 @@
 		F39BFF852354D32D0057816B /* HistoryDetailViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryDetailViewReactor.swift; sourceTree = "<group>"; };
 		F39BFF862354D32D0057816B /* HistoryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryDetailViewController.swift; sourceTree = "<group>"; };
 		F39BFF872354D32D0057816B /* HistoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryDetailView.swift; sourceTree = "<group>"; };
+		F39BFF8C2355F9EA0057816B /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.ttf; sourceTree = "<group>"; };
 		F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
 		F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
@@ -857,6 +859,7 @@
 				F373CCD52265FA33007ECCA0 /* TMTimer.swift */,
 				F37041CC226C35B80012EA16 /* TimeSetInfo.swift */,
 				F37041CA226B81B00012EA16 /* TimeSet.swift */,
+				F39BFF8C2355F9EA0057816B /* History.swift */,
 				F3D8EDFE234B7F06003CAF08 /* Alarm.swift */,
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 			);
@@ -1372,6 +1375,7 @@
 				F39BFF882354D32D0057816B /* HistoryDetailViewCoordinator.swift in Sources */,
 				F3DAF59E2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift in Sources */,
 				F38C37A323253C55000A0596 /* TimeSetInduceCollectionViewCell.swift in Sources */,
+				F39BFF8D2355F9EA0057816B /* History.swift in Sources */,
 				F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */,
 				F3DD7AD623216293000E3BB9 /* BookmaredTimeSetCollectionViewCell.swift in Sources */,
 				F3F5F876233155E8003271B3 /* AllTimeSetViewController.swift in Sources */,
