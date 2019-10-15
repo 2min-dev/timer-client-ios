@@ -10,9 +10,9 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class HistoryDetailViewController: BaseViewController, View {
+class HistoryDetailViewController: BaseHeaderViewController, View {
     // MARK: - view properties
-    private var view: HistoryDetailView { return view as! UIView }
+    private var historyDetailView: HistoryDetailView { return view as! HistoryDetailView }
     
     // MARK: - properties
     var coordinator: HistoryDetailViewCoordinator
@@ -37,7 +37,7 @@ class HistoryDetailViewController: BaseViewController, View {
     }
     
     // MARK: - bine
-    func bind(reactor: Reactor) {
+    func bind(reactor: HistoryDetailViewReactor) {
         // MARK: action
         
         // MARK: state

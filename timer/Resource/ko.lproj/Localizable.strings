@@ -113,6 +113,9 @@
 "history_empty_title" = "타임셋 히스토리가 아직 없어요.\n나만의 시간을 자유롭게 등록해 보세요!";
 "history_make_time_set_title" = "타임셋 만들어 보기";
 "history_started_date_format" = "YY.MM.dd";
+"history_date_title" = "사용 일시";
+"history_extra_time_title" = "추가한 시간";
+"history_repeat_count_title" = "반복 횟수";
 
 // MARK: - Time set
 "time_set_default_title" = "무제 타임셋";

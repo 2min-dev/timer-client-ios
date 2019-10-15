@@ -33,7 +33,7 @@ class HistoryListViewController: BaseHeaderViewController, View {
         if let self = self {
             // Bind create button action
             supplementaryView.createButton.rx.tap
-                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .local) })
+                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .productivity) })
                 .disposed(by: self.disposeBag)
         }
         
@@ -81,10 +81,12 @@ class HistoryListViewController: BaseHeaderViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // TODO: present history detail view
         historyCollectionView.rx.itemSelected
-            .subscribe(onNext: {
-                Logger.debug($0)
-            })
+            .withLatestFrom(reactor.state.map { $0.sections },
+                            resultSelector: { $1.first?.items[$0.item] })
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .detail) })
             .disposed(by: disposeBag)
         
         // MARK: state

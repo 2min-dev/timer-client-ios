@@ -12,6 +12,7 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case productivity
+        case detail
     }
     
     // MARK: - properties
@@ -33,6 +34,9 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
             // Select productivity tab
             mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
             self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            
+        case .detail:
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
         return viewController
@@ -42,6 +46,17 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
         switch route {
         case .productivity:
             return self.viewController.navigationController?.viewControllers.first
+            
+        case .detail:
+            let coordinator = HistoryDetailViewCoordinator(provider: provider)
+            let reactor = HistoryDetailViewReactor()
+            let viewController = HistoryDetailViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
         }
     }
 }

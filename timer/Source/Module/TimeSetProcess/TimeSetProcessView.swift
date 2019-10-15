@@ -333,7 +333,11 @@ class TimeSetProcessView: UIView {
         footerView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.bottom.equalToSuperview()
+            }
         }
     }
     
