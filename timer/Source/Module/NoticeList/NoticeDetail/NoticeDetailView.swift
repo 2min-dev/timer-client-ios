@@ -26,13 +26,17 @@ class NoticeDetailView: UIView {
         return view
     }()
     
+    let loadingView: CommonLoading = {
+        return CommonLoading()
+    }()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.alabaster
         
         // Set constrain of subviews
-        addAutolayoutSubviews([noticeTextView, headerView])
+        addAutolayoutSubviews([noticeTextView, headerView, loadingView])
         noticeTextView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
@@ -52,6 +56,10 @@ class NoticeDetailView: UIView {
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+        }
+        
+        loadingView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

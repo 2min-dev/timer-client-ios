@@ -19,6 +19,9 @@ class NoticeListViewReactor: Reactor {
         /// Set countdown menu sections
         case setSections([NoticeListSectionModel])
         
+        /// Set loading flag
+        case setLoading(Bool)
+        
         /// Set should section reload `true`
         case sectionReload
     }
@@ -26,6 +29,9 @@ class NoticeListViewReactor: Reactor {
     struct State {
         /// Countdown menu sections
         var sections: [NoticeListSectionModel]
+        
+        /// Is loading to process
+        var isLoading: Bool
         
         /// Need to reload section
         var shouldSectionReload: Bool
@@ -38,7 +44,7 @@ class NoticeListViewReactor: Reactor {
     // MARK: - constructor
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
-        initialState = State(sections: [], shouldSectionReload: true)
+        initialState = State(sections: [], isLoading: true, shouldSectionReload: true)
     }
     
     // MARK: - mutation
@@ -59,6 +65,10 @@ class NoticeListViewReactor: Reactor {
             state.sections = sections
             return state
             
+        case let .setLoading(isLoading):
+            state.isLoading = isLoading
+            return state
+            
         case .sectionReload:
             state.shouldSectionReload = true
             return state
@@ -67,13 +77,17 @@ class NoticeListViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewDidLoad() -> Observable<Mutation> {
-        return networkService.requestNoticeList().asObservable()
+        let startLoading: Observable<Mutation> = .just(.setLoading(true))
+        let requestNoticeList: Observable<Mutation> = networkService.requestNoticeList().asObservable()
             .flatMap { notices -> Observable<Mutation> in
                 let setSections: Observable<Mutation> = .just(.setSections([NoticeListSectionModel(model: Void(), items: notices)]))
                 let sectionReload: Observable<Mutation> = .just(.sectionReload)
                 
                 return .concat(setSections, sectionReload)
         }
+        let endLoading: Observable<Mutation> = .just(.setLoading(false))
+        
+        return .concat(startLoading, requestNoticeList, endLoading)
     }
     
     deinit {

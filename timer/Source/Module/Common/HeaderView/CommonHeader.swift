@@ -142,6 +142,7 @@ class CommonHeader: Header {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setContentHuggingPriority(.required, for: .vertical)
         backgroundColor = Constants.Color.alabaster
         
         // Set consraint of subviews

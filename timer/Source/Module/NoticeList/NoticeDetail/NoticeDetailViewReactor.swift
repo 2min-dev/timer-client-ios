@@ -18,6 +18,9 @@ class NoticeDetailViewReactor: Reactor {
     enum Mutation {
         /// Set notice content
         case setContent(String)
+        
+        /// Set loading flag
+        case setLoading(Bool)
     }
     
     struct State {
@@ -29,6 +32,9 @@ class NoticeDetailViewReactor: Reactor {
         
         /// Content of notice
         var content: String
+        
+        /// Is loading to process
+        var isLoading: Bool
     }
     
     // MARK: - properties
@@ -41,7 +47,7 @@ class NoticeDetailViewReactor: Reactor {
         self.networkService = networkService
         self.notice = notice
         
-        initialState = State(title: notice.title, date: notice.date, content: "")
+        initialState = State(title: notice.title, date: notice.date, content: "", isLoading: true)
     }
     
     // MARK: - mutation
@@ -60,13 +66,21 @@ class NoticeDetailViewReactor: Reactor {
         case let .setContent(content):
             state.content = content
             return state
+            
+        case let .setLoading(isLoading):
+            state.isLoading = isLoading
+            return state
         }
     }
     
     // MARK: - action method
     private func actionViewDidLoad() -> Observable<Mutation> {
-        return networkService.requestNoticeDetail(notice.id).asObservable()
+        let startLoading: Observable<Mutation> = .just(.setLoading(true))
+        let requestNoticeDetail: Observable<Mutation> = networkService.requestNoticeDetail(notice.id).asObservable()
             .flatMap { Observable<Mutation>.just(.setContent($0.content)) }
+        let endLoading: Observable<Mutation> = .just(.setLoading(false))
+        
+        return .concat(startLoading, requestNoticeDetail, endLoading)
     }
     
     deinit {

@@ -63,7 +63,6 @@ class HistoryListViewController: BaseHeaderViewController, View {
         
         // Register cell
         historyCollectionView.register(HistoryListCollectionViewCell.self, forCellWithReuseIdentifier: HistoryListCollectionViewCell.name)
-        
     }
     
     // MARK: - bine
