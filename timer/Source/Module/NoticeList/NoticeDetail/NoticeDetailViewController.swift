@@ -84,17 +84,6 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-            
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     /// Get notice attributed text from string
     private func getNoticeAttributedText(_ text: String) -> NSAttributedString {

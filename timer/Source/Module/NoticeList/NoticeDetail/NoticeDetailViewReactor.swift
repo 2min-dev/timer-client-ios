@@ -33,11 +33,14 @@ class NoticeDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let networkService: NetworkServiceProtocol
     private let notice: Notice
     
     // MARK: - constructor
-    init(notice: Notice) {
+    init(networkService: NetworkServiceProtocol, notice: Notice) {
+        self.networkService = networkService
         self.notice = notice
+        
         initialState = State(title: notice.title, date: notice.date, content: "")
     }
     
@@ -62,35 +65,8 @@ class NoticeDetailViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewDidLoad() -> Observable<Mutation> {
-        // TODO: request notice content from server
-        return .just(.setContent("""
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항 샘플 공지사항
-"""))
+        return networkService.requestNoticeDetail(notice.id).asObservable()
+            .flatMap { Observable<Mutation>.just(.setContent($0.content)) }
     }
     
     deinit {

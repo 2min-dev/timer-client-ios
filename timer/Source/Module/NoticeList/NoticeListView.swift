@@ -47,7 +47,7 @@ class NoticeListView: UIView {
         view.addAutolayoutSubview(emptyLabel)
         emptyLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20.adjust())
-            make.trailing.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
             make.bottom.equalToSuperview()
         }
         

@@ -33,10 +33,12 @@ class NoticeListViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let networkService: NetworkServiceProtocol
     
     // MARK: - constructor
-    init() {
-        self.initialState = State(sections: [], shouldSectionReload: true)
+    init(networkService: NetworkServiceProtocol) {
+        self.networkService = networkService
+        initialState = State(sections: [], shouldSectionReload: true)
     }
     
     // MARK: - mutation
@@ -65,18 +67,13 @@ class NoticeListViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewDidLoad() -> Observable<Mutation> {
-        // TODO: Load notice from server
-        let items: [Notice] = [
-            Notice(id: 1, title: "샘플 공지사항", date: Date()),
-            Notice(id: 2, title: "공지사항 타이틀 입력 제한 테스트 테스트 테스트 테스트", date: Date()),
-            Notice(id: 3, title: "취업하고싶습니다.", date: Date()),
-            Notice(id: 4, title: "뽑아주세요.", date: Date())
-        ]
-        
-        let setSections: Observable<Mutation> = .just(.setSections([NoticeListSectionModel(model: Void(), items: items)]))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        return .concat(setSections, sectionReload)
+        return networkService.requestNoticeList().asObservable()
+            .flatMap { notices -> Observable<Mutation> in
+                let setSections: Observable<Mutation> = .just(.setSections([NoticeListSectionModel(model: Void(), items: notices)]))
+                let sectionReload: Observable<Mutation> = .just(.sectionReload)
+                
+                return .concat(setSections, sectionReload)
+        }
     }
     
     deinit {

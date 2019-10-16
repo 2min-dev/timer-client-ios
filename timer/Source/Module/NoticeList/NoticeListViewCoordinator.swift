@@ -39,7 +39,7 @@ class NoticeListViewCoordinator: CoordinatorProtocol {
         switch route {
         case let .noticeDetail(notice):
             let coordinator = NoticeDetailViewCoordinator(provider: provider)
-            let reactor = NoticeDetailViewReactor(notice: notice)
+            let reactor = NoticeDetailViewReactor(networkService: provider.networkService, notice: notice)
             let viewController = NoticeDetailViewController(coordinator: coordinator)
             
             // DI
