@@ -13,6 +13,12 @@ enum DatabaseError: Error {
     case unknown
 }
 
+enum NetworkError: Error {
+    case urlNotCorrect
+    case emptyData
+    case parseError
+}
+
 enum TimeSetError: Error {
     case notFound
     case unknown

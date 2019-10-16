@@ -9,7 +9,11 @@
 import Foundation
 
 struct Notice: Codable {
-    let id: String
+    let id: Int
     let title: String
     let date: Date
+}
+
+struct NoticeDetail: Codable {
+    let content: String
 }

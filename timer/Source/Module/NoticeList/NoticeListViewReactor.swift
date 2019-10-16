@@ -67,10 +67,10 @@ class NoticeListViewReactor: Reactor {
     private func actionViewDidLoad() -> Observable<Mutation> {
         // TODO: Load notice from server
         let items: [Notice] = [
-            Notice(id: "1", title: "샘플 공지사항", date: Date()),
-            Notice(id: "2", title: "공지사항 타이틀 입력 제한 테스트 테스트 테스트 테스트", date: Date()),
-            Notice(id: "3", title: "취업하고싶습니다.", date: Date()),
-            Notice(id: "4", title: "뽑아주세요.", date: Date())
+            Notice(id: 1, title: "샘플 공지사항", date: Date()),
+            Notice(id: 2, title: "공지사항 타이틀 입력 제한 테스트 테스트 테스트 테스트", date: Date()),
+            Notice(id: 3, title: "취업하고싶습니다.", date: Date()),
+            Notice(id: 4, title: "뽑아주세요.", date: Date())
         ]
         
         let setSections: Observable<Mutation> = .just(.setSections([NoticeListSectionModel(model: Void(), items: items)]))

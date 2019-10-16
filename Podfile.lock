@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.9.0)
+  - Alamofire (5.0.0-rc.2)
   - Differentiator (4.0.1)
   - JSReorderableCollectionView (1.0.6)
   - ReactorKit (2.0.1):
@@ -26,7 +26,7 @@ PODS:
   - SwiftyBeaver (1.8.2)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.9.0)
+  - Alamofire (~> 5.0.0-rc.2)
   - JSReorderableCollectionView (~> 1.0.6)
   - ReactorKit
   - RealmSwift (~> 3.17.3)
@@ -56,7 +56,7 @@ SPEC REPOS:
     - SwiftyBeaver
 
 SPEC CHECKSUMS:
-  Alamofire: afc3e7c6db61476cb45cdd23fed06bad03bbc321
+  Alamofire: f9450d3c7f6bea2ad62e7a541c3e9b186c7991d6
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   JSReorderableCollectionView: bc3ec790c2e52e9a9e36726ac32e0ecadbe0e471
   ReactorKit: a63c5e11e0fd32d59d672e54178b0ed2876b764b
@@ -71,6 +71,6 @@ SPEC CHECKSUMS:
   SwiftLint: 5553187048b900c91aa03552807681bb6b027846
   SwiftyBeaver: aaf2ebd7dac2e952991f46a82ed24ad642867ae2
 
-PODFILE CHECKSUM: fc1f9a6ad55a4a4d73d7ec65c3b7a14b5c336d29
+PODFILE CHECKSUM: 4a280b76662de1247f9731d2993016d6ddd6e46c
 
 COCOAPODS: 1.8.3

@@ -31,16 +31,30 @@ class JSONCodec {
     ///   - encoding: The type of string encode
     /// - returns: Decoded object. If decode fail, return `nil`
     static func decode<T>(_ string: String, type: T.Type, encoding: String.Encoding = .utf8) -> T? where T: Codable {
+        guard let data = string.data(using: encoding) else { return nil }
+        return decode(data, type: type, encoding: encoding)
+    }
+    
+    /// Decode JSON string to decoable object
+    /// - parameters:
+    ///   - data: The JSON data
+    ///   - type: Type of object to decode
+    ///   - encoding: The type of string encode
+    /// - returns: Decoded object. If decode fail, return `nil`
+    static func decode<T>(_ data: Data, type: T.Type, encoding: String.Encoding = .utf8) -> T? where T: Codable {
         let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
         
-        guard let data = string.data(using: encoding),
-            let value = try? decoder.decode(type, from: data) else {
+        do {
+            let value = try decoder.decode(type, from: data)
+            
+            // Print log
+            print(value: value, encoding: encoding)
+            return value
+        } catch {
+            Logger.error(error, tag: "JSONCODEC")
             return nil
         }
-        
-        // Print log
-        print(value: value, encoding: encoding)
-        return value
     }
     
     /// Print json string log

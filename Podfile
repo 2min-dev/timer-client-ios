@@ -18,7 +18,7 @@ target 'timer' do
   pod 'SnapKit', '~> 4.0.0'
 
   # Alamofire
-  pod 'Alamofire', '~> 4.9.0'
+  pod 'Alamofire', '~> 5.0.0-rc.2'
 
   # Realm
   pod 'RealmSwift', '~> 3.17.3'
