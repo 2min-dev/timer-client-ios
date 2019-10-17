@@ -31,13 +31,13 @@ class TimeSetEndViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     
-    private let timeSetInfo: TimeSetInfo
+    private let history: History
     
     // MARK: - constructor
-    init(timeSetInfo: TimeSetInfo) {
-        self.timeSetInfo = timeSetInfo
-        initialState = State(title: timeSetInfo.title,
-                             memo: timeSetInfo.memo)
+    init(history: History) {
+        self.history = history
+        initialState = State(title: history.info?.title ?? "",
+                             memo: history.info?.memo ?? "")
     }
     
     // MARK: - Mutate
@@ -62,7 +62,7 @@ class TimeSetEndViewReactor: Reactor {
     // MARK: - action method
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
-        timeSetInfo.memo = memo
+        history.info?.memo = memo
         return .just(.setMemo(memo))
     }
     

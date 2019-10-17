@@ -134,8 +134,10 @@ class TimeSetProcessViewReactor: Reactor {
     private let appService: AppServiceProtocol
     private var timeSetService: TimeSetServiceProtocol
     
-    let timeSetInfo: TimeSetInfo
-    let timeSet: TimeSet // Running time set
+    let origin: TimeSetInfo
+    let history: History // Time set history
+    private let timeSet: TimeSet // Running time set
+    
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
     private var countdownTimer: TMTimer
@@ -150,10 +152,11 @@ class TimeSetProcessViewReactor: Reactor {
             return nil
         }
         
-        self.timeSetInfo = timeSetInfo
+        origin = timeSetInfo
         // Copy time set info to preserve origin data
         guard let copiedInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
-        self.timeSet = TimeSet(info: copiedInfo)
+        history = History(info: copiedInfo, startDate: Date())
+        timeSet = TimeSet(info: copiedInfo)
         
         // Create countdown timer
         countdownTimer = TMTimer(info: TimerInfo(endTime: TimeInterval(appService.getCountdown())))

@@ -121,8 +121,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .compactMap { reactor.history.info }
             .subscribe(onNext: { [weak self] in
-                guard let viewController = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.info)) as? TimeSetMemoViewController else { return }
+                guard let viewController = self?.coordinator.present(for: .timeSetMemo($0)) as? TimeSetMemoViewController else { return }
                 self?.bind(memo: viewController)
             })
             .disposed(by: disposeBag)
@@ -312,7 +313,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .withLatestFrom(reactor.state.map { $0.timeSetState })
             .filter { $0 == .end(detail: .normal) }
             .subscribe(onNext: { [weak self] _ in
-                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.info)) as? TimeSetEndViewController else { return }
+                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.history)) as? TimeSetEndViewController else { return }
                 self?.bind(end: viewController)
             })
             .disposed(by: disposeBag)
@@ -335,7 +336,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         // Restart
         viewController.rx.tapRestart
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin)) })
             .disposed(by: disposeBag)
     }
     
@@ -536,7 +537,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             
             guard self.presentedViewController == nil,
                 let reactor = reactor,
-                let viewController = coordinator.present(for: .timeSetEnd(reactor.timeSet.info)) as? TimeSetEndViewController else { return }
+                let viewController = coordinator.present(for: .timeSetEnd(reactor.history)) as? TimeSetEndViewController else { return }
             bind(end: viewController)
             
         default:
