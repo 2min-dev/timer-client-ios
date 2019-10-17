@@ -13,7 +13,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum Route {
         case timeSetSave(TimeSetInfo)
-        case timeSetProcess(TimeSetInfo?)
+        case timeSetProcess(TimeSetInfo)
         case history
         case setting
     }

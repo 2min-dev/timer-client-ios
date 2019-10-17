@@ -10,9 +10,6 @@ import RxSwift
 import RealmSwift
 
 enum TimeSetEvent {
-    /// Running time set state changed
-    case timeSetChanged(TimeSet?)
-    
     /// A time set created
     case created
     
@@ -26,14 +23,11 @@ enum TimeSetEvent {
 protocol TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> { get }
     
-    // Running time set
-    var runningTimeSetInfo: TimeSetInfo? { get }
-    var runningTimeSet: TimeSet? { get }
+    /// Last ran time set
+    var lastHistory: History? { get set }
     
-    /// Set running time set
-    func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?)
-    
-    /// Fetch all time set infos
+    // MARK: - time set
+    /// Fetch all time set info list
     func fetchTimeSets() -> Single<[TimeSetInfo]>
     
     /// Create a time set
@@ -51,6 +45,15 @@ protocol TimeSetServiceProtocol {
     /// Update time set list
     func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
     
+    // MARK: - history
+    /// Fetch all history list
+    func fetchHistories() -> Single<[History]>
+    
+    /// Create a history
+    func createHistory(_ history: History) -> Single<History>
+    
+    /// Update a history
+    func updateHistory(_ history: History) -> Single<History>
 }
 
 /// A service class that manage the application's timers
@@ -60,21 +63,10 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - properties
     private var timeSets: [TimeSetInfo]?
-    
-    // Running time set original info
-    var runningTimeSetInfo: TimeSetInfo?
-    // Running time set
-    var runningTimeSet: TimeSet? {
-        didSet { event.onNext(.timeSetChanged(runningTimeSet)) }
-    }
+    var lastHistory: History?
     
     // MARK: - public method
-    func setRunningTimeSet(_ timeSet: TimeSet?, origin info: TimeSetInfo?) {
-        runningTimeSet = timeSet
-        runningTimeSetInfo = info
-    }
-    
-    /// Fetch timer set list
+    // MARK: - time set
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
         Logger.info("fetch time set list", tag: "SERVICE")
         
@@ -88,7 +80,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         }
     }
     
-    /// Create a time set
     func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -115,7 +106,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.created) })
     }
     
-    /// Delete the timerset
     func removeTimeSet(id: String) -> Single<TimeSetInfo> {
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -149,7 +139,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
     
-    // Update the time set
     func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -181,5 +170,17 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
                     .flatMap { _ in .just(updatedTimeSets) }
         }
         .do(onSuccess: { _ in self.event.onNext(.updated) })
+    }
+    // MARK: - history
+    func fetchHistories() -> Single<[History]> {
+        return provider.databaseService.fetchHistories()
+    }
+    
+    func createHistory(_ history: History) -> Single<History> {
+        return provider.databaseService.createHistory(history)
+    }
+    
+    func updateHistory(_ history: History) -> Single<History> {
+        return provider.databaseService.updateHistory(history)
     }
 }

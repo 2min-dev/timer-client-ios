@@ -119,7 +119,6 @@ class TimeSetDetailViewReactor: Reactor {
         timeSetInfo.isBookmark.toggle()
         
         return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
-            .do(onNext: { self.timeSetInfo = $0 })
             .map { .setBookmark($0.isBookmark) }
     }
     

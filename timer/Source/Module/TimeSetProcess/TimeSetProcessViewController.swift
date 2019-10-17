@@ -187,13 +187,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .bind(to: repeatButton.rx.isSelected)
             .disposed(by: disposeBag)
         
-        // Add time
-//        reactor.state
-//            .map { $0.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME }
-//            .distinctUntilChanged()
-//            .bind(to: addTimeButton.rx.isEnabled)
-//            .disposed(by: disposeBag)
-        
         // Extra time
         reactor.state
             .map { $0.extraTime == 0 }
