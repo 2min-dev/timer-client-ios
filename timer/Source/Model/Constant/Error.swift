@@ -10,6 +10,7 @@ enum DatabaseError: Error {
     case initialize
     case transaction
     case notFound
+    case wrongData
     case unknown
 }
 

@@ -28,6 +28,15 @@ protocol DatabaseServiceProtocol {
     /// Update time set list
     func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
     
+    /// Fetch all history list
+    func fetchHistories() -> Single<[History]>
+    
+    /// Save a history
+    func createHistory(_ history: History) -> Single<History>
+    
+    /// Update the history
+    func updateHistory(_ history: History) -> Single<History>
+    
     // MARK: - database operate
     /// Clear database
     func clear()
