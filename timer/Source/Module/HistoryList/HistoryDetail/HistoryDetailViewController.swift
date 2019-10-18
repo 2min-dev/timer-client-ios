@@ -9,13 +9,45 @@
 import RxSwift
 import RxCocoa
 import ReactorKit
+import RxDataSources
 
 class HistoryDetailViewController: BaseHeaderViewController, View {
+    // MARK: - constants
+    private let MAX_MEMO_LENGTH: Int = 1000
+    
     // MARK: - view properties
     private var historyDetailView: HistoryDetailView { return view as! HistoryDetailView }
     
+    override var headerView: CommonHeader { return historyDetailView.headerView }
+    
+    private var titleLabel: UILabel { return historyDetailView.titleLabel }
+    private var runningTimeLable: UILabel { return historyDetailView.runningTimeLabel }
+    private var dateLabel: UILabel { return historyDetailView.dateLabel }
+    private var extraTimeLabel: UILabel { return historyDetailView.extraTimeLabel }
+    private var repeatCountLabel: UILabel { return historyDetailView.repeatCountLabel }
+    
+    private var memoTextView: UITextView { return historyDetailView.memoTextView }
+    private var memoHintLabel: UILabel { return historyDetailView.memoHintLabel }
+    private var memoExcessLabel: UILabel { return historyDetailView.memoExcessLabel }
+    private var memoLengthLabel: UILabel { return historyDetailView.memoLengthLabel }
+    
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { return historyDetailView.timerBadgeCollectionView }
+    
     // MARK: - properties
     var coordinator: HistoryDetailViewCoordinator
+    
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+        switch cellType {
+        case let .regular(reactor):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
+            cell.reactor = reactor
+            
+            return cell
+            
+        case .extra(_):
+            fatalError("This view can't present extra cells of timer badge collection view")
+        }
+    })
     
     // MARK: - constructor
     init(coordinator: HistoryDetailViewCoordinator) {
@@ -39,15 +71,161 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     // MARK: - bine
     func bind(reactor: HistoryDetailViewReactor) {
         // MARK: action
+        rx.viewWillDisappear
+            .map { Reactor.Action.viewWillDisappear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        memoTextView.rx.text
+            .map { !$0!.isEmpty }
+            .bind(to: memoHintLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        memoTextView.rx.text
+            .orEmpty
+            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
+            .filter { [weak self] in $0.1 > (self?.MAX_MEMO_LENGTH ?? 0) }
+            .map { String($0.0.dropLast()) }
+            .bind(to: memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        memoTextView.rx.text
+            .orEmpty
+            .skip(1)
+            .compactMap { Reactor.Action.updateMemo($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // MARK: state
+        // Tile
+        reactor.state
+            .map { $0.title }
+            .distinctUntilChanged()
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Running time
+        reactor.state
+            .map { $0.runningTime }
+            .distinctUntilChanged()
+            .map { getTime(interval: $0) }
+            .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
+            .bind(to: runningTimeLable.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Date
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.startDate }
+                .distinctUntilChanged(),
+            reactor.state
+                .map { $0.endDate }
+                .distinctUntilChanged())
+            .map { [weak self] in self?.getDateAttributedString(startDate: $0, endDate: $1) }
+            .bind(to: dateLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+        
+        // Extra time
+        reactor.state
+            .map { $0.extraTime / Constants.Time.minute }
+            .distinctUntilChanged()
+            .map { String(format: "history_extra_time_format".localized, Int($0)) }
+            .bind(to: extraTimeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Repeat count
+        reactor.state
+            .map { $0.repeatCount }
+            .distinctUntilChanged()
+            .map { String(format: "history_repeat_count_format".localized, $0) }
+            .bind(to: repeatCountLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Memo
+        reactor.state
+            .map { $0.memo }
+            .filter { [weak self] in self?.memoTextView.text != $0 }
+            .bind(to: memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Memo length
+        let lengthOfBytes = reactor.state
+            .map { $0.memo }
+            .map { $0.lengthOfBytes(using: .utf16) }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        let isMemoExceeded = lengthOfBytes
+            .map { [weak self] in $0 >= self?.MAX_MEMO_LENGTH ?? 0 }
+            .distinctUntilChanged()
+            .share(replay: 1)
+        
+        // Length text
+        Observable.combineLatest(lengthOfBytes, isMemoExceeded)
+            .compactMap { [weak self] in self?.getMemoLengthAttributedString(length: $0, isExcess: $1) }
+            .bind(to: memoLengthLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+        
+        // Exceeded info
+        isMemoExceeded
+            .map { !$0 }
+            .bind(to: memoExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        isMemoExceeded
+            .filter { $0 }
+            .debounce(.seconds(3), scheduler: MainScheduler.instance)
+            .bind(to: memoExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        // Timer badge
+        reactor.state
+            .filter { $0.shouldSectionReload }
+            .map { $0.sections }
+            .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
     
     // MARK: - action method
     // MARK: - state method
+    /// Get memo length attributed string
+    private func getMemoLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {
+        let lengthString = String(format: "time_set_memo_bytes_format".localized, length, MAX_MEMO_LENGTH)
+        let attributedString = NSMutableAttributedString(string: lengthString)
+        
+        if isExcess {
+            // Highlight length text
+            let range = NSString(string: lengthString).range(of: String(length))
+            attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
+        }
+        
+        return attributedString
+    }
     
-    // MARK: - priate method
-    // MARK: - public method
+    /// Get date attributed string
+    private func getDateAttributedString(startDate: Date, endDate: Date) -> NSAttributedString {
+        // Get day of dates
+        let startDay = Calendar.current.component(.day, from: startDate)
+        let endDay = Calendar.current.component(.day, from: endDate)
+        
+        // Get date string
+        let startDateString = getDateString(format: "history_full_date_format".localized,
+                                            date: startDate,
+                                            locale: Locale(identifier: Constants.Locale.USA))
+        
+        let endDateString = getDateString(format: startDay == endDay ? "history_short_date_format".localized : "history_full_date_format".localized,
+                                          date: endDate,
+                                          locale: Locale(identifier: Constants.Locale.USA))
+        
+        let dateString = String(format: "%@ - %@", startDateString, endDateString)
+        let attributes: [NSAttributedString.Key: Any] = [.kern: -0.36]
+        
+        return NSAttributedString(string: dateString, attributes: attributes)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
     
     deinit {
         Logger.verbose()

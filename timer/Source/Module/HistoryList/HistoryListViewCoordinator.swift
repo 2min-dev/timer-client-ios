@@ -12,7 +12,7 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case productivity
-        case detail
+        case detail(History)
     }
     
     // MARK: - properties
@@ -47,9 +47,9 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
         case .productivity:
             return self.viewController.navigationController?.viewControllers.first
             
-        case .detail:
+        case let .detail(history):
             let coordinator = HistoryDetailViewCoordinator(provider: provider)
-            let reactor = HistoryDetailViewReactor()
+            guard let reactor = HistoryDetailViewReactor(timeSetService: provider.timeSetService, history: history) else { return nil }
             let viewController = HistoryDetailViewController(coordinator: coordinator)
             
             // DI

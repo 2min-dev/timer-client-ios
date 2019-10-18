@@ -80,12 +80,11 @@ class HistoryListViewController: BaseHeaderViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        // TODO: present history detail view
         historyCollectionView.rx.itemSelected
             .withLatestFrom(reactor.state.map { $0.sections },
                             resultSelector: { $1.first?.items[$0.item] })
             .compactMap { $0 }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .detail) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .detail($0.history)) })
             .disposed(by: disposeBag)
         
         // MARK: state

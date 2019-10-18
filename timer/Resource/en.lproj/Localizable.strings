@@ -116,6 +116,10 @@
 "history_date_title" = "Date";
 "history_extra_time_title" = "Extra";
 "history_repeat_count_title" = "Repetitions";
+"history_full_date_format" = "YY. M. d / h:m a";
+"history_short_date_format" = "h:m a";
+"history_extra_time_format" = "+%dM";
+"history_repeat_count_format" = "%d";
 
 // MARK: - Time set
 "time_set_default_title" = "Utitled Time Set";

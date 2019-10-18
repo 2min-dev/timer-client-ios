@@ -31,11 +31,13 @@ class HistoryListCollectionViewCellReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    var history: History
     
     // MARK: - constructor
     init?(history: History) {
         guard let info = history.info, let startDate = history.startDate else { return nil }
-        initialState = State(time: info.runningTime + info.timers.reduce(0) { $0 + $1.extraTime },
+        self.history = history
+        initialState = State(time: info.runningTime,
                              title: info.title,
                              startedDate: startDate)
     }

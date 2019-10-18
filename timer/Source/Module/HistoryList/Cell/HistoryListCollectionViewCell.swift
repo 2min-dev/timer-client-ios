@@ -12,7 +12,7 @@ import ReactorKit
 
 class HistoryListCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
-    private let timeLabel: UILabel = {
+    private let runningTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.textColor = Constants.Color.codGray
@@ -43,8 +43,8 @@ class HistoryListCollectionViewCell: UICollectionViewCell, View {
         super.init(frame: frame)
         
         // Set constraint of subviews
-        addAutolayoutSubviews([timeLabel, startedDateLabel, titleLabel])
-        timeLabel.snp.makeConstraints { make in
+        addAutolayoutSubviews([runningTimeLabel, startedDateLabel, titleLabel])
+        runningTimeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(25.adjust())
             make.leading.equalToSuperview().inset(11.adjust())
             make.trailing.equalToSuperview().inset(11.adjust())
@@ -80,15 +80,16 @@ class HistoryListCollectionViewCell: UICollectionViewCell, View {
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // Time
+        // Running time
         reactor.state
             .map { $0.time }
             .distinctUntilChanged()
             .map { getTime(interval: $0) }
             .map { String(format: "time_set_time_format".localized, $0.0, $0.1, $0.2) }
-            .bind(to: timeLabel.rx.text)
+            .bind(to: runningTimeLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // Started date
         reactor.state
             .map { $0.startedDate }
             .distinctUntilChanged()
