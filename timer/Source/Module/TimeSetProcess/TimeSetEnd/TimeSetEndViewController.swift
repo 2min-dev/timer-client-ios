@@ -20,6 +20,7 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
     override var headerView: CommonHeader { return timeSetEndView.headerView }
     
     private var titleLabel: UILabel { return timeSetEndView.titleLabel }
+    private var dateLabel: UILabel { return timeSetEndView.dateLabel }
     
     private var memoTextView: UITextView { return timeSetEndView.memoTextView }
     private var memoHintLabel: UILabel { return timeSetEndView.memoHintLabel }
@@ -89,10 +90,23 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Title
         reactor.state
             .map { $0.title }
             .distinctUntilChanged()
             .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Date
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.startDate }
+                .distinctUntilChanged(),
+            reactor.state
+                .map { $0.endDate }
+                .distinctUntilChanged())
+            .map { [weak self] in self?.getDateAttributedString(startDate: $0, endDate: $1) }
+            .bind(to: dateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         // Memo
@@ -146,6 +160,27 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
         }
         
         return attributedString
+    }
+    
+    /// Get date attributed string
+    private func getDateAttributedString(startDate: Date, endDate: Date) -> NSAttributedString {
+        // Get day of dates
+        let startDay = Calendar.current.component(.day, from: startDate)
+        let endDay = Calendar.current.component(.day, from: endDate)
+        
+        // Get date string
+        let startDateString = getDateString(format: "history_full_date_format".localized,
+                                            date: startDate,
+                                            locale: Locale(identifier: Constants.Locale.USA))
+        
+        let endDateString = getDateString(format: startDay == endDay ? "history_short_date_format".localized : "history_full_date_format".localized,
+                                          date: endDate,
+                                          locale: Locale(identifier: Constants.Locale.USA))
+        
+        let dateString = String(format: "%@ - %@", startDateString, endDateString)
+        let attributes: [NSAttributedString.Key: Any] = [.kern: -0.3]
+        
+        return NSAttributedString(string: dateString, attributes: attributes)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

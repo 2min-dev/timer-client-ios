@@ -27,6 +27,12 @@ class TimeSetEndViewReactor: Reactor {
         /// Title of time set
         let title: String
         
+        /// Started date of the time set
+        let startDate: Date
+        
+        /// Ended date of the time set
+        let endDate: Date
+        
         /// Memo of time set
         var memo: String
     }
@@ -42,6 +48,8 @@ class TimeSetEndViewReactor: Reactor {
         self.timeSetService = timeSetService
         self.history = history
         initialState = State(title: history.info?.title ?? "",
+                             startDate: history.startDate ?? Date(),
+                             endDate: history.endDate ?? Date(),
                              memo: history.info?.memo ?? "")
     }
     
