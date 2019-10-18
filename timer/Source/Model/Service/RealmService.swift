@@ -14,7 +14,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     /// Fetch all time set list
     /// - returns: A observable that emit all time set info list
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
-        return fetch { $0.id?.range(regex: "^[0-9]") != nil }
+        return fetch(with: { $0.id?.range(regex: "^[0-9]") != nil })
     }
     
     /// Create a time set
@@ -60,7 +60,10 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     /// Fetch all hisotry list
     /// - returns: A observable that emit all history list
     func fetchHistories() -> Single<[History]> {
-        return fetch()
+        return fetch {
+            guard let lhs = $0.startDate, let rhs = $1.startDate else { return true }
+            return lhs > rhs
+        }
     }
     
     /// Create a history
@@ -93,7 +96,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - private method
     /// Fetch object list from `realm`
     /// - returns: `Single` observable wrap created object list, not realm object (copied)
-    private func fetch<T>(with filter: @escaping (T) -> Bool = { _ in true }) -> Single<[T]> where T: Object & NSCopying {
+    private func fetch<T>(with filter: @escaping (T) -> Bool = { _ in true }, by sorted: @escaping (T, T) -> Bool = { _, _ in true }) -> Single<[T]> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -105,7 +108,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let realm = try self.open()
 
                         // Transaction
-                        let objects = realm.objects(T.self).filter(filter).toArray()
+                        let objects = realm.objects(T.self).filter(filter).sorted(by: sorted)
                         Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
                         
                         // Copy time set from realm object & Emit copied object
