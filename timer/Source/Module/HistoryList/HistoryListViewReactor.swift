@@ -68,13 +68,15 @@ class HistoryListViewReactor: Reactor {
     
     // MARK: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
-        // TODO: fetch time set history
-//        let items: [History] = timeSetService.fetchHistory()
-        
-        let setSections: Observable<Mutation> = .just(.setSections([HistorySectionModel(model: Void(), items: [HistoryListCollectionViewCellReactor()])]))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        return .concat(setSections, sectionReload)
+        return timeSetService.fetchHistories().asObservable()
+            .flatMap { histories -> Observable<Mutation> in
+                let items = histories.compactMap { HistoryListCollectionViewCellReactor(history: $0) }
+                
+                let setSections: Observable<Mutation> = .just(.setSections([HistorySectionModel(model: Void(), items: items)]))
+                let sectionReload: Observable<Mutation> = .just(.sectionReload)
+                
+                return .concat(setSections, sectionReload)
+        }
     }
     
     deinit {

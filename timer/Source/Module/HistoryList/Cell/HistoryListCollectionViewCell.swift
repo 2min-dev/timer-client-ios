@@ -45,7 +45,7 @@ class HistoryListCollectionViewCell: UICollectionViewCell, View {
         // Set constraint of subviews
         addAutolayoutSubviews([timeLabel, startedDateLabel, titleLabel])
         timeLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(20.adjust())
+            make.top.equalToSuperview().inset(25.adjust())
             make.leading.equalToSuperview().inset(11.adjust())
             make.trailing.equalToSuperview().inset(11.adjust())
         }
