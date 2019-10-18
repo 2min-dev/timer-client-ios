@@ -11,6 +11,9 @@ import ReactorKit
 
 class TimeSetEndViewReactor: Reactor {
     enum Action {
+        /// Update history when view will dissppaer
+        case viewWillDisappear
+        
         /// Update memo of current time set
         case updateMemo(String)
     }
@@ -30,11 +33,13 @@ class TimeSetEndViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let timeSetService: TimeSetServiceProtocol
     
     private let history: History
     
     // MARK: - constructor
-    init(history: History) {
+    init(timeSetService: TimeSetServiceProtocol, history: History) {
+        self.timeSetService = timeSetService
         self.history = history
         initialState = State(title: history.info?.title ?? "",
                              memo: history.info?.memo ?? "")
@@ -43,6 +48,9 @@ class TimeSetEndViewReactor: Reactor {
     // MARK: - Mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewWillDisappear:
+            return actionViewWillDisappear()
+            
         case let .updateMemo(memo):
             return actionUpdateMemo(memo)
         }
@@ -60,6 +68,11 @@ class TimeSetEndViewReactor: Reactor {
     }
     
     // MARK: - action method
+    private func actionViewWillDisappear() -> Observable<Mutation> {
+        _ = timeSetService.updateHistory(history).subscribe()
+        return .empty()
+    }
+    
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
         history.info?.memo = memo

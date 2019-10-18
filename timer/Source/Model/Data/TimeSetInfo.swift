@@ -95,7 +95,7 @@ class TimeSetInfo: Object, Codable, NSCopying {
                            runningTime: runningTime,
                            endState: endState,
                            timers: timers,
-                           overtimer: overtimer,
+                           overtimer: overtimer?.copy() as? TimerInfo,
                            sortingKey: sortingKey,
                            bookmarkSortingKey: bookmarkSortingKey)
     }

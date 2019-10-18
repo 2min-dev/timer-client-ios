@@ -81,14 +81,14 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     }
     
     func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+        // Create time set id
+        let id = provider.userDefaultService.integer(.timeSetId)
+        info.id = String(id)
+        
         return fetchTimeSets()
             .flatMap { timeSets in
                 // Convert mutable array
                 var timeSets = timeSets
-                
-                // Create time set id
-                let id = self.provider.userDefaultService.integer(.timeSetId)
-                info.id = String(id)
                 
                 // Save into realm
                 return self.provider.databaseService.createTimeSet(info: info)
@@ -177,10 +177,23 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     }
     
     func createHistory(_ history: History) -> Single<History> {
+        // Create history's time set id
+        let id = provider.userDefaultService.integer(.timeSetId)
+        history.info?.id = String(format: "H%d", id)
+        
         return provider.databaseService.createHistory(history)
+            .do(onSuccess: { _ in
+                // Update time set id
+                self.provider.userDefaultService.set(id + 1, key: .timeSetId)
+                Logger.info("a history created.", tag: "SERVICE")
+            })
     }
     
     func updateHistory(_ history: History) -> Single<History> {
         return provider.databaseService.updateHistory(history)
+            .do(onSuccess: { _ in
+                history.startDate = Date()
+            })
+            .do(onSuccess: { _ in Logger.info("the history updated.", tag: "SERVICE") })
     }
 }

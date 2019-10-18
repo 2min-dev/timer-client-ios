@@ -55,6 +55,11 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
             .subscribe(onNext: { [weak self] in self?.memoTextView.becomeFirstResponder() })
             .disposed(by: disposeBag)
         
+        rx.viewWillDisappear
+            .map { Reactor.Action.viewWillDisappear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         memoTextView.rx.text
             .map { !$0!.isEmpty }
             .bind(to: memoHintLabel.rx.isHidden)

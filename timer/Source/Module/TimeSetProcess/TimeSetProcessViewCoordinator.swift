@@ -84,7 +84,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             
         case let .timeSetEnd(history):
             let coordinator = TimeSetEndViewCoordinator(provider: provider)
-            let reactor = TimeSetEndViewReactor(history: history)
+            let reactor = TimeSetEndViewReactor(timeSetService: provider.timeSetService, history: history)
             let viewController = TimeSetEndViewController(coordinator: coordinator)
             
             // DI

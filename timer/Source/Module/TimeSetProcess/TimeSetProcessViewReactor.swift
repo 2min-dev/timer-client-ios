@@ -155,7 +155,7 @@ class TimeSetProcessViewReactor: Reactor {
         origin = timeSetInfo
         // Copy time set info to preserve origin data
         guard let copiedInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
-        history = History(info: copiedInfo, startDate: Date())
+        history = History(info: copiedInfo)
         timeSet = TimeSet(info: copiedInfo)
         
         // Create countdown timer
@@ -456,9 +456,30 @@ class TimeSetProcessViewReactor: Reactor {
         case .initialize:
             setRepeatCount = .just(.setRepeatCount(0))
             
+        case .run(detail: _):
+            guard history.startDate == nil else { break }
+            // Set start date to current `Date()` only first time
+            history.startDate = Date()
+            
         case let .stop(repeat: count):
             setExtraTime = .just(.setExtraTime(0))
             setRepeatCount = .just(.setRepeatCount(count))
+            
+        case let .end(detail: detail):
+            // Set end date to current `Date()`
+            history.endDate = Date()
+            
+            switch detail {
+            case .cancel,
+                 .normal:
+                _ = timeSetService.createHistory(history).subscribe()
+                
+            case .overtime:
+                _ = timeSetService.updateHistory(history).subscribe()
+                
+            default:
+                break
+            }
             
         default:
             break
