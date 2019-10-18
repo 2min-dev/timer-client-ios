@@ -14,7 +14,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     /// Fetch all time set list
     /// - returns: A observable that emit all time set info list
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
-        return fetch()
+        return fetch { $0.id?.range(regex: "^[0-9]") != nil }
     }
     
     /// Create a time set
@@ -93,7 +93,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - private method
     /// Fetch object list from `realm`
     /// - returns: `Single` observable wrap created object list, not realm object (copied)
-    private func fetch<T>() -> Single<[T]> where T: Object & NSCopying {
+    private func fetch<T>(with filter: @escaping (T) -> Bool = { _ in true }) -> Single<[T]> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -105,12 +105,14 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let realm = try self.open()
 
                         // Transaction
-                        let objects = realm.objects(T.self)
+                        let objects = realm.objects(T.self).filter(filter).toArray()
                         Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
                         
                         // Copy time set from realm object & Emit copied object
-                        let copiedObjects = objects.toArray().compactMap { $0.copy() as? T }
-                        emitter(.success(copiedObjects))
+                        let copiedObjects = objects.compactMap { $0.copy() as? T }
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObjects))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -147,7 +149,9 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         
                         // Copy time set from realm object & Emit copied object
                         guard let copiedObject = object.copy() as? T else { throw DatabaseError.unknown }
-                        emitter(.success(copiedObject))
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -183,8 +187,9 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                             realm.delete(object)
                         }
                         Logger.info("removed object from realm - key(\(key))", tag: "REALM")
-                        
-                        emitter(.success(copiedObject))
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -214,14 +219,15 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let objects = keys.compactMap { realm.object(ofType: T.self, forPrimaryKey: $0) }
                         
                         // Copy time set from realm object
-                        let copiedObject = objects.compactMap({ $0.copy() as? T })
+                        let copiedObjects = objects.compactMap({ $0.copy() as? T })
                         
                         try self.write(realm) {
                             realm.delete(objects)
                         }
                         Logger.info("removed objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
-                        
-                        emitter(.success(copiedObject))
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObjects))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -258,7 +264,9 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         
                         // Copy time set from realm object & Emit copied object
                         guard let copiedObject = object.copy() as? T else { throw DatabaseError.unknown }
-                        emitter(.success(copiedObject))
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -295,7 +303,9 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         
                         // Copy time set from realm object & Emit copied object
                         let copiedObjects = objects.compactMap({ $0.copy() as? T })
-                        emitter(.success(copiedObjects))
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObjects))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
