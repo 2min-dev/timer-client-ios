@@ -424,7 +424,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         let alert = AlertBuilder(title: "alert_warning_time_set_init_title".localized,
                                  message: "alert_warning_time_set_init_description".localized)
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
-            .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
+            .addAction(title: "alert_button_init".localized, style: .destructive, handler: { _ in
                 reactor.action.onNext(.clearTimers)
             })
             .build()
@@ -439,7 +439,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         let alert = AlertBuilder(title: "alert_warning_time_set_delete_title".localized,
                                  message: "alert_warning_time_set_delete_description".localized)
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
-            .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
+            .addAction(title: "alert_button_delete".localized, style: .destructive, handler: { _ in
                 reactor.action.onNext(.deleteTimeSet)
             })
             .build()
