@@ -18,6 +18,8 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
     
     private var noticeTextView: UITextView { return noticeDetailView.noticeTextView }
     
+    private var loadingView: CommonLoading { return noticeDetailView.loadingView }
+    
     // MARK: - properties
     var coordinator: NoticeDetailViewCoordinator
     
@@ -61,12 +63,14 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Title
         reactor.state
             .map { $0.title }
             .distinctUntilChanged()
             .bind(to: headerView.rx.title)
             .disposed(by: disposeBag)
         
+        // Date
         reactor.state
             .map { $0.date }
             .distinctUntilChanged()
@@ -75,26 +79,23 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
             .bind(to: headerView.rx.additionalText)
             .disposed(by: disposeBag)
         
+        // Content
         reactor.state
             .map { $0.content }
             .distinctUntilChanged()
             .map { [weak self] in self?.getNoticeAttributedText($0) }
             .bind(to: noticeTextView.rx.attributedText)
             .disposed(by: disposeBag)
+        
+        // Loading
+        reactor.state
+            .map { $0.isLoading }
+            .distinctUntilChanged()
+            .bind(to: loadingView.rx.isLoading)
+            .disposed(by: disposeBag)
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-            
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     /// Get notice attributed text from string
     private func getNoticeAttributedText(_ text: String) -> NSAttributedString {

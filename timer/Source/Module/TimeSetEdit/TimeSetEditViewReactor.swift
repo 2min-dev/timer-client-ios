@@ -154,7 +154,8 @@ class TimeSetEditViewReactor: Reactor {
                 .repeat: .repeat(TimerBadgeRepeatCellReactor(isRepeat: self.timeSetInfo.isRepeat))
             ],
             leftExtras: [.repeat],
-            rightExtras: [.add]
+            rightExtras: [.add],
+            index: 0
         )
         
         initialState = State(endTime: timer?.endTime ?? 0,

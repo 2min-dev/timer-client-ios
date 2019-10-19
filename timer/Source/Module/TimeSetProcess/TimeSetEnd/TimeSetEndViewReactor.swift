@@ -11,6 +11,9 @@ import ReactorKit
 
 class TimeSetEndViewReactor: Reactor {
     enum Action {
+        /// Update history when view will dissppaer
+        case viewWillDisappear
+        
         /// Update memo of current time set
         case updateMemo(String)
     }
@@ -24,25 +27,38 @@ class TimeSetEndViewReactor: Reactor {
         /// Title of time set
         let title: String
         
+        /// Started date of the time set
+        let startDate: Date
+        
+        /// Ended date of the time set
+        let endDate: Date
+        
         /// Memo of time set
         var memo: String
     }
     
     // MARK: - properties
     var initialState: State
+    private let timeSetService: TimeSetServiceProtocol
     
-    private let timeSetInfo: TimeSetInfo
+    private let history: History
     
     // MARK: - constructor
-    init(timeSetInfo: TimeSetInfo) {
-        self.timeSetInfo = timeSetInfo
-        initialState = State(title: timeSetInfo.title,
-                             memo: timeSetInfo.memo)
+    init(timeSetService: TimeSetServiceProtocol, history: History) {
+        self.timeSetService = timeSetService
+        self.history = history
+        initialState = State(title: history.info?.title ?? "",
+                             startDate: history.startDate ?? Date(),
+                             endDate: history.endDate ?? Date(),
+                             memo: history.info?.memo ?? "")
     }
     
     // MARK: - Mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewWillDisappear:
+            return actionViewWillDisappear()
+            
         case let .updateMemo(memo):
             return actionUpdateMemo(memo)
         }
@@ -60,9 +76,14 @@ class TimeSetEndViewReactor: Reactor {
     }
     
     // MARK: - action method
+    private func actionViewWillDisappear() -> Observable<Mutation> {
+        _ = timeSetService.updateHistory(history).subscribe()
+        return .empty()
+    }
+    
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
-        timeSetInfo.memo = memo
+        history.info?.memo = memo
         return .just(.setMemo(memo))
     }
     

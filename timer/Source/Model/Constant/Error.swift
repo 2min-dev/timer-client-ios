@@ -10,7 +10,14 @@ enum DatabaseError: Error {
     case initialize
     case transaction
     case notFound
+    case wrongData
     case unknown
+}
+
+enum NetworkError: Error {
+    case urlNotCorrect
+    case emptyData
+    case parseError
 }
 
 enum TimeSetError: Error {

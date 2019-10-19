@@ -107,15 +107,17 @@ class TMTimer: EventStreamProtocol {
     }
     
     /// Reset the timer
-    func reset() {
+    func reset(withState: Bool = true) {
         // Dispose timer subscription
         disposableTimer?.dispose()
         disposableTimer = nil
         
         state = .stop
         
-        info.currentTime = 0
-        info.extraTime = 0
+        if withState {
+            info.currentTime = 0
+            info.extraTime = 0
+        }
     }
     
     deinit {

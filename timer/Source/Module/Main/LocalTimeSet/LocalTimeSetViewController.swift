@@ -206,8 +206,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
         
         switch action {
         case .history:
-            // TODO: Present history view
-            break
+            _ = coordinator.present(for: .history)
             
         case .setting:
             _ = coordinator.present(for: .setting)

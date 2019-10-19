@@ -22,7 +22,6 @@ class TimeSetEndView: UIView {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
-        view.text = "title"
         return view
     }()
     
@@ -30,7 +29,6 @@ class TimeSetEndView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(10.adjust())
         view.textColor = Constants.Color.codGray
-        view.text = "date"
         return view
     }()
     

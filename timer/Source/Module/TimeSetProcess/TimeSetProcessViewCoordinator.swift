@@ -14,7 +14,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
         case home
         case timeSetProcess(TimeSetInfo)
         case timeSetMemo(TimeSetInfo)
-        case timeSetEnd(TimeSetInfo)
+        case timeSetEnd(History)
     }
     
     // MARK: - properties
@@ -82,9 +82,9 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case let .timeSetEnd(timeSetInfo):
+        case let .timeSetEnd(history):
             let coordinator = TimeSetEndViewCoordinator(provider: provider)
-            let reactor = TimeSetEndViewReactor(timeSetInfo: timeSetInfo)
+            let reactor = TimeSetEndViewReactor(timeSetService: provider.timeSetService, history: history)
             let viewController = TimeSetEndViewController(coordinator: coordinator)
             
             // DI

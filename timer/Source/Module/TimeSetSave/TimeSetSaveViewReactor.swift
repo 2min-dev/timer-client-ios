@@ -92,7 +92,7 @@ class TimeSetSaveViewReactor: Reactor {
         self.timeSetInfo = timeSetInfo
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray())
+        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray(), index: 0)
         
         initialState = State(title: timeSetInfo.title,
                              hint: "",

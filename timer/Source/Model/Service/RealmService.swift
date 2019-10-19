@@ -14,7 +14,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     /// Fetch all time set list
     /// - returns: A observable that emit all time set info list
     func fetchTimeSets() -> Single<[TimeSetInfo]> {
-        return fetch()
+        return fetch(with: { $0.id?.range(regex: "^[0-9]") != nil })
     }
     
     /// Create a time set
@@ -22,6 +22,118 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     ///   - info: data of the time set
     /// - returns: A observable that emit a created time set info
     func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+        return create(info)
+    }
+    
+    /// Remove the time set
+    /// - parameters:
+    ///   - id: Identifier of the time set to remove
+    /// - returns: A observable that emit a removed time set info
+    func removeTimeSet(id: String) -> Single<TimeSetInfo> {
+        return remove(key: id)
+    }
+    
+    /// Remove time set list
+    /// - parameters:
+    ///   - ids: Identifier list of the time set list to remove
+    /// - returns: A observable that emit all removed time set info list
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]> {
+        return remove(keys: ids)
+    }
+    
+    /// Update the time set
+    /// - parameters:
+    ///   - info: data of the time set
+    /// - returns: A observable that emit a updated time set info
+    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+        return update(info)
+    }
+    
+    /// Update time set list
+    /// - parameters:
+    ///   - infoes: data list of the time set
+    /// - returns: A observable that emit all updated time set info list
+    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]> {
+        return update(list: infoes)
+    }
+    
+    /// Fetch all hisotry list
+    /// - returns: A observable that emit all history list
+    func fetchHistories() -> Single<[History]> {
+        return fetch {
+            guard let lhs = $0.startDate, let rhs = $1.startDate else { return true }
+            return lhs > rhs
+        }
+    }
+    
+    /// Create a history
+    /// - parameters:
+    ///   - history: data of the history
+    /// - returns: A observable that emit a created history
+    func createHistory(_ history: History) -> Single<History> {
+        guard history.id > 0 else { return .error(DatabaseError.wrongData) }
+        return create(history)
+    }
+    
+    /// Update the history
+    /// - parameters:
+    ///   - history: data of the history
+    /// - returns: A observable that emit a updated hisotry
+    func updateHistory(_ history: History) -> Single<History> {
+        guard history.id > 0 else { return .error(DatabaseError.wrongData) }
+        return update(history)
+    }
+    
+    // MARK: - database operate
+    /// Clear all data from database
+    func clear() {
+        guard let realm = try? Realm() else { return }
+        try? realm.write {
+            realm.deleteAll()
+        }
+    }
+    
+    // MARK: - private method
+    /// Fetch object list from `realm`
+    /// - returns: `Single` observable wrap created object list, not realm object (copied)
+    private func fetch<T>(with filter: @escaping (T) -> Bool = { _ in true }, by sorted: @escaping (T, T) -> Bool = { _, _ in true }) -> Single<[T]> where T: Object & NSCopying {
+        return Single.create { emitter in
+            // Realm transaction in global queue (background thread)
+            DispatchQueue.global().async {
+                // Wrap autorelease pool explicitly due to use realm.
+                // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
+                autoreleasepool {
+                    do {
+                        // Open `Realm`
+                        let realm = try self.open()
+
+                        // Transaction
+                        let objects = realm.objects(T.self).filter(filter).sorted(by: sorted)
+                        Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
+                        
+                        // Copy time set from realm object & Emit copied object
+                        let copiedObjects = objects.compactMap { $0.copy() as? T }
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObjects))
+                        }
+                    } catch {
+                        emitter(.error(error))
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    /// Create realm object from passed parameter type T inherited `Object`
+    /// - parameters:
+    ///   - object: object that will create to `realm`
+    /// - returns: `Single` observable wrap created object, not realm object (copied)
+    private func create<T>(_ object: T) -> Single<T> where T: Object & NSCopying {
+        // Copy data to preserve original object
+        guard let object = object.copy() as? T else { return .error(DatabaseError.unknown) }
+        
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -31,17 +143,18 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                     do {
                         // Open `Realm`
                         let realm = try self.open()
-                    
+                        
                         // Transaction
                         try self.write(realm) {
-                            realm.add(info)
+                            realm.add(object)
                         }
-                        Logger.info("created object and save into realm \n\(info)", tag: "REALM")
-
-                        // Copy time set from realm object
-                        guard let copiedObject = info.copy() as? TimeSetInfo else { throw DatabaseError.unknown }
-
-                        emitter(.success(copiedObject))
+                        Logger.info("created object and save into realm \n\(object)", tag: "REALM")
+                        
+                        // Copy time set from realm object & Emit copied object
+                        guard let copiedObject = object.copy() as? T else { throw DatabaseError.unknown }
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -52,11 +165,11 @@ class RealmService: BaseService, DatabaseServiceProtocol {
         }
     }
     
-    /// Remove the time set
+    /// Remove object from `ream` using key
     /// - parameters:
-    ///   - id: Identifier of the time set to remove
-    /// - returns: A observable that emit a removed time set info
-    func removeTimeSet(id: String) -> Single<TimeSetInfo> {
+    ///   - key: Identifier of the object to remove
+    /// - returns: `Single` observable wrap removed object, not realm object (copied)
+    private func remove<T>(key: String) -> Single<T> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -68,17 +181,18 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let realm = try self.open()
                         
                         // Transaction
-                        guard let timeSetInfo = realm.object(ofType: TimeSetInfo.self, forPrimaryKey: id) else { throw DatabaseError.notFound }
+                        guard let object = realm.object(ofType: T.self, forPrimaryKey: key) else { throw DatabaseError.notFound }
                         
                         // Copy time set from realm object
-                        guard let copiedObject = timeSetInfo.copy() as? TimeSetInfo else { throw DatabaseError.unknown }
+                        guard let copiedObject = object.copy() as? T else { throw DatabaseError.unknown }
                         
                         try self.write(realm) {
-                            realm.delete(timeSetInfo)
+                            realm.delete(object)
                         }
-                        Logger.info("removed object from realm - id(\(id))", tag: "REALM")
-                        
-                        emitter(.success(copiedObject))
+                        Logger.info("removed object from realm - key(\(key))", tag: "REALM")
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -89,7 +203,11 @@ class RealmService: BaseService, DatabaseServiceProtocol {
         }
     }
     
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]> {
+    /// Remove object list from `ream` using key list
+    /// - parameters:
+    ///   - keys: Identifier list of the object to remove
+    /// - returns: `Single` observable wrap removed object list, not realm object (copied)
+    private func remove<Key, T>(keys: [Key]) -> Single<[T]> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -101,17 +219,18 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let realm = try self.open()
                         
                         // Transaction
-                        let timeSets = ids.compactMap { realm.object(ofType: TimeSetInfo.self, forPrimaryKey: $0) }
+                        let objects = keys.compactMap { realm.object(ofType: T.self, forPrimaryKey: $0) }
                         
                         // Copy time set from realm object
-                        let copiedObject = timeSets.compactMap({ $0.copy() as? TimeSetInfo })
+                        let copiedObjects = objects.compactMap({ $0.copy() as? T })
                         
                         try self.write(realm) {
-                            realm.delete(timeSets)
+                            realm.delete(objects)
                         }
-                        Logger.info("removed objects from realm - count(\(timeSets.count)) \n\(timeSets)", tag: "REALM")
-                        
-                        emitter(.success(copiedObject))
+                        Logger.info("removed objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObjects))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -122,11 +241,14 @@ class RealmService: BaseService, DatabaseServiceProtocol {
         }
     }
     
-    /// Update the time set
+    /// Update realm object from passed parameter type T inherited `Object`
     /// - parameters:
-    ///   - info: data of the time set
-    /// - returns: A observable that emit a updated time set info
-    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+    ///   - object: object that will update to `realm`
+    /// - returns: `Single` observable wrap updated object, not realm object (copied)
+    private func update<T>(_ object: T) -> Single<T> where T: Object & NSCopying {
+        // Copy data to preserve original object
+        guard let object = object.copy() as? T else { return .error(DatabaseError.unknown) }
+        
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -139,14 +261,15 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         
                         // Transaction
                         try self.write(realm, {
-                            realm.add(info, update: .all)
+                            realm.add(object, update: .all)
                         })
-                        Logger.info("updated object of realm \n\(info)", tag: "REALM")
+                        Logger.info("updated object of realm \n\(object)", tag: "REALM")
                         
-                        // Copy time set from realm object
-                        guard let copiedObject = info.copy() as? TimeSetInfo else { throw DatabaseError.unknown }
-                        
-                        emitter(.success(copiedObject))
+                        // Copy time set from realm object & Emit copied object
+                        guard let copiedObject = object.copy() as? T else { throw DatabaseError.unknown }
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -157,7 +280,14 @@ class RealmService: BaseService, DatabaseServiceProtocol {
         }
     }
     
-    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]> {
+    /// Update realm object from passed parameter type T inherited `Object`
+    /// - parameters:
+    ///   - objects: object list that will update to `realm`
+    /// - returns: `Single` observable wrap updated object list, not realm object (copied)
+    private func update<T>(list objects: [T]) -> Single<[T]> where T: Object & NSCopying {
+        // Copy data to preserve original object
+        let objects = objects.compactMap { $0.copy() as? T }
+        
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -167,17 +297,18 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                     do {
                         // Open `Realm`
                         let realm = try self.open()
-
+                        
                         // Transaction
                         try self.write(realm) {
-                            realm.add(infoes, update: .all)
+                            realm.add(objects, update: .all)
                         }
-                        Logger.info("updated objects of - count(\(infoes.count)) \n\(infoes)", tag: "REALM")
+                        Logger.info("updated objects of - count(\(objects.count)) \n\(objects)", tag: "REALM")
                         
-                        // Copy time set from realm object
-                        let copiedObject = infoes.compactMap({ $0.copy() as? TimeSetInfo })
-                        
-                        emitter(.success(copiedObject))
+                        // Copy time set from realm object & Emit copied object
+                        let copiedObjects = objects.compactMap({ $0.copy() as? T })
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObjects))
+                        }
                     } catch {
                         emitter(.error(error))
                     }
@@ -187,45 +318,10 @@ class RealmService: BaseService, DatabaseServiceProtocol {
             return Disposables.create()
         }
     }
-    
-    // MARK: - database operate
-    func clear() {
-        guard let realm = try? Realm() else { return }
-        try? realm.write {
-            realm.deleteAll()
-        }
-    }
-    
-    // MARK: - private method
-    func fetch<T>() -> Single<[T]> where T: Object & NSCopying {
-        return Single.create { emitter in
-            // Realm transaction in global queue (background thread)
-            DispatchQueue.global().async {
-                // Wrap autorelease pool explicitly due to use realm.
-                // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
-                autoreleasepool {
-                    do {
-                        // Open `Realm`
-                        let realm = try self.open()
 
-                        // Transaction
-                        let objects = realm.objects(T.self)
-                        Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
-                        
-                        // Copy time set from realm object
-                        let copiedObjects = objects.toArray().compactMap { $0.copy() as? T }
-                        emitter(.success(copiedObjects))
-                    } catch {
-                        emitter(.error(error))
-                    }
-                }
-            }
-            
-            return Disposables.create()
-        }
-    }
-    
-    // MARK: - private method
+    /// Open realm database
+    /// - returns: opened `Realm` object
+    /// - throws: `DatabaseError.initialize` : if any error occured when create `realm` call `Realm()`
     private func open() throws -> Realm {
         do {
             return try Realm()
@@ -235,6 +331,11 @@ class RealmService: BaseService, DatabaseServiceProtocol {
         }
     }
     
+    /// Write object into `realm`
+    /// - parameters:
+    ///   - realm: `Realm` object to write
+    ///   - block: transaction about realm I/O
+    /// - throws: `DatabaseError.transaction` : if any error occured during `realm.write()` process
     private func write(_ realm: Realm, _ block: () -> Void) throws {
         do {
             try realm.write {

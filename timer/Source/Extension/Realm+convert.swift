@@ -27,3 +27,9 @@ extension Results {
         return Array(self)
     }
 }
+
+extension LazyFilterSequence {
+    func toArray() -> [Element] {
+        return Array(self)
+    }
+}

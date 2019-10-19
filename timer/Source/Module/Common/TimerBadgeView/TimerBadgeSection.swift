@@ -74,7 +74,7 @@ class TimerBadgeDataSource {
          extras: [TimerBadgeExtraType: TimerBadgeExtraCellType] = [:],
          leftExtras: [TimerBadgeExtraType] = [],
          rightExtras: [TimerBadgeExtraType] = [],
-         index: Int = 0) {
+         index: Int? = nil) {
         identity = timers.count
         regulars = timers.enumerated().map { offset, timer in
             TimerBadgeCellReactor(id: offset, time: timer.endTime, index: offset, count: timers.count, isSelected: offset == index)

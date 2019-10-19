@@ -69,7 +69,7 @@ class TimeSetDetailViewReactor: Reactor {
         self.timeSetInfo = timeSetInfo
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray())
+        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray(), index: 0)
         
         initialState = State(isBookmark: timeSetInfo.isBookmark,
                              title: timeSetInfo.title,
@@ -119,7 +119,6 @@ class TimeSetDetailViewReactor: Reactor {
         timeSetInfo.isBookmark.toggle()
         
         return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
-            .do(onNext: { self.timeSetInfo = $0 })
             .map { .setBookmark($0.isBookmark) }
     }
     

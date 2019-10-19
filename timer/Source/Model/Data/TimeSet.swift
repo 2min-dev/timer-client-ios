@@ -38,6 +38,10 @@ class TimeSet: EventStreamProtocol {
     var info: TimeSetInfo // The model data of the timer set
     var state: State = .initialize {
         didSet {
+            if case let .end(detail: detail) = state {
+                info.endState = detail
+            }
+            
             if oldValue != state {
                 event.onNext(.stateChanged(state))
             }
@@ -45,7 +49,12 @@ class TimeSet: EventStreamProtocol {
     }
     
     // Timer
-    var timer: TMTimer? // Current timer
+    var timer: TMTimer? {
+        didSet {
+            // Add current time of timer into time set for record all running time
+            info.runningTime += oldValue?.info.currentTime ?? 0
+        }
+    }
     var currentIndex: Int = 0 {
         didSet { event.onNext(.timerChanged(info.timers[currentIndex], at: currentIndex)) }
     }
@@ -92,9 +101,6 @@ class TimeSet: EventStreamProtocol {
     private func handleTimerStateChanged(state: TMTimer.State) {
         switch state {
         case .end:
-            // Add current time of timer into time set for record all running time
-            info.runningTime += timer?.info.currentTime ?? 0
-            
             // Process time set if it is running
             guard self.state == .run(detail: .normal) else { return }
             if currentIndex + 1 < info.timers.count {
@@ -108,6 +114,7 @@ class TimeSet: EventStreamProtocol {
                     start(at: 0)
                 } else {
                     // End of time set
+                    self.timer = nil
                     self.state = .end(detail: .normal)
                 }
             }
@@ -146,9 +153,9 @@ class TimeSet: EventStreamProtocol {
         
         // Create overtime timer
         timer = createTimer()
+        timer?.start()
         
         state = .run(detail: .overtime)
-        timer?.start()
     }
     
     /// Pause current running timer
@@ -157,15 +164,17 @@ class TimeSet: EventStreamProtocol {
             Logger.debug("Can't pause the time set because the time set isn't running.")
             return
         }
-        state = .pause
         timer.pause()
+        
+        state = .pause
     }
     
     /// Stop the time set
     func stop() {
-        state = .end(detail: info.overtimer == nil ? .cancel : .overtime)
         timer?.stop()
         timer = nil
+        
+        state = .end(detail: info.overtimer == nil ? .cancel : .overtime)
     }
     
     /// Reset the time set
@@ -173,9 +182,10 @@ class TimeSet: EventStreamProtocol {
         guard state != .initialize else { return }
         
         // Reset all timer status
-        state = withState ? .initialize : .stop(repeat: self.info.repeatCount)
-        timer?.reset()
+        timer?.reset(withState: false)
         timer = nil
+        
+        state = withState ? .initialize : .stop(repeat: self.info.repeatCount)
         
         info.timers.forEach {
             $0.currentTime = 0

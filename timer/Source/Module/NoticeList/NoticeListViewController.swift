@@ -20,6 +20,8 @@ class NoticeListViewController: BaseHeaderViewController, View {
     private var noticeTableView: UITableView { return noticeListView.noticeTableView }
     private var emptyView: UIView { return noticeListView.emptyView }
     
+    private var loadingView: CommonLoading { return noticeListView.loadingView }
+    
     // MARK: - properties
     var coordinator: NoticeListViewCoordinator
     
@@ -79,6 +81,12 @@ class NoticeListViewController: BaseHeaderViewController, View {
             .map { $0.sections }
             .do(onNext: { [weak self] in self?.showNoticeEmptyView(isEmpty: $0.isEmpty || $0[0].items.isEmpty) })
             .bind(to: noticeTableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isLoading }
+            .distinctUntilChanged()
+            .bind(to: loadingView.rx.isLoading)
             .disposed(by: disposeBag)
     }
     
