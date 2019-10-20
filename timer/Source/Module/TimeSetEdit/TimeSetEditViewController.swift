@@ -181,6 +181,12 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
         
+        timerOptionView.rx.tapDelete
+            .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
+            .map { Reactor.Action.deleteTimer }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in self?.showBackWarningAlert() })
             .disposed(by: disposeBag)

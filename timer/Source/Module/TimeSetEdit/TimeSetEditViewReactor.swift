@@ -386,6 +386,9 @@ class TimeSetEditViewReactor: Reactor {
     private func actionDeleteTimer() -> Observable<Mutation> {
         let state = currentState
         
+        // Clear timer if try to delete the only timer
+        guard timeSetInfo.timers.count > 1 else { return actionClearTimer() }
+        
         // Get will remove timer
         let index = state.selectedIndex
         let removedTimer = timeSetInfo.timers[index]
