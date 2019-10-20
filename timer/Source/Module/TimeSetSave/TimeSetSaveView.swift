@@ -211,7 +211,7 @@ class TimeSetSaveView: UIView {
         }
         
         commentTextView.snp.makeConstraints { make in
-            make.height.equalTo(34.adjust())
+            make.height.equalTo(56.adjust())
         }
         
         return view
