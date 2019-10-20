@@ -400,6 +400,7 @@ class TimerOptionView: UIView, View {
             .map { $0.comment }
             .distinctUntilChanged()
             .filter { [weak self] in self?.commentTextView.text != $0 }
+            .do(onNext: { [weak self] _ in self?.commentTextView.contentOffset.y = 0 })
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
         

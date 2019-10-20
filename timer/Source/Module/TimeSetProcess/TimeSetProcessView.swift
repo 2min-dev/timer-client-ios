@@ -190,7 +190,7 @@ class TimeSetProcessView: UIView {
         }
         
         commentTextView.snp.makeConstraints { make in
-            make.height.equalTo(55.adjust())
+            make.height.equalTo(56.adjust())
         }
         
         return view

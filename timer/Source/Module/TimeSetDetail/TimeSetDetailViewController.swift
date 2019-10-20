@@ -139,6 +139,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         
         // Comment
         timer.map { $0.comment }
+            .do(onNext: { [weak self] _ in self?.commentTextView.contentOffset.y = 0 })
             .bind(to: commentTextView.rx.text)
             .disposed(by: disposeBag)
         
