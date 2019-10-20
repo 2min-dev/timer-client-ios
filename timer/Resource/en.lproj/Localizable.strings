@@ -164,6 +164,8 @@
 "alert_alarm_all_apply_description" = "The alarm has been applied to all timers";
 "alert_button_cancel" = "Cancel";
 "alert_button_yes" = "Yes";
+"alert_button_init" = "Initialize";
+"alert_button_delete" = "Delete";
 
 // MARK: - Setting
 "setting_version_lastest_title" = "Lastest!";
