@@ -195,6 +195,11 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
         
+        timerOptionView.rx.tapApplyAll
+            .map { Reactor.Action.alarmApplyAll }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         timerOptionView.rx.tapDelete
             .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
             .map { Reactor.Action.deleteTimer }

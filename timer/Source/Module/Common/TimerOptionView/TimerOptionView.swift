@@ -363,12 +363,19 @@ class TimerOptionView: UIView, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        Observable.merge(alarmButtonsStackView.arrangedSubviews
-            .compactMap { $0 as? UIButton }
-            .map { button in button.rx.tap.compactMap { AlarmType(rawValue: button.tag) } })
+        Observable.merge(
+            alarmButtonsStackView.arrangedSubviews
+                .compactMap { $0 as? UIButton }
+                .map { button in button.rx.tap.compactMap { AlarmType(rawValue: button.tag) } })
             .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .map { .updateAlarm($0.alarm) }
             .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        Observable.merge(
+            alarmApplyAllButton.rx.tap.asObservable(),
+            deleteButton.rx.tap.asObservable())
+            .subscribe(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -542,5 +549,9 @@ extension Reactive where Base: TimerOptionView {
     // MARK: - control event
     var tapDelete: ControlEvent<Void> {
         return ControlEvent(events: base.deleteButton.rx.tap)
+    }
+    
+    var tapApplyAll: ControlEvent<Void> {
+        return ControlEvent(events: base.alarmApplyAllButton.rx.tap)
     }
 }
