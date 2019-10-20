@@ -194,6 +194,17 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { [weak self] _ in !(self?.isTimerOptionVisible.value ?? true) }
             .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
+        
+        timerOptionView.rx.tapApplyAll
+            .map { Reactor.Action.alarmApplyAll }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        timerOptionView.rx.tapDelete
+            .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
+            .map { Reactor.Action.deleteTimer }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     
         let routeButtonTap: Observable<ProductivityViewCoordinator.Route> = Observable.merge(
             saveButton.rx.tap.map { .timeSetSave(reactor.timeSetInfo) },
