@@ -28,20 +28,20 @@ protocol NetworkServiceProtocol {
 
 class NetworkService: BaseService, NetworkServiceProtocol {
     func requestAppVersion() -> Single<AppVersion> {
-        return ApiProvider<AppApi, AppVersion>.request(.version)
+        return ApiProvider<AppApi>.request(.version)
     }
     
     func requestNoticeList() -> Single<[Notice]> {
-        return ApiProvider<NoticeApi, [Notice]>.request(.list)
+        return ApiProvider<NoticeApi>.request(.list)
     }
     
     func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail> {
-        return ApiProvider<NoticeApi, NoticeDetail>.request(.detail(id))
+        return ApiProvider<NoticeApi>.request(.detail(id))
     }
 }
 
-struct ApiProvider<API, Model> where API: ApiType, Model: Codable {
-    static func request(_ api: API) -> Single<Model> {
+struct ApiProvider<API: ApiType> {
+    static func request<Model: Codable>(_ api: API) -> Single<Model> {
         Logger.info("request api : \(api.url.absoluteString)", tag: "NETWORK")
         
         return Single.create { emitter in
@@ -98,7 +98,7 @@ protocol ApiType {
 }
 
 extension ApiType {
-    var url: URL { baseUrl.appendingPathComponent(path)}
+    var url: URL { baseUrl.appendingPathComponent(path) }
 }
 
 // MARK: - app api
@@ -108,7 +108,11 @@ enum AppApi: ApiType {
     
     // MARK: - protocol implement
     var baseUrl: URL {
+        #if DEBUG
+        return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/develop/app")!
+        #else
         return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/master/app")!
+        #endif
     }
     
     var path: String {
@@ -139,7 +143,11 @@ enum NoticeApi: ApiType {
     
     // MARK: - protocol implement
     var baseUrl: URL {
+        #if DEBUG
+        return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/develop/notice")!
+        #else
         return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/master/notice")!
+        #endif
     }
     
     var path: String {
