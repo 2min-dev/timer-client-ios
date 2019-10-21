@@ -14,6 +14,7 @@ import RealmSwift
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    private let provider: ServiceProviderProtocol = ServiceProvider()
 
     // MARK: - lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -24,16 +25,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create new window
         window = UIWindow(frame: UIScreen.main.bounds)
-        if #available(iOS 13.0, *) {
-            // Fix interface style to .light before deal with dark mode
-            window?.overrideUserInterfaceStyle = .light
-        }
         
         // Present intro view
-        let appCoordinator: AppCoordinator = AppCoordinator(provider: ServiceProvider(), window: window!)
+        let appCoordinator: AppCoordinator = AppCoordinator(provider: provider, window: window!)
         appCoordinator.present(for: .intro)
         
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        // Save current date when application did enter background state
+        let date = Date()
+        provider.appService.setBackgroundDate(date)
+        
+        Logger.info("Application did enter background - \(date)", tag: "APP")
+    }
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        // Restore date of enter background and compare current date
+        guard let backgroundDate = provider.appService.getBackgroundDate() else { return }
+        let date = Date()
+        let passedTime = date.timeIntervalSince1970 - backgroundDate.timeIntervalSince1970
+        
+        Logger.debug("Application did enter foreground - \(date), passed: \(passedTime.rounded())s")
     }
     
     //    func applicationDidEnterBackground(_ application: UIApplication) {

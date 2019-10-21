@@ -16,11 +16,13 @@ protocol UserDefaultServiceProtocol {
     func double(_ key: UserDefaultService.Key) -> Double
     func float(_ key: UserDefaultService.Key) -> Float
     func string(_ key: UserDefaultService.Key) -> String?
+    func object<T>(_ key: UserDefaultService.Key) -> T?
 }
 
 class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     enum Key: String {
         case timeSetId
+        case backgroundDate
         case countdown
         case alarm
         
@@ -28,6 +30,9 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
             switch self {
             case .timeSetId:
                 return Int.self
+                
+            case .backgroundDate:
+                return Date.self
                 
             case .countdown:
                 return Int.self
@@ -80,5 +85,11 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     func string(_ key: Key) -> String? {
         guard key.type is String.Type else { fatalError("You try to get value that doesn't match the type corresponding to the key value.") }
         return userDefault.string(forKey: key.rawValue)
+    }
+    
+    /// - returns: The object value associated with the specified key. If the key doesn‘t exist, this method returns nil
+    func object<T>(_ key: Key) -> T? {
+        guard key.type is T.Type else { fatalError("You try to get value that doesn't match the type corresponding to the key value.") }
+        return userDefault.object(forKey: key.rawValue) as? T
     }
 }

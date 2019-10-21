@@ -15,6 +15,10 @@ enum AppEvent {
 protocol AppServiceProtocol {
     var event: PublishSubject<AppEvent> { get }
     
+    // Background date
+    func setBackgroundDate(_ date: Date)
+    func getBackgroundDate() -> Date?
+    
     // Default alarm
     func setAlarm(_ alarm: Alarm)
     func getAlarm() -> Alarm
@@ -46,6 +50,14 @@ class AppService: BaseService, AppServiceProtocol {
     }
     
     // MARK: - public method
+    func setBackgroundDate(_ date: Date) {
+        provider.userDefaultService.set(date, key: .backgroundDate)
+    }
+    
+    func getBackgroundDate() -> Date? {
+        return provider.userDefaultService.object(.backgroundDate)
+    }
+    
     func setAlarm(_ alarm: Alarm) {
         provider.userDefaultService.set(alarm.rawValue, key: .alarm)
     }
