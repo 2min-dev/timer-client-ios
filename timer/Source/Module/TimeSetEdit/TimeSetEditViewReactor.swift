@@ -204,7 +204,7 @@ class TimeSetEditViewReactor: Reactor {
         case let .selectTimer(index):
             return actionSelectTimer(at: index)
             
-        case let .alarmApplyAll:
+        case .alarmApplyAll:
             return actionAlarmApplyAll()
             
         case .deleteTimeSet:
