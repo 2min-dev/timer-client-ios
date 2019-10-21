@@ -10,6 +10,7 @@ import Foundation
 
 protocol UserDefaultServiceProtocol {
     func register(defaults registrationDictionary: [UserDefaultService.Key: Any])
+    func remove(key: UserDefaultService.Key)
     
     func set(_ value: Any, key: UserDefaultService.Key)
     func integer(_ key: UserDefaultService.Key) -> Int
@@ -20,8 +21,9 @@ protocol UserDefaultServiceProtocol {
 }
 
 class UserDefaultService: BaseService, UserDefaultServiceProtocol {
-    enum Key: String {
+    enum Key: String, CaseIterable {
         case timeSetId
+        case runningTimeSet
         case backgroundDate
         case countdown
         case alarm
@@ -30,6 +32,9 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
             switch self {
             case .timeSetId:
                 return Int.self
+                
+            case .runningTimeSet:
+                return Data.self
                 
             case .backgroundDate:
                 return Date.self
@@ -41,6 +46,17 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
                 return Int.self
             }
         }
+        
+        var isOptional: Bool {
+            switch self {
+            case .runningTimeSet,
+                 .backgroundDate:
+                return true
+                
+            default:
+                return false
+            }
+        }
     }
     
     // MARK: - properties
@@ -49,13 +65,24 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     // MARK: - public method
     func register(defaults registrationDictionary: [UserDefaultService.Key: Any]) {
         var mappedDictionary: [String: Any] = [:]
-        registrationDictionary.forEach { key, value in
-            guard type(of: value) == key.type else { fatalError("You try to register value that doesn't match the type corresponding to the key value") }
-            
-            mappedDictionary[key.rawValue] = value
-        }
+        
+        Key.allCases.filter { !$0.isOptional }
+            .forEach {
+                // Fatal error ocurr if not exist default value that corresponding to the key
+                guard let value = registrationDictionary[$0] else { fatalError("You must define default value that corresponding to the key - 🚨[\($0.rawValue)]") }
+                
+                // Fatal error ocurr if default value type doesn't match the type corresponding to the key value
+                guard type(of: value) == $0.type else { fatalError("You try to register value that doesn't match the type corresponding to the key value") }
+                
+                mappedDictionary[$0.rawValue] = value
+            }
         
         userDefault.register(defaults: mappedDictionary)
+    }
+    
+    func remove(key: UserDefaultService.Key) {
+        guard key.isOptional else { fatalError("You try to remove non-optional type value.") }
+        userDefault.removeObject(forKey: key.rawValue)
     }
     
     func set(_ value: Any, key: Key) {

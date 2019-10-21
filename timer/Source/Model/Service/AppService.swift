@@ -15,6 +15,10 @@ enum AppEvent {
 protocol AppServiceProtocol {
     var event: PublishSubject<AppEvent> { get }
     
+    // Running time set
+    func setRunningTimeSet(info: TimeSetInfo?)
+    func getRunningTimeSet() -> TimeSetInfo?
+    
     // Background date
     func setBackgroundDate(_ date: Date)
     func getBackgroundDate() -> Date?
@@ -50,6 +54,20 @@ class AppService: BaseService, AppServiceProtocol {
     }
     
     // MARK: - public method
+    func setRunningTimeSet(info: TimeSetInfo?) {
+        guard let info = info, let data = JSONCodec.encode(info) else {
+            provider.userDefaultService.remove(key: .runningTimeSet)
+            return
+        }
+        
+        provider.userDefaultService.set(data, key: .runningTimeSet)
+    }
+    
+    func getRunningTimeSet() -> TimeSetInfo? {
+        guard let data: Data = provider.userDefaultService.object(.runningTimeSet) else { return nil }
+        return JSONCodec.decode(data, type: TimeSetInfo.self)
+    }
+    
     func setBackgroundDate(_ date: Date) {
         provider.userDefaultService.set(date, key: .backgroundDate)
     }
