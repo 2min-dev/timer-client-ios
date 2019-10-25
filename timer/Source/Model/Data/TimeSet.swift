@@ -55,15 +55,16 @@ class TimeSet: EventStreamProtocol {
             info.runningTime += oldValue?.info.currentTime ?? 0
         }
     }
-    var currentIndex: Int = 0 {
+    private(set) var currentIndex: Int {
         didSet { event.onNext(.timerChanged(info.timers[currentIndex], at: currentIndex)) }
     }
     
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(info: TimeSetInfo) {
+    init(info: TimeSetInfo, index: Int = 0) {
         self.info = info
+        self.currentIndex = index
     }
     
     // MARK: - private method
@@ -134,14 +135,18 @@ class TimeSet: EventStreamProtocol {
         
         if let index = index {
             // Start new timer
-            guard index < info.timers.count else { return }
+            guard (0 ..< info.timers.count).contains(index) else { return }
             currentIndex = index
             
+            // Set timer's current time that before index to end time
+            info.timers[0 ..< index].forEach { $0.currentTime = $0.endTime + $0.extraTime }
             timer = createTimer(at: index)
         }
         
-        // Return timer not exist
-        guard timer != nil else { return }
+        // Create new timer at current index
+        if timer == nil {
+            timer = createTimer(at: currentIndex)
+        }
         
         state = .run(detail: info.overtimer == nil ? .normal : .overtime)
         timer?.start()
@@ -197,6 +202,47 @@ class TimeSet: EventStreamProtocol {
             info.repeatCount = 0
             info.endState = .none
         }
+    }
+    
+    /// Consume time of the time set
+    /// - parameters:
+    ///   - time: the time to consume of the time set
+    ///   - withRepeat: flag to perform in consideration of repetition (default `false`)
+    func consume(time: TimeInterval, withRepeat: Bool = false) {
+        // Set time to mutable value
+        var time = time
+        
+        var index = currentIndex
+        while time > 0 {
+            let timer = info.timers[index]
+            let remainedTime: TimeInterval = timer.endTime + timer.extraTime - timer.currentTime
+            
+            if time >= remainedTime {
+                timer.currentTime += remainedTime
+            } else {
+                timer.currentTime += time
+                break
+            }
+            
+            if index == info.timers.count - 1 {
+                // Break out if index is last index of the time set and time set doesn't perform repeat
+                guard info.isRepeat else { break }
+                
+                // Reset time set state to repeat
+                info.repeatCount += 1
+                reset(withState: false)
+                index = 0
+                
+                // Break out loop if consume isn't with repeat
+                guard withRepeat else { break }
+            }
+            
+            index += 1
+            time = max(0, time - remainedTime)
+        }
+        
+        currentIndex = index
+        timer = createTimer(at: index)
     }
     
     deinit {
