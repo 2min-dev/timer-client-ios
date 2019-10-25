@@ -45,34 +45,27 @@ struct ApiProvider<API: ApiType> {
         Logger.info("request api : \(api.url.absoluteString)", tag: "NETWORK")
         
         return Single.create { emitter in
-            DispatchQueue.global().async {
-                AF.request(api.url,
-                           method: api.method,
-                           parameters: api.parameters,
-                           headers: api.headers)
-                    .response { data in
-                        if let error = data.error {
-                            Logger.error(error.errorDescription ?? "network error occured!", tag: "NETWORK")
-                            emitter(.error(error))
-                        }
-                        
-                        // Unwrap response data
-                        guard let jsonData = data.data else {
-                            emitter(.error(NetworkError.emptyData))
-                            return
-                        }
-
-                        // Parse json data to model object
-                        guard let model = JSONCodec.decode(jsonData, type: Model.self) else {
-                            emitter(.error(NetworkError.parseError))
-                            return
-                        }
-                        
-                        // Emit succes through main thread
-                        DispatchQueue.main.async {
-                            emitter(.success(model))
-                        }
-                }
+            AF.request(api.url, method: api.method, parameters: api.parameters, headers: api.headers)
+                .response { data in
+                    if let error = data.error {
+                        Logger.error(error.errorDescription ?? "network error occured!", tag: "NETWORK")
+                        emitter(.error(error))
+                    }
+                    
+                    // Unwrap response data
+                    guard let jsonData = data.data else {
+                        emitter(.error(NetworkError.emptyData))
+                        return
+                    }
+                    
+                    // Parse json data to model object
+                    guard let model = JSONCodec.decode(jsonData, type: Model.self) else {
+                        emitter(.error(NetworkError.parseError))
+                        return
+                    }
+                    
+                    // Emit succes through main thread
+                    emitter(.success(model))
             }
             
             return Disposables.create()
