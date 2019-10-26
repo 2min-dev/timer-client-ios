@@ -25,6 +25,7 @@ class JSONCodec {
     /// - returns: Encoded object data. If encode fail, return `nil`
     static func encode<T: Encodable>(_ value: T) -> Data? {
         let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
         
         do {
             let data = try encoder.encode(value)

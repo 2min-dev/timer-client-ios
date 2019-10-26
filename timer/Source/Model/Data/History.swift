@@ -13,25 +13,19 @@ import RealmSwift
     // MARK: - properties
     @objc dynamic private(set) var id: Int = -1
     @objc dynamic var info: TimeSetInfo?
-    @objc dynamic private var _startDate: Date?
-    var startDate: Date? {
-        set {
-            guard let date = newValue, _startDate == nil else { return }
-            _startDate = date
-            
+    @objc dynamic var startDate: Date? {
+        didSet {
             // Set history id from seconds of start date
-            id = Int(date.timeIntervalSince1970)
-        }
-        get {
-            return _startDate
+            id = Int(startDate?.timeIntervalSince1970 ?? -1)
         }
     }
     @objc dynamic var endDate: Date?
     
     // MARK: - constructor
-    convenience init(info: TimeSetInfo) {
+    convenience init(info: TimeSetInfo, startDate: Date? = nil) {
         self.init()
         self.info = info
+        self.startDate = startDate
     }
     
     // MARK: - realm method

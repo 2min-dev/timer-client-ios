@@ -16,8 +16,8 @@ protocol AppServiceProtocol {
     var event: PublishSubject<AppEvent> { get }
     
     // Running time set
-    func setRunningTimeSet(info: TimeSetInfo?)
-    func getRunningTimeSet() -> TimeSetInfo?
+    func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?)
+    func getRunningTimeSet() -> RunningTimeSet?
     
     // Background date
     func setBackgroundDate(_ date: Date)
@@ -54,8 +54,8 @@ class AppService: BaseService, AppServiceProtocol {
     }
     
     // MARK: - public method
-    func setRunningTimeSet(info: TimeSetInfo?) {
-        guard let info = info, let data = JSONCodec.encode(info) else {
+    func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?) {
+        guard let runningTimeSet = runningTimeSet, let data = JSONCodec.encode(runningTimeSet) else {
             provider.userDefaultService.remove(key: .runningTimeSet)
             return
         }
@@ -63,9 +63,9 @@ class AppService: BaseService, AppServiceProtocol {
         provider.userDefaultService.set(data, key: .runningTimeSet)
     }
     
-    func getRunningTimeSet() -> TimeSetInfo? {
+    func getRunningTimeSet() -> RunningTimeSet? {
         guard let data: Data = provider.userDefaultService.object(.runningTimeSet) else { return nil }
-        return JSONCodec.decode(data, type: TimeSetInfo.self)
+        return JSONCodec.decode(data, type: RunningTimeSet.self)
     }
     
     func setBackgroundDate(_ date: Date) {

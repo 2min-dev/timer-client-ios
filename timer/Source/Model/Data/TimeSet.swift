@@ -184,8 +184,6 @@ class TimeSet: EventStreamProtocol {
     
     /// Reset the time set
     func reset(withState: Bool = true) {
-        guard state != .initialize else { return }
-        
         // Reset all timer status
         timer?.reset(withState: false)
         timer = nil
