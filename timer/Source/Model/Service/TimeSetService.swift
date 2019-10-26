@@ -23,8 +23,8 @@ enum TimeSetEvent {
 protocol TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> { get }
     
-    /// Last ran time set
-    var lastHistory: History? { get set }
+    /// Current running time set
+    var runningTimeSet: RunningTimeSet? { get set }
     
     // MARK: - time set
     /// Fetch all time set info list
@@ -45,6 +45,12 @@ protocol TimeSetServiceProtocol {
     /// Update time set list
     func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
     
+    /// Store current running time set data into user defaults
+    func storeTimeSet() -> TimeSet?
+    
+    /// Restore and set current running time set from user defaults
+    func restoreTimeSet() -> TimeSet?
+    
     // MARK: - history
     /// Fetch all history list
     func fetchHistories() -> Single<[History]>
@@ -63,7 +69,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - properties
     private var timeSets: [TimeSetInfo]?
-    var lastHistory: History?
+    var runningTimeSet: RunningTimeSet?
     
     // MARK: - public method
     // MARK: - time set
@@ -171,6 +177,26 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         }
         .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
+    
+    func storeTimeSet() -> TimeSet? {
+        guard let runningTimeSet = runningTimeSet,
+            case .run(detail: _) = runningTimeSet.timeSet.state else {
+                provider.appService.setRunningTimeSet(nil)
+                return nil
+        }
+        
+        // Create running time set object and store into user defaults
+        provider.appService.setRunningTimeSet(runningTimeSet)
+        
+        return runningTimeSet.timeSet
+    }
+    
+    func restoreTimeSet() -> TimeSet? {
+        // Resotre running time set from user defaults
+        runningTimeSet = provider.appService.getRunningTimeSet()
+        return runningTimeSet?.timeSet
+    }
+    
     // MARK: - history
     func fetchHistories() -> Single<[History]> {
         return provider.databaseService.fetchHistories()
