@@ -114,3 +114,4 @@ iOSInjectionProject/
 }
 .DS_Store
 *.entitlements
+timer/Support/GoogleService-Info.plist
