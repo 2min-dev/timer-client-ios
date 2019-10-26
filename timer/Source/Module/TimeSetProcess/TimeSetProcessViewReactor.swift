@@ -143,24 +143,43 @@ class TimeSetProcessViewReactor: Reactor {
     private var countdownTimer: TMTimer
     
     // MARK: - constructor
-    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo, start index: Int = 0) {
+    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil, start index: Int = 0) {
         self.appService = appService
         self.timeSetService = timeSetService
         
-        guard index >= 0 && index < timeSetInfo.timers.count else {
-            Logger.error("can't start from \(index) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
-            return nil
+        var index = index
+        if let timeSetInfo = timeSetInfo {
+            guard index >= 0 && index < timeSetInfo.timers.count else {
+                Logger.error("can't start from \(index) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
+                return nil
+            }
+            
+            // Copy time set info to preserve origin data
+            guard let copiedInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
+            
+            origin = timeSetInfo
+            timeSet = TimeSet(info: copiedInfo)
+            history = History(info: copiedInfo)
+        } else {
+            // Fetch running time set from time set service
+            guard let runningTimeSet = timeSetService.runningTimeSet else {
+                Logger.error("no running time set.", tag: "TIME SET PROCESS")
+                return nil
+            }
+            
+            origin = runningTimeSet.origin
+            timeSet = runningTimeSet.timeSet
+            history = History(info: runningTimeSet.timeSet.info, startDate: runningTimeSet.startDate)
+            
+            index = timeSet.currentIndex
         }
-        
-        origin = timeSetInfo
-        // Copy time set info to preserve origin data
-        guard let copiedInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
-        history = History(info: copiedInfo)
-        timeSet = TimeSet(info: copiedInfo)
         
         // Create countdown timer
         countdownTimer = TMTimer(info: TimerInfo(endTime: TimeInterval(appService.getCountdown())))
-        countdownTimer.info.currentTime = timeSet.state == .initialize ? 0 : countdownTimer.info.endTime
+        if timeSet.state != .initialize {
+            // Countdown stop if time set isn't initial state
+            countdownTimer.stop()
+        }
         
         // Calculate remainted time
         remainedTime = timeSet.info.timers.enumerated()
@@ -246,7 +265,7 @@ class TimeSetProcessViewReactor: Reactor {
         }
     }
     
-    func transform(mutation: Observable<TimeSetProcessViewReactor.Mutation>) -> Observable<TimeSetProcessViewReactor.Mutation> {
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
         let countdownEventMutation = countdownTimer.event
             .flatMap { [weak self] in self?.mutate(timerEvent: $0) ?? .empty() }
         
@@ -457,21 +476,30 @@ class TimeSetProcessViewReactor: Reactor {
             setRepeatCount = .just(.setRepeatCount(0))
             
         case .run(detail: _):
-            guard history.startDate == nil else { break }
-            // Set start date to current `Date()` only first time
-            history.startDate = Date()
+            if history.startDate == nil {
+                // Set start date to current `Date()`
+                history.startDate = Date()
+            }
+            
+            if timeSetService.runningTimeSet == nil {
+                // Set running time set only first time
+                guard let startDate = history.startDate else { break }
+                timeSetService.runningTimeSet = RunningTimeSet(timeSet: timeSet, origin: origin, startDate: startDate)
+            }
             
         case let .stop(repeat: count):
             setExtraTime = .just(.setExtraTime(0))
             setRepeatCount = .just(.setRepeatCount(count))
             
         case let .end(detail: detail):
+            // Set running time set to `nil`
+            timeSetService.runningTimeSet = nil
             // Set end date to current `Date()`
             history.endDate = Date()
             
             switch detail {
-            case .cancel,
-                 .normal:
+            case .normal,
+                 .cancel:
                 _ = timeSetService.createHistory(history).subscribe()
                 
             case .overtime:

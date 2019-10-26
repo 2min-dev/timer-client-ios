@@ -83,11 +83,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         view = TimeSetProcessView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.setNeedsLayout()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Set navigation controller's pop gesture disable
@@ -107,6 +102,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     func bind(reactor: TimeSetProcessViewReactor) {
         // MARK: action
         rx.viewWillAppear
+            .take(1)
             .map { Reactor.Action.viewWillAppear }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
