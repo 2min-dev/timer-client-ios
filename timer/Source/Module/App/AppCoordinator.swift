@@ -40,7 +40,7 @@ class AppCoordinator {
         switch route {
         case .intro:
             let introViewCoordinator = IntroViewCoordinator(provider: provider)
-            let introViewReactor = IntroViewReactor()
+            let introViewReactor = IntroViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
             let introViewController = IntroViewController(coordinator: introViewCoordinator)
             
             // DI

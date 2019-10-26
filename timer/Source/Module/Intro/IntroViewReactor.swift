@@ -10,30 +10,40 @@ import RxSwift
 import ReactorKit
 
 class IntroViewReactor: Reactor {
+    enum IntroState {
+        case none
+        case done
+        case running
+    }
+    
     enum Action {
-        case viewDidLoad
+        case viewWillAppear
     }
     
     enum Mutation {
-        case done
+        case setIntroState(IntroState)
     }
     
     struct State {
-        var isDone: Bool
+        var introState: IntroState
     }
     
     // MARK: properties
     var initialState: IntroViewReactor.State
+    private let appService: AppServiceProtocol
+    private let timeSetService: TimeSetServiceProtocol
     
-    init() {
-        self.initialState = State(isDone: false)
+    init(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol) {
+        self.appService = appService
+        self.timeSetService = timeSetService
+        initialState = State(introState: .none)
     }
     
     // MARK: - mutate
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
+        case .viewWillAppear:
+            return actionViewWillAppear()
         }
     }
     
@@ -41,23 +51,32 @@ class IntroViewReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         switch mutation {
-        case .done:
-            state.isDone = true
+        case let .setIntroState(introState):
+            state.introState = introState
+            return state
         }
-        
-        return state
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
+    private func actionViewWillAppear() -> Observable<Mutation> {
         Logger.info("""
-        app launched.
-        - title(\(Constants.appTitle ?? ""))
-        - version(\(Constants.appVersion ?? ""))
-        - build(\(Constants.appBuild ?? ""))
-        - device version(\(Constants.deviceVersion))
-        """)
+            app launched.
+            - title(\(Constants.appTitle ?? ""))
+            - version(\(Constants.appVersion ?? ""))
+            - build(\(Constants.appBuild ?? ""))
+            - device version(\(Constants.deviceVersion))
+            """)
         
-        return Observable<Mutation>.just(.done).delay(.seconds(1), scheduler: MainScheduler.instance)
+        if let backgroundDate = appService.getBackgroundDate(),
+            let timeSet = timeSetService.restoreTimeSet() {
+            let passedTime = Date().timeIntervalSince1970 - backgroundDate.timeIntervalSince1970
+            
+            timeSet.consume(time: passedTime)
+            timeSet.start()
+            
+            return .just(.setIntroState(.running))
+        }
+        
+        return .just(.setIntroState(.done))
     }
 }
