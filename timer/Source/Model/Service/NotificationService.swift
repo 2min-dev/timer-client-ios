@@ -10,8 +10,10 @@ import Foundation
 import NotificationCenter
 
 protocol NotificationServiceProtocol {
+    /// Register notifications of time set
     func registerNotificationOfTimeSet(_ timeSet: TimeSet)
     
+    /// Remove all registered notifications
     func removeAllNotifications()
 }
 
@@ -45,6 +47,8 @@ class NotificationService: BaseService, NotificationServiceProtocol {
                 
                 // Create notification trigger and request
                 let delay = timer.endTime + timer.extraTime - timer.currentTime
+                guard baseTime + delay > 0 else { return }
+                
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: baseTime + delay, repeats: false)
                 let request = UNNotificationRequest(identifier: String(offset), content: content, trigger: trigger)
                 
