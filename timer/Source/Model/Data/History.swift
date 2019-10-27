@@ -24,6 +24,7 @@ import RealmSwift
     // MARK: - constructor
     convenience init(info: TimeSetInfo, startDate: Date? = nil) {
         self.init()
+        self.id = Int(startDate?.timeIntervalSince1970 ?? -1)
         self.info = info
         self.startDate = startDate
     }

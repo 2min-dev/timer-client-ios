@@ -217,9 +217,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func updateHistory(_ history: History) -> Single<History> {
         return provider.databaseService.updateHistory(history)
-            .do(onSuccess: { _ in
-                history.startDate = Date()
-            })
             .do(onSuccess: { _ in Logger.info("the history updated.", tag: "SERVICE") })
     }
 }
