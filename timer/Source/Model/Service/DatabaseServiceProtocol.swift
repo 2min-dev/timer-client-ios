@@ -11,22 +11,22 @@ import RxSwift
 protocol DatabaseServiceProtocol {
     // MARK: - time set operate
     /// Fetch all time set list
-    func fetchTimeSets() -> Single<[TimeSetInfo]>
+    func fetchTimeSets() -> Single<[TimeSetItem]>
     
     /// Save a time set
-    func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
     /// Remove the time set by id
-    func removeTimeSet(id: String) -> Single<TimeSetInfo>
+    func removeTimeSet(id: String) -> Single<TimeSetItem>
     
     /// Remove time set list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]>
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]>
     
-    /// Update the time set info
-    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    /// Update the time set item
+    func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
     /// Update time set list
-    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
+    func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]>
     
     /// Fetch all history list
     func fetchHistories() -> Single<[History]>
