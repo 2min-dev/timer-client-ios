@@ -26,6 +26,7 @@ class StopwatchItem: Object, Codable, NSCopying, Recordable {
         return StopwatchItem(current: current, end: end)
     }
     
+    @discardableResult
     func consume(time: TimeInterval) -> TimeInterval {
         current += time
         return 0

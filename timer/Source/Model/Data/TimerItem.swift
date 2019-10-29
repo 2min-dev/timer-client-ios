@@ -51,6 +51,7 @@ class TimerItem: Object, Codable, NSCopying, Recordable, Alertable {
         return TimerItem(comment: comment, alarm: alarm, current: current, target: target, extra: extra)
     }
 
+    @discardableResult
     func consume(time: TimeInterval) -> TimeInterval {
         let remained = end - current
         current += time >= remained ? remained : time
