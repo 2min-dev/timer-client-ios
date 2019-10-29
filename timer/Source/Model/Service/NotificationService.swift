@@ -20,7 +20,7 @@ protocol NotificationServiceProtocol {
 class NotificationService: BaseService, NotificationServiceProtocol {
     
     func registerNotificationOfTimeSet(_ timeSet: TimeSet) {
-        let timers = timeSet.info.timers
+        let timers = timeSet.item.timers
         let lastIndex = timers.count - 1
         
         var baseTime: TimeInterval = 0
@@ -34,10 +34,10 @@ class NotificationService: BaseService, NotificationServiceProtocol {
                 if offset == lastIndex {
                     // Set content of time set end
                     content.title = "notification_time_set_end_title".localized
-                    content.subtitle = timeSet.info.isRepeat ?
+                    content.subtitle = timeSet.item.isRepeat ?
                         "notification_time_set_end_repeat_sub_title".localized :
                         "notification_time_set_end_sub_title".localized
-                    content.body = timeSet.info.isRepeat ?
+                    content.body = timeSet.item.isRepeat ?
                         "notification_time_set_end_repeat_body_title".localized :
                         "notification_time_set_end_body_title".localized
                 } else {
@@ -46,7 +46,7 @@ class NotificationService: BaseService, NotificationServiceProtocol {
                 }
                 
                 // Create notification trigger and request
-                let delay = timer.endTime + timer.extraTime - timer.currentTime
+                let delay = timer.end + timer.extra - timer.current
                 guard baseTime + delay > 0 else { return }
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: baseTime + delay, repeats: false)

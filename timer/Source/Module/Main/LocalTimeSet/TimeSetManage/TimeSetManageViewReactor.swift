@@ -150,7 +150,7 @@ class TimeSetManageViewReactor: Reactor {
                             $0.sortingKey < $1.sortingKey :
                             $0.bookmarkSortingKey < $1.bookmarkSortingKey
                     })
-                    .map { TimeSetManageCollectionViewCellReactor(timeSetInfo: $0) }
+                    .map { TimeSetManageCollectionViewCellReactor(timeSetItem: $0) }
                 
                 let setSections: Observable<Mutation> = .just(.setSections([TimeSetManageSectionModel(model: .normal, items: items),
                                                                             TimeSetManageSectionModel(model: .removed, items: [])]))
@@ -181,8 +181,8 @@ class TimeSetManageViewReactor: Reactor {
         
         guard state.sections.count == 2 else { return .empty() }
         
-        let updateTimeSets = state.sections[0].items.map { $0.timeSetInfo }
-        let removeTimeSetIds = state.sections[1].items.compactMap { $0.timeSetInfo.id }
+        let updateTimeSets = state.sections[0].items.map { $0.timeSetItem }
+        let removeTimeSetIds = state.sections[1].items.compactMap { $0.timeSetItem.id }
         
         // Set reordered sorting key
         updateTimeSets.enumerated().forEach {
@@ -194,7 +194,7 @@ class TimeSetManageViewReactor: Reactor {
         }
         
         return timeSetService.removeTimeSets(ids: removeTimeSetIds).asObservable()
-            .flatMap { _ in self.timeSetService.updateTimeSets(infoes: updateTimeSets) }
+            .flatMap { _ in self.timeSetService.updateTimeSets(items: updateTimeSets) }
             .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
     }
     

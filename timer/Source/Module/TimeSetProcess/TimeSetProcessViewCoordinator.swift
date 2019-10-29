@@ -12,8 +12,8 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case home
-        case timeSetProcess(TimeSetInfo)
-        case timeSetMemo(TimeSetInfo)
+        case timeSetProcess(TimeSetItem)
+        case timeSetMemo(TimeSetItem)
         case timeSetEnd(History)
     }
     
@@ -60,9 +60,9 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
             
-        case let .timeSetProcess(timeSetInfo):
+        case let .timeSetProcess(timeSetItem):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo) else { return nil }
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI
@@ -71,9 +71,9 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case let .timeSetMemo(timeSetInfo):
+        case let .timeSetMemo(timeSetItem):
             let coordinator = TimeSetMemoViewCoordinator(provider: provider)
-            let reactor = TimeSetMemoViewReactor(timeSetInfo: timeSetInfo)
+            let reactor = TimeSetMemoViewReactor(timeSetItem: timeSetItem)
             let viewController = TimeSetMemoViewController(coordinator: coordinator)
             
             // DI

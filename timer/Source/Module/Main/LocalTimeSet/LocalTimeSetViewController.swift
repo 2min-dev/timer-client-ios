@@ -220,7 +220,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     private func timeSetSelected(cell type: TimeSetCellType) {
         switch type {
         case let .regular(reactor):
-            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetInfo))
+            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetItem))
             
         case .empty:
             (tabBarController as? MainViewController)?.select(at: MainViewController.TabType.productivity.rawValue, animated: true)

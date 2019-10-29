@@ -197,7 +197,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
-            .map { .timeSetSave(reactor.timeSetInfo) }
+            .map { .timeSetSave(reactor.timeSetItem) }
             .bind(to: routeType)
             .disposed(by: disposeBag)
         

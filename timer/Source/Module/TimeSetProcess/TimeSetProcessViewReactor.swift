@@ -56,7 +56,7 @@ class TimeSetProcessViewReactor: Reactor {
         case setExtraTime(TimeInterval)
         
         /// Set current countdown state
-        case setCountdownState(TMTimer.State)
+        case setCountdownState(JSTimer.State)
         
         /// Set current remained countdown
         case setCountdown(Int)
@@ -65,7 +65,7 @@ class TimeSetProcessViewReactor: Reactor {
         case setTimeSetState(TimeSet.State)
         
         /// Set current timer
-        case setTimer(TimerInfo)
+        case setTimer(TimerItem)
         
         /// Set current selected index
         case setSelectedIndex(at: Int)
@@ -100,7 +100,7 @@ class TimeSetProcessViewReactor: Reactor {
         var extraTime: TimeInterval
         
         /// Current countdown state
-        var countdownState: TMTimer.State
+        var countdownState: JSTimer.State
         
         /// Remained countdown
         var countdown: Int
@@ -116,8 +116,8 @@ class TimeSetProcessViewReactor: Reactor {
             sectionDataSource.makeSections()
         }
         
-        /// Current running timer info
-        var timer: TimerInfo
+        /// Current running timer item
+        var timer: TimerItem
         
         /// Index of current selected timer
         var selectedIndex: Int
@@ -134,32 +134,32 @@ class TimeSetProcessViewReactor: Reactor {
     private let appService: AppServiceProtocol
     private var timeSetService: TimeSetServiceProtocol
     
-    let origin: TimeSetInfo
+    let origin: TimeSetItem
     let history: History // Time set history
     private let timeSet: TimeSet // Running time set
     
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
     
-    private var countdownTimer: TMTimer
+    private var countdownTimer: JSTimer
     
     // MARK: - constructor
-    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo? = nil, start index: Int = 0) {
+    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem? = nil, start index: Int = 0) {
         self.appService = appService
         self.timeSetService = timeSetService
         
         var index = index
-        if let timeSetInfo = timeSetInfo {
-            guard index >= 0 && index < timeSetInfo.timers.count else {
+        if let timeSetItem = timeSetItem {
+            guard index >= 0 && index < timeSetItem.timers.count else {
                 Logger.error("can't start from \(index) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
                 return nil
             }
             
-            // Copy time set info to preserve origin data
-            guard let copiedInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
+            // Copy time set item to preserve origin data
+            guard let copiedItem = timeSetItem.copy() as? TimeSetItem else { return nil }
             
-            origin = timeSetInfo
-            timeSet = TimeSet(info: copiedInfo)
-            history = History(info: copiedInfo)
+            origin = timeSetItem
+            timeSet = TimeSet(item: copiedItem)
+            history = History(item: copiedItem)
         } else {
             // Fetch running time set from time set service
             guard let runningTimeSet = timeSetService.runningTimeSet else {
@@ -169,42 +169,42 @@ class TimeSetProcessViewReactor: Reactor {
             
             origin = runningTimeSet.origin
             timeSet = runningTimeSet.timeSet
-            history = History(info: runningTimeSet.timeSet.info, startDate: runningTimeSet.startDate)
+            history = History(item: runningTimeSet.timeSet.item, startDate: runningTimeSet.startDate)
             
             index = timeSet.currentIndex
         }
         
         // Create countdown timer
-        countdownTimer = TMTimer(info: TimerInfo(endTime: TimeInterval(appService.getCountdown())))
+        countdownTimer = JSTimer(item: TimerItem(target: TimeInterval(appService.getCountdown())))
         if timeSet.state != .initialize {
             // Countdown stop if time set isn't initial state
             countdownTimer.stop()
         }
         
         // Calculate remainted time
-        remainedTime = timeSet.info.timers.enumerated()
+        remainedTime = timeSet.item.timers.enumerated()
             .filter { $0.offset > index }
-            .reduce(0) { $0 + $1.element.endTime }
+            .reduce(0) { $0 + $1.element.end }
         
         // Get initial state
-        let timer = timeSet.info.timers[index]
-        let allTime = timeSet.info.timers.reduce(0) { $0 + $1.endTime }
-        let extraTime = timeSet.info.timers.reduce(0) { $0 + $1.extraTime }
-        let time = timer.endTime + timer.extraTime - timer.currentTime
+        let timer = timeSet.item.timers[index]
+        let allTime = timeSet.item.timers.reduce(0) { $0 + $1.end }
+        let extraTime = timeSet.item.timers.reduce(0) { $0 + $1.extra }
+        let time = timer.end + timer.extra - timer.current
         let remainedTime = self.remainedTime + time
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: timeSet.info.timers.toArray(), index: index)
+        let dataSource = TimerBadgeDataSource(timers: timeSet.item.timers.toArray(), index: index)
         
-        initialState = State(title: timeSet.info.title,
+        initialState = State(title: timeSet.item.title,
                              time: time,
                              allTime: allTime,
                              remainedTime: remainedTime,
-                             isRepeat: timeSet.info.isRepeat,
-                             repeatCount: timeSet.info.repeatCount,
+                             isRepeat: timeSet.item.isRepeat,
+                             repeatCount: timeSet.history.repeatCount,
                              extraTime: extraTime,
                              countdownState: countdownTimer.state,
-                             countdown: Int(ceil(countdownTimer.info.endTime - countdownTimer.info.currentTime)),
+                             countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
                              timeSetState: timeSet.state,
                              sectionDataSource: dataSource,
                              timer: timer,
@@ -242,7 +242,7 @@ class TimeSetProcessViewReactor: Reactor {
         }
     }
     
-    func mutate(timerEvent: TMTimer.Event) -> Observable<Mutation> {
+    func mutate(timerEvent: JSTimer.Event) -> Observable<Mutation> {
         switch timerEvent {
         case let .stateChanged(state):
             return actionCountdownTimerStateChanged(state)
@@ -347,12 +347,12 @@ class TimeSetProcessViewReactor: Reactor {
     
     private func actionToggleRepeat() -> Observable<Mutation> {
         // Toggle time set repeat option
-        timeSet.info.isRepeat.toggle()
-        return .just(.setRepeat(timeSet.info.isRepeat))
+        timeSet.item.isRepeat.toggle()
+        return .just(.setRepeat(timeSet.item.isRepeat))
     }
     
     private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
-        guard index >= 0 && index < timeSet.info.timers.count else { return .empty() }
+        guard index >= 0 && index < timeSet.item.timers.count else { return .empty() }
         
         let state = currentState
         let previousIndex = state.selectedIndex
@@ -364,7 +364,7 @@ class TimeSetProcessViewReactor: Reactor {
         state.sectionDataSource.regulars[index].action.onNext(.select(true))
         
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
-        let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.info.timers[index]))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.item.timers[index]))
         
         return .concat(setSelectedIndex, setTimer)
     }
@@ -372,22 +372,22 @@ class TimeSetProcessViewReactor: Reactor {
     private func actionStartTimeSet(at index: Int?) -> Observable<Mutation> {
         if let index = index {
             // Restart time set from timer at index (reset)
-            guard index >= 0 && index < timeSet.info.timers.count else { return .empty() }
+            guard index >= 0 && index < timeSet.item.timers.count else { return .empty() }
             // Stop countdown & initialize time set
-            countdownTimer.state != .end ? countdownTimer.stop() : nil
+            countdownTimer.stop()
             timeSet.reset()
             
             // Start time set
             timeSet.start(at: index)
             
             let selectTimer: Observable<Mutation> = actionSelectTimer(at: index)
-            let setTime: Observable<Mutation> = .just(.setTime(timeSet.info.timers[index].endTime))
+            let setTime: Observable<Mutation> = .just(.setTime(timeSet.item.timers[index].end))
             let setExtraTime: Observable<Mutation> = .just(.setExtraTime(0))
             
             return .concat(selectTimer, setTime, setExtraTime)
         } else {
             // Resume had been running time set or countdown
-            if countdownTimer.state != .end {
+            if !countdownTimer.isEnded {
                 // Resume countdown
                 countdownTimer.start()
             } else {
@@ -405,7 +405,7 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionPauseTimeSet() -> Observable<Mutation> {
-        if countdownTimer.state != .end {
+        if !countdownTimer.isEnded {
             // Pause countdown
             countdownTimer.pause()
             return .just(.setCountdownState(.pause))
@@ -417,7 +417,7 @@ class TimeSetProcessViewReactor: Reactor {
     }
     
     private func actionStopTimeSet() -> Observable<Mutation> {
-        if countdownTimer.state != .end {
+        if !countdownTimer.isEnded {
             // Dismiss
             countdownTimer.stop()
         } else {
@@ -428,28 +428,28 @@ class TimeSetProcessViewReactor: Reactor {
         return .just(.dismiss)
     }
     
-    private func actionAddExtraTime(_ extraTime: TimeInterval) -> Observable<Mutation> {
+    private func actionAddExtraTime(_ extra: TimeInterval) -> Observable<Mutation> {
         let state = currentState
         guard state.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME else { return .empty() }
         
         // Add extra time into current timer
-        state.timer.extraTime += extraTime
+        state.timer.extra += extra
         
-        let setExtraTime: Observable<Mutation> = .just(.setExtraTime(state.extraTime + extraTime))
-        let setTime: Observable<Mutation> = .just(.setTime(state.time + extraTime))
-        let setRemainedTime: Observable<Mutation> = .just(.setRemainedTime(state.remainedTime + extraTime))
+        let setExtraTime: Observable<Mutation> = .just(.setExtraTime(state.extraTime + extra))
+        let setTime: Observable<Mutation> = .just(.setTime(state.time + extra))
+        let setRemainedTime: Observable<Mutation> = .just(.setRemainedTime(state.remainedTime + extra))
         
         return .concat(setExtraTime, setTime, setRemainedTime)
     }
     
     // MARK: - countdown timer action method
-    private func actionCountdownTimerStateChanged(_ state: TMTimer.State) -> Observable<Mutation> {
+    private func actionCountdownTimerStateChanged(_ state: JSTimer.State) -> Observable<Mutation> {
         let setCountdownState: Observable<Mutation> = .just(.setCountdownState(state))
         switch state {
-        case .end:
+        case .end(detail: _):
             var startTimeSet: Observable<Mutation> = .empty()
             // Check countdown interrupted
-            if countdownTimer.info.currentTime >= countdownTimer.info.endTime {
+            if countdownTimer.item.currentTime >= countdownTimer.item.endTime {
                 startTimeSet = actionStartTimeSet(at: currentState.selectedIndex)
             }
             
@@ -458,7 +458,6 @@ class TimeSetProcessViewReactor: Reactor {
         default:
             return setCountdownState
         }
-        
     }
     
     private func actionCountdownTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {
@@ -516,14 +515,14 @@ class TimeSetProcessViewReactor: Reactor {
         return .concat(setTimeSetState, setExtraTime, setRepeatCount)
     }
     
-    private func actionTimeSetTimerChanged(_ timer: TimerInfo, at index: Int) -> Observable<Mutation> {
+    private func actionTimeSetTimerChanged(_ timer: TimerItem, at index: Int) -> Observable<Mutation> {
         // Calculate remained time
-        remainedTime = timeSet.info.timers.enumerated()
+        remainedTime = timeSet.item.timers.enumerated()
             .filter { $0.offset > index }
-            .reduce(0) { $0 + $1.element.endTime }
+            .reduce(0) { $0 + $1.element.end }
         
         return .concat(actionSelectTimer(at: index),
-                       .just(.setRemainedTime(remainedTime + timer.endTime)))
+                       .just(.setRemainedTime(remainedTime + timer.end)))
     }
     
     private func actionTimeSetTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {

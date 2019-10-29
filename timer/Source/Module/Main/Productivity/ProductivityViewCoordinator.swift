@@ -12,8 +12,8 @@ import UIKit
 class ProductivityViewCoordinator: CoordinatorProtocol {
      // MARK: - route enumeration
     enum Route {
-        case timeSetSave(TimeSetInfo)
-        case timeSetProcess(TimeSetInfo)
+        case timeSetSave(TimeSetItem)
+        case timeSetProcess(TimeSetItem)
         case history
         case setting
     }
@@ -43,9 +43,9 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     
     func get(for route: Route) -> UIViewController? {
         switch route {
-        case let .timeSetSave(timeSetInfo):
+        case let .timeSetSave(timeSetItem):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
+            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem)
             let viewController = TimeSetSaveViewController(coordinator: coordinator)
             
             // DI
@@ -54,9 +54,9 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case let .timeSetProcess(timeSetInfo):
+        case let .timeSetProcess(timeSetItem):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo) else { return nil }
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI

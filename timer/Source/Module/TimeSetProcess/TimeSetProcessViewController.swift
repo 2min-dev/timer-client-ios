@@ -117,7 +117,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
-            .compactMap { reactor.history.info }
+            .compactMap { reactor.history.item }
             .subscribe(onNext: { [weak self] in
                 guard let viewController = self?.coordinator.present(for: .timeSetMemo($0)) as? TimeSetMemoViewController else { return }
                 self?.bind(memo: viewController)
@@ -432,7 +432,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     ///   - repeatCount: repeated count of the time set
     ///   - timeSetState: current state of the time set
     /// - returns: the attributed string text of current time set state
-    private func getTimeSetState(countdown: Int, countdownState: TMTimer.State, repeatCount: Int, timeSetState: TimeSet.State) -> NSAttributedString {
+    private func getTimeSetState(countdown: Int, countdownState: JSTimer.State, repeatCount: Int, timeSetState: TimeSet.State) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(10.adjust()),
             .foregroundColor: Constants.Color.codGray]
@@ -478,7 +478,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     /// Update layout by countdown state
-    private func updateLayoutByCountdownState(_ state: TMTimer.State) {
+    private func updateLayoutByCountdownState(_ state: JSTimer.State) {
         switch state {
         case .run:
             footerView.buttons = [stopButton, pauseButton]

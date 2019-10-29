@@ -541,9 +541,9 @@ class TimerOptionView: UIView, View {
 
 extension Reactive where Base: TimerOptionView {
     // MARK: - binder
-    var timer: Binder<(TimerInfo, Int)> {
-        return Binder(base.self) { _, timerInfo in
-            self.base.reactor?.action.onNext(.updateTimer(timerInfo.0, at: timerInfo.1))
+    var timer: Binder<(TimerItem, Int)> {
+        return Binder(base.self) { _, item in
+            self.base.reactor?.action.onNext(.updateTimer(item.0, at: item.1))
         }
     }
     

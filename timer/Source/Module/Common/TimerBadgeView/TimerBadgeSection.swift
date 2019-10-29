@@ -70,14 +70,14 @@ class TimerBadgeDataSource {
     
     private var identity: Int = 0
     
-    init(timers: [TimerInfo] = [],
+    init(timers: [TimerItem] = [],
          extras: [TimerBadgeExtraType: TimerBadgeExtraCellType] = [:],
          leftExtras: [TimerBadgeExtraType] = [],
          rightExtras: [TimerBadgeExtraType] = [],
          index: Int? = nil) {
         identity = timers.count
         regulars = timers.enumerated().map { offset, timer in
-            TimerBadgeCellReactor(id: offset, time: timer.endTime, index: offset, count: timers.count, isSelected: offset == index)
+            TimerBadgeCellReactor(id: offset, time: timer.end, index: offset, count: timers.count, isSelected: offset == index)
         }
         self.extras = extras
         self.leftExtras = leftExtras
@@ -85,8 +85,8 @@ class TimerBadgeDataSource {
     }
     
     /// Append new timer item
-    func append(item: TimerInfo) {
-        regulars.append(TimerBadgeCellReactor(id: identity, time: item.endTime))
+    func append(item: TimerItem) {
+        regulars.append(TimerBadgeCellReactor(id: identity, time: item.end))
         identity += 1
     }
     

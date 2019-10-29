@@ -31,13 +31,13 @@ class TimeSetCollectionViewCellReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    var timeSetInfo: TimeSetInfo
+    var timeSetItem: TimeSetItem
     
     // MARK: - constructor
-    init(timeSetInfo: TimeSetInfo) {
-        self.timeSetInfo = timeSetInfo
-        self.initialState = State(title: timeSetInfo.title,
-                                  allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                                  timerCount: timeSetInfo.timers.count)
+    init(timeSetItem: TimeSetItem) {
+        self.timeSetItem = timeSetItem
+        initialState = State(title: timeSetItem.title,
+                             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
+                             timerCount: timeSetItem.timers.count)
     }
 }

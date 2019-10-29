@@ -19,8 +19,8 @@ class TimeSetItem: Object, NSCopying, Codable {
     @objc dynamic var isRepeat: Bool = false            // Is repeat of the time set
     @objc dynamic var isBookmark: Bool = false          // Is bookmark of the time set
     
-    var timers: List<TimerItem> = List()                // Timer info list of the timer set
-    @objc dynamic var overtimer: StopwatchItem?         // Timer info about overtime record of time set
+    var timers: List<TimerItem> = List()                // Timer item list of the timer set
+    @objc dynamic var overtimer: StopwatchItem?         // Timer item about overtime record of time set
     
     // Sorting key
     @objc dynamic var sortingKey: Int = Int.max         // Sorting key of time set

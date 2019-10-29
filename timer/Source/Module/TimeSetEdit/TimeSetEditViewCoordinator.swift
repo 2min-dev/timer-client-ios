@@ -12,7 +12,7 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case home
-        case timeSetSave(TimeSetInfo)
+        case timeSetSave(TimeSetItem)
     }
     
     // MARK: - properties
@@ -44,9 +44,9 @@ class TimeSetEditViewCoordinator: CoordinatorProtocol {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
             
-        case let .timeSetSave(timeSetInfo):
+        case let .timeSetSave(timeSetItem):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
+            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem)
             let viewController = TimeSetSaveViewController(coordinator: coordinator)
             
             // DI

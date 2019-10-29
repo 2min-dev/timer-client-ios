@@ -55,7 +55,7 @@ class JSTimer: EventStreamProtocol {
     }
     
     // MARK: - private method
-    /// Update timer info when received timer tick
+    /// Update timer item when received timer tick
     private func update() {
         // Consume time interval
         item.consume(time: TIME_INTERVAL)
