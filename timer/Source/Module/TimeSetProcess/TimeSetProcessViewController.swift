@@ -117,7 +117,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
-            .compactMap { reactor.history.item }
+            .compactMap { reactor.timeSet.item }
             .subscribe(onNext: { [weak self] in
                 guard let viewController = self?.coordinator.present(for: .timeSetMemo($0)) as? TimeSetMemoViewController else { return }
                 self?.bind(memo: viewController)
@@ -139,9 +139,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         timerBadgeCollectionView.rx.itemSelected
             .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .filter { $0.section == TimerBadgeSectionType.regular.rawValue }
-            .withLatestFrom(reactor.state.map { $0.timeSetState }.distinctUntilChanged(), resultSelector: { ($0, $1) })
-            .compactMap { [weak self] in self?.badgeSelect(at: $0.0, withTimeSetState: $0.1) }
-            .bind(to: reactor.action)
+            .subscribe(onNext: { [weak self] in self?.badgeSelect(at: $0) })
             .disposed(by: disposeBag)
         
         startButton.rx.tap
@@ -217,7 +215,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
                 reactor.state
                     .map { $0.timeSetState }
                     .distinctUntilChanged()
-                    .filter { [weak self] in self?.isTimeSetEnded(state: $0) ?? false })
+                    .filter { $0 == .end })
             .map { Date().addingTimeInterval($0.0) }
             .map { getDateString(format: "time_set_end_time_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: endOfTimeSetLabel.rx.text)
@@ -260,7 +258,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .skip(1)
             .withLatestFrom(reactor.state.map { ($0.sections[TimerBadgeSectionType.regular.rawValue].items.count, $0.timeSetState) },
                             resultSelector: { ($0, $1.0, $1.1) })
-            .filter { $2 == .run(detail: .normal) }
+            .filter { $2 == .run }
             .subscribe(onNext: { [weak self] in
                 self?.showTimeSetPopup(title: String(format: "time_set_popup_timer_end_title_format".localized, $0.0),
                                        subtitle: String(format: "time_set_popup_timer_end_info_format".localized, $0.0, $0.1)) })
@@ -276,15 +274,15 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
-        Observable.combineLatest(
-            reactor.state
-                .map { $0.timeSetState }
-                .distinctUntilChanged(),
-            rx.viewWillAppear
-                .take(1))
-            .map { $0.0 }
-            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0) })
-            .disposed(by: self.disposeBag)
+//        Observable.combineLatest(
+//            reactor.state
+//                .map { $0.timeSetState }
+//                .distinctUntilChanged(),
+//            rx.viewWillAppear
+//                .take(1))
+//            .map { $0.0 }
+//            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0) })
+//            .disposed(by: self.disposeBag)
         
         reactor.state
             .map { $0.countdownState }
@@ -307,9 +305,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         viewController.rx.tapHeader
             .filter { $0 == .close }
             .withLatestFrom(reactor.state.map { $0.timeSetState })
-            .filter { $0 == .end(detail: .normal) }
+            .filter { $0 == .end }
             .subscribe(onNext: { [weak self] _ in
-                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.history)) as? TimeSetEndViewController else { return }
+                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history)) as? TimeSetEndViewController else { return }
                 self?.bind(end: viewController)
             })
             .disposed(by: disposeBag)
@@ -369,23 +367,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     
     // MARK: - action method
     /// Handle badge select action with time set state
-    private func badgeSelect(at indexPath: IndexPath, withTimeSetState state: TimeSet.State) -> TimeSetProcessViewReactor.Action? {
-        switch state {
-        case .initialize,
-             .pause,
-             .run(detail: .normal):
-            timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
-            showTimerStartAlert(at: indexPath)
-            
-        case .run(detail: .overtime),
-             .end(detail: _):
-            return .selectTimer(at: indexPath.row)
-            
-        default:
-            break
-        }
-        
-        return nil
+    private func badgeSelect(at indexPath: IndexPath) {
+        timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
+        showTimerStartAlert(at: indexPath)
     }
     
     /// Timer bage view scroll to selected badge if can
@@ -413,12 +397,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - state method
-    /// Get is time set ended
-    private func isTimeSetEnded(state: TimeSet.State) -> Bool {
-        guard case .end(detail: _) = state else { return false }
-        return true
-    }
-    
     /// Scroll badge if view can scroll
     private func scrollBadgeIfCan(at indexPath: IndexPath) {
         guard timeSetAlert == nil else { return }
@@ -455,8 +433,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         case .pause:
             return NSAttributedString(string: "time_set_state_pause_title".localized, attributes: attributes)
             
-        case .run(detail: .overtime),
-             .end(detail: .overtime):
+        case .run:
             currentState = "time_set_state_overtime_title".localized
             attributes = [
                 .font: Constants.Font.Bold.withSize(10.adjust()),
@@ -492,54 +469,54 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     /// Update layout by current state of time set
-    private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
-        UIApplication.shared.isIdleTimerDisabled = false
-        
-        switch state {
-        case let .stop(repeat: count):
-            if count > 0 {
-                // Show time set repeat popup
-                showTimeSetPopup(title: "time_set_popup_time_set_repeat_title".localized,
-                                 subtitle: String(format: "time_set_popup_time_set_repeat_info_format".localized, count))
-            }
-            
-        case let .run(detail: runState):
-            // Prevent screen off when timer running
-            UIApplication.shared.isIdleTimerDisabled = true
-            
-            if runState == .normal {
-                // Running time set
-                footerView.buttons = [stopButton, pauseButton]
-                
-                // Set view enable
-                timeSetProcessView.isEnabled = true
-            } else {
-                // Running overtime recording
-                footerView.buttons = [quitButton, pauseButton]
-                
-                // Set view disabled
-                timeSetProcessView.isEnabled = false
-                timeLabel.textColor = Constants.Color.carnation
-            }
-            
-        case .pause:
-            // Update hightlight button to restart button
-            guard let button = footerView.buttons.first else { return }
-            footerView.buttons = [button, startButton]
-        
-        case .end(detail: .normal):
-            // Remove alert
-            timeSetAlert = nil
-            
-            guard self.presentedViewController == nil,
-                let reactor = reactor,
-                let viewController = coordinator.present(for: .timeSetEnd(reactor.history)) as? TimeSetEndViewController else { return }
-            bind(end: viewController)
-            
-        default:
-            break
-        }
-    }
+//    private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
+//        UIApplication.shared.isIdleTimerDisabled = false
+//
+//        switch state {
+//        case let .stop(repeat: count):
+//            if count > 0 {
+//                // Show time set repeat popup
+//                showTimeSetPopup(title: "time_set_popup_time_set_repeat_title".localized,
+//                                 subtitle: String(format: "time_set_popup_time_set_repeat_info_format".localized, count))
+//            }
+//
+//        case let .run(detail: runState):
+//            // Prevent screen off when timer running
+//            UIApplication.shared.isIdleTimerDisabled = true
+//
+//            if runState == .normal {
+//                // Running time set
+//                footerView.buttons = [stopButton, pauseButton]
+//
+//                // Set view enable
+//                timeSetProcessView.isEnabled = true
+//            } else {
+//                // Running overtime recording
+//                footerView.buttons = [quitButton, pauseButton]
+//
+//                // Set view disabled
+//                timeSetProcessView.isEnabled = false
+//                timeLabel.textColor = Constants.Color.carnation
+//            }
+//
+//        case .pause:
+//            // Update hightlight button to restart button
+//            guard let button = footerView.buttons.first else { return }
+//            footerView.buttons = [button, startButton]
+//
+//        case .end(detail: .normal):
+//            // Remove alert
+//            timeSetAlert = nil
+//
+//            guard self.presentedViewController == nil,
+//                let reactor = reactor,
+//                let viewController = coordinator.present(for: .timeSetEnd(reactor.history)) as? TimeSetEndViewController else { return }
+//            bind(end: viewController)
+//
+//        default:
+//            break
+//        }
+//    }
     
     // MARK: - private method
     /// Show timer & time set info popup

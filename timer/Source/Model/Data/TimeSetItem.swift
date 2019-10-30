@@ -68,4 +68,8 @@ class TimeSetItem: Object, NSCopying, Codable {
                            sortingKey: sortingKey,
                            bookmarkSortingKey: bookmarkSortingKey)
     }
+    
+    func reset() {
+        timers.forEach { $0.reset() }
+    }
 }

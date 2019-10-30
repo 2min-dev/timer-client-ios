@@ -24,6 +24,11 @@ class TimeSet: EventStreamProtocol {
         case end
     }
     
+    enum StartType {
+        case normal(at: Int)
+        case overtime
+    }
+    
     // MARK: - properties
     // Event stream of the time set
     var event: PublishSubject<TimeSet.Event> = PublishSubject()
@@ -32,13 +37,27 @@ class TimeSet: EventStreamProtocol {
         didSet {
             guard oldValue != state else { return }
             event.onNext(.stateChanged(state))
+            
+            switch state {
+            case .run:
+                // Set start date of time set to history
+                if history.startDate == nil {
+                    history.startDate = Date()
+                }
+                
+            case .end:
+                history.endDate = Date()
+                
+            default:
+                break
+            }
         }
     }
     
     var item: TimeSetItem // The model data of the time set
     var history: History // History data of the time set
     
-    var timer: JSTimer? // The current running timer
+    var timer: JSTimer! // The current running timer
     private(set) var currentIndex: Int {
         didSet { event.onNext(.timerChanged(item.timers[currentIndex], at: currentIndex)) }
     }
@@ -50,14 +69,15 @@ class TimeSet: EventStreamProtocol {
         self.item = item
         history = History(item: item)
         currentIndex = index
+        timer = createTimer(at: index)
     }
     
     // MARK: - private method
-    private func createTimer(at index: Int? = nil) -> JSTimer? {
+    private func createTimer(at index: Int? = nil) -> JSTimer {
         var timer: JSTimer
-        if let index = index {
-            guard (0 ..< item.timers.count).contains(index) else { return nil }
-            
+        if var index = index {
+            // Set default timer index 0
+            index = (0 ..< item.timers.count).contains(index) ? index : 0
             // Create normal timer
             timer = JSTimer(item: item.timers[index])
         } else {
@@ -88,7 +108,7 @@ class TimeSet: EventStreamProtocol {
     private func handleTimerStateChanged(_ state: JSTimer.State, item: Recordable) {
         switch state {
         case .stop:
-            break
+            self.state = .stop
             
         case .pause:
             self.state = .pause
@@ -102,32 +122,32 @@ class TimeSet: EventStreamProtocol {
             
             guard item as? TimerItem != nil else {
                 // End of overtime time set
+                self.state = .end
                 history.endState = .overtime
-                end()
                 return
             }
             
             guard item.isEnded else {
                 // Canceled
+                self.state = .end
                 history.endState = .cancel
-                end()
                 return
             }
             
             if currentIndex < self.item.timers.count - 1 {
                 // Start next timer
-                start(at: currentIndex + 1)
+                start(.normal(at: currentIndex + 1))
             } else {
                 // The last timer ended
                 if self.item.isRepeat {
                     // Repeat
                     history.repeatCount += 1
-                    stop()
-                    start(at: 0)
+                    item.reset()
+                    start(.normal(at: 0))
                 } else {
                     // End of time set
+                    self.state = .end
                     history.endState = .normal
-                    end()
                 }
             }
         }
@@ -135,53 +155,35 @@ class TimeSet: EventStreamProtocol {
     
     // MARK: - public method
     /// Start the time set
-    /// - parameter index: start index of the time set's timers. (default `nil`). if this value `nil`, start timer at current index
-    func start(at index: Int? = nil) {
-        var timer: JSTimer
-        if let index = index {
-            // Start the timer at specific index
-            guard let newTimer = createTimer(at: index) else {
-                Logger.warning("Can't start timer at \(index).", tag: "TIME SET")
-                return
+    /// - parameter type: start time set type (`.normal || .overtime`) (default `nil`). if this value `nil`, resume timer at current timer
+    func start(_ type: StartType? = nil) {
+        if let type = type {
+            switch type {
+            case let .normal(at: index):
+                currentIndex = (0 ..< item.timers.count).contains(index) ? index : 0
+                timer = createTimer(at: index)
+                
+            case .overtime:
+                timer = createTimer()
             }
-            
-            currentIndex = index
-            timer = newTimer
-        } else if let currentTimer = self.timer {
-            // Start current timer
-            timer = currentTimer
-        } else {
-            // Create timer at current index if not exist
-            guard let newTimer = createTimer(at: currentIndex) else {
-                Logger.warning("Can't start timer at current index (\(currentIndex)).", tag: "TIME SET")
-                return
-            }
-            timer = newTimer
         }
         
-        // Start the timer
         timer.start()
-        self.timer = timer
     }
     
     /// Pause the time set
     func pause() {
-        guard let timer = timer else {
-            Logger.warning("Can't pause the timer. because timer isn't running", tag: "TIME SET")
-            return
-        }
         timer.pause()
     }
     
     /// Stop the time set
     func stop() {
-        timer?.stop()
-        item.timers.forEach { $0.reset() }
+        timer.stop()
     }
     
     /// End the time set
     func end() {
-        timer?.end(isMute: true)
+        timer.end(isMute: true)
     }
     
     /// Consume time to the time set

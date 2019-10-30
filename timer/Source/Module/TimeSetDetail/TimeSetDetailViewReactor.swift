@@ -73,7 +73,7 @@ class TimeSetDetailViewReactor: Reactor {
         
         initialState = State(isBookmark: timeSetItem.isBookmark,
                              title: timeSetItem.title,
-                             allTime: timeSetItem.timers.reduce(0) { $0 + $1.endTime },
+                             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
                              timer: timeSetItem.timers.first ?? TimerItem(),
                              sectionDataSource: dataSource,
                              selectedIndex: 0,
