@@ -274,15 +274,15 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
-//        Observable.combineLatest(
-//            reactor.state
-//                .map { $0.timeSetState }
-//                .distinctUntilChanged(),
-//            rx.viewWillAppear
-//                .take(1))
-//            .map { $0.0 }
-//            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0) })
-//            .disposed(by: self.disposeBag)
+        Observable.combineLatest(
+            reactor.state
+                .map { $0.timeSetState }
+                .distinctUntilChanged(),
+            rx.viewWillAppear
+                .take(1))
+            .map { ($0.0, reactor.timeSet.history) }
+            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1) })
+            .disposed(by: self.disposeBag)
         
         reactor.state
             .map { $0.countdownState }
@@ -467,56 +467,50 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             break
         }
     }
-    
+
     /// Update layout by current state of time set
-//    private func updateLayoutByTimeSetState(_ state: TimeSet.State) {
-//        UIApplication.shared.isIdleTimerDisabled = false
-//
-//        switch state {
-//        case let .stop(repeat: count):
-//            if count > 0 {
-//                // Show time set repeat popup
-//                showTimeSetPopup(title: "time_set_popup_time_set_repeat_title".localized,
-//                                 subtitle: String(format: "time_set_popup_time_set_repeat_info_format".localized, count))
-//            }
-//
-//        case let .run(detail: runState):
-//            // Prevent screen off when timer running
-//            UIApplication.shared.isIdleTimerDisabled = true
-//
-//            if runState == .normal {
-//                // Running time set
-//                footerView.buttons = [stopButton, pauseButton]
-//
-//                // Set view enable
-//                timeSetProcessView.isEnabled = true
-//            } else {
-//                // Running overtime recording
-//                footerView.buttons = [quitButton, pauseButton]
-//
-//                // Set view disabled
-//                timeSetProcessView.isEnabled = false
-//                timeLabel.textColor = Constants.Color.carnation
-//            }
-//
-//        case .pause:
-//            // Update hightlight button to restart button
-//            guard let button = footerView.buttons.first else { return }
-//            footerView.buttons = [button, startButton]
-//
-//        case .end(detail: .normal):
-//            // Remove alert
-//            timeSetAlert = nil
-//
-//            guard self.presentedViewController == nil,
-//                let reactor = reactor,
-//                let viewController = coordinator.present(for: .timeSetEnd(reactor.history)) as? TimeSetEndViewController else { return }
-//            bind(end: viewController)
-//
-//        default:
-//            break
-//        }
-//    }
+    private func updateLayoutByTimeSetState(_ state: TimeSet.State, history: History) {
+        UIApplication.shared.isIdleTimerDisabled = false
+        
+        switch state {
+        case .pause:
+            // Update hightlight button to restart button
+            guard let button = footerView.buttons.first else { return }
+            footerView.buttons = [button, startButton]
+            
+        case .run:
+            // Prevent screen off when timer running
+            UIApplication.shared.isIdleTimerDisabled = true
+            
+            switch history.endState {
+            case .none:
+                // Running time set
+                footerView.buttons = [stopButton, pauseButton]
+                
+                // Set view enable
+                timeSetProcessView.isEnabled = true
+                
+            default:
+                // Running overtime recording
+                footerView.buttons = [quitButton, pauseButton]
+                
+                // Set view disabled
+                timeSetProcessView.isEnabled = false
+                timeLabel.textColor = Constants.Color.carnation
+            }
+            
+        case .end:
+            // Remove alert
+            timeSetAlert = nil
+
+            // Present end view
+            guard let viewController = coordinator.present(for: .timeSetEnd(history)) as? TimeSetEndViewController else { return }
+            bind(end: viewController)
+            
+        default:
+            break
+        }
+    }
     
     // MARK: - private method
     /// Show timer & time set info popup
