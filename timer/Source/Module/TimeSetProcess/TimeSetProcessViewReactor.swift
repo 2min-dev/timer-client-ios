@@ -244,8 +244,8 @@ class TimeSetProcessViewReactor: Reactor {
         case let .stateChanged(state, item: item):
             return actionCountdownTimerStateChanged(state, item: item)
             
-        case let .timeChanged(current: currentTime, end: endTime):
-            return actionCountdownTimeChanged(current: currentTime, end: endTime)
+        case let .timeChanged(current, end, diff: _):
+            return actionCountdownTimeChanged(current, end)
         }
     }
     
@@ -257,8 +257,8 @@ class TimeSetProcessViewReactor: Reactor {
         case let .timerChanged(timer, at: index):
             return actionTimeSetTimerChanged(timer, at: index)
             
-        case let .timeChanged(current: currentTime, end: endTime):
-            return actionTimeSetTimeChanged(current: currentTime, end: endTime)
+        case let .timeChanged(current, end):
+            return actionTimeSetTimeChanged(current, end)
         }
     }
     
@@ -367,7 +367,7 @@ class TimeSetProcessViewReactor: Reactor {
             // Restart time set from timer at index (reset)
             guard index >= 0 && index < timeSet.item.timers.count else { return .empty() }
             // Stop countdown & initialize time set
-            countdownTimer.stop()
+            countdownTimer.end()
             timeSet.stop()
             
             // Start time set
@@ -437,18 +437,18 @@ class TimeSetProcessViewReactor: Reactor {
     
     // MARK: - countdown timer action method
     private func actionCountdownTimerStateChanged(_ state: JSTimer.State, item: Recordable) -> Observable<Mutation> {
-        let setCountdownState: Observable<Mutation> = .just(.setCountdownState(state))
-        
         switch state {
         case .end:
-            return .concat(setCountdownState, actionStartTimeSet(at: currentState.selectedIndex))
+            timeSet.start()
             
         default:
-            return setCountdownState
+            break
         }
+        
+        return .just(.setCountdownState(state))
     }
     
-    private func actionCountdownTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {
+    private func actionCountdownTimeChanged(_ current: TimeInterval, _ end: TimeInterval) -> Observable<Mutation> {
         return .just(.setCountdown(Int(ceil(end - current))))
     }
     
@@ -500,7 +500,7 @@ class TimeSetProcessViewReactor: Reactor {
                        .just(.setRemainedTime(remainedTime + timer.end)))
     }
     
-    private func actionTimeSetTimeChanged(current: TimeInterval, end: TimeInterval) -> Observable<Mutation> {
+    private func actionTimeSetTimeChanged(_ current: TimeInterval, _ end: TimeInterval) -> Observable<Mutation> {
         return .concat(.just(.setTime(abs(end - floor(current)))),
                        .just(.setRemainedTime(remainedTime + end - current)))
     }

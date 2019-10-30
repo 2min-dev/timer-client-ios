@@ -17,7 +17,7 @@ class JSTimer: EventStreamProtocol {
     
     enum Event {
         case stateChanged(State, item: Recordable)
-        case timeChanged(current: TimeInterval, end: TimeInterval)
+        case timeChanged(TimeInterval, TimeInterval, diff: TimeInterval)
     }
     
     /// The state of timer
@@ -60,7 +60,7 @@ class JSTimer: EventStreamProtocol {
         // Consume time interval
         item.consume(time: TIME_INTERVAL)
         // Emit time changed event
-        event.onNext(.timeChanged(current: item.current, end: item.end))
+        event.onNext(.timeChanged(item.current, item.end, diff: TIME_INTERVAL))
 
         if item.isEnded {
             end()

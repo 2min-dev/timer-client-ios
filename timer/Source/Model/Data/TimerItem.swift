@@ -61,7 +61,6 @@ class TimerItem: Object, Codable, NSCopying, Recordable, Alertable {
     
     func reset() {
         current = 0
-        target = 0
         extra = 0
     }
 }

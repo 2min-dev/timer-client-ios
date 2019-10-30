@@ -13,7 +13,7 @@ class TimeSet: EventStreamProtocol {
     enum Event {
         case stateChanged(State)
         case timerChanged(TimerItem, at: Int)
-        case timeChanged(current: TimeInterval, end: TimeInterval)
+        case timeChanged(TimeInterval, TimeInterval)
     }
     
     /// The state of timer
@@ -95,8 +95,8 @@ class TimeSet: EventStreamProtocol {
                 case let .stateChanged(state, item: item):
                     self?.handleTimerStateChanged(state, item: item)
                     
-                case let .timeChanged(current: currentTime, end: endTime):
-                    self?.event.onNext(.timeChanged(current: currentTime, end: endTime))
+                case let .timeChanged(current, end, diff: diff):
+                    self?.handleTimeChanged(current, end, diff: diff)
                 }
             })
             .disposed(by: disposeBag)
@@ -104,7 +104,7 @@ class TimeSet: EventStreamProtocol {
         return timer
     }
     
-    /// Handle the timer event from current running timer
+    /// Handle the timer event that current running timer state changed
     private func handleTimerStateChanged(_ state: JSTimer.State, item: Recordable) {
         switch state {
         case .stop:
@@ -117,9 +117,6 @@ class TimeSet: EventStreamProtocol {
             self.state = .run
 
         case .end:
-            // Add ran timer's current time
-            history.runningTime += item.current
-            
             guard item as? TimerItem != nil else {
                 // End of overtime time set
                 self.state = .end
@@ -142,7 +139,7 @@ class TimeSet: EventStreamProtocol {
                 if self.item.isRepeat {
                     // Repeat
                     history.repeatCount += 1
-                    item.reset()
+                    self.item.reset()
                     start(.normal(at: 0))
                 } else {
                     // End of time set
@@ -151,6 +148,12 @@ class TimeSet: EventStreamProtocol {
                 }
             }
         }
+    }
+    
+    /// Handle the timer event that time changed
+    private func handleTimeChanged(_ current: TimeInterval, _ end: TimeInterval, diff: TimeInterval) {
+        history.runningTime += diff
+        event.onNext(.timeChanged(current, end))
     }
     
     // MARK: - public method
@@ -179,6 +182,8 @@ class TimeSet: EventStreamProtocol {
     /// Stop the time set
     func stop() {
         timer.stop()
+        // Reset time set data
+        item.reset()
     }
     
     /// End the time set
@@ -218,7 +223,7 @@ class TimeSet: EventStreamProtocol {
                     index = 0
                     history.runningTime += timer.current
                     history.repeatCount += 1
-                    item.timers.forEach { $0.reset() }
+                    item.reset()
 
                     guard withRepeat else { break }
                 }
