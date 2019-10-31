@@ -273,17 +273,18 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Time set state
         Observable.combineLatest(
             reactor.state.map { $0.countdown }.distinctUntilChanged(),
-            reactor.state.map { $0.countdownState }.distinctUntilChanged())
-            .compactMap { [weak self] in self?.getTimeSetStateByCountdown($0, state: $1) }.debug()
+            reactor.state.map { $0.countdownState }.distinctUntilChanged()).debug()
+            .compactMap { [weak self] in self?.getTimeSetStateByCountdown($0, state: $1) }
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
-//        Observable.combineLatest(
-//            reactor.state.map { $0.repeatCount }.distinctUntilChanged()
-//            reactor.state.map { $0.timeSetState }.distinctUntilChanged())
-//            .compactMap { [weak self] in self?.getTimeSetState(countdown: $0.0, countdownState: $0.1, repeatCount: $0.2, timeSetState: $0.3) }
-//            .bind(to: stateLabel.rx.attributedText)
-//            .disposed(by: disposeBag)
+        reactor.state
+            .map { $0.timeSetState }
+            .distinctUntilChanged().debug()
+            .map { ($0, reactor.timeSet.history) }
+            .compactMap { [weak self] in self?.getTimeSetState($0, history: $1) }
+            .bind(to: stateLabel.rx.attributedText)
+            .disposed(by: disposeBag)
         
         Observable.combineLatest(
             reactor.state
@@ -413,7 +414,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     private func getTimeSetStateByCountdown(_ countdown: Int, state: JSTimer.State) -> NSAttributedString {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(10.adjust()),
-            .foregroundColor: Constants.Color.codGray]
+            .foregroundColor: Constants.Color.codGray
+        ]
         
         var string = ""
         switch state {
@@ -432,54 +434,35 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     /// Get current time set state string
-    /// - parameters:
-    ///   - countdown: remained countdown time of the time set
-    ///   - countdownState: current state of the countdown timer
-    ///   - repeatCount: repeated count of the time set
-    ///   - timeSetState: current state of the time set
-    /// - returns: the attributed string text of current time set state
-    private func getTimeSetState(countdown: Int, countdownState: JSTimer.State, repeatCount: Int, timeSetState: TimeSet.State) -> NSAttributedString {
+    private func getTimeSetState(_ state: TimeSet.State, history: History) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(10.adjust()),
-            .foregroundColor: Constants.Color.codGray]
-        
-        switch countdownState {
-        case .run:
-            if countdown > 0 {
-                return NSAttributedString(string: String(format: "time_set_state_countdown_format".localized, countdown), attributes: attributes)
-            }
-            
+            .foregroundColor: Constants.Color.codGray
+        ]
+
+        var string = ""
+        switch state {
         case .pause:
             return NSAttributedString(string: "time_set_state_pause_title".localized, attributes: attributes)
+            
+        case .run:
+            if history.endState != .none {
+                // Set overtime attributes
+                attributes[.foregroundColor] = Constants.Color.carnation
+                string = "time_set_state_overtime_title".localized
+            }
             
         default:
             break
         }
         
-        var currentState: String
-        switch timeSetState {
-        case .pause:
-            return NSAttributedString(string: "time_set_state_pause_title".localized, attributes: attributes)
-            
-        case .run:
-            currentState = "time_set_state_overtime_title".localized
-            attributes = [
-                .font: Constants.Font.Bold.withSize(10.adjust()),
-                .foregroundColor: Constants.Color.carnation]
-            
-        default:
-            currentState = ""
+        if history.repeatCount > 0 {
+            // Append repetition state
+            string += string.isEmpty ? "" : ", "
+            string += String(format: "time_set_state_repeat_format".localized, history.repeatCount)
         }
         
-        if repeatCount > 0 {
-            if !currentState.isEmpty {
-                currentState += ", "
-            }
-            
-            currentState += String(format: "time_set_state_repeat_format".localized, repeatCount)
-        }
-        
-        return NSAttributedString(string: currentState, attributes: attributes)
+        return NSAttributedString(string: string, attributes: attributes)
     }
     
     /// Show time set popup about both timer end and time set end

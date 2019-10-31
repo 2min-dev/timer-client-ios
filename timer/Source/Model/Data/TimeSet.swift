@@ -36,7 +36,6 @@ class TimeSet: EventStreamProtocol {
     var state: State = .stop {
         didSet {
             guard oldValue != state else { return }
-            event.onNext(.stateChanged(state))
             
             switch state {
             case .run:
@@ -51,6 +50,8 @@ class TimeSet: EventStreamProtocol {
             default:
                 break
             }
+            
+            event.onNext(.stateChanged(state))
         }
     }
     
@@ -120,15 +121,15 @@ class TimeSet: EventStreamProtocol {
         case .end:
             guard item as? TimerItem != nil else {
                 // End of overtime time set
-                self.state = .end
                 history.endState = .overtime
+                self.state = .end
                 return
             }
             
             guard item.isEnded else {
                 // Canceled
-                self.state = .end
                 history.endState = .cancel
+                self.state = .end
                 return
             }
             
@@ -139,13 +140,13 @@ class TimeSet: EventStreamProtocol {
                 // The last timer ended
                 if self.item.isRepeat {
                     // Repeat
-                    self.item.reset()
                     history.repeatCount += 1
+                    stop()
                     start(.normal(at: 0))
                 } else {
                     // End of time set
-                    self.state = .end
                     history.endState = .normal
+                    self.state = .end
                 }
             }
         }
