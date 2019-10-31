@@ -49,9 +49,6 @@ class TimeSetProcessViewReactor: Reactor {
         /// Set time set is repeat
         case setRepeat(Bool)
         
-        /// Set repeat count of time set
-        case setRepeatCount(Int)
-        
         /// Add extra time into current timer
         case setExtraTime(TimeInterval)
         
@@ -95,9 +92,6 @@ class TimeSetProcessViewReactor: Reactor {
         
         /// Repeat setting value of time set
         var isRepeat: Bool
-        
-        /// Repeat count of time set
-        var repeatCount: Int
         
         /// Sum of all added extra time
         var extraTime: TimeInterval
@@ -204,7 +198,6 @@ class TimeSetProcessViewReactor: Reactor {
                              allTime: allTime,
                              remainedTime: remainedTime,
                              isRepeat: timeSet.item.isRepeat,
-                             repeatCount: timeSet.history.repeatCount,
                              extraTime: extraTime,
                              countdownState: countdownTimer.state,
                              countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
@@ -308,10 +301,6 @@ class TimeSetProcessViewReactor: Reactor {
             
         case let .setRepeat(isRepeat):
             state.isRepeat = isRepeat
-            return state
-            
-        case let .setRepeatCount(count):
-            state.repeatCount = count
             return state
             
         case let .setExtraTime(extraTime):
@@ -483,14 +472,13 @@ class TimeSetProcessViewReactor: Reactor {
         switch state {
         case .run:
             let setExtraTime: Observable<Mutation> = .just(.setExtraTime(timeSet.item.timers.reduce(0) { $0 + $1.extra }))
-            let setRepeatCount: Observable<Mutation> = .just(.setRepeatCount(timeSet.history.repeatCount))
             
             if timeSetService.runningTimeSet == nil {
                 // Set running time set only first time
                 timeSetService.runningTimeSet = RunningTimeSet(timeSet: timeSet, origin: origin)
             }
             
-            return .concat(setTimeSetState, setExtraTime, setRepeatCount)
+            return .concat(setTimeSetState, setExtraTime)
             
         case .end:
             timeSetService.runningTimeSet = nil

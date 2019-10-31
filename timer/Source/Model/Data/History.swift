@@ -28,7 +28,9 @@ import RealmSwift
     @objc dynamic var runningTime: TimeInterval = 0
     @objc dynamic var endState: EndState = .none
     
-    @objc dynamic var startDate: Date?
+    @objc dynamic var startDate: Date? {
+        didSet { id = Int(startDate?.timeIntervalSince1970 ?? -1) }
+    }
     @objc dynamic var endDate: Date?
     
     // MARK: - constructor
@@ -45,7 +47,7 @@ import RealmSwift
         self.runningTime = runningTime
         self.endState = endState
         self.startDate = startDate
-        self.endState = endState
+        self.endDate = endDate
     }
     
     // MARK: - realm method

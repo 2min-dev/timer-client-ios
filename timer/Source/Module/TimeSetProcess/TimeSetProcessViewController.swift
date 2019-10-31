@@ -266,21 +266,21 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .withLatestFrom(reactor.state.map { ($0.selectedIndex,
                                                  $0.sectionDataSource.regulars.count,
                                                  $0.isRepeat,
-                                                 $0.repeatCount) })
+                                                 reactor.timeSet.history.repeatCount) })
             .subscribe(onNext: { [weak self] in self?.showTimeSetPopup(index: $0, count: $1, isRepeat: $2, repeatCount: $3) })
             .disposed(by: disposeBag)
         
         // Time set state
         Observable.combineLatest(
             reactor.state.map { $0.countdown }.distinctUntilChanged(),
-            reactor.state.map { $0.countdownState }.distinctUntilChanged()).debug()
+            reactor.state.map { $0.countdownState }.distinctUntilChanged())
             .compactMap { [weak self] in self?.getTimeSetStateByCountdown($0, state: $1) }
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
         reactor.state
             .map { $0.timeSetState }
-            .distinctUntilChanged().debug()
+            .distinctUntilChanged()
             .map { ($0, reactor.timeSet.history) }
             .compactMap { [weak self] in self?.getTimeSetState($0, history: $1) }
             .bind(to: stateLabel.rx.attributedText)
