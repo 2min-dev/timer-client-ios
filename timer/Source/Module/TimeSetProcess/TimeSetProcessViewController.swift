@@ -273,12 +273,17 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Time set state
         Observable.combineLatest(
             reactor.state.map { $0.countdown }.distinctUntilChanged(),
-            reactor.state.map { $0.countdownState }.distinctUntilChanged(),
-            reactor.state.map { $0.repeatCount }.distinctUntilChanged(),
-            reactor.state.map { $0.timeSetState }.distinctUntilChanged())
-            .compactMap { [weak self] in self?.getTimeSetState(countdown: $0.0, countdownState: $0.1, repeatCount: $0.2, timeSetState: $0.3) }
+            reactor.state.map { $0.countdownState }.distinctUntilChanged())
+            .compactMap { [weak self] in self?.getTimeSetStateByCountdown($0, state: $1) }.debug()
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
+        
+//        Observable.combineLatest(
+//            reactor.state.map { $0.repeatCount }.distinctUntilChanged()
+//            reactor.state.map { $0.timeSetState }.distinctUntilChanged())
+//            .compactMap { [weak self] in self?.getTimeSetState(countdown: $0.0, countdownState: $0.1, repeatCount: $0.2, timeSetState: $0.3) }
+//            .bind(to: stateLabel.rx.attributedText)
+//            .disposed(by: disposeBag)
         
         Observable.combineLatest(
             reactor.state
@@ -404,6 +409,28 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
     }
     
+    /// Get current countdown state string
+    private func getTimeSetStateByCountdown(_ countdown: Int, state: JSTimer.State) -> NSAttributedString {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Constants.Font.Regular.withSize(10.adjust()),
+            .foregroundColor: Constants.Color.codGray]
+        
+        var string = ""
+        switch state {
+        case .run:
+            guard countdown > 0 else { break }
+            string = String(format: "time_set_state_countdown_format".localized, countdown)
+            
+        case .pause:
+            string = "time_set_state_pause_title".localized
+            
+        default:
+            break
+        }
+        
+        return NSAttributedString(string: string, attributes: attributes)
+    }
+    
     /// Get current time set state string
     /// - parameters:
     ///   - countdown: remained countdown time of the time set
@@ -455,6 +482,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         return NSAttributedString(string: currentState, attributes: attributes)
     }
     
+    /// Show time set popup about both timer end and time set end
     private func showTimeSetPopup(index: Int, count: Int, isRepeat: Bool, repeatCount: Int) {
         if !isRepeat || index < count - 1 {
             showTimeSetPopup(title: String(format: "time_set_popup_timer_end_title_format".localized, index + 1),
