@@ -64,6 +64,9 @@ class TimeSetProcessViewReactor: Reactor {
         /// Set current state of time set
         case setTimeSetState(TimeSet.State)
         
+        /// Set current running timer state
+        case setTimerState(JSTimer.State)
+        
         /// Set current timer
         case setTimer(TimerItem)
         
@@ -107,6 +110,9 @@ class TimeSetProcessViewReactor: Reactor {
         
         /// Current state of time set
         var timeSetState: TimeSet.State
+        
+        /// Current running timer state of time set
+        var timerState: JSTimer.State
         
         /// Section datasource to make sections
         let sectionDataSource: TimerBadgeDataSource
@@ -203,6 +209,7 @@ class TimeSetProcessViewReactor: Reactor {
                              countdownState: countdownTimer.state,
                              countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
                              timeSetState: timeSet.state,
+                             timerState: timeSet.timer.state,
                              sectionDataSource: dataSource,
                              timer: timer,
                              selectedIndex: index,
@@ -239,8 +246,8 @@ class TimeSetProcessViewReactor: Reactor {
         }
     }
     
-    func mutate(timerEvent: JSTimer.Event) -> Observable<Mutation> {
-        switch timerEvent {
+    func mutate(countdownEvent: JSTimer.Event) -> Observable<Mutation> {
+        switch countdownEvent {
         case let .stateChanged(state, item: item):
             return actionCountdownTimerStateChanged(state, item: item)
             
@@ -262,14 +269,27 @@ class TimeSetProcessViewReactor: Reactor {
         }
     }
     
+    func mutate(timerEvent: JSTimer.Event) -> Observable<Mutation> {
+        switch timerEvent {
+        case let .stateChanged(state, item: _):
+            return actionTimerStateChanged(state)
+            
+        case .timeChanged(_, _, diff: _):
+            return .empty()
+        }
+    }
+    
     func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
         let countdownEventMutation = countdownTimer.event
-            .flatMap { [weak self] in self?.mutate(timerEvent: $0) ?? .empty() }
+            .flatMap { [weak self] in self?.mutate(countdownEvent: $0) ?? .empty() }
         
         let timeSetEventMutation = timeSet.event
             .flatMap { [weak self] in self?.mutate(timeSetEvent: $0) ?? .empty() }
         
-        return .merge(mutation, countdownEventMutation, timeSetEventMutation)
+        let timerEventMutation = timeSet.timer.event
+            .flatMap { [weak self] in self?.mutate(timerEvent: $0) ?? .empty() }
+        
+        return .merge(mutation, countdownEventMutation, timeSetEventMutation, timerEventMutation)
     }
     
     // MARK: - reduce
@@ -308,6 +328,10 @@ class TimeSetProcessViewReactor: Reactor {
             
         case let .setTimeSetState(timeSetState):
             state.timeSetState = timeSetState
+            return state
+            
+        case let .setTimerState(timerState):
+            state.timerState = timerState
             return state
             
         case let .setTimer(timer):
@@ -490,19 +514,30 @@ class TimeSetProcessViewReactor: Reactor {
         return setTimeSetState
     }
     
-    private func actionTimeSetTimerChanged(_ timer: TimerItem, at index: Int) -> Observable<Mutation> {
+    private func actionTimeSetTimerChanged(_ timer: JSTimer, at index: Int) -> Observable<Mutation> {
         // Calculate remained time
         remainedTime = timeSet.item.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.end }
         
-        return .concat(actionSelectTimer(at: index),
-                       .just(.setRemainedTime(remainedTime + timer.end)))
+        let selectTimer: Observable<Mutation> = actionSelectTimer(at: index)
+        let setRemainedTime: Observable<Mutation> = .just(.setRemainedTime(remainedTime + timer.item.end))
+        let timerEvent: Observable<Mutation> = timer.event
+            .flatMap { [weak self] in self?.mutate(timerEvent: $0) ?? .empty() }
+        
+        return .concat(selectTimer, setRemainedTime, timerEvent)
     }
     
     private func actionTimeSetTimeChanged(_ current: TimeInterval, _ end: TimeInterval) -> Observable<Mutation> {
-        return .concat(.just(.setTime(abs(end - floor(current)))),
-                       .just(.setRemainedTime(remainedTime + end - current)))
+        let setTime: Observable<Mutation> = .just(.setTime(abs(end - floor(current))))
+        let setRemainedTime: Observable<Mutation> = .just(.setRemainedTime(remainedTime + end - current))
+        
+        return .concat(setTime, setRemainedTime)
+    }
+    
+    // MARK: - timer action method
+    private func actionTimerStateChanged(_ state: JSTimer.State) -> Observable<Mutation> {
+        return .just(.setTimerState(state))
     }
     
     deinit {

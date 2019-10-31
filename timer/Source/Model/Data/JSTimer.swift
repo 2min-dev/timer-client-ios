@@ -73,6 +73,7 @@ class JSTimer: EventStreamProtocol {
         disposableTimer?.dispose()
         disposableTimer = Observable<Int>.interval(.milliseconds(Int(TIME_INTERVAL * 1000)),
                                                    scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
+            .subscribeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in self?.update() })
         
         state = .run

@@ -12,7 +12,7 @@ import RxSwift
 class TimeSet: EventStreamProtocol {
     enum Event {
         case stateChanged(State)
-        case timerChanged(TimerItem, at: Int)
+        case timerChanged(JSTimer, at: Int)
         case timeChanged(TimeInterval, TimeInterval)
     }
     
@@ -54,13 +54,13 @@ class TimeSet: EventStreamProtocol {
         }
     }
     
-    var item: TimeSetItem // The model data of the time set
-    var history: History // History data of the time set
+    private(set) var item: TimeSetItem // The model data of the time set
+    private(set) var history: History // History data of the time set
     
-    var timer: JSTimer! // The current running timer
-    private(set) var currentIndex: Int {
-        didSet { event.onNext(.timerChanged(item.timers[currentIndex], at: currentIndex)) }
+    private(set) var timer: JSTimer! {
+        didSet { event.onNext(.timerChanged(timer, at: currentIndex)) }
     }
+    private(set) var currentIndex: Int
     
     private var disposeBag = DisposeBag()
     
@@ -90,6 +90,7 @@ class TimeSet: EventStreamProtocol {
         
         // Bind timer event
         timer.event
+            .observeOn(MainScheduler.asyncInstance)
             .subscribe(onNext: { [weak self] in
                 switch $0 {
                 case let .stateChanged(state, item: item):
@@ -138,8 +139,8 @@ class TimeSet: EventStreamProtocol {
                 // The last timer ended
                 if self.item.isRepeat {
                     // Repeat
-                    history.repeatCount += 1
                     self.item.reset()
+                    history.repeatCount += 1
                     start(.normal(at: 0))
                 } else {
                     // End of time set
@@ -164,7 +165,7 @@ class TimeSet: EventStreamProtocol {
             switch type {
             case let .normal(at: index):
                 currentIndex = (0 ..< item.timers.count).contains(index) ? index : 0
-                timer = createTimer(at: index)
+                timer = createTimer(at: currentIndex)
                 
             case .overtime:
                 timer = createTimer()
