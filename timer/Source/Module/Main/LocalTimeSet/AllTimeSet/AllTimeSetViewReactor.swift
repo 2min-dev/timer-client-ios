@@ -88,7 +88,7 @@ class AllTimeSetViewReactor: Reactor {
                             $0.sortingKey < $1.sortingKey :
                             $0.bookmarkSortingKey < $1.bookmarkSortingKey
                     })
-                    .map { TimeSetCollectionViewCellReactor(timeSetInfo: $0) }
+                    .map { TimeSetCollectionViewCellReactor(timeSetItem: $0) }
                 
                 let setSections: Observable<Mutation> = .just(.setSections([AllTimeSetSectionModel(model: Void(), items: items)]))
                 let sectionReload: Observable<Mutation> = .just(.sectionReload)

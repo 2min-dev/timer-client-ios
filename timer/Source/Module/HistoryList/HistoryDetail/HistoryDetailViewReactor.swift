@@ -65,18 +65,18 @@ class HistoryDetailViewReactor: Reactor {
     
     // MARK: - constructor
     init?(timeSetService: TimeSetServiceProtocol, history: History) {
-        guard let info = history.info, let startDate = history.startDate, let endDate = history.endDate else { return nil }
+        guard let item = history.item, let startDate = history.startDate, let endDate = history.endDate else { return nil }
         
         self.timeSetService = timeSetService
         self.history = history
-        initialState = State(title: info.title,
-                             runningTime: info.runningTime,
+        initialState = State(title: item.title,
+                             runningTime: history.runningTime,
                              startDate: startDate,
                              endDate: endDate,
-                             extraTime: info.timers.reduce(0) { $0 + $1.extraTime },
-                             repeatCount: info.repeatCount,
-                             memo: info.memo,
-                             sectionDataSource: TimerBadgeDataSource(timers: info.timers.toArray()),
+                             extraTime: item.timers.reduce(0) { $0 + $1.extra },
+                             repeatCount: history.repeatCount,
+                             memo: item.memo,
+                             sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
                              shouldSectionReload: true)
     }
     
@@ -110,7 +110,7 @@ class HistoryDetailViewReactor: Reactor {
     
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
-        history.info?.memo = memo
+        history.item?.memo = memo
         return .just(.setMemo(memo))
     }
     

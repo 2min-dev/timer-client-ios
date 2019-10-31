@@ -116,10 +116,10 @@ class LocalTimeSetViewReactor: Reactor {
             .asObservable()
             .flatMap { timeSets -> Observable<Mutation> in
                 let savedTimeSetItems: [TimeSetCellType] = timeSets.sorted(by: { $0.sortingKey < $1.sortingKey })
-                    .map { .regular(TimeSetCollectionViewCellReactor(timeSetInfo: $0)) }
+                    .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
                 let bookmarkedTimeSetItems: [TimeSetCellType] = timeSets.filter { $0.isBookmark }
                     .sorted(by: { $0.bookmarkSortingKey < $1.bookmarkSortingKey })
-                    .map { .regular(TimeSetCollectionViewCellReactor(timeSetInfo: $0)) }
+                    .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
                 
                 // Get time set items count
                 let savedTimeSetCount = savedTimeSetItems.count

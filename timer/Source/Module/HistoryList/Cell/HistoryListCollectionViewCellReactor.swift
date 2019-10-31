@@ -35,10 +35,10 @@ class HistoryListCollectionViewCellReactor: Reactor {
     
     // MARK: - constructor
     init?(history: History) {
-        guard let info = history.info, let startDate = history.startDate else { return nil }
+        guard let item = history.item, let startDate = history.startDate else { return nil }
         self.history = history
-        initialState = State(time: info.runningTime,
-                             title: info.title,
+        initialState = State(time: history.runningTime,
+                             title: item.title,
                              startedDate: startDate)
     }
     

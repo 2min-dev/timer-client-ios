@@ -1,5 +1,5 @@
 //
-//  TimeSetInfo.swift
+//  TimeSetItem.swift
 //  timer
 //
 //  Created by JSilver on 21/04/2019.
@@ -10,36 +10,19 @@ import Foundation
 import Realm
 import RealmSwift
 
-class TimeSetInfo: Object, Codable, NSCopying {
-    @objc enum EndState: Int, Codable {
-        /// The time set not ended
-        case none
-        /// The time set finished normally
-        case normal
-        /// The time set canceled
-        case cancel
-        /// The time set oevrtime recorded
-        case overtime
-    }
-    
+class TimeSetItem: Object, NSCopying, Codable {
     // MARK: - properties
     // Default information of the time set
     @objc dynamic var id: String?                       // Identifier of the time set
     @objc dynamic var title: String = ""                // Name of the timer set
     @objc dynamic var memo: String = ""                 // Description of the timer set
+    @objc dynamic var isRepeat: Bool = false            // Is repeat of the time set
     @objc dynamic var isBookmark: Bool = false          // Is bookmark of the time set
     
-    // History record properties of the time set
-    @objc dynamic var repeatCount: Int = 0              // Repeat count of time set
-    @objc dynamic var runningTime: TimeInterval = 0     // All running time of time set
-    @objc dynamic var endState: EndState = .none        // End state of time set
+    var timers: List<TimerItem> = List()                // Timer item list of the timer set
+    @objc dynamic var overtimer: StopwatchItem?         // Timer item about overtime record of time set
     
-    // Operation option of the time set
-    @objc dynamic var isRepeat: Bool = false            // Is repeat of the time set
-    
-    var timers: List<TimerInfo> = List()                // Timer info list of the timer set
-    @objc dynamic var overtimer: TimerInfo?             // Timer info about overtime record of time set
-    
+    // Sorting key
     @objc dynamic var sortingKey: Int = Int.max         // Sorting key of time set
     @objc dynamic var bookmarkSortingKey: Int = Int.max // Sorting key of bookmarked time set
     
@@ -49,11 +32,8 @@ class TimeSetInfo: Object, Codable, NSCopying {
                      memo: String,
                      isBookmark: Bool,
                      isRepeat: Bool,
-                     repeatCount: Int,
-                     runningTime: TimeInterval,
-                     endState: EndState,
-                     timers: List<TimerInfo>,
-                     overtimer: TimerInfo?,
+                     timers: List<TimerItem>,
+                     overtimer: StopwatchItem?,
                      sortingKey: Int,
                      bookmarkSortingKey: Int) {
         self.init()
@@ -62,18 +42,10 @@ class TimeSetInfo: Object, Codable, NSCopying {
         self.memo = memo
         self.isBookmark = isBookmark
         self.isRepeat = isRepeat
-        self.repeatCount = repeatCount
-        self.runningTime = runningTime
-        self.endState = endState
         self.timers = timers
         self.overtimer = overtimer
         self.sortingKey = sortingKey
         self.bookmarkSortingKey = bookmarkSortingKey
-    }
-    
-    convenience init(id: String?) {
-        self.init()
-        self.id = id
     }
     
     // MARK: - realm method
@@ -83,20 +55,21 @@ class TimeSetInfo: Object, Codable, NSCopying {
     
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
-        let timers: List<TimerInfo> = List()
-        timers.append(objectsIn: self.timers.compactMap { $0.copy() as? TimerInfo })
+        let timers: List<TimerItem> = List()
+        timers.append(objectsIn: self.timers.compactMap { $0.copy() as? TimerItem })
         
-        return TimeSetInfo(id: id,
+        return TimeSetItem(id: id,
                            title: title,
                            memo: memo,
                            isBookmark: isBookmark,
                            isRepeat: isRepeat,
-                           repeatCount: repeatCount,
-                           runningTime: runningTime,
-                           endState: endState,
                            timers: timers,
-                           overtimer: overtimer?.copy() as? TimerInfo,
+                           overtimer: overtimer?.copy() as? StopwatchItem,
                            sortingKey: sortingKey,
                            bookmarkSortingKey: bookmarkSortingKey)
+    }
+    
+    func reset() {
+        timers.forEach { $0.reset() }
     }
 }

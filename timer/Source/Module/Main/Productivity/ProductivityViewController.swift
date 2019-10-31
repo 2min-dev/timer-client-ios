@@ -207,8 +207,8 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
     
         let routeButtonTap: Observable<ProductivityViewCoordinator.Route> = Observable.merge(
-            saveButton.rx.tap.map { .timeSetSave(reactor.timeSetInfo) },
-            startButton.rx.tap.map { .timeSetProcess(reactor.timeSetInfo) })
+            saveButton.rx.tap.map { .timeSetSave(reactor.timeSetItem) },
+            startButton.rx.tap.map { .timeSetProcess(reactor.timeSetItem) })
             .share(replay: 1)
             
         routeButtonTap

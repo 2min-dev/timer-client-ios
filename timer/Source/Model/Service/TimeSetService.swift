@@ -27,23 +27,23 @@ protocol TimeSetServiceProtocol {
     var runningTimeSet: RunningTimeSet? { get set }
     
     // MARK: - time set
-    /// Fetch all time set info list
-    func fetchTimeSets() -> Single<[TimeSetInfo]>
+    /// Fetch all time set item list
+    func fetchTimeSets() -> Single<[TimeSetItem]>
     
     /// Create a time set
-    func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
     /// Remove the time set
-    func removeTimeSet(id: String) -> Single<TimeSetInfo>
+    func removeTimeSet(id: String) -> Single<TimeSetItem>
     
     /// Remove time set list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]>
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]>
     
     /// Update the time set
-    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo>
+    func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
     /// Update time set list
-    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]>
+    func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]>
     
     /// Store current running time set data into user defaults
     func storeTimeSet() -> TimeSet?
@@ -68,12 +68,12 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
-    private var timeSets: [TimeSetInfo]?
+    private var timeSets: [TimeSetItem]?
     var runningTimeSet: RunningTimeSet?
     
     // MARK: - public method
     // MARK: - time set
-    func fetchTimeSets() -> Single<[TimeSetInfo]> {
+    func fetchTimeSets() -> Single<[TimeSetItem]> {
         Logger.info("fetch time set list", tag: "SERVICE")
         
         if let timeSets = self.timeSets {
@@ -86,10 +86,10 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         }
     }
     
-    func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+    func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         // Create time set id
         let id = provider.userDefaultService.integer(.timeSetId)
-        info.id = String(id)
+        item.id = String(id)
         
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -97,9 +97,9 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
                 var timeSets = timeSets
                 
                 // Save into realm
-                return self.provider.databaseService.createTimeSet(info: info)
+                return self.provider.databaseService.createTimeSet(item: item)
                     .do(onSuccess: {
-                        // Append info current time set list
+                        // Append item current time set list
                         timeSets.append($0)
                         self.timeSets = timeSets
                         
@@ -112,7 +112,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.created) })
     }
     
-    func removeTimeSet(id: String) -> Single<TimeSetInfo> {
+    func removeTimeSet(id: String) -> Single<TimeSetItem> {
         return fetchTimeSets()
             .flatMap { timeSets in
                 // Convert mutable array
@@ -131,9 +131,9 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
     
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]> {
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]> {
         return self.provider.databaseService.removeTimeSets(ids: ids)
-            .flatMap { removedTimeSets -> Single<[TimeSetInfo]> in
+            .flatMap { removedTimeSets -> Single<[TimeSetItem]> in
                 return self.provider.databaseService.fetchTimeSets()
                     .do(onSuccess: {
                         // Update time set list
@@ -145,14 +145,14 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
     
-    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
+    func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         return fetchTimeSets()
             .flatMap { timeSets in
                 // Convert mutable array
                 var timeSets = timeSets
-                guard let id = info.id, let index = timeSets.firstIndex(where: { $0.id == id }) else { return .error(TimeSetError.notFound) }
+                guard let id = item.id, let index = timeSets.firstIndex(where: { $0.id == id }) else { return .error(TimeSetError.notFound) }
                 
-                return self.provider.databaseService.updateTimeSet(info: info)
+                return self.provider.databaseService.updateTimeSet(item: item)
                     .do(onSuccess: {
                         // Update time set
                         timeSets[index] = $0
@@ -164,9 +164,9 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
     
-    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]> {
-        return self.provider.databaseService.updateTimeSets(infoes: infoes)
-            .flatMap { updatedTimeSets -> Single<[TimeSetInfo]> in
+    func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]> {
+        return self.provider.databaseService.updateTimeSets(items: items)
+            .flatMap { updatedTimeSets -> Single<[TimeSetItem]> in
                 return self.provider.databaseService.fetchTimeSets()
                     .do(onSuccess: {
                         // Update time set list
@@ -178,11 +178,11 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
     
+    @discardableResult
     func storeTimeSet() -> TimeSet? {
-        guard let runningTimeSet = runningTimeSet,
-            case .run(detail: _) = runningTimeSet.timeSet.state else {
-                provider.appService.setRunningTimeSet(nil)
-                return nil
+        guard let runningTimeSet = runningTimeSet, runningTimeSet.timeSet.state == .run else {
+            provider.appService.setRunningTimeSet(nil)
+            return nil
         }
         
         // Create running time set object and store into user defaults
@@ -205,7 +205,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     func createHistory(_ history: History) -> Single<History> {
         // Create history's time set id
         let id = provider.userDefaultService.integer(.timeSetId)
-        history.info?.id = String(format: "H%d", id)
+        history.item?.id = String(format: "H%d", id)
         
         return provider.databaseService.createHistory(history)
             .do(onSuccess: { _ in
