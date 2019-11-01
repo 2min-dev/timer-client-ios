@@ -214,14 +214,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .bind(to: canTimeSetStart)
             .disposed(by: disposeBag)
         
-        // Update layout (cancel button of keypad, timer badge)
-        reactor.state
-            .map { $0.allTime > 0 }
-            .distinctUntilChanged()
-            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
-            .subscribe(onNext: { [weak self] in self?.updateLayoutFrom(isTimeInputed: $0.0, selectedIndex: $0.1) })
-            .disposed(by: disposeBag)
-        
         // Timer end time
         reactor.state
             .map { $0.endTime }
@@ -265,7 +257,13 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .bind(to: timeInfoView.rx.isHidden)
             .disposed(by: disposeBag)
         
-        // Enable time key
+        // Time key
+        reactor.state
+            .map { $0.time == 0 && $0.allTime == 0 }
+            .distinctUntilChanged()
+            .bind(to: timeKeyView.rx.isHidden, keyPadView.cancelButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
         reactor.state
             .map { $0.time }
             .distinctUntilChanged()
@@ -398,14 +396,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         } else {
             return .hour
         }
-    }
-    
-    /// Update layout according to time is inputed into time set
-    /// - Show/Hide cancel button of keypad
-    /// - Show/Hide timer badge collection view
-    ///   - Scroll default badge position when view is visibled
-    private func updateLayoutFrom(isTimeInputed: Bool, selectedIndex: Int) {
-        keyPadView.cancelButton.isHidden = !isTimeInputed
     }
     
     /// Scroll timer badge view if badge isn't moving

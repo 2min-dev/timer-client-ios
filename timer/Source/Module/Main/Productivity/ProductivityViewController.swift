@@ -228,14 +228,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .bind(to: canTimeSetStart)
             .disposed(by: disposeBag)
         
-        // Update layout (cancel button of keypad, timer badge)
-        reactor.state
-            .map { $0.allTime > 0 }
-            .distinctUntilChanged()
-            .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
-            .subscribe(onNext: { [weak self] in self?.updateLayoutFrom(isTimeInputed: $0.0, selectedIndex: $0.1) })
-            .disposed(by: disposeBag)
-        
         // Timer end time
         reactor.state
             .map { $0.endTime }
@@ -280,7 +272,13 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .bind(to: timeInfoView.rx.isHidden)
             .disposed(by: disposeBag)
         
-        // Enable time key
+        // Time key
+        reactor.state
+            .map { $0.time == 0 && $0.allTime == 0 }
+            .distinctUntilChanged()
+            .bind(to: timeKeyView.rx.isHidden, keyPadView.cancelButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
         reactor.state
             .map { $0.time }
             .distinctUntilChanged()
@@ -408,25 +406,19 @@ class ProductivityViewController: BaseHeaderViewController, View {
         }
     }
     
-    /// Update layout according to time is inputed into time set
-    /// - Show/Hide cancel button of keypad
+    /// Update layout according to time set can start
     /// - Show/Hide timer badge collection view
     ///   - Scroll default badge position when view is visibled
-    private func updateLayoutFrom(isTimeInputed: Bool, selectedIndex: Int) {
-        keyPadView.cancelButton.isHidden = !isTimeInputed
-        timerBadgeCollectionView.isHidden = !isTimeInputed
-        
-        if !timerBadgeCollectionView.isHidden {
-            // Scroll timer badge to seleted index if badge is visible
-            let section = TimerBadgeSectionType.regular.rawValue
-            timerBadgeCollectionView.scrollToBadge(at: IndexPath(item: selectedIndex, section: section), animated: false)
-        }
-    }
-    
-    /// Update layout according to time set can start
     /// - Set tab bar swipe enabled
     /// - Show/Hide footer view
     private func updateLayoutFrom(canTimeSetStart: Bool) {
+        timerBadgeCollectionView.isHidden = !canTimeSetStart
+        
+        if canTimeSetStart {
+            // Scroll timer badge to seleted index if badge is visible
+            timerBadgeCollectionView.scrollToBadge(at: IndexPath(item: 0, section: TimerBadgeSectionType.regular.rawValue), animated: false)
+        }
+        
         // Prevent tab bar swipe gesture
         if let tabBarController = tabBarController as? MainViewController {
             tabBarController.swipeEnable = !canTimeSetStart
