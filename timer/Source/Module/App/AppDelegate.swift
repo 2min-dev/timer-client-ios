@@ -8,12 +8,12 @@
 
 import UIKit
 import UserNotifications
-import AudioToolbox
 import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    private let provider: ServiceProviderProtocol = ServiceProvider()
 
     // MARK: - lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -24,35 +24,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create new window
         window = UIWindow(frame: UIScreen.main.bounds)
-        if #available(iOS 13.0, *) {
-            // Fix interface style to .light before deal with dark mode
-            window?.overrideUserInterfaceStyle = .light
-        }
         
         // Present intro view
-        let appCoordinator: AppCoordinator = AppCoordinator(provider: ServiceProvider(), window: window!)
+        let appCoordinator: AppCoordinator = AppCoordinator(provider: provider, window: window!)
         appCoordinator.present(for: .intro)
         
         return true
     }
     
-    //    func applicationDidEnterBackground(_ application: UIApplication) {
-    //        let content = UNMutableNotificationContent()
-    //        content.title = "Timer done."
-    //        content.subtitle = "done done"
-    //        content.body = "don don don"
-    //        content.sound = UNNotificationSound(named: UNNotificationSoundName.init("default"))
-    //
-    //        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-    //
-    //        let request = UNNotificationRequest(identifier: "timer", content: content, trigger: trigger)
-    //
-    //        UNUserNotificationCenter.current().add(request) { error in
-    //            if error == nil {
-    //                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-    //            }
-    //        }
-    //    }
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        // Save current date when application did enter background state
+        provider.appService.setBackgroundDate(Date())
+        
+        // Store current running time set data into user defaults
+        guard let timeSet = provider.timeSetService.storeTimeSet() else { return }
+        timeSet.pause()
+        
+        // Register time set notification
+        provider.notificationService.registerNotificationOfTimeSet(timeSet)
+    }
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        // Restore bakckground entry date and compare with current date
+        guard let backgroundDate = provider.appService.getBackgroundDate() else { return }
+        let passedTime = Date().timeIntervalSince1970 - backgroundDate.timeIntervalSince1970
+        
+        guard let timeSet = provider.timeSetService.runningTimeSet?.timeSet,
+            provider.appService.getRunningTimeSet() != nil else { return }
+        
+        // Consume the passed time and restart the time set
+        timeSet.consume(time: passedTime)
+        timeSet.start()
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        // Remove all notifications when app state became active
+        provider.notificationService.removeAllNotifications()
+    }
     
     // MARK: - private method
     private func migrateRealm() {

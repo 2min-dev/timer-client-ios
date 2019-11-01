@@ -44,15 +44,31 @@ class IntroViewController: BaseViewController, View {
     // MARK: - bind
     func bind(reactor: IntroViewReactor) {
         // MARK: action
-        reactor.action.onNext(.viewDidLoad)
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .map { $0.isDone }
-            .filter { $0 }
+            .map { $0.introState }
             .distinctUntilChanged()
-            .subscribe({ [weak self] _ in _ = self?.coordinator.present(for: .main) })
+            .subscribe(onNext: { [weak self] in self?.presentByState($0) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - state method
+    private func presentByState(_ state: IntroViewReactor.IntroState) {
+        switch state {
+        case .done:
+            _ = coordinator.present(for: .main)
+            
+        case .running:
+            _ = coordinator.present(for: .timeSetProcess)
+            
+        case .none:
+            break
+        }
     }
     
     deinit {

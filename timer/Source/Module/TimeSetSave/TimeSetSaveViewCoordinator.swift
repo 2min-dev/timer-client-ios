@@ -11,7 +11,7 @@ import UIKit
 class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
-        case timeSetDetail(TimeSetInfo)
+        case timeSetDetail(TimeSetItem)
     }
     
     // MARK: - properties
@@ -41,9 +41,9 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
     
     func get(for route: Route) -> UIViewController? {
         switch route {
-        case let .timeSetDetail(timeSetInfo):
+        case let .timeSetDetail(timeSetItem):
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo)
+            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem)
             let viewController = TimeSetDetailViewController(coordinator: coordinator)
             
             // DI

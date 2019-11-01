@@ -12,84 +12,97 @@ import RxSwift
 class TimeSet: EventStreamProtocol {
     enum Event {
         case stateChanged(State)
-        case timerChanged(_ timer: TimerInfo, at: Int)
-        case timeChanged(current: TimeInterval, end: TimeInterval)
-    }
-    
-    /// The state of time set running
-    enum RunState {
-        case normal
-        case overtime
+        case timerChanged(JSTimer, at: Int)
+        case timeChanged(TimeInterval, TimeInterval)
     }
     
     /// The state of timer
-    enum State: Equatable {
-        case initialize
-        case stop(repeat: Int)
-        case run(detail: RunState)
+    enum State {
+        case stop
+        case run
         case pause
-        case end(detail: TimeSetInfo.EndState)
+        case end
     }
     
-    // Event stream of the timer set
-    var event: PublishSubject<TimeSet.Event> = PublishSubject()
+    enum StartType {
+        case normal(at: Int)
+        case overtime
+    }
     
     // MARK: - properties
-    var info: TimeSetInfo // The model data of the timer set
-    var state: State = .initialize {
+    // Event stream of the time set
+    var event: PublishSubject<TimeSet.Event> = PublishSubject()
+    // The time set state
+    var state: State = .stop {
         didSet {
-            if case let .end(detail: detail) = state {
-                info.endState = detail
+            guard oldValue != state else { return }
+            
+            switch state {
+            case .run:
+                // Set start date of time set to history
+                if history.startDate == nil {
+                    history.startDate = Date()
+                }
+                
+            case .end:
+                history.endDate = Date()
+                
+            default:
+                break
             }
             
-            if oldValue != state {
-                event.onNext(.stateChanged(state))
-            }
+            event.onNext(.stateChanged(state))
         }
     }
     
-    // Timer
-    var timer: TMTimer? {
-        didSet {
-            // Add current time of timer into time set for record all running time
-            info.runningTime += oldValue?.info.currentTime ?? 0
-        }
+    private(set) var item: TimeSetItem // The model data of the time set
+    private(set) var history: History // History data of the time set
+    
+    private(set) var timer: JSTimer! {
+        didSet { event.onNext(.timerChanged(timer, at: currentIndex)) }
     }
-    var currentIndex: Int = 0 {
-        didSet { event.onNext(.timerChanged(info.timers[currentIndex], at: currentIndex)) }
-    }
+    private(set) var currentIndex: Int
     
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(info: TimeSetInfo) {
-        self.info = info
+    init(item: TimeSetItem, history: History, index: Int) {
+        self.item = item
+        self.history = history
+        currentIndex = index
+        timer = createTimer(at: index)
+    }
+    
+    convenience init(item: TimeSetItem, index: Int = 0) {
+        self.init(item: item, history: History(item: item), index: index)
     }
     
     // MARK: - private method
-    private func createTimer(at index: Int? = nil) -> TMTimer {
-        var timer: TMTimer
-        if let index = index {
+    private func createTimer(at index: Int? = nil) -> JSTimer {
+        var timer: JSTimer
+        if var index = index {
+            // Set default timer index 0
+            index = (0 ..< item.timers.count).contains(index) ? index : 0
             // Create normal timer
-            timer = TMTimer(info: info.timers[index])
+            timer = JSTimer(item: item.timers[index])
         } else {
             // Create overtimer
-            let overtimer = TimerInfo()
-            info.overtimer = overtimer
+            let overtimer = item.overtimer ?? StopwatchItem()
+            item.overtimer = overtimer
             
-            timer = TMTimer(info: overtimer, type: .overtime)
+            timer = JSTimer(item: overtimer)
         }
-
+        
         // Bind timer event
         timer.event
             .observeOn(MainScheduler.asyncInstance)
             .subscribe(onNext: { [weak self] in
                 switch $0 {
-                case let .stateChanged(state):
-                    self?.handleTimerStateChanged(state: state)
+                case let .stateChanged(state, item: item):
+                    self?.handleTimerStateChanged(state, item: item)
                     
-                case let .timeChanged(current: currentTime, end: endTime):
-                    self?.event.onNext(.timeChanged(current: currentTime, end: endTime))
+                case let .timeChanged(current, end, diff: diff):
+                    self?.handleTimeChanged(current, end, diff: diff)
                 }
             })
             .disposed(by: disposeBag)
@@ -97,105 +110,136 @@ class TimeSet: EventStreamProtocol {
         return timer
     }
     
-    /// Handle the timer event from current running timer
-    private func handleTimerStateChanged(state: TMTimer.State) {
+    /// Handle the timer event that current running timer state changed
+    private func handleTimerStateChanged(_ state: JSTimer.State, item: Recordable) {
         switch state {
+        case .stop:
+            self.state = .stop
+            
+        case .pause:
+            self.state = .pause
+            
+        case .run:
+            self.state = .run
+
         case .end:
-            // Process time set if it is running
-            guard self.state == .run(detail: .normal) else { return }
-            if currentIndex + 1 < info.timers.count {
-                // Start next timer
-                start(at: currentIndex + 1)
-            } else {
-                if info.isRepeat {
-                    // Repeat time set
-                    info.repeatCount += 1
-                    reset(withState: false)
-                    start(at: 0)
-                } else {
-                    // End of time set
-                    self.timer = nil
-                    self.state = .end(detail: .normal)
-                }
+            guard item as? TimerItem != nil else {
+                // End of overtime time set
+                history.endState = .overtime
+                self.state = .end
+                return
             }
             
-        default:
-            break
+            guard item.isEnded else {
+                // Canceled
+                history.endState = .cancel
+                self.state = .end
+                return
+            }
+            
+            if currentIndex < self.item.timers.count - 1 {
+                // Start next timer
+                start(.normal(at: currentIndex + 1))
+            } else {
+                // The last timer ended
+                if self.item.isRepeat {
+                    // Repeat
+                    history.repeatCount += 1
+                    stop()
+                    start(.normal(at: 0))
+                } else {
+                    // End of time set
+                    history.endState = .normal
+                    self.state = .end
+                }
+            }
         }
+    }
+    
+    /// Handle the timer event that time changed
+    private func handleTimeChanged(_ current: TimeInterval, _ end: TimeInterval, diff: TimeInterval) {
+        history.runningTime += diff
+        event.onNext(.timeChanged(current, end))
     }
     
     // MARK: - public method
-    /// Start the current timer
-    func start(at index: Int? = nil) {
-        if case .end(detail: _) = state {
-            Logger.debug("Can't start time set that state is `.end(detail: _)` before call reset(withState:).")
-            return
+    /// Start the time set
+    /// - parameter type: start time set type (`.normal || .overtime`) (default `nil`). if this value `nil`, resume timer at current timer
+    func start(_ type: StartType? = nil) {
+        if let type = type {
+            switch type {
+            case let .normal(at: index):
+                currentIndex = (0 ..< item.timers.count).contains(index) ? index : 0
+                timer = createTimer(at: currentIndex)
+                
+            case .overtime:
+                timer = createTimer()
+            }
         }
         
-        if let index = index {
-            // Start new timer
-            guard index < info.timers.count else { return }
-            currentIndex = index
-            
-            timer = createTimer(at: index)
-        }
-        
-        // Return timer not exist
-        guard timer != nil else { return }
-        
-        state = .run(detail: info.overtimer == nil ? .normal : .overtime)
-        timer?.start()
+        timer.start()
     }
     
-    /// Start overtime timer and start record
-    func startOvertime() {
-        guard state == .end(detail: .normal) else { return }
-        
-        // Create overtime timer
-        timer = createTimer()
-        timer?.start()
-        
-        state = .run(detail: .overtime)
-    }
-    
-    /// Pause current running timer
+    /// Pause the time set
     func pause() {
-        guard let timer = timer else {
-            Logger.debug("Can't pause the time set because the time set isn't running.")
-            return
-        }
         timer.pause()
-        
-        state = .pause
     }
     
     /// Stop the time set
     func stop() {
-        timer?.stop()
-        timer = nil
-        
-        state = .end(detail: info.overtimer == nil ? .cancel : .overtime)
+        timer.stop()
+        // Reset time set data
+        item.reset()
     }
     
-    /// Reset the time set
-    func reset(withState: Bool = true) {
-        guard state != .initialize else { return }
-        
-        // Reset all timer status
-        timer?.reset(withState: false)
-        timer = nil
-        
-        state = withState ? .initialize : .stop(repeat: self.info.repeatCount)
-        
-        info.timers.forEach {
-            $0.currentTime = 0
-            $0.extraTime = 0
-        }
-        
-        if withState {
-            // Time set reset to initialization status
-            info.repeatCount = 0
-            info.endState = .none
+    /// End the time set
+    func end() {
+        timer.end(isMute: true)
+    }
+    
+    /// Consume time to the time set
+    /// - parameters:
+    ///   - time: the time to consume of the time set
+    ///   - withRepeat: flag to perform in consideration of repetition (default `false`)
+    func consume(time: TimeInterval, withRepeat: Bool = false) {
+        if let overtimer = item.overtimer {
+            // The time set is running in overtime
+            // Consume time to over timer
+            let consumedTime = overtimer.consume(time: time)
+            history.runningTime += consumedTime
+            
+            timer = createTimer()
+        } else {
+            // Set time to mutable value
+            var time = time
+            
+            var index = currentIndex
+            while true {
+                // Consume time to timer
+                let timer = item.timers[index]
+                let consumedTime = timer.consume(time: time)
+                history.runningTime += consumedTime
+                
+                // Break loop if spent all time
+                time -= consumedTime
+                guard time > 0 else { break }
+                
+                if index < item.timers.count - 1 {
+                    index += 1
+                } else {
+                    // Break loop if timer is last element of the time set. and it isn't repeat
+                    guard item.isRepeat else { break }
+                    
+                    history.repeatCount += 1
+                    index = 0
+                    item.reset()
+
+                    guard withRepeat else { break }
+                }
+            }
+
+            currentIndex = index
+            timer = createTimer(at: index)
         }
     }
     

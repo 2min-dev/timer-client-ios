@@ -12,8 +12,8 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case home
-        case timeSetEdit(TimeSetInfo)
-        case timeSetProcess(TimeSetInfo, start: Int)
+        case timeSetEdit(TimeSetItem)
+        case timeSetProcess(TimeSetItem, start: Int)
     }
     
     // MARK: - properties
@@ -52,11 +52,11 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
         case .home:
             return self.viewController.navigationController?.viewControllers.first
             
-        case let .timeSetEdit(timeSetInfo):
-            guard let copiedTimeSetInfo = timeSetInfo.copy() as? TimeSetInfo else { return nil }
+        case let .timeSetEdit(timeSetItem):
+            guard let copiedTimeSetItem = timeSetItem.copy() as? TimeSetItem else { return nil }
             
             let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: copiedTimeSetInfo)
+            let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: copiedTimeSetItem)
             let viewController = TimeSetEditViewController(coordinator: coordinator)
             
             // DI
@@ -65,9 +65,9 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             
             return viewController
             
-        case let .timeSetProcess(timeSetInfo, start: index):
+        case let .timeSetProcess(timeSetItem, start: index):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetInfo: timeSetInfo, start: index) else { return nil }
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, start: index) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI

@@ -12,49 +12,49 @@ import RealmSwift
 class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - time set operate
     /// Fetch all time set list
-    /// - returns: A observable that emit all time set info list
-    func fetchTimeSets() -> Single<[TimeSetInfo]> {
+    /// - returns: A observable that emit all time set item list
+    func fetchTimeSets() -> Single<[TimeSetItem]> {
         return fetch(with: { $0.id?.range(regex: "^[0-9]") != nil })
     }
     
     /// Create a time set
     /// - parameters:
-    ///   - info: data of the time set
-    /// - returns: A observable that emit a created time set info
-    func createTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
-        return create(info)
+    ///   - item: data of the time set
+    /// - returns: A observable that emit a created time set item
+    func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
+        return create(item)
     }
     
     /// Remove the time set
     /// - parameters:
     ///   - id: Identifier of the time set to remove
-    /// - returns: A observable that emit a removed time set info
-    func removeTimeSet(id: String) -> Single<TimeSetInfo> {
+    /// - returns: A observable that emit a removed time set item
+    func removeTimeSet(id: String) -> Single<TimeSetItem> {
         return remove(key: id)
     }
     
     /// Remove time set list
     /// - parameters:
     ///   - ids: Identifier list of the time set list to remove
-    /// - returns: A observable that emit all removed time set info list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetInfo]> {
+    /// - returns: A observable that emit all removed time set item list
+    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]> {
         return remove(keys: ids)
     }
     
     /// Update the time set
     /// - parameters:
-    ///   - info: data of the time set
-    /// - returns: A observable that emit a updated time set info
-    func updateTimeSet(info: TimeSetInfo) -> Single<TimeSetInfo> {
-        return update(info)
+    ///   - item: data of the time set
+    /// - returns: A observable that emit a updated time set item
+    func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
+        return update(item)
     }
     
     /// Update time set list
     /// - parameters:
-    ///   - infoes: data list of the time set
-    /// - returns: A observable that emit all updated time set info list
-    func updateTimeSets(infoes: [TimeSetInfo]) -> Single<[TimeSetInfo]> {
-        return update(list: infoes)
+    ///   - items: data list of the time set
+    /// - returns: A observable that emit all updated time set item list
+    func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]> {
+        return update(list: items)
     }
     
     /// Fetch all hisotry list

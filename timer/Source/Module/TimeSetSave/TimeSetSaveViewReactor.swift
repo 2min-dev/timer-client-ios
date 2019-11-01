@@ -40,13 +40,13 @@ class TimeSetSaveViewReactor: Reactor {
         case setAllTime(TimeInterval)
         
         /// Set current selected timer
-        case setTimer(TimerInfo)
+        case setTimer(TimerItem)
         
         /// Set selected index
         case setSelectedIndex(at: Int)
         
-        /// Set saved time set info
-        case setSavedTimeSet(info: TimeSetInfo)
+        /// Set saved time set item
+        case setSavedTimeSet(item: TimeSetItem)
     }
     
     struct State {
@@ -60,7 +60,7 @@ class TimeSetSaveViewReactor: Reactor {
         var allTime: TimeInterval
         
         /// Selected timer of time set
-        var timer: TimerInfo
+        var timer: TimerItem
         
         /// Section datasource to make sections
         let sectionDataSource: TimerBadgeDataSource
@@ -74,7 +74,7 @@ class TimeSetSaveViewReactor: Reactor {
         var selectedIndex: Int
         
         /// The saved time set
-        var savedTimeSet: TimeSetInfo?
+        var savedTimeSet: TimeSetItem?
         
         /// Need section reload
         var shouldSectionReload: Bool
@@ -84,20 +84,20 @@ class TimeSetSaveViewReactor: Reactor {
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
     
-    let timeSetInfo: TimeSetInfo
+    let timeSetItem: TimeSetItem
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo) {        
+    init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem) {
         self.timeSetService = timeSetService
-        self.timeSetInfo = timeSetInfo
+        self.timeSetItem = timeSetItem
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray(), index: 0)
+        let dataSource = TimerBadgeDataSource(timers: self.timeSetItem.timers.toArray(), index: 0)
         
-        initialState = State(title: timeSetInfo.title,
+        initialState = State(title: timeSetItem.title,
                              hint: "",
-                             allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                             timer: timeSetInfo.timers.first ?? TimerInfo(),
+                             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
+                             timer: timeSetItem.timers.first ?? TimerItem(),
                              sectionDataSource: dataSource,
                              selectedIndex: 0,
                              shouldSectionReload: true)
@@ -151,8 +151,8 @@ class TimeSetSaveViewReactor: Reactor {
             state.selectedIndex = index
             return state
             
-        case let .setSavedTimeSet(info: timeSetInfo):
-            state.savedTimeSet = timeSetInfo
+        case let .setSavedTimeSet(item: timeSetItem):
+            state.savedTimeSet = timeSetItem
             return state
         }
     }
@@ -160,26 +160,26 @@ class TimeSetSaveViewReactor: Reactor {
     // MAKR: - action method
     private func actionViewWillAppear() -> Observable<Mutation> {
         // Set hint
-        let hint = timeSetInfo.title.isEmpty ? String(format: "time_set_default_title".localized) : timeSetInfo.title
+        let hint = timeSetItem.title.isEmpty ? String(format: "time_set_default_title".localized) : timeSetItem.title
         return .just(.setHint(hint))
     }
     
     private func actionClearTitle() -> Observable<Mutation> {
         // Clear titile
-        timeSetInfo.title = ""
+        timeSetItem.title = ""
         
         return .just(.setTitle(""))
     }
     
     private func actionUpdateTitle(_ title: String) -> Observable<Mutation> {
         // Update title
-        timeSetInfo.title = title
+        timeSetItem.title = title
         
         return .just(.setTitle(title))
     }
     
     private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
-        guard index >= 0 && index < timeSetInfo.timers.count else { return .empty() }
+        guard index >= 0 && index < timeSetItem.timers.count else { return .empty() }
         
         let state = currentState
         let previousIndex = state.selectedIndex
@@ -191,25 +191,25 @@ class TimeSetSaveViewReactor: Reactor {
         state.sectionDataSource.regulars[index].action.onNext(.select(true))
         
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
-        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[index]))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetItem.timers[index]))
         
         return .concat(setSelectedIndex, setTimer)
     }
     
     private func actionSaveTimeSet() -> Observable<Mutation> {
-        if timeSetInfo.title.isEmpty {
+        if timeSetItem.title.isEmpty {
             // Set title from hint if it's nil
-            timeSetInfo.title = currentState.hint
+            timeSetItem.title = currentState.hint
         }
         
-        if timeSetInfo.id == nil {
+        if timeSetItem.id == nil {
             // Create time set
-            return timeSetService.createTimeSet(info: timeSetInfo).asObservable()
-                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
+            return timeSetService.createTimeSet(item: timeSetItem).asObservable()
+                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(item: $0))}
         } else {
             // Update time set
-            return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
-                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(info: $0))}
+            return timeSetService.updateTimeSet(item: timeSetItem).asObservable()
+                .flatMap { Observable<Mutation>.just(.setSavedTimeSet(item: $0))}
         }
     }
     

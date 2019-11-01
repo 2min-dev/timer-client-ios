@@ -13,6 +13,7 @@ class IntroViewCoordinator: NSObject, CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case main
+        case timeSetProcess
     }
     
     // MARK: - properties
@@ -26,12 +27,17 @@ class IntroViewCoordinator: NSObject, CoordinatorProtocol {
     
     func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
+
+        self.viewController.navigationController?.delegate = self
         
         switch route {
         case .main:
             // Present main view
-            self.viewController.navigationController?.delegate = self
             self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            
+        case .timeSetProcess:
+            guard let mainViewController = get(for: .main) else { return nil }
+            self.viewController.navigationController?.setViewControllers([mainViewController, viewController], animated: true)
         }
         
         return viewController
@@ -48,6 +54,17 @@ class IntroViewCoordinator: NSObject, CoordinatorProtocol {
             
             // set tab bar view controller initial index
             viewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
+            return viewController
+            
+        case .timeSetProcess:
+            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
+            let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
+            let viewController = TimeSetProcessViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
             return viewController
         }
     }

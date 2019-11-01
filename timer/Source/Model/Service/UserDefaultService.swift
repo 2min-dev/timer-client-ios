@@ -10,17 +10,21 @@ import Foundation
 
 protocol UserDefaultServiceProtocol {
     func register(defaults registrationDictionary: [UserDefaultService.Key: Any])
+    func remove(key: UserDefaultService.Key)
     
     func set(_ value: Any, key: UserDefaultService.Key)
     func integer(_ key: UserDefaultService.Key) -> Int
     func double(_ key: UserDefaultService.Key) -> Double
     func float(_ key: UserDefaultService.Key) -> Float
     func string(_ key: UserDefaultService.Key) -> String?
+    func object<T>(_ key: UserDefaultService.Key) -> T?
 }
 
 class UserDefaultService: BaseService, UserDefaultServiceProtocol {
-    enum Key: String {
+    enum Key: String, CaseIterable {
         case timeSetId
+        case runningTimeSet
+        case backgroundDate
         case countdown
         case alarm
         
@@ -29,11 +33,28 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
             case .timeSetId:
                 return Int.self
                 
+            case .runningTimeSet:
+                return Data.self
+                
+            case .backgroundDate:
+                return Date.self
+                
             case .countdown:
                 return Int.self
                 
             case .alarm:
                 return Int.self
+            }
+        }
+        
+        var isOptional: Bool {
+            switch self {
+            case .runningTimeSet,
+                 .backgroundDate:
+                return true
+                
+            default:
+                return false
             }
         }
     }
@@ -44,13 +65,24 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     // MARK: - public method
     func register(defaults registrationDictionary: [UserDefaultService.Key: Any]) {
         var mappedDictionary: [String: Any] = [:]
-        registrationDictionary.forEach { key, value in
-            guard type(of: value) == key.type else { fatalError("You try to register value that doesn't match the type corresponding to the key value") }
-            
-            mappedDictionary[key.rawValue] = value
-        }
+        
+        Key.allCases.filter { !$0.isOptional }
+            .forEach {
+                // Fatal error ocurr if not exist default value that corresponding to the key
+                guard let value = registrationDictionary[$0] else { fatalError("You must define default value that corresponding to the key - 🚨[\($0.rawValue)]") }
+                
+                // Fatal error ocurr if default value type doesn't match the type corresponding to the key value
+                guard type(of: value) == $0.type else { fatalError("You try to register value that doesn't match the type corresponding to the key value") }
+                
+                mappedDictionary[$0.rawValue] = value
+            }
         
         userDefault.register(defaults: mappedDictionary)
+    }
+    
+    func remove(key: UserDefaultService.Key) {
+        guard key.isOptional else { fatalError("You try to remove non-optional type value.") }
+        userDefault.removeObject(forKey: key.rawValue)
     }
     
     func set(_ value: Any, key: Key) {
@@ -80,5 +112,11 @@ class UserDefaultService: BaseService, UserDefaultServiceProtocol {
     func string(_ key: Key) -> String? {
         guard key.type is String.Type else { fatalError("You try to get value that doesn't match the type corresponding to the key value.") }
         return userDefault.string(forKey: key.rawValue)
+    }
+    
+    /// - returns: The object value associated with the specified key. If the key doesn‘t exist, this method returns nil
+    func object<T>(_ key: Key) -> T? {
+        guard key.type is T.Type else { fatalError("You try to get value that doesn't match the type corresponding to the key value.") }
+        return userDefault.object(forKey: key.rawValue) as? T
     }
 }

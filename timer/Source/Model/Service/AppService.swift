@@ -15,6 +15,14 @@ enum AppEvent {
 protocol AppServiceProtocol {
     var event: PublishSubject<AppEvent> { get }
     
+    // Running time set
+    func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?)
+    func getRunningTimeSet() -> RunningTimeSet?
+    
+    // Background date
+    func setBackgroundDate(_ date: Date)
+    func getBackgroundDate() -> Date?
+    
     // Default alarm
     func setAlarm(_ alarm: Alarm)
     func getAlarm() -> Alarm
@@ -34,6 +42,8 @@ class AppService: BaseService, AppServiceProtocol {
         super.init(provider: provider)
         
         registerUserDefaultDomain()
+        Logger.debug("Background date: \(getBackgroundDate())", tag: "APP")
+        Logger.debug("Running time set: \(getRunningTimeSet())", tag: "APP")
     }
     
     // MARK: - private method
@@ -46,6 +56,28 @@ class AppService: BaseService, AppServiceProtocol {
     }
     
     // MARK: - public method
+    func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?) {
+        guard let runningTimeSet = runningTimeSet, let data = JSONCodec.encode(runningTimeSet) else {
+            provider.userDefaultService.remove(key: .runningTimeSet)
+            return
+        }
+        
+        provider.userDefaultService.set(data, key: .runningTimeSet)
+    }
+    
+    func getRunningTimeSet() -> RunningTimeSet? {
+        guard let data: Data = provider.userDefaultService.object(.runningTimeSet) else { return nil }
+        return JSONCodec.decode(data, type: RunningTimeSet.self)
+    }
+    
+    func setBackgroundDate(_ date: Date) {
+        provider.userDefaultService.set(date, key: .backgroundDate)
+    }
+    
+    func getBackgroundDate() -> Date? {
+        return provider.userDefaultService.object(.backgroundDate)
+    }
+    
     func setAlarm(_ alarm: Alarm) {
         provider.userDefaultService.set(alarm.rawValue, key: .alarm)
     }

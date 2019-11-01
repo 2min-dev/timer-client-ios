@@ -183,5 +183,14 @@
 "team_info_email_copy_title" = "복사";
 "team_info_service_description" = "안녕하세요.\n\"2min\"을 사용해주셔서 감사드립니다.\n\n앞으로 더욱 발전된 앱으로 찾아뵙겠습니다.";
 
+// MARK: - Notification
+"notification_timer_id_format" = "notification_timer_%d";
+"notification_timer_end_title_format" = "%d번째 타이머 종료";
+"notification_time_set_end_title" = "타임셋 종료";
+"notification_time_set_end_sub_title" = "타임셋을 완료하기 위해 알림을 터치해주세요.";
+"notification_time_set_end_body_title" = "🤔 이번 타임셋에 대해 메모도 작성해보시겠어요?";
+"notification_time_set_end_repeat_sub_title" = "타임셋을 계속하기 위해 알림을 터치해주세요.";
+"notification_time_set_end_repeat_body_title" = "⚠️ 다시 반복하기 위해 앱 실행이 필요합니다.";
+
 // MARK: - Widget String
 "widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";

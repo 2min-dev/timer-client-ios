@@ -11,8 +11,8 @@ import ReactorKit
 
 class TimerOptionViewReactor: Reactor {
     enum Action {
-        /// Update timer info
-        case updateTimer(TimerInfo, at: Int)
+        /// Update timer item
+        case updateTimer(TimerItem, at: Int)
         
         /// Update comment of the timer
         case updateComment(String)
@@ -45,13 +45,13 @@ class TimerOptionViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State = State()
-    private var timerInfo: TimerInfo?
+    private var timerItem: TimerItem?
     
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case let .updateTimer(timerInfo, at: index):
-            return actionUpdateTimer(info: timerInfo, at: index)
+        case let .updateTimer(timerItem, at: index):
+            return actionUpdateTimer(item: timerItem, at: index)
             
         case let .updateComment(comment):
             return actionUpdateComment(comment)
@@ -81,27 +81,27 @@ class TimerOptionViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionUpdateTimer(info: TimerInfo, at index: Int) -> Observable<Mutation> {
+    private func actionUpdateTimer(item: TimerItem, at index: Int) -> Observable<Mutation> {
         // Change current timer
-        timerInfo = info
+        timerItem = item
         
-        return .concat(.just(.setComment(info.comment)),
-                       .just(.setAlarm(info.alarm)),
+        return .concat(.just(.setComment(item.comment)),
+                       .just(.setAlarm(item.alarm)),
                        .just(.setIndex(index)))
     }
     
     private func actionUpdateComment(_ comment: String) -> Observable<Mutation> {
-        guard let timerInfo = timerInfo else { return .empty() }
+        guard let timerItem = timerItem else { return .empty() }
         // Update timer comment
-        timerInfo.comment = comment
+        timerItem.comment = comment
         
         return .just(.setComment(comment))
     }
     
     private func actionUpdateAlarm(_ alarm: Alarm) -> Observable<Mutation> {
-        guard let timerInfo = timerInfo else { return .empty() }
+        guard let timerItem = timerItem else { return .empty() }
         // Update timer alarm
-        timerInfo.alarm = alarm
+        timerItem.alarm = alarm
         
         return .just(.setAlarm(alarm))
     }

@@ -23,7 +23,7 @@ class TimeSetDetailViewReactor: Reactor {
         case setBookmark(Bool)
         
         /// Set current timer
-        case setTimer(TimerInfo)
+        case setTimer(TimerItem)
         
         /// Set selected index
         case setSelectedIndex(at: Int)
@@ -40,7 +40,7 @@ class TimeSetDetailViewReactor: Reactor {
         let allTime: TimeInterval
         
         /// Current selected timer
-        var timer: TimerInfo
+        var timer: TimerItem
         
         /// Section datasource to make sections
         let sectionDataSource: TimerBadgeDataSource
@@ -61,20 +61,20 @@ class TimeSetDetailViewReactor: Reactor {
     var initialState: State
     var timeSetService: TimeSetServiceProtocol
     
-    var timeSetInfo: TimeSetInfo
+    var timeSetItem: TimeSetItem
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSetInfo: TimeSetInfo) {
+    init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem) {
         self.timeSetService = timeSetService
-        self.timeSetInfo = timeSetInfo
+        self.timeSetItem = timeSetItem
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: self.timeSetInfo.timers.toArray(), index: 0)
+        let dataSource = TimerBadgeDataSource(timers: self.timeSetItem.timers.toArray(), index: 0)
         
-        initialState = State(isBookmark: timeSetInfo.isBookmark,
-                             title: timeSetInfo.title,
-                             allTime: timeSetInfo.timers.reduce(0) { $0 + $1.endTime },
-                             timer: timeSetInfo.timers.first ?? TimerInfo(),
+        initialState = State(isBookmark: timeSetItem.isBookmark,
+                             title: timeSetItem.title,
+                             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
+                             timer: timeSetItem.timers.first ?? TimerItem(),
                              sectionDataSource: dataSource,
                              selectedIndex: 0,
                              shouldSectionReload: true)
@@ -116,14 +116,14 @@ class TimeSetDetailViewReactor: Reactor {
     // MARK: - action method
     private func actionToggleBookmark() -> Observable<Mutation> {
         // Toggle time set bookmark
-        timeSetInfo.isBookmark.toggle()
+        timeSetItem.isBookmark.toggle()
         
-        return timeSetService.updateTimeSet(info: timeSetInfo).asObservable()
+        return timeSetService.updateTimeSet(item: timeSetItem).asObservable()
             .map { .setBookmark($0.isBookmark) }
     }
     
     private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
-        guard index >= 0 && index < timeSetInfo.timers.count else { return .empty() }
+        guard index >= 0 && index < timeSetItem.timers.count else { return .empty() }
         
         let state = currentState
         let previousIndex = state.selectedIndex
@@ -135,7 +135,7 @@ class TimeSetDetailViewReactor: Reactor {
         state.sectionDataSource.regulars[index].action.onNext(.select(true))
         
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
-        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetInfo.timers[index]))
+        let setTimer: Observable<Mutation> = .just(.setTimer(timeSetItem.timers[index]))
         
         return .concat(setSelectedIndex, setTimer)
     }

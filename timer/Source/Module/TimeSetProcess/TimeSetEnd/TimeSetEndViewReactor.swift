@@ -47,10 +47,10 @@ class TimeSetEndViewReactor: Reactor {
     init(timeSetService: TimeSetServiceProtocol, history: History) {
         self.timeSetService = timeSetService
         self.history = history
-        initialState = State(title: history.info?.title ?? "",
+        initialState = State(title: history.item?.title ?? "",
                              startDate: history.startDate ?? Date(),
                              endDate: history.endDate ?? Date(),
-                             memo: history.info?.memo ?? "")
+                             memo: history.item?.memo ?? "")
     }
     
     // MARK: - Mutate
@@ -83,7 +83,7 @@ class TimeSetEndViewReactor: Reactor {
     
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
-        history.info?.memo = memo
+        history.item?.memo = memo
         return .just(.setMemo(memo))
     }
     

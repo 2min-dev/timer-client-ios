@@ -80,14 +80,14 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         editButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetInfo))})
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetItem))})
             .disposed(by: disposeBag)
         
         startButton.rx.tap
             .withLatestFrom(reactor.state
                 .map { $0.selectedIndex }
                 .distinctUntilChanged())
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetInfo, start: $0)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem, start: $0)) })
             .disposed(by: disposeBag)
         
         // MARK: state
