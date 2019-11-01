@@ -15,25 +15,23 @@ class StopwatchItem: Object, Codable, NSCopying, Recordable {
     var isEnded: Bool = false
     
     // MARK: - constructor
-    convenience init(current: TimeInterval, end: TimeInterval) {
+    convenience init(current: TimeInterval) {
         self.init()
         self.current = current
-        self.end = end
     }
     
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
-        return StopwatchItem(current: current, end: end)
+        return StopwatchItem(current: current)
     }
     
     @discardableResult
     func consume(time: TimeInterval) -> TimeInterval {
         current += time
-        return 0
+        return time
     }
     
     func reset() {
         current = 0
-        end = 0
     }
 }

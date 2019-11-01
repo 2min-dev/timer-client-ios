@@ -66,11 +66,15 @@ class TimeSet: EventStreamProtocol {
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(item: TimeSetItem, index: Int = 0) {
+    init(item: TimeSetItem, history: History, index: Int) {
         self.item = item
-        history = History(item: item)
+        self.history = history
         currentIndex = index
         timer = createTimer(at: index)
+    }
+    
+    convenience init(item: TimeSetItem, index: Int = 0) {
+        self.init(item: item, history: History(item: item), index: index)
     }
     
     // MARK: - private method
@@ -201,7 +205,9 @@ class TimeSet: EventStreamProtocol {
         if let overtimer = item.overtimer {
             // The time set is running in overtime
             // Consume time to over timer
-            overtimer.consume(time: time)
+            let consumedTime = overtimer.consume(time: time)
+            history.runningTime += consumedTime
+            
             timer = createTimer()
         } else {
             // Set time to mutable value
@@ -211,20 +217,21 @@ class TimeSet: EventStreamProtocol {
             while true {
                 // Consume time to timer
                 let timer = item.timers[index]
-                time = timer.consume(time: time)
+                let consumedTime = timer.consume(time: time)
+                history.runningTime += consumedTime
+                
                 // Break loop if spent all time
+                time -= consumedTime
                 guard time > 0 else { break }
-
+                
                 if index < item.timers.count - 1 {
                     index += 1
-                    history.runningTime += timer.current
                 } else {
                     // Break loop if timer is last element of the time set. and it isn't repeat
                     guard item.isRepeat else { break }
-
-                    index = 0
-                    history.runningTime += timer.current
+                    
                     history.repeatCount += 1
+                    index = 0
                     item.reset()
 
                     guard withRepeat else { break }

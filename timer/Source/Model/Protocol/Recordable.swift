@@ -18,7 +18,7 @@ protocol Recordable {
     
     /// Consume time to timer
     /// - parameter time: the time to consume
-    /// - returns: remaining time after consume
+    /// - returns: consumed time
     @discardableResult
     func consume(time: TimeInterval) -> TimeInterval
     

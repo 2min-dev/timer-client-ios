@@ -56,7 +56,7 @@ class TimerItem: Object, Codable, NSCopying, Recordable, Alertable {
         let remained = end - current
         current += time >= remained ? remained : time
         
-        return max(0, time - remained)
+        return time >= remained ? remained : time
     }
     
     func reset() {
