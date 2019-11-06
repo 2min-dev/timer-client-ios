@@ -52,7 +52,7 @@ class TimerOptionView: UIView, View {
     }
     
     // MARK: - constants
-    private let MAX_COMMENT_LENGTH: Int = 100
+    private static let MAX_COMMENT_LENGTH: Int = 100
     
     // MARK: - view properties
     lazy var commentTextView: UITextView = {
@@ -303,6 +303,7 @@ class TimerOptionView: UIView, View {
         return CGSize(width: 250.adjust(), height: 300.adjust())
     }
     
+    var isExceeded: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     var disposeBag = DisposeBag()
     
     // MARK: - constructor
@@ -345,10 +346,35 @@ class TimerOptionView: UIView, View {
         
         commentTextView.rx.text
             .orEmpty
-            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
-            .filter { [weak self] in $0.1 > (self?.MAX_COMMENT_LENGTH ?? 0) }
-            .map { String($0.0.dropLast()) }
+            .filter { $0.lengthOfBytes(using: .utf16) > Self.MAX_COMMENT_LENGTH }
+            .do(onNext: { [weak self] _ in self?.isExceeded.accept(true) })
+            .map { String($0.dropLast()) }
             .bind(to: commentTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        // Comment length
+        Observable.combineLatest(
+            commentTextView.rx.text
+                .orEmpty
+                .map { $0.lengthOfBytes(using: .utf16) }
+                .distinctUntilChanged(),
+            isExceeded.distinctUntilChanged())
+            .compactMap { [weak self] in self?.getCommentLengthAttributedString(length: $0, isExceeded: $1) }
+            .bind(to: commentLengthLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+        
+        // Exceeded comment
+        isExceeded
+            .map { !$0 }
+            .distinctUntilChanged()
+            .bind(to: commentExcessLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        isExceeded
+            .filter { $0 }
+            .debounce(.seconds(3), scheduler: MainScheduler.instance)
+            .map { !$0 }
+            .bind(to: isExceeded)
             .disposed(by: disposeBag)
     }
     
@@ -400,38 +426,9 @@ class TimerOptionView: UIView, View {
             .map { $0.comment }
             .distinctUntilChanged()
             .filter { [weak self] in self?.commentTextView.text != $0 }
+            .do(onNext: { [weak self] _ in self?.isExceeded.accept(false) })
             .do(onNext: { [weak self] _ in self?.commentTextView.contentOffset.y = 0 })
             .bind(to: commentTextView.rx.text)
-            .disposed(by: disposeBag)
-        
-        // Comment length
-        let lengthOfBytes = reactor.state
-            .map { $0.comment }
-            .map { $0.lengthOfBytes(using: .utf16) }
-            .distinctUntilChanged()
-            .share(replay: 1)
-        
-        let isCommentExceeded = lengthOfBytes
-            .map { [weak self] in $0 >= self?.MAX_COMMENT_LENGTH ?? 0 }
-            .distinctUntilChanged()
-            .share(replay: 1)
-        
-        // Legnth text
-        Observable.combineLatest(lengthOfBytes, isCommentExceeded)
-            .compactMap { [weak self] in self?.getCommentLengthAttributedString(length: $0, isExcess: $1) }
-            .bind(to: commentLengthLabel.rx.attributedText)
-            .disposed(by: disposeBag)
-        
-        // Exceeded info
-        isCommentExceeded
-            .map { !$0 }
-            .bind(to: commentExcessLabel.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        isCommentExceeded
-            .filter { $0 }
-            .debounce(.seconds(3), scheduler: MainScheduler.instance)
-            .bind(to: commentExcessLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
         // Alarm
@@ -455,11 +452,11 @@ class TimerOptionView: UIView, View {
     
     // MARK: - state method
     /// Get comment length attributed string
-    private func getCommentLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {
-        let lengthString = String(format: "timer_option_comment_bytes_format".localized, length, MAX_COMMENT_LENGTH)
+    private func getCommentLengthAttributedString(length: Int, isExceeded: Bool) -> NSAttributedString {
+        let lengthString = String(format: "timer_option_comment_bytes_format".localized, length, Self.MAX_COMMENT_LENGTH)
         let attributedString = NSMutableAttributedString(string: lengthString)
         
-        if isExcess {
+        if isExceeded {
             // Highlight length text
             let range = NSString(string: lengthString).range(of: String(length))
             attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
