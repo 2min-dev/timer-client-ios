@@ -68,7 +68,6 @@ class OpenSourceLicenseViewController: BaseHeaderViewController, View {
             .map { $0! }
             .map { $0.data(using: .utf8) }
             .map { [weak self] in self?.getLicenseAttributedText(data: $0!) }
-//            .map { [weak self] in self?.getLicenseAttributedText($0) }
             .bind(to: openSourceTextView.rx.attributedText)
             .disposed(by: disposeBag)
     }
@@ -86,20 +85,6 @@ class OpenSourceLicenseViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - state method
-    /// Get license attributed text from string
-    private func getLicenseAttributedText(_ text: String) -> NSAttributedString {
-        // Create paragraph style
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 12.adjust()
-        
-        // Set attributed string
-        return NSAttributedString(string: text, attributes: [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray,
-            .paragraphStyle: paragraphStyle
-        ])
-    }
-    
     /// Get license attributed text from data
     private func getLicenseAttributedText(data: Data) -> NSAttributedString? {
         return try? NSAttributedString(data: data,

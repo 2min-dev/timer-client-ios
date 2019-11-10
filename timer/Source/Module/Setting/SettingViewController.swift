@@ -54,12 +54,10 @@ class SettingViewController: BaseHeaderViewController, View {
     // MARK: - bind
     override func bind() {
         super.bind()
-        Logger.debug()
         settingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     func bind(reactor: SettingViewReactor) {
-        Logger.debug()
         // MARK: action
         rx.viewWillAppear
             .map { Reactor.Action.refresh }
@@ -90,11 +88,6 @@ class SettingViewController: BaseHeaderViewController, View {
         default:
             break
         }
-    }
-    
-    /// Handle setting menu selected
-    private func menuSelectd(indexPath: IndexPath) {
-        
     }
     
     deinit {
