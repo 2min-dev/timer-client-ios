@@ -512,8 +512,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             timeSetAlert = nil
 
             // Present end view
-            guard let viewController = coordinator.present(for: .timeSetEnd(history)) as? TimeSetEndViewController else { return }
-            bind(end: viewController)
+            if history.endState == .normal {
+                guard let viewController = coordinator.present(for: .timeSetEnd(history)) as? TimeSetEndViewController else { return }
+                bind(end: viewController)
+            }
             
         default:
             break
