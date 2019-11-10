@@ -70,7 +70,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
         reactor.action.onNext(.moveTimer(at: sourceIndexPath.item, to: destinationIndexPath.item))
     })
     
-    private let routeType: PublishRelay<ProductivityViewCoordinator.Route> = PublishRelay()
     private let canTimeSetStart: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private let isTimerOptionVisible: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private var isBadgeMoving: Bool = false
@@ -205,18 +204,14 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .map { Reactor.Action.deleteTimer }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-    
-        let routeButtonTap: Observable<ProductivityViewCoordinator.Route> = Observable.merge(
-            saveButton.rx.tap.map { .timeSetSave(reactor.timeSetItem) },
-            startButton.rx.tap.map { .timeSetProcess(reactor.timeSetItem) })
-            .share(replay: 1)
-            
-        routeButtonTap
-            .bind(to: routeType)
+        
+        saveButton.rx.tap
+            .map { Reactor.Action.saveTimeSet }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        routeButtonTap
-            .map { _ in Reactor.Action.validate }
+        startButton.rx.tap
+            .map { Reactor.Action.startTimeSet }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -302,14 +297,17 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
             .disposed(by: disposeBag)
         
-        // Route after timer list validated
         reactor.state
-            .map { $0.isValidated }
-            .distinctUntilChanged()
-            .filter { $0 }
-            .withLatestFrom(routeType)
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] in self?.present(for: $0) })
+            .filter { $0.shouldSave }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .filter { $0.shouldStart }
+            .do(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem)) })
+            .observeOn(MainScheduler.asyncInstance)
+            .map { _ in Reactor.Action.clearTimeSet }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // Scroll to selected badge when timer option view visible
@@ -432,19 +430,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
     private func badgeScrollIfCan(at indexPath: IndexPath) {
         guard !isBadgeMoving else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
-    }
-    
-    /// Present view from route type
-    private func present(for route: ProductivityViewCoordinator.Route) {
-        guard let reactor = reactor else { return }
-        
-        // Present view from route type
-        _ = coordinator.present(for: route)
-        
-        if case .timeSetProcess(_) = route {
-            // If route type is start time set, clear current time set data
-            reactor.action.onNext(.clearTimeSet)
-        }
     }
     
     // MARK: - private method

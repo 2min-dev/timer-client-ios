@@ -52,8 +52,11 @@ class TimeSetEditViewReactor: Reactor {
         /// Delete time set
         case deleteTimeSet
         
-        /// vaildate time set data
-        case validate
+        /// Save the time set
+        case saveTimeSet
+        
+        /// Start the time set
+        case startTimeSet
     }
     
     enum Mutation {
@@ -72,11 +75,14 @@ class TimeSetEditViewReactor: Reactor {
         /// Set should section reload `true`
         case sectionReload
         
+        /// Set should save `true`
+        case save
+        
+        /// Set should start `true`
+        case start
+        
         /// Set should dismiss `true`
         case dismiss
-        
-        /// Set is validated `true`
-        case validated
     }
     
     struct State {
@@ -111,11 +117,14 @@ class TimeSetEditViewReactor: Reactor {
         /// Need section reload
         var shouldSectionReload: Bool
         
+        /// Should save the time set
+        var shouldSave: Bool
+        
+        /// Should start the time set
+        var shouldStart: Bool
+        
         /// Need to dismiss view
         var shouldDismiss: Bool
-        
-        /// The time set data is vaildated
-        var isValidated: Bool
     }
     
     // MARK: - properties
@@ -167,8 +176,9 @@ class TimeSetEditViewReactor: Reactor {
                              sectionDataSource: dataSource,
                              selectedIndex: 0,
                              shouldSectionReload: true,
-                             shouldDismiss: false,
-                             isValidated: false)
+                             shouldSave: false,
+                             shouldStart: false,
+                             shouldDismiss: false)
     }
     
     // MARK: - mutate
@@ -210,8 +220,11 @@ class TimeSetEditViewReactor: Reactor {
         case .deleteTimeSet:
             return actionDeleteTimeSet()
             
-        case .validate:
-            return actionValidateTimeSet()
+        case .saveTimeSet:
+            return actionSaveTimeSet()
+            
+        case .startTimeSet:
+            return actionStartTimeSet()
         }
     }
     
@@ -236,7 +249,9 @@ class TimeSetEditViewReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
         state.shouldSectionReload = false
-        state.isValidated = false
+        state.shouldSave = false
+        state.shouldStart = false
+        state.shouldDismiss = false
         
         switch mutation {
         case let .setEndTime(time):
@@ -262,16 +277,20 @@ class TimeSetEditViewReactor: Reactor {
             state.shouldSectionReload = true
             return state
             
+        case .save:
+            state.shouldSave = true
+            return state
+            
+        case .start:
+            state.shouldStart = true
+            return state
+            
         case .dismiss:
             state.shouldDismiss = true
             return state
-            
-        case .validated:
-            state.isValidated = true
-            return state
         }
     }
-
+    
     // MARK: - action method
     private func actionClearTimeSet() -> Observable<Mutation> {
         let state = currentState
@@ -494,28 +513,37 @@ class TimeSetEditViewReactor: Reactor {
             .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
     }
     
-    private func actionValidateTimeSet() -> Observable<Mutation> {
-        let index = currentState.selectedIndex
-        guard index >= 0 && index < timeSetItem.timers.count else { return .empty() }
-        
-        // Create validate mutation concatenate process
-        let validated: Observable<Mutation> = .concat(.just(.validated), .just(.sectionReload))
-        
-        let timer = timeSetItem.timers[index]
-        // Guard timer has time over zero
-        if timer.end > 0 {
-            return validated
-        }
-        
-        let selectIndex = index > 0 ? index - 1 : index + 1
-        let selectTimer: Observable<Mutation> = actionSelectTimer(at: selectIndex)
-        
-        return .concat(selectTimer, validated)
+    private func actionSaveTimeSet() -> Observable<Mutation> {
+        return .concat(
+            validate(current: currentState.selectedIndex),
+            .just(.save)
+        )
     }
     
+    private func actionStartTimeSet() -> Observable<Mutation> {
+        timeSetItem.title = "time_set_default_title".localized
+        
+        return .concat(
+            validate(current: currentState.selectedIndex),
+            .just(.start)
+        )
+    }
+    
+    // MARK: - time set action method
     /// If current time set item doesn't asigned id(It is createing new), clear time set item due to save the time set
     private func actionTimeSetCreate() -> Observable<Mutation> {
         return actionClearTimeSet()
+    }
+    
+    // MARK: - private method
+    private func validate(current index: Int) -> Observable<Mutation> {
+        let timer = timeSetItem.timers[index]
+        if timer.end == 0 {
+            let selectIndex = index > 0 ? index - 1 : index + 1
+            return actionSelectTimer(at: selectIndex)
+        }
+        
+        return .empty()
     }
     
     deinit {
