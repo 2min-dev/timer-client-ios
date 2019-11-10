@@ -69,7 +69,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         reactor.action.onNext(.moveTimer(at: sourceIndexPath.item, to: destinationIndexPath.item))
     })
     
-    private let routeType: PublishRelay<TimeSetEditViewCoordinator.Route> = PublishRelay()
     private let canTimeSetStart: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private let isTimerOptionVisible: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private var isBadgeMoving: Bool = false
@@ -197,12 +196,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
-            .map { .timeSetSave(reactor.timeSetItem) }
-            .bind(to: routeType)
-            .disposed(by: disposeBag)
-        
-        confirmButton.rx.tap
-            .map { Reactor.Action.validate }
+            .map { Reactor.Action.saveTimeSet }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -287,13 +281,9 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
             .disposed(by: disposeBag)
         
-        // Route after timer list validated
         reactor.state
-            .map { $0.isValidated }
-            .distinctUntilChanged()
-            .filter { $0 }
-            .withLatestFrom(routeType)
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0) })
+            .filter { $0.shouldSave }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
             .disposed(by: disposeBag)
         
         // Scroll to selected badge when timer option view visible

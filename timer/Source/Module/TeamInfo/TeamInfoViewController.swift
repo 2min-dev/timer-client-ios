@@ -45,7 +45,6 @@ class TeamInfoViewController: BaseHeaderViewController, View {
 	// MARK: - bind
     override func bind() {
         super.bind()
-        
         scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
