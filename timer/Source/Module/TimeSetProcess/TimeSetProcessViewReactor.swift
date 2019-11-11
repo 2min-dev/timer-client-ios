@@ -425,7 +425,7 @@ class TimeSetProcessViewReactor: Reactor {
     private func actionStopTimeSet() -> Observable<Mutation> {
         if countdownTimer.state != .end {
             // Dismiss
-            countdownTimer.end()
+            countdownTimer.stop()
         } else {
             // Cancel the time set
             timeSet.end()
