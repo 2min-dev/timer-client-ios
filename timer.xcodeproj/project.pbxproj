@@ -25,6 +25,7 @@
 		F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */; };
 		F303F283225CD51400A11FAF /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F282225CD51400A11FAF /* MainViewController.swift */; };
 		F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */; };
+		F306022A2379812300A9C866 /* MainViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30602292379812300A9C866 /* MainViewReactor.swift */; };
 		F3060F92230D19FE002A2E0E /* TimeSetEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */; };
 		F3060F95230E9B12002A2E0E /* TimeSetEndViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */; };
 		F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */; };
@@ -243,6 +244,7 @@
 		F303F280225CCE9D00A11FAF /* ProductivityViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductivityViewCoordinator.swift; sourceTree = "<group>"; };
 		F303F282225CD51400A11FAF /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCoordinator.swift; sourceTree = "<group>"; };
+		F30602292379812300A9C866 /* MainViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewReactor.swift; sourceTree = "<group>"; };
 		F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndView.swift; sourceTree = "<group>"; };
 		F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewReactor.swift; sourceTree = "<group>"; };
 		F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionViewReactor.swift; sourceTree = "<group>"; };
@@ -642,6 +644,7 @@
 				F302609022EEB89600E3E431 /* TMTabBarItem.swift */,
 				F302608E22EEAFC300E3E431 /* TMTabBar.swift */,
 				F303F282225CD51400A11FAF /* MainViewController.swift */,
+				F30602292379812300A9C866 /* MainViewReactor.swift */,
 				F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */,
 				F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */,
 				F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */,
@@ -1523,6 +1526,7 @@
 				F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */,
 				F3D1F7AC225CC21A006DC162 /* IntroViewController.swift in Sources */,
 				F3C0DFA3233369CE00E49425 /* NoticeListView.swift in Sources */,
+				F306022A2379812300A9C866 /* MainViewReactor.swift in Sources */,
 				F3F5413D232778D100D618D2 /* TimeSetManageViewCoordinator.swift in Sources */,
 				F3D1F7BF225CC357006DC162 /* UIColor+hex.swift in Sources */,
 				F37AF0E622F8211800509F5F /* AlertBuilder.swift in Sources */,
