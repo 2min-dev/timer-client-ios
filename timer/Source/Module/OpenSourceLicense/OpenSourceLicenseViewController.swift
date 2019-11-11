@@ -50,7 +50,7 @@ class OpenSourceLicenseViewController: BaseHeaderViewController, View {
     func bind(reactor: OpenSourceLicenseViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

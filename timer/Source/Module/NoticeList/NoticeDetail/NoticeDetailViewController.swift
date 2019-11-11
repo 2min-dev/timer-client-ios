@@ -52,7 +52,7 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
     func bind(reactor: NoticeDetailViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

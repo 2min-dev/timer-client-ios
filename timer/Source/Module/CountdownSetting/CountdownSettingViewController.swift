@@ -61,7 +61,7 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
     func bind(reactor: CountdownSettingViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

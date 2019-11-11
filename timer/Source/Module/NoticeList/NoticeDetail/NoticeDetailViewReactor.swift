@@ -11,8 +11,8 @@ import ReactorKit
 
 class NoticeDetailViewReactor: Reactor {
     enum Action {
-        /// Load notice content when view did load
-        case viewDidLoad
+        /// Load notice content to refresh
+        case refresh
     }
     
     enum Mutation {
@@ -53,8 +53,8 @@ class NoticeDetailViewReactor: Reactor {
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
+        case .refresh:
+            return actionRefresh()
         }
     }
     
@@ -74,7 +74,7 @@ class NoticeDetailViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
+    private func actionRefresh() -> Observable<Mutation> {
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
         let requestNoticeDetail: Observable<Mutation> = networkService.requestNoticeDetail(notice.id).asObservable()
             .flatMap { Observable<Mutation>.just(.setContent($0.content)) }
