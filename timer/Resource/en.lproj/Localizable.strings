@@ -172,6 +172,7 @@
 "toast_time_set_timer_selected_title" = "Time set will be start from selected timer.";
 "toast_time_set_add_bookmark_title" = "Time set added to your bookmarks!";
 "toast_time_set_remove_bookmark_title" = "Time set removed from your bookmarks!";
+"toast_team_info_copy_email_title" = "Copied to clipboard!";
 
 // MARK: - Setting
 "setting_version_lastest_title" = "Lastest!";

@@ -172,6 +172,7 @@
 "toast_time_set_timer_selected_title" = "선택한 타이머부터 시작돼요.";
 "toast_time_set_add_bookmark_title" = "즐겨찾기에 추가되었어요!";
 "toast_time_set_remove_bookmark_title" = "즐겨찾기에서 삭제되었어요!";
+"toast_team_info_copy_email_title" = "클립보드에 복사되었어요!";
 
 // MARK: - Setting
 "setting_version_lastest_title" = "최신버전입니다!";
