@@ -84,9 +84,6 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - action method
-    // MARK: - state method
-    
     deinit {
         Logger.verbose()
     }

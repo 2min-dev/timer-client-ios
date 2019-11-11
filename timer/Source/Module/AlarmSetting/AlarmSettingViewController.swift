@@ -84,18 +84,6 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-            
-        default:
-            break
-        }
-    }
-    
     deinit {
         Logger.verbose()
     }

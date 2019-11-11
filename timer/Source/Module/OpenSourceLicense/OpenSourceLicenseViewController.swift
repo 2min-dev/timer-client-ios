@@ -73,17 +73,6 @@ class OpenSourceLicenseViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-
-        default:
-            break
-        }
-    }
-    
     // MARK: - state method
     /// Get license attributed text from data
     private func getLicenseAttributedText(data: Data) -> NSAttributedString? {
