@@ -129,6 +129,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     func bind(reactor: TimeSetEditViewReactor) {
         // DI
         timerOptionView.reactor = reactor.timerOptionViewReactor
+        bind(timerOption: timerOptionView)
         
         // MARK: action
         // Init badge
@@ -178,17 +179,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .filter { $0.0.item == $0.1 }
             .map { [weak self] _ in !(self?.isTimerOptionVisible.value ?? true) }
             .bind(to: isTimerOptionVisible)
-            .disposed(by: disposeBag)
-        
-        timerOptionView.rx.tapApplyAll
-            .map { Reactor.Action.alarmApplyAll }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        timerOptionView.rx.tapDelete
-            .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
-            .map { Reactor.Action.deleteTimer }
-            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
@@ -300,6 +290,23 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .filter { $0 }
             .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home) })
             .disposed(by: disposeBag)
+    }
+    
+    private func bind(timerOption view: TimerOptionView) {
+        guard let reactor = reactor else { return }
+        
+        view.rx.tapApplyAll
+            .do(onNext: { Toast(content: String(format: "toast_alarm_all_apply_title".localized, $0.title)).show(animated: true, withDuration: 3) })
+            .map { Reactor.Action.alarmApplyAll($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        view.rx.tapDelete
+            .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
+            .map { Reactor.Action.deleteTimer }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
     }
     
     // MARK: - action method

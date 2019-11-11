@@ -167,6 +167,9 @@
 "alert_button_init" = "Initialize";
 "alert_button_delete" = "Delete";
 
+// MARK: - Toast
+"toast_alarm_all_apply_title" = "All timer alarm set [%@].";
+
 // MARK: - Setting
 "setting_version_lastest_title" = "Lastest!";
 "setting_version_need_update_title" = "Update!";

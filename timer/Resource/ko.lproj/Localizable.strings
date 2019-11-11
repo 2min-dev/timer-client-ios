@@ -167,6 +167,9 @@
 "alert_button_init" = "초기화";
 "alert_button_delete" = "삭제";
 
+// MARK: - Toast
+"toast_alarm_all_apply_title" = "모든 타이머의 사운드가 %@으로 지정되었어요.";
+
 // MARK: - Setting
 "setting_version_lastest_title" = "최신버전입니다!";
 "setting_version_need_update_title" = "업데이트가 필요해요!";
