@@ -15,22 +15,20 @@ class MainViewReactor: Reactor {
     }
     
     enum Mutation {
-        case setPreviousTimeSetEndState(History.EndState?)
+        case setPreviousHistory(History)
         
         case timeSetEnded
     }
     
     struct State {
-        var previousTimeSetEndState: History.EndState?
-        
         var didTimeSetEnded: Bool
+
+        var previousHistory: History?
     }
     
     // MARK: - properties
     var initialState: State
     private var timeSetService: TimeSetServiceProtocol
-    
-    var previousTimeSet: TimeSetItem?
     
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol) {
@@ -41,8 +39,8 @@ class MainViewReactor: Reactor {
     // MARK: - mutation
     func mutate(timeSetEvent: TimeSetEvent) -> Observable<Mutation> {
         switch timeSetEvent {
-        case let .ended(endState, timeSetItem):
-            return actionTimeSetEnded(endState, item: timeSetItem)
+        case let .ended(history):
+            return actionTimeSetEnded(history: history)
             
         default:
             return .empty()
@@ -62,8 +60,8 @@ class MainViewReactor: Reactor {
         state.didTimeSetEnded = false
         
         switch mutation {
-        case let .setPreviousTimeSetEndState(endState):
-            state.previousTimeSetEndState = endState
+        case let .setPreviousHistory(history):
+            state.previousHistory = history
             return state
             
         case .timeSetEnded:
@@ -73,21 +71,9 @@ class MainViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionTimeSetEnded(_ endState: History.EndState, item: TimeSetItem) -> Observable<Mutation> {
-        previousTimeSet = item
-        
-        var setPreviousTimeSetEndState: Observable<Mutation> = .just(.setPreviousTimeSetEndState(nil))
-        switch endState {
-        case .cancel,
-             .overtime:
-            setPreviousTimeSetEndState = .just(.setPreviousTimeSetEndState(endState))
-            
-        default:
-            break
-        }
-        
+    private func actionTimeSetEnded(history: History) -> Observable<Mutation> {
         return .concat(
-            setPreviousTimeSetEndState,
+            .just(.setPreviousHistory(history)),
             .just(.timeSetEnded)
         )
     }
