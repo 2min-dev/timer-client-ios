@@ -16,11 +16,17 @@ class HistoryDetailViewReactor: Reactor {
         
         /// Update memo of current time set
         case updateMemo(String)
+        
+        /// Save the time set
+        case saveTimeSet
     }
     
     enum Mutation {
         /// Set memo of the time set
         case setMemo(String)
+        
+        /// Set did time set saved `true`
+        case save
     }
     
     struct State {
@@ -55,6 +61,9 @@ class HistoryDetailViewReactor: Reactor {
         
         /// Need to reload section
         var shouldSectionReload: Bool
+        
+        /// Time set saved
+        var didTimeSetSaved: Bool
     }
     
     // MARK: - properties
@@ -62,11 +71,17 @@ class HistoryDetailViewReactor: Reactor {
     private let timeSetService: TimeSetServiceProtocol
     
     private let history: History
-    var origin: TimeSetItem? {
-        guard let copiedObject = history.item?.copy() as? TimeSetItem else { return nil }
-        copiedObject.reset()
-        
-        return copiedObject
+    
+    private var savedTimeSetItem: TimeSetItem?
+    var timeSetItem: TimeSetItem? {
+        if let timeSet = savedTimeSetItem {
+            return timeSet
+        } else {
+            guard let copiedObject = history.item?.copy() as? TimeSetItem else { return nil }
+            copiedObject.reset()
+            
+            return copiedObject
+        }
     }
     
     // MARK: - constructor
@@ -83,7 +98,8 @@ class HistoryDetailViewReactor: Reactor {
                              repeatCount: history.repeatCount,
                              memo: item.memo,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
-                             shouldSectionReload: true)
+                             shouldSectionReload: true,
+                             didTimeSetSaved: false)
     }
     
     // MARK: - mutation
@@ -94,6 +110,9 @@ class HistoryDetailViewReactor: Reactor {
             
         case let .updateMemo(memo):
             return actionUpdateMemo(memo)
+            
+        case .saveTimeSet:
+            return actionSaveTimeSet()
         }
     }
     
@@ -105,6 +124,10 @@ class HistoryDetailViewReactor: Reactor {
         switch mutation {
         case let .setMemo(memo):
             state.memo = memo
+            return state
+            
+        case .save:
+            state.didTimeSetSaved = true
             return state
         }
     }
@@ -119,6 +142,14 @@ class HistoryDetailViewReactor: Reactor {
         // Update time set's memo
         history.item?.memo = memo
         return .just(.setMemo(memo))
+    }
+    
+    private func actionSaveTimeSet() -> Observable<Mutation> {
+        guard let timeSetItem = timeSetItem else { return .empty() }
+        // Create the time set
+        return timeSetService.createTimeSet(item: timeSetItem).asObservable()
+            .do(onNext: { self.savedTimeSetItem = $0 })
+            .map { _ in .save }
     }
     
     deinit {

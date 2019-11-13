@@ -174,9 +174,11 @@
 "toast_time_set_remove_bookmark_title" = "Time set removed from your bookmarks!";
 "toast_time_set_end_cancel_title" = "Try to write memo that why time set canceled!";
 "toast_time_set_end_overtime_title" = "Try to write memo that why time set record overtime!";
+"toast_time_set_saved_title" = "Time set saved! Press 'Edit' to edit saved time set.";
 "toast_team_info_copy_email_title" = "Copied to clipboard!";
 
 "toast_task_memo_title" = "Memo";
+"toast_task_edit_title" = "Edit";
 
 // MARK: - Setting
 "setting_version_lastest_title" = "Lastest!";

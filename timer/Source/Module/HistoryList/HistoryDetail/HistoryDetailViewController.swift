@@ -99,9 +99,14 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        saveButton.rx.tap
+            .map { Reactor.Action.saveTimeSet }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         startButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                guard let timeSetItem = reactor.origin else { return }
+                guard let timeSetItem = reactor.timeSetItem else { return }
                 _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem))
             })
             .disposed(by: disposeBag)
@@ -194,6 +199,20 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .map { $0.sections }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+        
+        let didTimeSetSaved = reactor.state
+            .map { $0.didTimeSetSaved }
+            .distinctUntilChanged()
+        
+        didTimeSetSaved
+            .map { !$0 }
+            .bind(to: saveButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        didTimeSetSaved
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] in $0 ? self?.showTimeSetSavedToast() : nil })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - action method
@@ -231,6 +250,14 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         let attributes: [NSAttributedString.Key: Any] = [.kern: -0.36]
         
         return NSAttributedString(string: dateString, attributes: attributes)
+    }
+    
+    private func showTimeSetSavedToast() {
+        guard let timeSetItem = reactor?.timeSetItem else { return }
+        Toast(content: "toast_time_set_saved_title".localized,
+              task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
+                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
+        }).show(animated: true, withDuration: 3)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
