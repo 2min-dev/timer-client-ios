@@ -47,7 +47,7 @@ class TimeSetEditViewReactor: Reactor {
         case selectTimer(at: Int)
         
         /// Apply alarm to all timers
-        case alarmApplyAll
+        case alarmApplyAll(Alarm)
         
         /// Delete time set
         case deleteTimeSet
@@ -217,8 +217,8 @@ class TimeSetEditViewReactor: Reactor {
         case let .selectTimer(index):
             return actionSelectTimer(at: index)
             
-        case .alarmApplyAll:
-            return actionAlarmApplyAll()
+        case let .alarmApplyAll(alarm):
+            return actionAlarmApplyAll(alarm)
             
         case .deleteTimeSet:
             return actionDeleteTimeSet()
@@ -502,11 +502,9 @@ class TimeSetEditViewReactor: Reactor {
         return .concat(setEndTime, setTime, sectionReload, setSelectedIndex)
     }
     
-    private func actionAlarmApplyAll() -> Observable<Mutation> {
+    private func actionAlarmApplyAll(_ alarm: Alarm) -> Observable<Mutation> {
         // Update alarm of all timers to selected timer's alarm
-        let alarm = timeSetItem.timers[currentState.selectedIndex].alarm
         timeSetItem.timers.forEach { $0.alarm = alarm }
-        
         return .empty()
     }
     

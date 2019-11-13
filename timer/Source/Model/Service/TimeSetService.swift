@@ -18,6 +18,9 @@ enum TimeSetEvent {
     
     /// The time set removed
     case removed
+    
+    /// The running time set ended
+    case ended(History)
 }
 
 protocol TimeSetServiceProtocol {
@@ -69,7 +72,27 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - properties
     private var timeSets: [TimeSetItem]?
-    var runningTimeSet: RunningTimeSet?
+    var runningTimeSet: RunningTimeSet? {
+        didSet {
+            guard let timeSet = runningTimeSet?.timeSet else { return }
+            disposeBag = DisposeBag()
+            
+            timeSet.event
+                .compactMap {
+                    switch $0 {
+                    case .stateChanged(.end):
+                        return timeSet.history
+                        
+                    default:
+                        return nil
+                    }
+                }
+                .subscribe(onNext: { [weak self] in self?.event.onNext(.ended($0)) })
+                .disposed(by: disposeBag)
+        }
+    }
+    
+    var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - public method
     // MARK: - time set

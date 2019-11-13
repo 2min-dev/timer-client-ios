@@ -61,7 +61,7 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
     func bind(reactor: AlarmSettingViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -82,18 +82,6 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.alarmSettingTableView.selectRow(at: $0, animated: true, scrollPosition: .none) })
             .disposed(by: disposeBag)
-    }
-    
-    // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-            
-        default:
-            break
-        }
     }
     
     deinit {

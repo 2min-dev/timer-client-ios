@@ -10,6 +10,14 @@ import Foundation
 import UIKit
 
 extension UIView {
+    var _safeAreaInsets: UIEdgeInsets {
+        if #available(iOS 11.0, *) {
+            return safeAreaInsets
+        } else {
+            return .zero
+        }
+    }
+    
     func addAutolayoutSubview(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(subview)

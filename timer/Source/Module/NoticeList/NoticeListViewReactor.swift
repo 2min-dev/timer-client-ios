@@ -11,8 +11,8 @@ import ReactorKit
 
 class NoticeListViewReactor: Reactor {
     enum Action {
-        /// Load notice list when view did load
-        case viewDidLoad
+        /// Load notice list to refresh
+        case refresh
     }
     
     enum Mutation {
@@ -50,8 +50,8 @@ class NoticeListViewReactor: Reactor {
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
+        case .refresh:
+            return actionRefresh()
         }
     }
     
@@ -76,7 +76,7 @@ class NoticeListViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
+    private func actionRefresh() -> Observable<Mutation> {
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
         let requestNoticeList: Observable<Mutation> = networkService.requestNoticeList().asObservable()
             .flatMap { notices -> Observable<Mutation> in

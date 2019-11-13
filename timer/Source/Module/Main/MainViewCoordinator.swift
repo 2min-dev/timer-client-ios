@@ -15,6 +15,7 @@ class MainViewCoordinator: CoordinatorProtocol {
         case productivity
         case local
         case timeSetProcess(TimeSetItem)
+        case historyDetail(History)
     }
     
     weak var viewController: MainViewController!
@@ -35,6 +36,9 @@ class MainViewCoordinator: CoordinatorProtocol {
             }
             let viewControllers = [rootViewController, viewController]
             self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            
+        case .historyDetail(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
             
         default:
             break
@@ -71,6 +75,17 @@ class MainViewCoordinator: CoordinatorProtocol {
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
             guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case let .historyDetail(history):
+            let coordinator = HistoryDetailViewCoordinator(provider: provider)
+            let reactor = HistoryDetailViewReactor(timeSetService: provider.timeSetService, history: history)
+            let viewController = HistoryDetailViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

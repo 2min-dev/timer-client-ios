@@ -51,37 +51,12 @@ class TeamInfoViewController: BaseHeaderViewController, View {
 	func bind(reactor: TeamInfoViewReactor) {
 		// MARK: action
         copyButton.rx.tap
-            .do(onNext: { [weak self] in self?.showEmailCopiedAlert() })
+            .do(onNext: { Toast(content: "toast_team_info_copy_email_title".localized).show(animated: true, withDuration: 3) })
             .subscribe(onNext: { [weak self] in UIPasteboard.general.string = self?.emailLabel.text })
             .disposed(by: disposeBag)
 
 		// MARK: state
 	}
-    
-    // MARK: - action method
-    /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-
-        default:
-            break
-        }
-    }
-    
-    /// Show email copied alert view
-    private func showEmailCopiedAlert() {
-        let alert = AlertBuilder(message: "복사되었습니다").build()
-        // Alert view controller dismiss after 1 seconds
-        alert.rx.viewDidLoad
-            .delay(.seconds(1), scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak alert] in alert?.dismiss(animated: true) })
-            .disposed(by: disposeBag)
-        
-        // Present alert view controller
-        present(alert, animated: true)
-    }
     
     deinit {
         Logger.verbose()
