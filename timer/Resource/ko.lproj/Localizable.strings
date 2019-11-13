@@ -174,9 +174,11 @@
 "toast_time_set_remove_bookmark_title" = "즐겨찾기에서 삭제되었어요!";
 "toast_time_set_end_cancel_title" = "왜 타이머를 취소했는지 기록해보세요!";
 "toast_time_set_end_overtime_title" = "왜 타이머를 초과 기록했는지 기록해보세요!";
+"toast_time_set_saved_title" = "타임셋이 저장되었어요! 타임셋을 편집하시려면 '편집'버튼을 눌러주세요.";
 "toast_team_info_copy_email_title" = "클립보드에 복사되었어요!";
 
 "toast_task_memo_title" = "메모 작성";
+"toast_task_edit_title" = "편집";
 
 // MARK: - Setting
 "setting_version_lastest_title" = "최신버전입니다!";

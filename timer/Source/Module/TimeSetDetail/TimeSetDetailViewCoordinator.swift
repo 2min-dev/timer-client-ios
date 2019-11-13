@@ -53,10 +53,8 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             return self.viewController.navigationController?.viewControllers.first
             
         case let .timeSetEdit(timeSetItem):
-            guard let copiedTimeSetItem = timeSetItem.copy() as? TimeSetItem else { return nil }
-            
             let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: copiedTimeSetItem)
+            guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
             let viewController = TimeSetEditViewController(coordinator: coordinator)
             
             // DI

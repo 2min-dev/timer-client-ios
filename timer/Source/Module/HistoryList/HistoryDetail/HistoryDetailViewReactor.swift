@@ -11,16 +11,22 @@ import ReactorKit
 
 class HistoryDetailViewReactor: Reactor {
     enum Action {
-        /// Update history when view will disappear
-        case viewWillDisappear
+        /// Update history to save
+        case saveHistory
         
         /// Update memo of current time set
         case updateMemo(String)
+        
+        /// Save the time set
+        case saveTimeSet
     }
     
     enum Mutation {
         /// Set memo of the time set
         case setMemo(String)
+        
+        /// Set did time set saved `true`
+        case save
     }
     
     struct State {
@@ -55,6 +61,9 @@ class HistoryDetailViewReactor: Reactor {
         
         /// Need to reload section
         var shouldSectionReload: Bool
+        
+        /// Time set saved
+        var didTimeSetSaved: Bool
     }
     
     // MARK: - properties
@@ -62,6 +71,18 @@ class HistoryDetailViewReactor: Reactor {
     private let timeSetService: TimeSetServiceProtocol
     
     private let history: History
+    
+    private var savedTimeSetItem: TimeSetItem?
+    var timeSetItem: TimeSetItem? {
+        if let timeSet = savedTimeSetItem {
+            return timeSet
+        } else {
+            guard let copiedObject = history.item?.copy() as? TimeSetItem else { return nil }
+            copiedObject.reset()
+            
+            return copiedObject
+        }
+    }
     
     // MARK: - constructor
     init?(timeSetService: TimeSetServiceProtocol, history: History) {
@@ -77,41 +98,58 @@ class HistoryDetailViewReactor: Reactor {
                              repeatCount: history.repeatCount,
                              memo: item.memo,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
-                             shouldSectionReload: true)
+                             shouldSectionReload: true,
+                             didTimeSetSaved: false)
     }
     
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewWillDisappear:
-            return actionViewWillDisappear()
+        case .saveHistory:
+            return actionSaveHistory()
             
         case let .updateMemo(memo):
             return actionUpdateMemo(memo)
+            
+        case .saveTimeSet:
+            return actionSaveTimeSet()
         }
     }
     
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
+        state.shouldSectionReload = false
         
         switch mutation {
         case let .setMemo(memo):
             state.memo = memo
             return state
+            
+        case .save:
+            state.didTimeSetSaved = true
+            return state
         }
     }
     
     // MARK: - action method
-    private func actionViewWillDisappear() -> Observable<Mutation> {
-        _ = timeSetService.updateHistory(history).subscribe()
-        return .empty()
+    private func actionSaveHistory() -> Observable<Mutation> {
+        return timeSetService.updateHistory(history).asObservable()
+            .flatMap { _ -> Observable<Mutation> in .empty() }
     }
     
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
         history.item?.memo = memo
         return .just(.setMemo(memo))
+    }
+    
+    private func actionSaveTimeSet() -> Observable<Mutation> {
+        guard let timeSetItem = timeSetItem else { return .empty() }
+        // Create the time set
+        return timeSetService.createTimeSet(item: timeSetItem).asObservable()
+            .do(onNext: { self.savedTimeSetItem = $0 })
+            .map { _ in .save }
     }
     
     deinit {

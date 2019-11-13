@@ -75,8 +75,7 @@ class HistoryListViewController: BaseHeaderViewController, View {
     func bind(reactor: HistoryListViewReactor) {
         // MARK: action
         rx.viewWillAppear
-            .take(1)
-            .map { Reactor.Action.viewWillAppear }
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

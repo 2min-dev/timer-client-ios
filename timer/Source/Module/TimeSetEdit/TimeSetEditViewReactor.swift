@@ -138,12 +138,15 @@ class TimeSetEditViewReactor: Reactor {
     let timerOptionViewReactor: TimerOptionViewReactor
     
     // MARK: - constructor
-    init(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem? = nil) {
+    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem? = nil) {
         self.appService = appService
         self.timeSetService = timeSetService
         
         if let timeSetItem = timeSetItem {
-            self.timeSetItem = timeSetItem
+            // Copy time set item to preserve origin data
+            guard let copiedItem = timeSetItem.copy() as? TimeSetItem else { return nil }
+            
+            self.timeSetItem = copiedItem
         } else {
             // Create new time set item
             let timeSetItem = TimeSetItem()

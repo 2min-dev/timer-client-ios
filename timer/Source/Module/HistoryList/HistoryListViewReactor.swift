@@ -11,8 +11,8 @@ import ReactorKit
 
 class HistoryListViewReactor: Reactor {
     enum Action {
-        /// Fetch history list when view will appear
-        case viewWillAppear
+        /// Fetch history list to refresh
+        case refresh
     }
     
     enum Mutation {
@@ -45,8 +45,8 @@ class HistoryListViewReactor: Reactor {
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewWillAppear:
-            return actionViewWillAppear()
+        case .refresh:
+            return actionRefresh()
         }
     }
     
@@ -67,7 +67,7 @@ class HistoryListViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewWillAppear() -> Observable<Mutation> {
+    private func actionRefresh() -> Observable<Mutation> {
         return timeSetService.fetchHistories().asObservable()
             .flatMap { histories -> Observable<Mutation> in
                 let items = histories.compactMap { HistoryListCollectionViewCellReactor(history: $0) }

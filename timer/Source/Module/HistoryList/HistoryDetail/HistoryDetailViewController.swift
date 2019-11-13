@@ -16,22 +16,25 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     private let MAX_MEMO_LENGTH: Int = 1000
     
     // MARK: - view properties
-    private var historyDetailView: HistoryDetailView { return view as! HistoryDetailView }
+    private var historyDetailView: HistoryDetailView { view as! HistoryDetailView }
     
-    override var headerView: CommonHeader { return historyDetailView.headerView }
+    override var headerView: CommonHeader { historyDetailView.headerView }
     
-    private var titleLabel: UILabel { return historyDetailView.titleLabel }
-    private var runningTimeLable: UILabel { return historyDetailView.runningTimeLabel }
-    private var dateLabel: UILabel { return historyDetailView.dateLabel }
-    private var extraTimeLabel: UILabel { return historyDetailView.extraTimeLabel }
-    private var repeatCountLabel: UILabel { return historyDetailView.repeatCountLabel }
+    private var titleLabel: UILabel { historyDetailView.titleLabel }
+    private var runningTimeLable: UILabel { historyDetailView.runningTimeLabel }
+    private var dateLabel: UILabel { historyDetailView.dateLabel }
+    private var extraTimeLabel: UILabel { historyDetailView.extraTimeLabel }
+    private var repeatCountLabel: UILabel { historyDetailView.repeatCountLabel }
     
-    private var memoTextView: UITextView { return historyDetailView.memoTextView }
-    private var memoHintLabel: UILabel { return historyDetailView.memoHintLabel }
-    private var memoExcessLabel: UILabel { return historyDetailView.memoExcessLabel }
-    private var memoLengthLabel: UILabel { return historyDetailView.memoLengthLabel }
+    private var memoTextView: UITextView { historyDetailView.memoTextView }
+    private var memoHintLabel: UILabel { historyDetailView.memoHintLabel }
+    private var memoExcessLabel: UILabel { historyDetailView.memoExcessLabel }
+    private var memoLengthLabel: UILabel { historyDetailView.memoLengthLabel }
     
-    private var timerBadgeCollectionView: TimerBadgeCollectionView { return historyDetailView.timerBadgeCollectionView }
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { historyDetailView.timerBadgeCollectionView }
+    
+    private var saveButton: FooterButton { historyDetailView.saveButton }
+    private var startButton: FooterButton { historyDetailView.startButton }
     
     // MARK: - properties
     var coordinator: HistoryDetailViewCoordinator
@@ -72,7 +75,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     func bind(reactor: HistoryDetailViewReactor) {
         // MARK: action
         rx.viewWillDisappear
-            .map { Reactor.Action.viewWillDisappear }
+            .map { Reactor.Action.saveHistory }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -94,6 +97,18 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .skip(1)
             .compactMap { Reactor.Action.updateMemo($0) }
             .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        saveButton.rx.tap
+            .map { Reactor.Action.saveTimeSet }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        startButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let timeSetItem = reactor.timeSetItem else { return }
+                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem))
+            })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -184,6 +199,20 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .map { $0.sections }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+        
+        let didTimeSetSaved = reactor.state
+            .map { $0.didTimeSetSaved }
+            .distinctUntilChanged()
+        
+        didTimeSetSaved
+            .map { !$0 }
+            .bind(to: saveButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        didTimeSetSaved
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] in $0 ? self?.showTimeSetSavedToast() : nil })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - action method
@@ -221,6 +250,14 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         let attributes: [NSAttributedString.Key: Any] = [.kern: -0.36]
         
         return NSAttributedString(string: dateString, attributes: attributes)
+    }
+    
+    private func showTimeSetSavedToast() {
+        guard let timeSetItem = reactor?.timeSetItem else { return }
+        Toast(content: "toast_time_set_saved_title".localized,
+              task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
+                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
+        }).show(animated: true, withDuration: 3)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
