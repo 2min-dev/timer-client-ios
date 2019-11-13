@@ -11,8 +11,8 @@ import ReactorKit
 
 class OpenSourceLicenseViewReactor: Reactor {
     enum Action {
-        /// Read opensource liscense notice text when view did load
-        case viewDidLoad
+        /// Read opensource liscense notice text
+        case load
     }
     
     enum Mutation {
@@ -36,8 +36,8 @@ class OpenSourceLicenseViewReactor: Reactor {
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
+        case .load:
+            return actionLoad()
         }
     }
     
@@ -53,7 +53,7 @@ class OpenSourceLicenseViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
+    private func actionLoad() -> Observable<Mutation> {
         /// Read opensource notice text file from bundle
         guard let path = Bundle.main.path(forResource: "OPENSOURCE", ofType: "html") else { return .empty() }
         let license = try? String(contentsOfFile: path, encoding: .utf8)

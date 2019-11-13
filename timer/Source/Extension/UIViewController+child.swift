@@ -33,7 +33,10 @@ extension UIViewController {
         if isModal {
             dismiss(animated: animated, completion: completion)
         } else {
-            navigationController?.popViewController(animated: animated)
+            guard var viewControllers = navigationController?.viewControllers,
+                let index = navigationController?.viewControllers.firstIndex(of: self) else { return }
+            viewControllers.remove(at: index)
+            navigationController?.setViewControllers(viewControllers, animated: animated)
         }
     }
     

@@ -151,6 +151,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     func bind(reactor: TimeSetEditViewReactor) {
         // DI
         timerOptionView.reactor = reactor.timerOptionViewReactor
+        bind(timerOption: timerOptionView)
         
         // MARK: action
         timerClearButton.rx.tap
@@ -194,16 +195,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
         
-        timerOptionView.rx.tapApplyAll
-            .map { Reactor.Action.alarmApplyAll }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        timerOptionView.rx.tapDelete
-            .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
-            .map { Reactor.Action.deleteTimer }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
         
         saveButton.rx.tap
             .map { Reactor.Action.saveTimeSet }
@@ -316,6 +307,22 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .withLatestFrom(reactor.state.map { $0.selectedIndex })
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
             .subscribe(onNext: { [weak self] in self?.badgeScrollIfCan(at: $0) })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bind(timerOption view: TimerOptionView) {
+        guard let reactor = reactor else { return }
+        
+        view.rx.tapApplyAll
+            .do(onNext: { Toast(content: String(format: "toast_alarm_all_apply_title".localized, $0.title)).show(animated: true, withDuration: 3) })
+            .map { Reactor.Action.alarmApplyAll($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        view.rx.tapDelete
+            .do(onNext: { [weak self] in self?.isTimerOptionVisible.accept(false) })
+            .map { Reactor.Action.deleteTimer }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
 

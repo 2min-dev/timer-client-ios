@@ -92,11 +92,19 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         
         // MARK: state
         // Bookmark
-        reactor.state
+        let isBookmark = reactor.state
             .map { $0.isBookmark }
             .distinctUntilChanged()
+            .share(replay: 1)
+        
+        isBookmark
             .filter { [weak self] _ in self?.headerView.buttons[.bookmark] != nil }
             .bind(to: headerView.buttons[.bookmark]!.rx.isSelected)
+            .disposed(by: disposeBag)
+        
+        isBookmark
+            .skipUntil(rx.viewDidAppear)
+            .subscribe(onNext: { Toast(content: $0 ? "toast_time_set_add_bookmark_title".localized : "toast_time_set_remove_bookmark_title".localized).show(animated: true, withDuration: 3) })
             .disposed(by: disposeBag)
         
         // Title
@@ -150,11 +158,19 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        reactor.state
+        let selectedIndex = reactor.state
             .map { $0.selectedIndex }
             .distinctUntilChanged()
+            .share(replay: 1)
+        
+        selectedIndex
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
             .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .disposed(by: disposeBag)
+        
+        selectedIndex
+            .skipUntil(rx.viewDidAppear)
+            .subscribe(onNext: { _ in Toast(content: "toast_time_set_timer_selected_title".localized).show(animated: true, withDuration: 3) })
             .disposed(by: disposeBag)
     }
     

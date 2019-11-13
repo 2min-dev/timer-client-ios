@@ -11,8 +11,8 @@ import ReactorKit
 
 class AlarmSettingViewReactor: Reactor {
     enum Action {
-        /// Load countdown menu items when view did load
-        case viewDidLoad
+        /// Load countdown menu items
+        case load
         
         /// Select menu
         case select(IndexPath)
@@ -55,8 +55,8 @@ class AlarmSettingViewReactor: Reactor {
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return actionViewDidLoad()
+        case .load:
+            return actionLoad()
             
         case let .select(indexPath):
             return actionSelect(indexPath: indexPath)
@@ -84,7 +84,7 @@ class AlarmSettingViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionViewDidLoad() -> Observable<Mutation> {
+    private func actionLoad() -> Observable<Mutation> {
         let items = Alarm.allCases
         
         var indexPath = IndexPath(item: 0, section: 0)

@@ -549,7 +549,8 @@ extension Reactive where Base: TimerOptionView {
         return ControlEvent(events: base.deleteButton.rx.tap)
     }
     
-    var tapApplyAll: ControlEvent<Void> {
-        return ControlEvent(events: base.alarmApplyAllButton.rx.tap)
+    var tapApplyAll: ControlEvent<Alarm> {
+        return ControlEvent(events: base.alarmApplyAllButton.rx.tap
+            .withLatestFrom(base.reactor?.state.map { $0.alarm } ?? .empty()))
     }
 }

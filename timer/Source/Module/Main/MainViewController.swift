@@ -8,8 +8,9 @@
 
 import UIKit
 import RxSwift
+import ReactorKit
 
-class MainViewController: UITabBarController {
+class MainViewController: UITabBarController, View {
     // MARK: - constants
     enum TabType: Int {
         case productivity = 0
@@ -38,7 +39,9 @@ class MainViewController: UITabBarController {
     }
     
     var coordinator: MainViewCoordinator
+    var disposeBag: DisposeBag = DisposeBag()
     
+    // MARK: - constructor
     init(coordinator: MainViewCoordinator) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -87,6 +90,35 @@ class MainViewController: UITabBarController {
                 $0.view.frame.size.height = self.view.bounds.height - self._tabBar.bounds.height
             }
         }
+    }
+    
+    // MARK: - bind
+    func bind(reactor: MainViewReactor) {
+        // MARK: action
+        
+        // MARK: state
+        reactor.state
+            .filter { $0.didTimeSetEnded }
+            .compactMap { $0.previousHistory }
+            .subscribe(onNext: { [weak self] history in
+                switch history.endState {
+                case .cancel:
+                    Toast(content: "toast_time_set_end_cancel_title".localized,
+                          task: ToastTask(title: "toast_task_memo_title".localized, handler: { [weak self] in
+                        _ = self?.coordinator.present(for: .historyDetail(history))
+                    })).show(animated: true, withDuration: 3)
+                    
+                case .overtime:
+                    Toast(content: "toast_time_set_end_overtime_title".localized,
+                          task: ToastTask(title: "toast_task_memo_title".localized, handler: {
+                        _ = self?.coordinator.present(for: .historyDetail(history))
+                    })).show(animated: true, withDuration: 3)
+                    
+                default:
+                    break
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - private method
