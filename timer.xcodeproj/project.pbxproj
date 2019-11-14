@@ -45,6 +45,9 @@
 		F334090522D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F334090422D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift */; };
 		F33C6AB42291612E00FC461A /* CommonHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB32291612E00FC461A /* CommonHeader.swift */; };
 		F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33C6AB52291678300FC461A /* CALayer+border.swift */; };
+		F33C8BF0237C6ECD00EF6B21 /* alarm_default_3x.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F33C8BEE237C6ECD00EF6B21 /* alarm_default_3x.mp3 */; };
+		F33C8BF1237C6ECD00EF6B21 /* alarm_default_1x.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F33C8BEF237C6ECD00EF6B21 /* alarm_default_1x.mp3 */; };
+		F33C8BF4237D209400EF6B21 /* alarm_default_10x.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F33C8BF3237D209400EF6B21 /* alarm_default_10x.mp3 */; };
 		F33CFA2423675B2300C4032A /* Recordable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2323675B2300C4032A /* Recordable.swift */; };
 		F33CFA2623675B3700C4032A /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2523675B3700C4032A /* Alertable.swift */; };
 		F33CFA2823675B7A00C4032A /* StopWatchItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2723675B7A00C4032A /* StopWatchItem.swift */; };
@@ -264,6 +267,9 @@
 		F334090422D3623F008661EC /* TimerBadgeAddCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeAddCollectionViewCell.swift; sourceTree = "<group>"; };
 		F33C6AB32291612E00FC461A /* CommonHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHeader.swift; sourceTree = "<group>"; };
 		F33C6AB52291678300FC461A /* CALayer+border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+border.swift"; sourceTree = "<group>"; };
+		F33C8BEE237C6ECD00EF6B21 /* alarm_default_3x.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm_default_3x.mp3; sourceTree = "<group>"; };
+		F33C8BEF237C6ECD00EF6B21 /* alarm_default_1x.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm_default_1x.mp3; sourceTree = "<group>"; };
+		F33C8BF3237D209400EF6B21 /* alarm_default_10x.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm_default_10x.mp3; sourceTree = "<group>"; };
 		F33CFA2323675B2300C4032A /* Recordable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recordable.swift; sourceTree = "<group>"; };
 		F33CFA2523675B3700C4032A /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		F33CFA2723675B7A00C4032A /* StopWatchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatchItem.swift; sourceTree = "<group>"; };
@@ -469,6 +475,7 @@
 			children = (
 				F3D1F792225CB6C2006DC162 /* Assets.xcassets */,
 				F303F25A225CC57B00A11FAF /* Fonts */,
+				F33C8BED237C6EBA00EF6B21 /* Alarms */,
 				F30B9CD8233263FE003496A9 /* License */,
 				F3F800B3226A0C15003D1D88 /* Localizable.strings */,
 			);
@@ -554,6 +561,24 @@
 				F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		F33C8BED237C6EBA00EF6B21 /* Alarms */ = {
+			isa = PBXGroup;
+			children = (
+				F33C8BF2237C6ED300EF6B21 /* Default */,
+			);
+			path = Alarms;
+			sourceTree = "<group>";
+		};
+		F33C8BF2237C6ED300EF6B21 /* Default */ = {
+			isa = PBXGroup;
+			children = (
+				F33C8BEF237C6ECD00EF6B21 /* alarm_default_1x.mp3 */,
+				F33C8BEE237C6ECD00EF6B21 /* alarm_default_3x.mp3 */,
+				F33C8BF3237D209400EF6B21 /* alarm_default_10x.mp3 */,
+			);
+			path = Default;
 			sourceTree = "<group>";
 		};
 		F3735C9222CFA78100DC247C /* Support */ = {
@@ -1221,9 +1246,12 @@
 				F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */,
 				F3A12870235FE79F0072FB51 /* GoogleService-Info.plist in Resources */,
 				F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */,
+				F33C8BF4237D209400EF6B21 /* alarm_default_10x.mp3 in Resources */,
+				F33C8BF1237C6ECD00EF6B21 /* alarm_default_1x.mp3 in Resources */,
 				F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */,
 				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
 				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
+				F33C8BF0237C6ECD00EF6B21 /* alarm_default_3x.mp3 in Resources */,
 				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
 				F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */,
 			);
