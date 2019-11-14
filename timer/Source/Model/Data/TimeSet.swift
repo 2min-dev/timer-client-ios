@@ -177,14 +177,6 @@ class TimeSet: EventStreamProtocol {
     ///   - type: alarm sound type
     private func alert(alarm: Alarm, type: Alarm.SoundType = .short) {
         switch alarm {
-        case .silence:
-            // Nothing
-            break
-            
-        case .vibrate:
-            // Play vibration on device
-            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
-            
         case .default:
             guard let fileName = alarm.getFileName(type: type),
                 let url = Bundle.main.url(forResource: fileName, withExtension: "mp3") else { return }
@@ -192,6 +184,16 @@ class TimeSet: EventStreamProtocol {
             // Alert alarm
             audioPlayer = try? AVAudioPlayer(contentsOf: url)
             audioPlayer?.play()
+            // Vibrate if device is vibrate mode
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            
+        case .vibrate:
+            // Play vibration on device
+            AudioServicesPlaySystemSound(1352) // Always vibrate regardless device mode
+            
+        case .silence:
+            // Nothing
+            break
         }
     }
     
