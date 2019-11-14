@@ -35,6 +35,9 @@ class TimeSetProcessViewReactor: Reactor {
         /// Cancel the time set
         case stopTimeSet
         
+        /// Stop alarm
+        case stopAlarm
+        
         /// Add some time into current timer
         case addExtraTime(TimeInterval)
     }
@@ -234,6 +237,9 @@ class TimeSetProcessViewReactor: Reactor {
         case .stopTimeSet:
             return actionStopTimeSet()
             
+        case .stopAlarm:
+            return actionStopAlarm()
+            
         case let .addExtraTime(timeInterval) :
             return actionAddExtraTime(timeInterval)
         }
@@ -432,6 +438,11 @@ class TimeSetProcessViewReactor: Reactor {
         }
 
         return .just(.dismiss)
+    }
+    
+    private func actionStopAlarm() -> Observable<Mutation> {
+        timeSet.audioPlayer?.stop()
+        return .empty()
     }
     
     private func actionAddExtraTime(_ extra: TimeInterval) -> Observable<Mutation> {

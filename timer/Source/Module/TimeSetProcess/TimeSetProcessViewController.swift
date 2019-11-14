@@ -348,12 +348,18 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     func bind(popup: TimeSetPopup) {
+        guard let reactor = reactor else { return }
         // Dispose previous event stream
         popupDisposeBag = DisposeBag()
         
         Observable<Int>.interval(.seconds(10), scheduler: MainScheduler.instance)
             .take(1)
             .subscribe(onNext: { [weak self] _ in self?.dismissTimeSetPopup() })
+            .disposed(by: popupDisposeBag)
+        
+        popup.confirmButton.rx.tap
+            .map { Reactor.Action.stopAlarm }
+            .bind(to: reactor.action)
             .disposed(by: popupDisposeBag)
         
         popup.confirmButton.rx.tap
