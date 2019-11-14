@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import AVFoundation
 
 /// A class that manage a group of the timers
 class TimeSet: EventStreamProtocol {
@@ -64,6 +65,9 @@ class TimeSet: EventStreamProtocol {
     private(set) var currentIndex: Int
     
     private var disposeBag = DisposeBag()
+    
+    /// Alarm sound player
+    private(set) var audioPlayer: AVAudioPlayer?
     
     // MARK: - constructor
     init(item: TimeSetItem, history: History, index: Int) {
@@ -137,6 +141,11 @@ class TimeSet: EventStreamProtocol {
                 return
             }
             
+            if let alertable = item as? Alertable {
+                // Alert if ended timer accept `Alertable`
+                alert(alarm: alertable.alarm)
+            }
+            
             if currentIndex < self.item.timers.count - 1 {
                 // Start next timer
                 start(.normal(at: currentIndex + 1))
@@ -160,6 +169,30 @@ class TimeSet: EventStreamProtocol {
     private func handleTimeChanged(_ current: TimeInterval, _ end: TimeInterval, diff: TimeInterval) {
         history.runningTime += diff
         event.onNext(.timeChanged(current, end))
+    }
+    
+    /// Alert alarm through `AVAudioPlayer`
+    /// - Parameters:
+    ///   - alarm: alarm info to play
+    ///   - type: alarm sound type
+    private func alert(alarm: Alarm, type: Alarm.SoundType = .short) {
+        switch alarm {
+        case .silence:
+            // Nothing
+            break
+            
+        case .vibrate:
+            // Play vibration on device
+            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+            
+        case .default:
+            guard let fileName = alarm.getFileName(type: type),
+                let url = Bundle.main.url(forResource: fileName, withExtension: "mp3") else { return }
+            
+            // Alert alarm
+            audioPlayer = try? AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        }
     }
     
     // MARK: - public method
@@ -194,7 +227,7 @@ class TimeSet: EventStreamProtocol {
     
     /// End the time set
     func end() {
-        timer.end(isMute: true)
+        timer.end()
     }
     
     /// Consume time to the time set
