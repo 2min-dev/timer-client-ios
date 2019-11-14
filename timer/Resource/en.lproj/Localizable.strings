@@ -198,12 +198,10 @@
 
 // MARK: - Notification
 "notification_timer_id_format" = "notification_timer_%d";
-"notification_timer_end_title_format" = "Timer %d Ended.";
-"notification_time_set_end_title" = "Time Set Ended.";
-"notification_time_set_end_sub_title" = "Touch push to complete the time set.";
-"notification_time_set_end_body_title" = "🤔 Would you write memo about this?";
-"notification_time_set_end_repeat_sub_title" = "Touch push to continue time set.";
-"notification_time_set_end_repeat_body_title" = "⚠️ App launch needed to repaet.";
+"notification_timer_end_sub_title_format" = "Timer %d Ended!";
+"notification_time_set_end_sub_title" = "Time Set Ended!";
+"notification_time_set_end_body_title" = "Touch push to complete the time set.\n🤔 Would you write memo about this?";
+"notification_time_set_end_repeat_body_title" = "Touch push to continue time set.\n⚠️ App launch needed to repaet.";
 
 // MARK: - Widget String
 "widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";

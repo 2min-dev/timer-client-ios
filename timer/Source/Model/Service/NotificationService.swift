@@ -28,21 +28,25 @@ class NotificationService: BaseService, NotificationServiceProtocol {
             .filter { offset, _ in offset >= timeSet.currentIndex }
             .forEach { offset, timer in
                 let content = UNMutableNotificationContent()
-                // TODO: custom alert sound
-                content.sound = UNNotificationSound.default
+                content.title = timeSet.item.title
                 
                 if offset == lastIndex {
                     // Set content of time set end
-                    content.title = "notification_time_set_end_title".localized
-                    content.subtitle = timeSet.item.isRepeat ?
-                        "notification_time_set_end_repeat_sub_title".localized :
-                        "notification_time_set_end_sub_title".localized
-                    content.body = timeSet.item.isRepeat ?
-                        "notification_time_set_end_repeat_body_title".localized :
-                        "notification_time_set_end_body_title".localized
+                    content.subtitle = "notification_time_set_end_sub_title".localized
+                    content.body = timeSet.item.isRepeat ? "notification_time_set_end_repeat_body_title".localized : "notification_time_set_end_body_title".localized
+                    
+                    if let fileName = timer.alarm.getFileName(type: .medium, withExt: true) {
+                        // Set push notification sound that time set ended
+                        content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: fileName))
+                    }
                 } else {
                     // Set content of timer end
-                    content.title = String(format: "notification_timer_end_title_format".localized, offset + 1)
+                    content.subtitle = String(format: "notification_timer_end_sub_title_format".localized, offset + 1)
+                    
+                    if let fileName = timer.alarm.getFileName(type: .short, withExt: true) {
+                        // Set push notification sound that timer ended
+                        content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: fileName))
+                    }
                 }
                 
                 // Create notification trigger and request

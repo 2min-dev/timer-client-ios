@@ -7,17 +7,9 @@
 //
 
 import Foundation
+import AVFoundation
 
 protocol Alertable {
     /// Alarm info to alert
     var alarm: Alarm { get }
-    
-    /// Alert alarm
-    func alert()
-}
-
-extension Alertable {
-    func alert() {
-        alarm.alert()
-    }
 }

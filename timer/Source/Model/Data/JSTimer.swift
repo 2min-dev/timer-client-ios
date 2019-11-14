@@ -8,7 +8,6 @@
 
 import Foundation
 import RxSwift
-import RxCocoa
 
 /// the timer process object
 class JSTimer: EventStreamProtocol {
@@ -103,16 +102,10 @@ class JSTimer: EventStreamProtocol {
     }
     
     /// End the timer. timer state be `end` after call
-    /// - parameter isMute: flag that wether to alert or not
-    func end(isMute: Bool = false) {
+    func end() {
         disposableTimer = nil
         
         state = .end
-        
-        if let alertable = item as? Alertable, !isMute {
-            // Alert if item as `Alertable` type
-            alertable.alert()
-        }
     }
     
     deinit {

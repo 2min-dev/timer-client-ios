@@ -14,6 +14,25 @@ import AVFoundation
     case vibrate
     case silence
     
+    enum SoundType {
+        case short
+        case medium
+        case long
+        
+        var postfix: String {
+            switch self {
+            case .short:
+                return "1x"
+                
+            case .medium:
+                return "3x"
+                
+            case .long:
+                return "10x"
+            }
+        }
+    }
+    
     var title: String {
         switch self {
         case .default:
@@ -30,26 +49,26 @@ import AVFoundation
     var fileName: String? {
         switch self {
         case .default:
-            return "alarm_default.mp3" // TODO: not real file
+            return "alarm_default"
             
         case .silence, .vibrate:
             return nil
         }
     }
     
-    func alert() {
+    var ext: String? {
         switch self {
-        case .silence:
-            // Nothing
-            break
-            
-        case .vibrate:
-            // Play vibration on device
-            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
-            
         case .default:
-            // Play alarm sound if timer alarm is default only
-            AudioServicesPlaySystemSound(1005)
+            return "mp3"
+            
+        case .silence, .vibrate:
+            return nil
         }
+    }
+    
+    // MARK: - public method
+    func getFileName(type: SoundType, withExt: Bool = false) -> String? {
+        guard let fileName = fileName, let ext = ext else { return nil }
+        return "\(fileName)_\(type.postfix)" + (withExt ? ".\(ext)" : "")
     }
 }
