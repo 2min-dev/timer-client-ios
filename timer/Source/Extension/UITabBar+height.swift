@@ -12,7 +12,7 @@ extension UITabBar {
     // Set tab bar height
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         super.sizeThatFits(size)
-        guard let window = UIApplication.shared.keyWindow else {
+        guard let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first else {
             return super.sizeThatFits(size)
         }
         

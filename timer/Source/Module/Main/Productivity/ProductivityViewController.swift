@@ -195,7 +195,6 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .bind(to: isTimerOptionVisible)
             .disposed(by: disposeBag)
         
-        
         saveButton.rx.tap
             .map { Reactor.Action.saveTimeSet }
             .bind(to: reactor.action)
