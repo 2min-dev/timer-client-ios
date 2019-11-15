@@ -193,7 +193,7 @@ class TimeSetEditView: UIView {
         }
         
         timerOptionView.snp.makeConstraints { make in
-            make.bottom.equalTo(timerBadgeCollectionView.snp.top).offset(-14.adjust())
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-17.adjust())
             make.centerX.equalToSuperview()
         }
         

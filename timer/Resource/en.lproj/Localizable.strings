@@ -89,7 +89,7 @@
 "timer_option_alarm_vibrate_title" = "Vibrate";
 "timer_option_alarm_default_title" = "Default";
 "timer_option_alarm_all_apply" = "Apply All";
-"timer_option_comment_hint_format" = "Leave a comment for %d timer";
+"timer_option_comment_hint_title" = "Leave a comment.";
 "timer_option_comment_excess_title" = "Exceeded the number of characters";
 "timer_option_comment_bytes_format" = "%d/%d bytes";
 
