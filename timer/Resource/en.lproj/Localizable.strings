@@ -132,7 +132,7 @@
 "time_set_end_time_title" = "End Exp";
 "time_set_end_time_title_format" = "End Exp %@";
 "time_set_end_time_format" = "h:mm a";
-"time_set_end_time_full_format" = "End Exp HH:mm:ss";
+"time_set_end_time_full_format" = "HH:mm:ss";
 
 "time_set_add_time_title" = "+1M";
 

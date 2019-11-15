@@ -124,6 +124,7 @@ class SavedTimeSetCollectionViewCell: UICollectionViewCell, View {
             .observeOn(MainScheduler.instance)
             .map { Date().addingTimeInterval($0.0) }
             .map { getDateString(format: "time_set_end_time_full_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
+            .map { String(format: "time_set_end_time_title_format".localized, $0) }
             .bind(to: endOfTimeSetLabel.rx.text)
             .disposed(by: disposeBag)
         

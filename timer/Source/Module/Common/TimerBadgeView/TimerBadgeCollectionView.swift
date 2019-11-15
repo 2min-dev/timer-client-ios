@@ -40,7 +40,7 @@ class TimerBadgeCollectionView: JSReorderableCollectionView {
             // Set layout properties
             layout.scrollDirection = .horizontal
             layout.minimumInteritemSpacing = 10.adjust()
-            layout.sectionInset = UIEdgeInsets(top: 0, left: 10.adjust(), bottom: 0, right: 10.adjust())
+            layout.sectionInset = UIEdgeInsets(top: 0, left: 25.adjust(), bottom: 0, right: 25.adjust())
         }
     }
     

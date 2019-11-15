@@ -132,7 +132,7 @@
 "time_set_end_time_title" = "종료 예정";
 "time_set_end_time_title_format" = "종료 예정 %@";
 "time_set_end_time_format" = "h:mm a";
-"time_set_end_time_full_format" = "종료 예정 HH:mm:ss";
+"time_set_end_time_full_format" = "HH:mm:ss";
 
 "time_set_add_time_title" = "+1분";
 
