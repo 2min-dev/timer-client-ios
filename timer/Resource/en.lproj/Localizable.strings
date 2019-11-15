@@ -110,7 +110,7 @@
 "time_set_popup_time_set_repeat_info_format" = "%d repetations";
 
 // MARK: - History
-"history_empty_title" = "You don't have any time set history yet. \ NEnroll your own time!";
+"history_empty_title" = "You don't have any time set history yet. \nEnroll your own time!";
 "history_make_time_set_title" = "Create a time set";
 "history_started_date_format" = "YY.MM.dd";
 "history_date_title" = "Date";
