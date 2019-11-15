@@ -91,7 +91,7 @@ class TimeSetSaveView: UIView {
     
     let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
@@ -99,7 +99,7 @@ class TimeSetSaveView: UIView {
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -107,11 +107,11 @@ class TimeSetSaveView: UIView {
     private lazy var allTimeStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [allTimeTitleLabel, allTimeLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         allTimeTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -119,7 +119,7 @@ class TimeSetSaveView: UIView {
     
     let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "time_set_end_time_title".localized
         return view
@@ -127,7 +127,7 @@ class TimeSetSaveView: UIView {
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -135,11 +135,11 @@ class TimeSetSaveView: UIView {
     private lazy var endOfTimeSetStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [endOfTimeSetTitleLabel, endOfTimeSetLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         endOfTimeSetTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -147,7 +147,7 @@ class TimeSetSaveView: UIView {
     
     let alarmTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "timer_alarm_title".localized
         return view
@@ -155,7 +155,7 @@ class TimeSetSaveView: UIView {
     
     let alarmLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -163,11 +163,11 @@ class TimeSetSaveView: UIView {
     private lazy var alarmStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [alarmTitleLabel, alarmLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         alarmTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -175,7 +175,7 @@ class TimeSetSaveView: UIView {
     
     let commentTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "timer_comment_title".localized
         return view
@@ -184,7 +184,6 @@ class TimeSetSaveView: UIView {
     let commentTextView: UITextView = {
         let view = UITextView()
         view.backgroundColor = Constants.Color.clear
-        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.isEditable = false
         view.isSelectable = false
         view.textContainer.lineFragmentPadding = 0
@@ -192,10 +191,14 @@ class TimeSetSaveView: UIView {
     
         // Set line height of text view
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 7.adjust()
+        paragraphStyle.lineSpacing = 10.adjust()
         
-        view.typingAttributes = [.foregroundColor: Constants.Color.doveGray,
-                                 .paragraphStyle: paragraphStyle]
+        view.typingAttributes = [
+            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .foregroundColor: Constants.Color.doveGray,
+            .kern: -0.45,
+            .paragraphStyle: paragraphStyle
+        ]
         return view
     }()
     
@@ -203,15 +206,15 @@ class TimeSetSaveView: UIView {
         let view = UIStackView(arrangedSubviews: [commentTitleLabel, commentTextView])
         view.axis = .horizontal
         view.alignment = .top
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         commentTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         commentTextView.snp.makeConstraints { make in
-            make.height.equalTo(56.adjust())
+            make.height.equalTo(72.adjust())
         }
         
         return view
@@ -220,7 +223,7 @@ class TimeSetSaveView: UIView {
     private lazy var infoStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [allTimeStackView, endOfTimeSetStackView, alarmStackView, commentStackView])
         view.axis = .vertical
-        view.spacing = 10.adjust()
+        view.spacing = 15.adjust()
         return view
     }()
     
@@ -246,13 +249,13 @@ class TimeSetSaveView: UIView {
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(titleInputView.snp.bottom).offset(14.adjust())
+            make.top.equalTo(titleInputView.snp.bottom).offset(22.adjust())
             make.leading.equalTo(titleInputView)
             make.trailing.equalTo(titleInputView).inset(20.adjust())
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(23.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(20.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -352,3 +355,30 @@ class TimeSetSaveView: UIView {
         titleTextField.endEditing(true)
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct TimeSetSavePreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> TimeSetSaveView {
+        return TimeSetSaveView()
+    }
+    
+    func updateUIView(_ uiView: TimeSetSaveView, context: Context) {
+        // Nothing
+    }
+}
+
+struct Previews_TimeSetSaveView: PreviewProvider {
+    static var previews: some View {
+        Group {
+            TimeSetSavePreview()
+                .previewDevice("iPhone 6s")
+            
+            TimeSetSavePreview()
+                .previewDevice("iPhone 11")
+        }
+    }
+}
+
+#endif

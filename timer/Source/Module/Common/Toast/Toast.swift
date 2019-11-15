@@ -87,7 +87,7 @@ class Toast: UIView {
     }()
     
     // MARK: - properties
-    private var keyWindow: UIWindow? = UIApplication.shared.keyWindow
+    private var keyWindow: UIWindow? = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
     private var content: String
     private var task: ToastTask?
     

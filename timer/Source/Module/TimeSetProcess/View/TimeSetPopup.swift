@@ -121,7 +121,7 @@ class TimeSetPopup: UIView {
     
     // MARK: - public method
     func show(completeion: (() -> Void)? = nil) {
-        guard let keyWindow = UIApplication.shared.keyWindow else { return }
+        guard let keyWindow = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first else { return }
         
         // Calculate destination position
         var frame = self.frame
@@ -146,7 +146,7 @@ class TimeSetPopup: UIView {
     }
     
     func dismiss(completeion: (() -> Void)? = nil) {
-        guard let keyWindow = UIApplication.shared.keyWindow else { return }
+        guard let keyWindow = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first else { return }
         
         // Calculate destination position
         var frame = self.frame

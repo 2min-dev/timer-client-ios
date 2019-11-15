@@ -30,17 +30,21 @@ class TimeSetMemoView: UIView {
         
         // Set line height of text view
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8.adjust()
+        paragraphStyle.lineSpacing = 8.2.adjust()
         
-        view.typingAttributes = [.font: Constants.Font.Regular.withSize(12.adjust()),
-                                 .foregroundColor: Constants.Color.codGray,
-                                 .paragraphStyle: paragraphStyle]
+        view.typingAttributes = [
+            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .foregroundColor: Constants.Color.codGray,
+            .kern: -0.45,
+            .paragraphStyle: paragraphStyle
+        ]
+        
         return view
     }()
     
     let memoExcessLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.carnation
         view.text = "time_set_memo_excess_title".localized
         return view
@@ -49,14 +53,14 @@ class TimeSetMemoView: UIView {
     let memoLengthLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
     let memoHintLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.silver
         view.text = "time_set_memo_hint".localized
         return view
@@ -74,7 +78,7 @@ class TimeSetMemoView: UIView {
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview().inset(20.adjust())
-            make.bottom.equalTo(divider.snp.top).inset(-10.adjust())
+            make.bottom.equalTo(divider.snp.top).inset(-3.adjust())
         }
         
         memoExcessLabel.snp.makeConstraints { make in
@@ -135,7 +139,7 @@ class TimeSetMemoView: UIView {
             make.top.equalTo(headerView.snp.bottom).offset(10.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
             make.trailing.equalToSuperview()
-            make.height.equalTo(265.adjust())
+            make.height.equalTo(268.adjust())
         }
     }
     

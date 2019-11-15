@@ -17,10 +17,15 @@ class TimeSetProcessView: UIView {
         return view
     }()
     
+    let stateHighlightView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Constants.Color.carnation
+        view.layer.cornerRadius = 5.adjust()
+        return view
+    }()
+    
     let stateLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(10.adjust())
-        view.textColor = Constants.Color.codGray
         return view
     }()
     
@@ -70,7 +75,7 @@ class TimeSetProcessView: UIView {
     
     let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
@@ -78,7 +83,7 @@ class TimeSetProcessView: UIView {
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -86,11 +91,11 @@ class TimeSetProcessView: UIView {
     private lazy var allTimeStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [allTimeTitleLabel, allTimeLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         allTimeTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -98,7 +103,7 @@ class TimeSetProcessView: UIView {
     
     let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "time_set_end_time_title".localized
         return view
@@ -106,7 +111,7 @@ class TimeSetProcessView: UIView {
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -114,11 +119,11 @@ class TimeSetProcessView: UIView {
     private lazy var endOfTimeSetStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [endOfTimeSetTitleLabel, endOfTimeSetLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         endOfTimeSetTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -126,7 +131,7 @@ class TimeSetProcessView: UIView {
     
     let alarmTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "timer_alarm_title".localized
         return view
@@ -134,7 +139,7 @@ class TimeSetProcessView: UIView {
     
     let alarmLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -142,11 +147,11 @@ class TimeSetProcessView: UIView {
     private lazy var alarmStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [alarmTitleLabel, alarmLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         alarmTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -154,7 +159,7 @@ class TimeSetProcessView: UIView {
     
     let commentTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = Constants.Font.Bold.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "timer_comment_title".localized
         return view
@@ -163,7 +168,6 @@ class TimeSetProcessView: UIView {
     let commentTextView: UITextView = {
         let view = UITextView()
         view.backgroundColor = Constants.Color.clear
-        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.isEditable = false
         view.isSelectable = false
         view.textContainer.lineFragmentPadding = 0
@@ -173,8 +177,12 @@ class TimeSetProcessView: UIView {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 7.adjust()
         
-        view.typingAttributes = [.foregroundColor: Constants.Color.doveGray,
-                                 .paragraphStyle: paragraphStyle]
+        view.typingAttributes = [
+            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .foregroundColor: Constants.Color.doveGray,
+            .kern: -0.45,
+            .paragraphStyle: paragraphStyle
+        ]
         return view
     }()
     
@@ -182,15 +190,15 @@ class TimeSetProcessView: UIView {
         let view = UIStackView(arrangedSubviews: [commentTitleLabel, commentTextView])
         view.axis = .horizontal
         view.alignment = .top
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         commentTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         commentTextView.snp.makeConstraints { make in
-            make.height.equalTo(56.adjust())
+            make.height.equalTo(72.adjust())
         }
         
         return view
@@ -199,7 +207,7 @@ class TimeSetProcessView: UIView {
     private lazy var infoStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [allTimeStackView, endOfTimeSetStackView, alarmStackView, commentStackView])
         view.axis = .vertical
-        view.spacing = 10.adjust()
+        view.spacing = 15.adjust()
         return view
     }()
     
@@ -216,36 +224,43 @@ class TimeSetProcessView: UIView {
         let view = UIView()
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([titleLabel, stateLabel, timeLabel, repeatButton, addTimeButton, extraTimeLabel, infoStackView, timerBadgeCollectionView, dimedView, memoButton])
+        view.addAutolayoutSubviews([titleLabel, stateHighlightView, stateLabel, timeLabel, repeatButton, addTimeButton, extraTimeLabel, infoStackView, timerBadgeCollectionView, dimedView, memoButton])
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(85.adjust())
+            make.top.equalToSuperview().inset(50.adjust())
             make.leading.equalTo(timeLabel)
             make.trailing.equalToSuperview().inset(10.adjust())
         }
         
+        stateHighlightView.snp.makeConstraints { make in
+            make.centerY.equalTo(stateLabel)
+            make.trailing.equalTo(stateLabel.snp.leading).inset(-5.adjust())
+            make.width.equalTo(10.adjust())
+            make.height.equalTo(stateHighlightView.snp.width)
+        }
+        
         stateLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(102.adjust())
+            make.top.equalToSuperview().offset(72.adjust())
             make.leading.equalTo(timeLabel)
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(124.adjust())
+            make.top.equalToSuperview().inset(94.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
             make.trailing.equalToSuperview()
         }
         
         memoButton.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(10.adjust()).priorityHigh()
+            make.top.equalTo(timeLabel.snp.bottom).offset(5.adjust()).priorityHigh()
             make.leading.equalTo(timeLabel)
         }
         
         repeatButton.snp.makeConstraints { make in
-            make.leading.equalTo(memoButton.snp.trailing).offset(10.adjust())
+            make.leading.equalTo(memoButton.snp.trailing).offset(15.adjust())
             make.centerY.equalTo(memoButton)
         }
         
         addTimeButton.snp.makeConstraints { make in
-            make.leading.equalTo(repeatButton.snp.trailing).offset(10.adjust())
+            make.leading.equalTo(repeatButton.snp.trailing).offset(15.adjust())
             make.centerY.equalTo(repeatButton)
         }
         
@@ -255,13 +270,13 @@ class TimeSetProcessView: UIView {
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(123.adjust())
+            make.top.equalTo(timeLabel.snp.bottom).offset(88.adjust())
             make.leading.equalTo(timeLabel)
-            make.trailing.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(25.adjust())
         }
 
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(8.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(21.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
         }
@@ -345,3 +360,30 @@ class TimeSetProcessView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct TimeSetProcessPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> TimeSetProcessView {
+        return TimeSetProcessView()
+    }
+    
+    func updateUIView(_ uiView: TimeSetProcessView, context: Context) {
+        // Nothing
+    }
+}
+
+struct Previews_TimeSetProcessView: PreviewProvider {
+    static var previews: some View {
+        Group {
+            TimeSetProcessPreview()
+                .previewDevice("iPhone 6s")
+            
+            TimeSetProcessPreview()
+                .previewDevice("iPhone 11")
+        }
+    }
+}
+
+#endif

@@ -89,7 +89,7 @@
 "timer_option_alarm_vibrate_title" = "Vibrate";
 "timer_option_alarm_default_title" = "Default";
 "timer_option_alarm_all_apply" = "Apply All";
-"timer_option_comment_hint_format" = "Leave a comment for %d timer";
+"timer_option_comment_hint_title" = "Leave a comment.";
 "timer_option_comment_excess_title" = "Exceeded the number of characters";
 "timer_option_comment_bytes_format" = "%d/%d bytes";
 
@@ -110,7 +110,7 @@
 "time_set_popup_time_set_repeat_info_format" = "%d repetations";
 
 // MARK: - History
-"history_empty_title" = "You don't have any time set history yet. \ NEnroll your own time!";
+"history_empty_title" = "You don't have any time set history yet. \nEnroll your own time!";
 "history_make_time_set_title" = "Create a time set";
 "history_started_date_format" = "YY.MM.dd";
 "history_date_title" = "Date";

@@ -247,7 +247,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
                                           locale: Locale(identifier: Constants.Locale.USA))
         
         let dateString = String(format: "%@ - %@", startDateString, endDateString)
-        let attributes: [NSAttributedString.Key: Any] = [.kern: -0.36]
+        let attributes: [NSAttributedString.Key: Any] = [.kern: -0.45]
         
         return NSAttributedString(string: dateString, attributes: attributes)
     }

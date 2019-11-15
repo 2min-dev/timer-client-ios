@@ -20,7 +20,7 @@ class TimerOptionView: UIView, View {
         var button: UIButton {
             let button = UIButton()
             button.tag = rawValue
-            button.titleLabel?.font = Constants.Font.Regular.withSize(10.adjust())
+            button.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
             button.setTitleColor(Constants.Color.codGray, for: .normal)
             
             switch self {
@@ -69,8 +69,9 @@ class TimerOptionView: UIView, View {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 10.adjust()
         
-        view.typingAttributes = [.font: Constants.Font.Regular.withSize(12.adjust()),
+        view.typingAttributes = [.font: Constants.Font.Regular.withSize(15.adjust()),
                                  .foregroundColor: Constants.Color.codGray,
+                                 .kern: -0.45,
                                  .paragraphStyle: paragraphStyle]
         return view
     }()
@@ -78,7 +79,7 @@ class TimerOptionView: UIView, View {
     let commentLengthLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         view.textAlignment = .right
         return view
@@ -86,14 +87,21 @@ class TimerOptionView: UIView, View {
     
     let commentHintLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.silver
+        
+        let string = "timer_option_comment_hint_title".localized
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .foregroundColor: Constants.Color.silver,
+            .kern: -0.45
+        ]
+        
+        view.attributedText = NSAttributedString(string: string, attributes: attributes)
         return view
     }()
     
     let commentExcessLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.carnation
         view.text = "timer_option_comment_excess_title".localized
         return view
@@ -105,15 +113,15 @@ class TimerOptionView: UIView, View {
         // Set constraint of subviews
         view.addAutolayoutSubviews([commentTextView, commentLengthLabel, commentHintLabel, commentExcessLabel])
         commentTextView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(5.adjust())
-            make.leading.equalToSuperview().inset(5.adjust())
-            make.trailing.equalToSuperview().inset(5.adjust())
+            make.top.equalToSuperview().inset(20.adjust())
+            make.leading.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust())
             make.bottom.equalTo(commentLengthLabel.snp.top).inset(-8.adjust())
         }
         
         commentLengthLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(17.adjust())
-            make.bottom.equalToSuperview().inset(16.adjust())
+            make.trailing.equalToSuperview().inset(15.adjust())
+            make.bottom.equalToSuperview().inset(11.adjust())
         }
         
         commentHintLabel.snp.makeConstraints { make in
@@ -122,8 +130,8 @@ class TimerOptionView: UIView, View {
         }
         
         commentExcessLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(10.adjust())
-            make.trailing.equalTo(commentLengthLabel.snp.leading)
+            make.leading.equalToSuperview().inset(15.adjust())
+            make.trailing.equalTo(commentLengthLabel.snp.leading).inset(10.adjust())
             make.centerY.equalTo(commentLengthLabel)
         }
         
@@ -157,7 +165,7 @@ class TimerOptionView: UIView, View {
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Constants.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .font: Constants.Font.Regular.withSize(10.adjust())
+            .font: Constants.Font.Regular.withSize(15.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         return view
@@ -173,13 +181,13 @@ class TimerOptionView: UIView, View {
         view.addAutolayoutSubviews([divider, alarmIconImageView, alarmButtonsStackView, alarmApplyAllButton])
         divider.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(2.adjust())
-            make.trailing.equalToSuperview().inset(2.adjust())
+            make.leading.equalToSuperview().inset(10.5.adjust())
+            make.trailing.equalToSuperview().inset(9.5.adjust())
             make.height.equalTo(1.adjust())
         }
         
         alarmIconImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(5.adjust())
+            make.leading.equalToSuperview().inset(10.adjust())
             make.centerY.equalToSuperview()
             make.height.equalTo(36.adjust())
             make.width.equalTo(alarmIconImageView.snp.height)
@@ -192,7 +200,7 @@ class TimerOptionView: UIView, View {
         
         alarmApplyAllButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.trailing.equalToSuperview().inset(10.adjust())
+            make.trailing.equalToSuperview().inset(15.adjust())
             make.bottom.equalToSuperview()
         }
         
@@ -212,14 +220,14 @@ class TimerOptionView: UIView, View {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
     let deleteButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_delete_mini"), for: .normal)
+        view.setImage(UIImage(named: "btn_delete"), for: .normal)
         return view
     }()
     
@@ -233,13 +241,13 @@ class TimerOptionView: UIView, View {
         view.addAutolayoutSubviews([divider, timerIconImageView, titleLabel, deleteButton])
         divider.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(2.adjust())
-            make.trailing.equalToSuperview().inset(2.adjust())
+            make.leading.equalToSuperview().inset(10.5.adjust())
+            make.trailing.equalToSuperview().inset(9.5.adjust())
             make.height.equalTo(1.adjust())
         }
         
         timerIconImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(5.adjust())
+            make.leading.equalToSuperview().offset(10.adjust())
             make.centerY.equalToSuperview()
             make.height.equalTo(36.adjust())
             make.width.equalTo(timerIconImageView.snp.height)
@@ -253,9 +261,9 @@ class TimerOptionView: UIView, View {
         }
         
         deleteButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-10.adjust())
+            make.trailing.equalToSuperview().inset(22.adjust())
             make.centerY.equalToSuperview()
-            make.height.equalTo(24.adjust())
+            make.height.equalTo(36.adjust())
             make.width.equalTo(deleteButton.snp.height)
         }
         
@@ -268,11 +276,11 @@ class TimerOptionView: UIView, View {
         
         // Set constraint of subviews
         alarmSettingView.snp.makeConstraints { make in
-            make.height.equalTo(60.adjust())
+            make.height.equalTo(66.adjust())
         }
         
         timerInfoView.snp.makeConstraints { make in
-            make.height.equalTo(60.adjust())
+            make.height.equalTo(66.adjust())
         }
         
         return view
@@ -300,7 +308,7 @@ class TimerOptionView: UIView, View {
     
     // MARK: - properties
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 250.adjust(), height: 300.adjust())
+        return CGSize(width: 300.adjust(), height: 379.adjust())
     }
     
     var isExceeded: BehaviorRelay<Bool> = BehaviorRelay(value: false)
@@ -326,7 +334,7 @@ class TimerOptionView: UIView, View {
     
     // MARK: - lifecycle
     override func draw(_ rect: CGRect) {
-        borderLayer.path = drawBorderLayer(frame: bounds, corner: 5.adjust()).cgPath
+        borderLayer.path = drawBorderLayer(frame: bounds, corner: 15.adjust()).cgPath
     }
     
     // MARK: - bind
@@ -416,11 +424,6 @@ class TimerOptionView: UIView, View {
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
         
-        timerIndex
-            .map { String(format: "timer_option_comment_hint_format".localized, $0) }
-            .bind(to: commentHintLabel.rx.text)
-            .disposed(by: disposeBag)
-        
         // Comment
         reactor.state
             .map { $0.comment }
@@ -481,7 +484,7 @@ class TimerOptionView: UIView, View {
     
     /// Draw timer option view border layer
     private func drawBorderLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
-        let tailSize = CGSize(width: 13.adjust(), height: 8.adjust())
+        let tailSize = CGSize(width: 24.adjust(), height: 14.adjust())
         // Initial point of border path
         let initialPoint = CGPoint(x: radius, y: frame.height)
         // Tail points

@@ -12,7 +12,7 @@ class TimeSetAlert: UIView {
     // MARK: - view properties
     private let textLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(10.adjust())
+        view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         view.numberOfLines = 2
         return view

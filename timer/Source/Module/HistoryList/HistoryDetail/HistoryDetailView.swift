@@ -25,7 +25,7 @@ class HistoryDetailView: UIView {
     
     private let runningTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
@@ -33,7 +33,7 @@ class HistoryDetailView: UIView {
     
     let runningTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -41,11 +41,11 @@ class HistoryDetailView: UIView {
     private lazy var runningTimeStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [runningTimeTitleLabel, runningTimeLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         runningTimeTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -53,7 +53,7 @@ class HistoryDetailView: UIView {
     
     private let dateTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "history_date_title".localized
         return view
@@ -61,7 +61,7 @@ class HistoryDetailView: UIView {
     
     let dateLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -69,11 +69,11 @@ class HistoryDetailView: UIView {
     private lazy var dateStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [dateTitleLabel, dateLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         dateTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -81,7 +81,7 @@ class HistoryDetailView: UIView {
     
     private let extraTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "history_extra_time_title".localized
         return view
@@ -89,7 +89,7 @@ class HistoryDetailView: UIView {
     
     let extraTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -97,11 +97,11 @@ class HistoryDetailView: UIView {
     private lazy var extraTimeStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [extraTimeTitleLabel, extraTimeLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         extraTimeTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -109,7 +109,7 @@ class HistoryDetailView: UIView {
     
     private let repeatCountTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "history_repeat_count_title".localized
         return view
@@ -117,7 +117,7 @@ class HistoryDetailView: UIView {
     
     let repeatCountLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -125,11 +125,11 @@ class HistoryDetailView: UIView {
     private lazy var repeatCountStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [repeatCountTitleLabel, repeatCountLabel])
         view.axis = .horizontal
-        view.spacing = 20.adjust()
+        view.spacing = 18.adjust()
         
         // Set constraint of subviews
         repeatCountTitleLabel.snp.makeConstraints { make in
-            make.width.equalTo(60.adjust())
+            make.width.equalTo(74.adjust())
         }
         
         return view
@@ -138,7 +138,7 @@ class HistoryDetailView: UIView {
     private lazy var infoStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [runningTimeStackView, dateStackView, extraTimeStackView, repeatCountStackView])
         view.axis = .vertical
-        view.spacing = 10.adjust()
+        view.spacing = 15.adjust()
         return view
     }()
     
@@ -154,17 +154,21 @@ class HistoryDetailView: UIView {
         
         // Set line height of text view
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8.adjust()
+        paragraphStyle.lineSpacing = 8.2.adjust()
         
-        view.typingAttributes = [.font: Constants.Font.Regular.withSize(12.adjust()),
-                                 .foregroundColor: Constants.Color.codGray,
-                                 .paragraphStyle: paragraphStyle]
+        view.typingAttributes = [
+            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .foregroundColor: Constants.Color.codGray,
+            .kern: -0.45,
+            .paragraphStyle: paragraphStyle
+        ]
+        
         return view
     }()
     
     let memoExcessLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.carnation
         view.text = "time_set_memo_excess_title".localized
         return view
@@ -172,15 +176,15 @@ class HistoryDetailView: UIView {
     
     let memoLengthLabel: UILabel = {
         let view = UILabel()
-        view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.setContentCompressionResistancePriority(.required, for: .horizontal)
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
     let memoHintLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.silver
         view.text = "time_set_memo_hint".localized
         return view
@@ -220,7 +224,7 @@ class HistoryDetailView: UIView {
         
         memoLengthLabel.snp.makeConstraints { make in
             make.top.equalTo(memoTextView.snp.bottom).offset(10.adjust())
-            make.trailing.equalToSuperview().inset(21.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(21.adjust())
         }
         
         memoHintLabel.snp.makeConstraints { make in
@@ -251,7 +255,7 @@ class HistoryDetailView: UIView {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalTo(divider)
             make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
-            make.bottom.equalTo(divider.snp.top).inset(-20.adjust())
+            make.bottom.equalTo(divider.snp.top).inset(-18.adjust())
         }
         
         divider.snp.makeConstraints { make in
@@ -262,22 +266,22 @@ class HistoryDetailView: UIView {
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(divider.snp.bottom).offset(20.adjust())
+            make.top.equalTo(divider.snp.bottom).offset(14.adjust())
             make.leading.equalTo(divider)
             make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
         }
         
         memoInputView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(52.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(67.adjust())
             make.leading.equalTo(divider)
-            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(20.adjust())
             make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-20.adjust()).priorityHigh()
         }
 
         timerBadgeCollectionView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(58.adjust())
+            make.bottom.equalToSuperview().inset(20.adjust())
         }
         
         return view
