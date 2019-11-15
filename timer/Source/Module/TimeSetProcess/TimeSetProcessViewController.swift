@@ -13,31 +13,32 @@ import RxDataSources
 
 class TimeSetProcessViewController: BaseHeaderViewController, View {
     // MARK: - view properties
-    private var timeSetProcessView: TimeSetProcessView { return view as! TimeSetProcessView }
+    private var timeSetProcessView: TimeSetProcessView { view as! TimeSetProcessView }
     
-    private var titleLabel: UILabel { return timeSetProcessView.titleLabel }
-    private var stateLabel: UILabel { return timeSetProcessView.stateLabel }
-    private var timeLabel: UILabel { return timeSetProcessView.timeLabel }
+    private var titleLabel: UILabel { timeSetProcessView.titleLabel }
+    private var stateLabel: UILabel { timeSetProcessView.stateLabel }
+    private var stateHighlightView: UIView { timeSetProcessView.stateHighlightView }
+    private var timeLabel: UILabel { timeSetProcessView.timeLabel }
     
-    private var memoButton: RoundButton { return timeSetProcessView.memoButton }
-    private var repeatButton: RoundButton { return timeSetProcessView.repeatButton }
-    private var addTimeButton: RoundButton { return timeSetProcessView.addTimeButton }
+    private var memoButton: RoundButton { timeSetProcessView.memoButton }
+    private var repeatButton: RoundButton { timeSetProcessView.repeatButton }
+    private var addTimeButton: RoundButton { timeSetProcessView.addTimeButton }
     
-    private var extraTimeLabel: UILabel { return timeSetProcessView.extraTimeLabel }
+    private var extraTimeLabel: UILabel { timeSetProcessView.extraTimeLabel }
     
-    private var allTimeLabel: UILabel { return timeSetProcessView.allTimeLabel }
-    private var endOfTimeSetLabel: UILabel { return timeSetProcessView.endOfTimeSetLabel }
-    private var alarmLabel: UILabel { return timeSetProcessView.alarmLabel }
-    private var commentTextView: UITextView { return timeSetProcessView.commentTextView }
+    private var allTimeLabel: UILabel { timeSetProcessView.allTimeLabel }
+    private var endOfTimeSetLabel: UILabel { timeSetProcessView.endOfTimeSetLabel }
+    private var alarmLabel: UILabel { timeSetProcessView.alarmLabel }
+    private var commentTextView: UITextView { timeSetProcessView.commentTextView }
     
-    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetProcessView.timerBadgeCollectionView }
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { timeSetProcessView.timerBadgeCollectionView }
     
-    private var startButton: FooterButton { return timeSetProcessView.startButton }
-    private var stopButton: FooterButton { return timeSetProcessView.stopButton }
-    private var quitButton: FooterButton { return timeSetProcessView.quitButton }
-    private var pauseButton: FooterButton { return timeSetProcessView.pauseButton }
+    private var startButton: FooterButton { timeSetProcessView.startButton }
+    private var stopButton: FooterButton { timeSetProcessView.stopButton }
+    private var quitButton: FooterButton { timeSetProcessView.quitButton }
+    private var pauseButton: FooterButton { timeSetProcessView.pauseButton }
     
-    private var footerView: Footer { return timeSetProcessView.footerView }
+    private var footerView: Footer { timeSetProcessView.footerView }
     
     private var timeSetPopup: TimeSetPopup? {
         didSet { oldValue?.removeFromSuperview() }
@@ -96,6 +97,15 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         UIApplication.shared.isIdleTimerDisabled = true
+    }
+    
+    override func bind() {
+        super.bind()
+        
+        stateLabel.rx.observe(NSAttributedString.self, "attributedText")
+            .compactMap { $0?.string.isEmpty ?? true }
+            .bind(to: stateHighlightView.rx.isHidden)
+            .disposed(by: disposeBag)
     }
     
     // MARK: - bine
@@ -419,7 +429,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Get current countdown state string
     private func getTimeSetStateByCountdown(_ countdown: Int, state: JSTimer.State) -> NSAttributedString {
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(10.adjust()),
+            .font: Constants.Font.Regular.withSize(15.adjust()),
             .foregroundColor: Constants.Color.codGray
         ]
         
@@ -442,10 +452,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Get current time set state string
     private func getTimeSetState(_ state: TimeSet.State, history: History) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(10.adjust()),
+            .font: Constants.Font.Regular.withSize(15.adjust()),
             .foregroundColor: Constants.Color.codGray
         ]
-
+        
         var string = ""
         switch state {
         case .pause:

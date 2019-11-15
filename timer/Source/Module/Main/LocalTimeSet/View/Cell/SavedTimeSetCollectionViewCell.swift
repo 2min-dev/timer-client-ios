@@ -56,34 +56,35 @@ class SavedTimeSetCollectionViewCell: UICollectionViewCell, View {
         super.init(frame: frame)
         
         // Set constraint of subviews
-        addAutolayoutSubviews([timeLabel, titleLabel, endOfTimeSetLabel, timerIconImageView, timerCountLabel])
+        addAutolayoutSubviews([timeLabel, endOfTimeSetLabel, titleLabel, timerIconImageView, timerCountLabel])
         timeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(20.adjust())
-            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().inset(20.adjust())
+            make.trailing.equalToSuperview().inset(15.adjust())
         }
         
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).inset(-20.adjust())
+        endOfTimeSetLabel.snp.makeConstraints { make in
+            make.top.equalTo(timeLabel.snp.bottom).offset(3.adjust())
             make.leading.equalTo(timeLabel)
             make.trailing.equalTo(timeLabel)
         }
         
-        endOfTimeSetLabel.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(endOfTimeSetLabel.snp.bottom).offset(20.adjust())
             make.leading.equalTo(timeLabel)
-            make.trailing.equalTo(timerIconImageView.snp.leading)
-            make.bottom.equalToSuperview().inset(20.adjust())
+            make.trailing.equalTo(timeLabel)
         }
         
         timerIconImageView.snp.makeConstraints { make in
-            make.trailing.equalTo(timerCountLabel.snp.leading).offset(4.adjust())
-            make.centerY.equalTo(endOfTimeSetLabel)
+            make.leading.equalToSuperview().inset(10.adjust())
+            make.bottom.equalToSuperview().inset(8.adjust())
             make.width.equalTo(36.adjust())
             make.height.equalTo(timerIconImageView.snp.width)
         }
         
         timerCountLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(timeLabel)
-            make.centerY.equalTo(endOfTimeSetLabel).offset(1)
+            make.leading.equalTo(timerIconImageView.snp.trailing).inset(4.adjust())
+            make.centerY.equalTo(timerIconImageView).offset(1)
         }
         
         initLayout()
