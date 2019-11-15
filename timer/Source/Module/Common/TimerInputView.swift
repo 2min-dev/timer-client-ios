@@ -58,7 +58,7 @@ class TimerInputView: UIView {
     
     // MARK: - lifecycle
     override func layoutSubviews() {
-        layer.cornerRadius = bounds.height * 0.4
+        layer.cornerRadius = bounds.height / 2
     }
     
     // MARK: - private method

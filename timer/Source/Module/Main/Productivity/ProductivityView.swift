@@ -111,14 +111,14 @@ class ProductivityView: UIView {
         }
         
         keyPadView.snp.makeConstraints { make in
-            make.top.equalTo(timerInputView.snp.bottom).offset(30.adjust())
+            make.top.equalTo(timerInputView.snp.bottom).offset(27.5.adjust())
             make.centerX.equalToSuperview()
-            make.width.equalTo(270.adjust())
-            make.height.equalTo(255.adjust())
+            make.width.equalTo(330.adjust())
+            make.height.equalTo(260.adjust())
         }
         
         timeKeyPadView.snp.makeConstraints { make in
-            make.top.equalTo(keyPadView.snp.bottom)
+            make.top.equalTo(keyPadView.snp.bottom).inset(2.5.adjust())
             make.leading.equalTo(keyPadView)
             make.trailing.equalTo(keyPadView)
             make.height.equalTo(60.adjust())
@@ -228,3 +228,30 @@ class ProductivityView: UIView {
         sender.layer.add(animation, forKey: "touch")
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct ProductivityPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> ProductivityView {
+        return ProductivityView()
+    }
+    
+    func updateUIView(_ uiView: ProductivityView, context: Context) {
+        // Nothing
+    }
+}
+
+struct Previews_ProductivityView: PreviewProvider {
+    static var previews: some View {
+        Group {
+            ProductivityPreview()
+                .previewDevice("iPhone 6s")
+            
+            ProductivityPreview()
+                .previewDevice("iPhone 11")
+        }
+    }
+}
+
+#endif

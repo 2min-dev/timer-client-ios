@@ -463,9 +463,10 @@ class ProductivityViewController: BaseHeaderViewController, View {
         let tabBar = tabBarController.tabBar
         var frame = tabBar.frame
         
-        frame.size.height = tabBar.bounds.height + 10.adjust()
+        // TODO: Need to refactor footer view to set frame
+        frame.size.height = 64.adjust() + tabBarController.view._safeAreaInsets.bottom
         // Positioning out of screen
-        frame.origin.y += frame.height
+        frame.origin.y = tabBar.frame.maxY
         footerView.frame = frame
     }
     
@@ -474,7 +475,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
         guard let tabBar = tabBarController?.tabBar, footerView.superview != nil else { return }
         
         var frame = footerView.frame
-        frame.origin.y = isShow ? tabBar.frame.maxY - frame.height : tabBar.frame.minY + tabBar.frame.height
+        frame.origin.y = isShow ? tabBar.frame.maxY - frame.height : tabBar.frame.maxY
         
         let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeIn, animations: {
             self.footerView.frame = frame
