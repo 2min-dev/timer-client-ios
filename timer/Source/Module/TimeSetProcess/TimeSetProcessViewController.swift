@@ -483,12 +483,14 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     
     /// Show time set popup about both timer end and time set end
     private func showTimeSetPopup(index: Int, count: Int, isRepeat: Bool, repeatCount: Int) {
-        if !isRepeat || index < count - 1 {
+        if index < count - 1 {
             showTimeSetPopup(title: String(format: "time_set_popup_timer_end_title_format".localized, index + 1),
                              subtitle: String(format: "time_set_popup_timer_end_info_format".localized, index + 1, count))
         } else {
-            showTimeSetPopup(title: String(format: "time_set_popup_time_set_repeat_title".localized),
-                             subtitle: String(format: "time_set_popup_time_set_repeat_info_format".localized, repeatCount))
+            if isRepeat {
+                showTimeSetPopup(title: String(format: "time_set_popup_time_set_repeat_title".localized),
+                                 subtitle: String(format: "time_set_popup_time_set_repeat_info_format".localized, repeatCount))
+            }
         }
     }
     
