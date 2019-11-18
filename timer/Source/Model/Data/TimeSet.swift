@@ -77,7 +77,7 @@ class TimeSet: EventStreamProtocol {
         timer = createTimer(at: index)
     }
     
-    convenience init(item: TimeSetItem, index: Int = 0) {
+    convenience init(item: TimeSetItem, index: Int) {
         self.init(item: item, history: History(item: item), index: index)
     }
     

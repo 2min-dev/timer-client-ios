@@ -67,6 +67,21 @@ protocol TimeSetServiceProtocol {
 
 /// A service class that manage the application's timers
 class TimeSetService: BaseService, TimeSetServiceProtocol {
+    enum TimeSetType {
+        case normal
+        case history
+        
+        var prefix: String {
+            switch self {
+            case .normal:
+                return ""
+                
+            case .history:
+                return "H"
+            }
+        }
+    }
+    
     // MARK: - global state event
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
@@ -94,6 +109,17 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     var disposeBag: DisposeBag = DisposeBag()
     
+    // MARK: - private method
+    /// Generate time set id
+    private func generateTimeSetId(type: TimeSetType) -> String {
+        // Get last time set identifier
+        let id = provider.userDefaultService.integer(.timeSetId)
+        // Increase last time set identifier
+        provider.userDefaultService.set(id + 1, key: .timeSetId)
+        
+        return "\(type.prefix)\(id)"
+    }
+    
     // MARK: - public method
     // MARK: - time set
     func fetchTimeSets() -> Single<[TimeSetItem]> {
@@ -110,9 +136,8 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     }
     
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
-        // Create time set id
-        let id = provider.userDefaultService.integer(.timeSetId)
-        item.id = String(id)
+        // Set time set id
+        item.id = generateTimeSetId(type: .normal)
         
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -125,9 +150,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
                         // Append item current time set list
                         timeSets.append($0)
                         self.timeSets = timeSets
-                        
-                        // Update time set id
-                        self.provider.userDefaultService.set(id + 1, key: .timeSetId)
                         
                         Logger.info("a time set created.", tag: "SERVICE")
                     })
@@ -226,16 +248,11 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     }
     
     func createHistory(_ history: History) -> Single<History> {
-        // Create history's time set id
-        let id = provider.userDefaultService.integer(.timeSetId)
-        history.item?.id = String(format: "H%d", id)
+        // Set time set id of history
+        history.item?.id = generateTimeSetId(type: .history)
         
         return provider.databaseService.createHistory(history)
-            .do(onSuccess: { _ in
-                // Update time set id
-                self.provider.userDefaultService.set(id + 1, key: .timeSetId)
-                Logger.info("a history created.", tag: "SERVICE")
-            })
+            .do(onSuccess: { _ in Logger.info("a history created.", tag: "SERVICE") })
     }
     
     func updateHistory(_ history: History) -> Single<History> {

@@ -160,7 +160,7 @@ class TimeSetProcessViewReactor: Reactor {
             guard let copiedItem = timeSetItem.copy() as? TimeSetItem else { return nil }
             
             origin = timeSetItem
-            timeSet = TimeSet(item: copiedItem)
+            timeSet = TimeSet(item: copiedItem, index: index)
         } else {
             // Fetch running time set from time set service
             guard let runningTimeSet = timeSetService.runningTimeSet else {

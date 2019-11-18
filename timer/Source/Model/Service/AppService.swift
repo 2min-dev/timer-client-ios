@@ -42,8 +42,6 @@ class AppService: BaseService, AppServiceProtocol {
         super.init(provider: provider)
         
         registerUserDefaultDomain()
-        Logger.debug("Background date: \(getBackgroundDate())", tag: "APP")
-        Logger.debug("Running time set: \(getRunningTimeSet())", tag: "APP")
     }
     
     // MARK: - private method
