@@ -86,8 +86,8 @@ class CountdownSettingViewReactor: Reactor {
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
         let items: [CountdownSettingMenu] = [
-            CountdownSettingMenu(seconds: 5),
             CountdownSettingMenu(seconds: 10),
+            CountdownSettingMenu(seconds: 5),
             CountdownSettingMenu(seconds: 3),
             CountdownSettingMenu(seconds: 2),
             CountdownSettingMenu(seconds: 1),
