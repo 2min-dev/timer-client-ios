@@ -15,12 +15,21 @@ class AlarmSettingViewReactor: Reactor {
         case load
         
         /// Select menu
-        case select(IndexPath)
+        case select(Int)
+        
+        /// Stop alarm
+        case stop
+        
+        /// Play alarm
+        case play(Int)
     }
     
     enum Mutation {
-        /// Set selected index path
-        case setSelectedIndexPath(IndexPath)
+        /// Set played alarm index
+        case setPlayIndex(Int)
+        
+        /// Set selected index
+        case setSelectedIndex(Int)
         
         /// Set countdown menu sections
         case setSections([AlarmSettingSectionModel])
@@ -30,8 +39,11 @@ class AlarmSettingViewReactor: Reactor {
     }
     
     struct State {
-        /// Current selected index path
-        var selectedIndexPath: IndexPath
+        /// Last played alarm index
+        var playIndex: Int?
+        
+        /// Current selected index
+        var selectedIndex: Int
         
         /// Countdown menu sections
         var sections: [AlarmSettingSectionModel]
@@ -47,7 +59,7 @@ class AlarmSettingViewReactor: Reactor {
     // MARK: - constructor
     init(appService: AppServiceProtocol) {
         self.appService = appService
-        initialState = State(selectedIndexPath: IndexPath(item: 0, section: 0),
+        initialState = State(selectedIndex: 0,
                              sections: [],
                              shouldSectionReload: true)
     }
@@ -58,8 +70,14 @@ class AlarmSettingViewReactor: Reactor {
         case .load:
             return actionLoad()
             
-        case let .select(indexPath):
-            return actionSelect(indexPath: indexPath)
+        case let .select(index):
+            return actionSelect(index: index)
+            
+        case .stop:
+            return actionStop()
+            
+        case let .play(index):
+            return actionPlay(at: index)
         }
     }
     
@@ -69,8 +87,12 @@ class AlarmSettingViewReactor: Reactor {
         state.shouldSectionReload = false
         
         switch mutation {
-        case let .setSelectedIndexPath(indexPath):
-            state.selectedIndexPath = indexPath
+        case let .setPlayIndex(index):
+            state.playIndex = index
+            return state
+            
+        case let .setSelectedIndex(index):
+            state.selectedIndex = index
             return state
             
         case let .setSections(sections):
@@ -86,28 +108,50 @@ class AlarmSettingViewReactor: Reactor {
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
         let items = Alarm.allCases
+        let index = items.firstIndex(of: appService.getAlarm()) ?? 0
         
-        var indexPath = IndexPath(item: 0, section: 0)
-        if let index = items.firstIndex(of: appService.getAlarm()) {
-            indexPath = IndexPath(item: index, section: 0)
-        }
-        
-        let setSections: Observable<Mutation> = .just(.setSections([AlarmSettingSectionModel(model: Void(), items: items)]))
-        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
+        let setSections: Observable<Mutation> = .just(.setSections([AlarmSettingSectionModel(model: Void(), items: items.map { AlarmSettingTableViewCellReactor(alarm: $0) })]))
+        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndex(index))
         let sectionReload: Observable<Mutation> = .just(.sectionReload)
         
         return .concat(setSections, setSelectedIndexPath, sectionReload)
     }
     
-    private func actionSelect(indexPath: IndexPath) -> Observable<Mutation> {
+    private func actionSelect(index: Int) -> Observable<Mutation> {
         let state = currentState
-        guard indexPath.item >= 0 && indexPath.item < state.sections[indexPath.section].items.count else { return .empty() }
+        let items = state.sections[0].items
+        guard (0 ..< items.count).contains(index) else { return .empty() }
         
         // Save selected alarm
-        let alarm = state.sections[indexPath.section].items[indexPath.item]
+        let alarm = items[index].alarm
         appService.setAlarm(alarm)
         
-        return .just(.setSelectedIndexPath(indexPath))
+        return .just(.setSelectedIndex(index))
+    }
+    
+    private func actionStop() -> Observable<Mutation> {
+        let state = currentState
+        guard let index = state.playIndex else { return .empty() }
+        
+        // Emit stop action to mutate alarm item state
+        state.sections[0].items[index].action.onNext(.stop)
+        
+        return .empty()
+    }
+    
+    private func actionPlay(at index: Int) -> Observable<Mutation> {
+        let state = currentState
+        let items = state.sections[0].items
+        guard (0 ..< items.count).contains(index) else { return .empty() }
+        
+        if let previousIndex = state.playIndex {
+            // Emit stop action to mutate previous alarm item state
+            items[previousIndex].action.onNext(.stop)
+        }
+        // Emit play action to mutate current alarm item state
+        items[index].action.onNext(.play)
+        
+        return .just(.setPlayIndex(index))
     }
     
     deinit {

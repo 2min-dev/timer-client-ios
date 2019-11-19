@@ -7,20 +7,23 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import ReactorKit
 
-class AlarmSettingTableViewCell: UITableViewCell {
+class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     // MARK: - view properties
-    let titleLabel: UILabel = {
+    fileprivate let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
-    private let playButton: UIButton = {
+    let playButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_play"), for: .normal)
-        view.isHidden = true
+        view.setImage(UIImage(named: "btn_pause"), for: .selected)
         return view
     }()
     
@@ -28,6 +31,9 @@ class AlarmSettingTableViewCell: UITableViewCell {
         let view = UIImageView(image: UIImage(named: "icon_selected"))
         return view
     }()
+    
+    // MARK: - properties
+    var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -48,7 +54,7 @@ class AlarmSettingTableViewCell: UITableViewCell {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(playButton.snp.trailing).inset(-4.adjust())
+            make.leading.equalTo(playButton.snp.trailing).inset(-3.5.adjust())
             make.trailing.equalTo(selectIconImageView.snp.leading)
             make.centerY.equalToSuperview()
         }
@@ -72,7 +78,62 @@ class AlarmSettingTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - bind
+    func bind(reactor: AlarmSettingTableViewCellReactor) {
+        // MARK: action
+        // MARK: state
+        reactor.state
+            .map { $0.title }
+            .distinctUntilChanged()
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.alarmState }
+            .distinctUntilChanged()
+            .compactMap { [weak self] in self?.setPlayButtonState(from: $0) }
+            .bind(to: playButton.rx.isSelected)
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - state method
+    private func setPlayButtonState(from alarmState: AlarmSettingTableViewCellReactor.AlarmState) -> Bool {
+        switch alarmState {
+        case .play:
+            return true
+            
+        case .stop:
+            return false
+        }
+    }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         selectIconImageView.isHidden = !selected
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct AlarmSettingTableViewCellPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> AlarmSettingTableViewCell {
+        return AlarmSettingTableViewCell()
+    }
+    
+    func updateUIView(_ uiView: AlarmSettingTableViewCell, context: Context) {
+        // Nothing
+        uiView.titleLabel.text = "기본음"
+    }
+}
+
+struct Previews_AlarmSettingTableViewCellView: PreviewProvider {
+    static var previews: some SwiftUI.View {
+        Group {
+            AlarmSettingTableViewCellPreview()
+                .frame(height: 80)
+                .previewLayout(.sizeThatFits)
+        }
+    }
+}
+
+#endif
