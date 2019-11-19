@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 import RxDataSources
+import AVFoundation
 
 class AlarmSettingViewController: BaseHeaderViewController, View {
     // MARK: - view properties
@@ -22,13 +23,31 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
     // MARK: - properties
     var coordinator: AlarmSettingViewCoordinator
     
-    private let dataSource = RxTableViewSectionedReloadDataSource<AlarmSettingSectionModel>(configureCell: { (datasource, tableView, indexPath, item) in
+    private lazy var dataSource = RxTableViewSectionedReloadDataSource<AlarmSettingSectionModel>(configureCell: { [weak self] (datasource, tableView, indexPath, item) in
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmSettingTableViewCell.name, for: indexPath) as? AlarmSettingTableViewCell else { return UITableViewCell() }
         
-        cell.titleLabel.text = item.title
+        // Stong capture `self`
+        guard let reactor = self?.reactor else { return cell }
+        cell.reactor = item
+        
+        switch item.alarm {
+        case .default:
+            cell.playButton.isHidden = false
+            
+            cell.playButton.rx.tap
+                .withLatestFrom(reactor.state.map { $0.playIndex })
+                .compactMap { self?.playButtonTapped(alarm: item.alarm, at: indexPath.item, currentIndex: $0) }
+                .bind(to: reactor.action)
+                .disposed(by: cell.disposeBag)
+            
+        default:
+            cell.playButton.isHidden = true
+        }
         
         return cell
     })
+    
+    private var audioPlayer: AVAudioPlayer?
     
     // MARK: - constructor
     init(coordinator: AlarmSettingViewCoordinator) {
@@ -66,7 +85,7 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         alarmSettingTableView.rx.itemSelected
-            .map { Reactor.Action.select($0) }
+            .map { Reactor.Action.select($0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -78,10 +97,45 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.selectedIndexPath }
+            .map { $0.selectedIndex }
             .distinctUntilChanged()
+            .map { IndexPath(item: $0, section: 0) }
             .subscribe(onNext: { [weak self] in self?.alarmSettingTableView.selectRow(at: $0, animated: true, scrollPosition: .none) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - private method
+    private func playButtonTapped(alarm: Alarm, at index: Int, currentIndex: Int?) -> AlarmSettingViewReactor.Action {
+        if currentIndex == index && audioPlayer?.isPlaying ?? false {
+            // Playing alarm
+            stop()
+            return .stop
+        } else {
+            // No alarm is playing
+            play(alarm: alarm)
+            return .play(index)
+        }
+    }
+    
+    private func play(alarm: Alarm) {
+        guard let fileName = Alarm.default.getFileName(type: .short),
+            let url = Bundle.main.url(forResource: fileName, withExtension: "mp3") else { return }
+        
+        // Alert alarm
+        audioPlayer = try? AVAudioPlayer(contentsOf: url)
+        audioPlayer?.delegate = self
+        // Play alarm
+        audioPlayer?.play()
+    }
+    
+    private func pause() {
+        // Pause alarm
+        audioPlayer?.pause()
+    }
+    
+    private func stop() {
+        // Stop alarm
+        audioPlayer?.stop()
     }
     
     deinit {
@@ -89,5 +143,12 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
     }
 }
 
+extension AlarmSettingViewController: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        // Stop played alarm
+        reactor?.action.onNext(.stop)
+    }
+}
+
 // MARK: - alarm setting datasource
-typealias AlarmSettingSectionModel = SectionModel<Void, Alarm>
+typealias AlarmSettingSectionModel = SectionModel<Void, AlarmSettingTableViewCellReactor>

@@ -120,7 +120,7 @@ class SavedTimeSetCollectionViewCell: UICollectionViewCell, View {
             reactor.state
                 .map { $0.allTime }
                 .distinctUntilChanged(),
-            Observable<Int>.timer(.seconds(0), period: .seconds(1), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
+            Observable<Int>.timer(.seconds(0), period: .seconds(60), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)))
             .observeOn(MainScheduler.instance)
             .map { Date().addingTimeInterval($0.0) }
             .map { getDateString(format: "time_set_end_time_full_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
