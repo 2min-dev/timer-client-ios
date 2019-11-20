@@ -14,11 +14,14 @@ import JSReorderableCollectionView
 
 class TimerBadgeCollectionView: JSReorderableCollectionView {
     // MARK: - properties
-    let _dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+    var isEditable: Bool = false
+    
+    lazy var _dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
         switch cellType {
         case let .regular(reactor):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
             cell.reactor = reactor
+            cell.editButton.isHidden = !(self?.isEditable ?? false)
             
             return cell
             
