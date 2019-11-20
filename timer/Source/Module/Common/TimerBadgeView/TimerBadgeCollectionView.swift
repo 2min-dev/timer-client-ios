@@ -14,6 +14,30 @@ import JSReorderableCollectionView
 
 class TimerBadgeCollectionView: JSReorderableCollectionView {
     // MARK: - properties
+    let _dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
+        switch cellType {
+        case let .regular(reactor):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
+            cell.reactor = reactor
+            
+            return cell
+            
+        case let .extra(type):
+            switch type {
+            case .add:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.name, for: indexPath)
+                
+                return cell
+                
+            case let .repeat(reactor):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeRepeatCollectionViewCell.name, for: indexPath) as? TimerBadgeRepeatCollectionViewCell else { fatalError() }
+                cell.reactor = reactor
+                
+                return cell
+            }
+        }
+    })
+    
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 0, height: 90.adjust())
     }
