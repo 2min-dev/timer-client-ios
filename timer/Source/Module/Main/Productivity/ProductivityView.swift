@@ -44,7 +44,8 @@ class ProductivityView: UIView {
         let view = UIStackView(arrangedSubviews: [allTimeLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
-        view.isHidden = true
+        view.setHidden(true)
+        
         return view
     }()
     
@@ -61,7 +62,7 @@ class ProductivityView: UIView {
         view.font = Constants.Font.Regular.withSize(24.adjust())
         view.cancelButton.titleLabel?.font = Constants.Font.Regular.withSize(20.adjust())
         view.foregroundColor = Constants.Color.codGray
-        view.cancelButton.isHidden = true
+        view.cancelButton.setHidden(true)
         
         // Set key touch animation
         view.keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
@@ -72,6 +73,7 @@ class ProductivityView: UIView {
         let view = TimeKeyPad()
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.setTitleColor(normal: Constants.Color.codGray, disabled: Constants.Color.silver)
+        view.setHidden(true)
         
         // Set key touch animation
         view.keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
@@ -80,6 +82,8 @@ class ProductivityView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
+        view.setContentHuggingPriority(.required, for: .vertical)
+        
         view.isEditable = true
         view.isAxisFixed = true
         if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
@@ -92,27 +96,10 @@ class ProductivityView: UIView {
     private lazy var contentView: UIView = {
         let view = UIView()
         
-        // Set constraint of subviews
-        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyPadView, dimedView, timerBadgeCollectionView])
-        timerInputView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.width.equalTo(215.adjust())
-            make.height.equalTo(50.adjust())
-        }
-        
-        timeInfoView.snp.makeConstraints { make in
-            make.top.equalTo(timerInputView.snp.bottom).offset(12.adjust())
-            make.centerX.equalToSuperview()
-            make.width.equalTo(timerInputView.snp.width)
-        }
-        
-        timeInputLabel.snp.makeConstraints { make in
-            make.edges.equalTo(timeInfoView)
-        }
-        
+        let timerContentView: UIView = UIView()
+        timerContentView.addAutolayoutSubviews([keyPadView, timeKeyPadView, timerBadgeCollectionView])
         keyPadView.snp.makeConstraints { make in
-            make.top.equalTo(timerInputView.snp.bottom).offset(27.5.adjust())
+            make.top.equalToSuperview()
             make.centerX.equalToSuperview()
             make.width.equalTo(330.adjust())
             make.height.equalTo(260.adjust())
@@ -129,10 +116,46 @@ class ProductivityView: UIView {
             make.top.equalTo(timeKeyPadView.snp.bottom).offset(5.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        let guideView: UIView = UIView()
+        guideView.addAutolayoutSubview(timerContentView)
+        timerContentView.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.center.equalToSuperview()
+        }
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, dimedView, guideView])
+        timerInputView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.width.equalTo(215.adjust())
+            make.height.equalTo(50.adjust())
+        }
+        
+        timeInfoView.snp.makeConstraints { make in
+            make.top.equalTo(timerInputView.snp.bottom).offset(12.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(timerInputView.snp.width)
+        }
+        
+        timeInputLabel.snp.makeConstraints { make in
+            make.top.equalTo(timerInputView.snp.bottom).offset(12.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(timerInputView.snp.width)
         }
         
         dimedView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        
+        guideView.snp.makeConstraints { make in
+            make.top.equalTo(timerInputView.snp.bottom).offset(6.adjust())
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         return view
@@ -210,11 +233,16 @@ class ProductivityView: UIView {
     // MARK: - private method
     private func showDimedView(isShow: Bool, animated: Bool) {
         if animated {
-            UIView.animate(withDuration: 0.3) {
+            dimedView.isHidden = false
+            
+            UIView.animate(withDuration: 0.3, animations: {
                 self.dimedView.alpha = isShow ? 0.8 : 0
-            }
+            }, completion: { _ in
+                self.dimedView.isHidden = !isShow
+            })
         } else {
             dimedView.alpha = isShow ? 0.8 : 0
+            dimedView.isHidden = !isShow
         }
     }
     
