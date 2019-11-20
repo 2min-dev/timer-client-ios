@@ -47,14 +47,14 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
         // Set constraint of subviews
         addAutolayoutSubviews([playButton, titleLabel, selectIconImageView, divider])
         playButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(20.2.adjust())
+            make.leading.equalToSuperview().inset(10.adjust())
             make.centerY.equalToSuperview()
             make.width.equalTo(36.adjust())
             make.height.equalTo(selectIconImageView.snp.width)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(playButton.snp.trailing).inset(-3.5.adjust())
+            make.leading.equalTo(playButton.snp.trailing).inset(-14.2.adjust())
             make.trailing.equalTo(selectIconImageView.snp.leading)
             make.centerY.equalToSuperview()
         }
