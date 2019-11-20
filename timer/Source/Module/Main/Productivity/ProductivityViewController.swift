@@ -120,10 +120,11 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         isTimerOptionVisible
+            .distinctUntilChanged()
             .map { !$0 }
             .do(onNext: { [weak self] in self?.productivityView.isEnabled = $0 })
             .do(onNext: { [weak self] in self?.timerBadgeCollectionView.isScrollEnabled = $0 })
-            .bind(to: timerOptionView.rx.isHidden)
+            .bind(to: timerOptionView.rx.isHiddenWithAnimation)
             .disposed(by: disposeBag)
     }
     
@@ -233,14 +234,14 @@ class ProductivityViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.time > 0 || $0.allTime == 0 }
             .distinctUntilChanged()
-            .bind(to: timeInfoView.rx.isHidden)
+            .bind(to: timeInfoView.rx.isHiddenWithAnimation)
             .disposed(by: disposeBag)
         
         // Time key
         reactor.state
             .map { $0.time == 0 && $0.allTime == 0 }
             .distinctUntilChanged()
-            .bind(to: timeKeyView.rx.isHidden, keyPadView.cancelButton.rx.isHidden)
+            .bind(to: timeKeyView.rx.isHiddenWithAnimation, keyPadView.cancelButton.rx.isHiddenWithAnimation)
             .disposed(by: disposeBag)
         
         reactor.state
@@ -395,7 +396,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     /// - Set tab bar swipe enabled
     /// - Show/Hide footer view
     private func updateLayoutFrom(canTimeSetStart: Bool) {
-        timerBadgeCollectionView.isHidden = !canTimeSetStart
+        timerBadgeCollectionView.setHidden(!canTimeSetStart, animated: true)
         
         if canTimeSetStart {
             // Scroll timer badge to seleted index if badge is visible

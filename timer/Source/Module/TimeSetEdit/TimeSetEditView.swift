@@ -140,7 +140,9 @@ class TimeSetEditView: UIView {
         }
         
         timeInputLabel.snp.makeConstraints { make in
-            make.edges.equalTo(timeInfoView)
+            make.top.equalTo(timerInputView.snp.bottom).offset(12.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(timerInputView.snp.width)
         }
         
         dimedView.snp.makeConstraints { make in

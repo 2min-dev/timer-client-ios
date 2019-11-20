@@ -44,7 +44,8 @@ class ProductivityView: UIView {
         let view = UIStackView(arrangedSubviews: [allTimeLabel, endOfTimeSetLabel])
         view.axis = .horizontal
         view.distribution = .fillEqually
-        view.isHidden = true
+        view.setHidden(true)
+        
         return view
     }()
     
@@ -61,7 +62,7 @@ class ProductivityView: UIView {
         view.font = Constants.Font.Regular.withSize(24.adjust())
         view.cancelButton.titleLabel?.font = Constants.Font.Regular.withSize(20.adjust())
         view.foregroundColor = Constants.Color.codGray
-        view.cancelButton.isHidden = true
+        view.cancelButton.setHidden(true)
         
         // Set key touch animation
         view.keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
@@ -72,6 +73,7 @@ class ProductivityView: UIView {
         let view = TimeKeyPad()
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
         view.setTitleColor(normal: Constants.Color.codGray, disabled: Constants.Color.silver)
+        view.setHidden(true)
         
         // Set key touch animation
         view.keys.forEach { $0.addTarget(self, action: #selector(touchKey(sender:)), for: .touchUpInside) }
@@ -140,7 +142,9 @@ class ProductivityView: UIView {
         }
         
         timeInputLabel.snp.makeConstraints { make in
-            make.edges.equalTo(timeInfoView)
+            make.top.equalTo(timerInputView.snp.bottom).offset(12.adjust())
+            make.centerX.equalToSuperview()
+            make.width.equalTo(timerInputView.snp.width)
         }
         
         dimedView.snp.makeConstraints { make in
