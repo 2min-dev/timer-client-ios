@@ -80,6 +80,7 @@ class ProductivityView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
+        view.isEditable = true
         view.isAxisFixed = true
         if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
             layout.axisPoint = TimerBadgeCollectionViewFlowLayout.Axis.center

@@ -10,14 +10,14 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
+class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     // MARK: - view properties
     private let timerIconImageView: UIImageView = {
         let view = UIImageView(image: UIImage(named: "icon_timer"))
         return view
     }()
     
-    private let timerIndexLabel: UILabel = {
+    fileprivate let timerIndexLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(10.adjust())
         view.textColor = Constants.Color.silver
@@ -25,7 +25,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         return view
     }()
     
-    private let timeLabel: UILabel = {
+    fileprivate let timeLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -187,3 +187,30 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, View {
         CATransaction.commit()
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct TimerBadgeCollectionViewCellPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> TimerBadgeCollectionViewCell {
+        return TimerBadgeCollectionViewCell()
+    }
+    
+    func updateUIView(_ uiView: TimerBadgeCollectionViewCell, context: Context) {
+        uiView.timerIndexLabel.text = "1/1"
+        uiView.timeLabel.text = "00:00:00"
+        uiView.editButton.isHidden = false
+    }
+}
+
+struct Previews_TimerBadgeCollectionViewCellView: PreviewProvider {
+    static var previews: some SwiftUI.View {
+        Group {
+            TimerBadgeCollectionViewCellPreview()
+                .frame(width: 130, height: 70)
+                .previewLayout(.sizeThatFits)
+        }
+    }
+}
+
+#endif

@@ -38,37 +38,6 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     private var confirmButton: FooterButton { return timeSetEditView.confirmButton }
     
     // MARK: - properties
-    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
-        switch cellType {
-        case let .regular(reactor):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
-            cell.reactor = reactor
-            
-            return cell
-            
-        case let .extra(type):
-            switch type {
-            case .add:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeAddCollectionViewCell.name, for: indexPath)
-                
-                return cell
-                
-            case let .repeat(reactor):
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeRepeatCollectionViewCell.name, for: indexPath) as? TimerBadgeRepeatCollectionViewCell else { fatalError() }
-                cell.reactor = reactor
-                
-                return cell
-            }
-        }
-    }, moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
-        let section = TimerBadgeSectionType.regular.rawValue
-        guard let reactor = self?.reactor,
-            sourceIndexPath.section == section && destinationIndexPath.section == section else { return }
-        
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        reactor.action.onNext(.moveTimer(at: sourceIndexPath.item, to: destinationIndexPath.item))
-    })
-    
     private let canTimeSetStart: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private let isTimerOptionVisible: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     private var isBadgeMoving: Bool = false
@@ -95,6 +64,16 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
         timerBadgeCollectionView.addGestureRecognizer(longPressGesture)
+        
+        // Set move item closure on timer badge datasource
+        timerBadgeCollectionView._dataSource.moveItem = { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
+            let section = TimerBadgeSectionType.regular.rawValue
+            guard let reactor = self?.reactor,
+                sourceIndexPath.section == section && destinationIndexPath.section == section else { return }
+            
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            reactor.action.onNext(.moveTimer(at: sourceIndexPath.item, to: destinationIndexPath.item))
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -260,7 +239,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.sections }
-            .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
+            .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
         reactor.state
@@ -364,7 +343,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     }
     
     /// Convert badge select event to reactor action
-    private func selectBadge(at indexPath: IndexPath) -> Reactor.Action? {
+    private func selectBadge(at indexPath: IndexPath) -> TimeSetEditViewReactor.Action? {
         guard let reactor = reactor else { return nil }
         
         let cellType = reactor.currentState.sections[indexPath.section].items[indexPath.item]

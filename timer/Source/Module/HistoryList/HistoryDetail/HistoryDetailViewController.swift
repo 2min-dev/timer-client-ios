@@ -39,19 +39,6 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     // MARK: - properties
     var coordinator: HistoryDetailViewCoordinator
     
-    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimerBadgeSectionModel>(configureCell: { (dataSource, collectionView, indexPath, cellType) -> UICollectionViewCell in
-        switch cellType {
-        case let .regular(reactor):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimerBadgeCollectionViewCell.name, for: indexPath) as? TimerBadgeCollectionViewCell else { fatalError() }
-            cell.reactor = reactor
-            
-            return cell
-            
-        case .extra(_):
-            fatalError("This view can't present extra cells of timer badge collection view")
-        }
-    })
-    
     // MARK: - constructor
     init(coordinator: HistoryDetailViewCoordinator) {
         self.coordinator = coordinator
@@ -197,7 +184,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.sections }
-            .bind(to: timerBadgeCollectionView.rx.items(dataSource: dataSource))
+            .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
         let didTimeSetSaved = reactor.state
