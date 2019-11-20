@@ -123,9 +123,9 @@ class Toast: UIView {
         frame.size = CGSize(width: 330.adjust(), height: height)
         
         if let keyWindow = keyWindow, frame.origin == Self.AUTOMATIC_POSITION {
-            // Set toast position automatically (center x, 86% y)
+            // Set toast position automatically (center x, 82% y)
             let x = (keyWindow.bounds.width - bounds.width) * 0.5
-            let y = (keyWindow.bounds.height - bounds.height - keyWindow._safeAreaInsets.bottom) * 0.86
+            let y = (keyWindow.bounds.height - keyWindow._safeAreaInsets.bottom) * 0.82
             frame.origin = CGPoint(x: x, y: y)
         }
     }
@@ -179,7 +179,7 @@ class Toast: UIView {
         // Set constraint of task button
         contentStackView.addArrangedSubview(taskButton)
         taskButton.snp.makeConstraints { make in
-            make.width.equalTo(68.adjust()).priorityHigh()
+            make.width.equalTo(70.adjust()).priorityHigh()
         }
         
         self.task = task
