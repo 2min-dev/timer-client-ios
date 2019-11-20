@@ -37,6 +37,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     
     let editButton: UIButton = {
         let view = UIButton()
+        view.isUserInteractionEnabled = false
         view.setImage(UIImage(named: "btn_timer_edit"), for: .normal)
         return view
     }()

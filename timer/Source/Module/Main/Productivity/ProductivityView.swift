@@ -80,6 +80,8 @@ class ProductivityView: UIView {
     
     let timerBadgeCollectionView: TimerBadgeCollectionView = {
         let view = TimerBadgeCollectionView(frame: .zero)
+        view.setContentHuggingPriority(.required, for: .vertical)
+        
         view.isEditable = true
         view.isAxisFixed = true
         if let layout = view.collectionViewLayout as? TimerBadgeCollectionViewFlowLayout {
@@ -92,8 +94,38 @@ class ProductivityView: UIView {
     private lazy var contentView: UIView = {
         let view = UIView()
         
+        let timerContentView: UIView = UIView()
+        timerContentView.addAutolayoutSubviews([keyPadView, timeKeyPadView, timerBadgeCollectionView])
+        keyPadView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.width.equalTo(330.adjust())
+            make.height.equalTo(260.adjust())
+        }
+        
+        timeKeyPadView.snp.makeConstraints { make in
+            make.top.equalTo(keyPadView.snp.bottom).inset(2.5.adjust())
+            make.leading.equalTo(keyPadView)
+            make.trailing.equalTo(keyPadView)
+            make.height.equalTo(60.adjust())
+        }
+        
+        timerBadgeCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(timeKeyPadView.snp.bottom).offset(5.adjust())
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        let guideView: UIView = UIView()
+        guideView.addAutolayoutSubview(timerContentView)
+        timerContentView.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.center.equalToSuperview()
+        }
+        
         // Set constraint of subviews
-        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, keyPadView, timeKeyPadView, dimedView, timerBadgeCollectionView])
+        view.addAutolayoutSubviews([timerInputView, timeInfoView, timeInputLabel, dimedView, guideView])
         timerInputView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -111,28 +143,15 @@ class ProductivityView: UIView {
             make.edges.equalTo(timeInfoView)
         }
         
-        keyPadView.snp.makeConstraints { make in
-            make.top.equalTo(timerInputView.snp.bottom).offset(27.5.adjust())
-            make.centerX.equalToSuperview()
-            make.width.equalTo(330.adjust())
-            make.height.equalTo(260.adjust())
-        }
-        
-        timeKeyPadView.snp.makeConstraints { make in
-            make.top.equalTo(keyPadView.snp.bottom).inset(2.5.adjust())
-            make.leading.equalTo(keyPadView)
-            make.trailing.equalTo(keyPadView)
-            make.height.equalTo(60.adjust())
-        }
-        
-        timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(timeKeyPadView.snp.bottom).offset(5.adjust())
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-        }
-        
         dimedView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        
+        guideView.snp.makeConstraints { make in
+            make.top.equalTo(timerInputView.snp.bottom).offset(6.adjust())
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         return view
@@ -210,11 +229,16 @@ class ProductivityView: UIView {
     // MARK: - private method
     private func showDimedView(isShow: Bool, animated: Bool) {
         if animated {
-            UIView.animate(withDuration: 0.3) {
+            dimedView.isHidden = false
+            
+            UIView.animate(withDuration: 0.3, animations: {
                 self.dimedView.alpha = isShow ? 0.8 : 0
-            }
+            }, completion: { _ in
+                self.dimedView.isHidden = !isShow
+            })
         } else {
             dimedView.alpha = isShow ? 0.8 : 0
+            dimedView.isHidden = !isShow
         }
     }
     
