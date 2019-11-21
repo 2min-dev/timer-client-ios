@@ -112,11 +112,11 @@
 // MARK: - History
 "history_empty_title" = "You don't have any time set history yet. \nEnroll your own time!";
 "history_make_time_set_title" = "Create a time set";
-"history_started_date_format" = "YY.MM.dd";
+"history_started_date_format" = "yy.MM.dd";
 "history_date_title" = "Date";
 "history_extra_time_title" = "Extra";
 "history_repeat_count_title" = "Repetitions";
-"history_full_date_format" = "YY. M. d / h:m a";
+"history_full_date_format" = "yy. M. d / h:m a";
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%dM";
 "history_repeat_count_format" = "%d";

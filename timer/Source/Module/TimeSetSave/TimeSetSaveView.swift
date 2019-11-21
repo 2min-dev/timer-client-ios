@@ -7,13 +7,8 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
 
 class TimeSetSaveView: UIView {
-    // MARK: - constants
-    private let MAX_TITLE_LENGTH: Int = 20
-    
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
@@ -288,9 +283,6 @@ class TimeSetSaveView: UIView {
         return view
     }()
     
-    // MARK: - properties
-    private var disposeBag = DisposeBag()
-    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -319,35 +311,10 @@ class TimeSetSaveView: UIView {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-        
-        bind()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - bind
-    private func bind() {
-        titleTextField.rx.textChanged
-            .compactMap { $0 }
-            .map { !$0.isEmpty }
-            .bind(to: titleHintLabel.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        titleTextField.rx.textChanged
-            .compactMap { $0 }
-            .map { $0.isEmpty }
-            .bind(to: titleClearButton.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        titleTextField.rx.text
-            .orEmpty
-            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
-            .filter { [weak self] in $0.1 > (self?.MAX_TITLE_LENGTH ?? 0) }
-            .map { String($0.0.dropLast()) }
-            .bind(to: titleTextField.rx.text)
-            .disposed(by: disposeBag)
     }
     
     // MARK: - selector
