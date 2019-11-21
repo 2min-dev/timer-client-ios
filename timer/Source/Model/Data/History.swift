@@ -24,9 +24,12 @@ import RealmSwift
     // MARK: - properties
     @objc dynamic private(set) var id: Int = -1
     @objc dynamic var item: TimeSetItem?
+    
+    @objc dynamic var memo: String = ""
     @objc dynamic var repeatCount: Int = 0
     @objc dynamic var runningTime: TimeInterval = 0
     @objc dynamic var endState: EndState = .none
+    @objc dynamic var isSaved: Bool = false
     
     @objc dynamic var startDate: Date? {
         didSet { id = Int(startDate?.timeIntervalSince1970 ?? -1) }
@@ -35,16 +38,20 @@ import RealmSwift
     
     // MARK: - constructor
     convenience init(item: TimeSetItem?,
+                     memo: String = "",
                      repeatCount: Int = 0,
                      runningTime: TimeInterval = 0,
                      endState: EndState = .none,
+                     isSaved: Bool = false,
                      startDate: Date? = nil,
                      endDate: Date? = nil) {
         self.init()
         self.id = Int(startDate?.timeIntervalSince1970 ?? -1)
         self.item = item
+        self.memo = memo
         self.repeatCount = repeatCount
         self.runningTime = runningTime
+        self.isSaved = isSaved
         self.endState = endState
         self.startDate = startDate
         self.endDate = endDate
@@ -58,9 +65,11 @@ import RealmSwift
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
         return History(item: item?.copy() as? TimeSetItem,
+                       memo: memo,
                        repeatCount: repeatCount,
                        runningTime: runningTime,
                        endState: endState,
+                       isSaved: isSaved,
                        startDate: startDate,
                        endDate: endDate)
     }

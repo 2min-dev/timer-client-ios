@@ -28,12 +28,12 @@ class TimeSetMemoViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     
-    private let timeSetItem: TimeSetItem // Original time set item
+    private let history: History
     
     // MARK: - constructor
-    init(timeSetItem: TimeSetItem) {
-        self.timeSetItem = timeSetItem
-        initialState = State(memo: timeSetItem.memo)
+    init(history: History) {
+        self.history = history
+        initialState = State(memo: history.memo)
     }
     
     // MARK: - mutation
@@ -58,7 +58,7 @@ class TimeSetMemoViewReactor: Reactor {
     // MARK: - action method
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update timer comment
-        timeSetItem.memo = memo
+        history.memo = memo
         return .just(.setMemo(memo))
     }
 }

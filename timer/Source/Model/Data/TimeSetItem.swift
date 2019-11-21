@@ -15,7 +15,6 @@ class TimeSetItem: Object, NSCopying, Codable {
     // Default information of the time set
     @objc dynamic var id: String?                       // Identifier of the time set
     @objc dynamic var title: String = ""                // Name of the timer set
-    @objc dynamic var memo: String = ""                 // Description of the timer set
     @objc dynamic var isRepeat: Bool = false            // Is repeat of the time set
     @objc dynamic var isBookmark: Bool = false          // Is bookmark of the time set
     
@@ -29,7 +28,6 @@ class TimeSetItem: Object, NSCopying, Codable {
     // MARK: - constructor
     convenience init(id: String?,
                      title: String,
-                     memo: String,
                      isBookmark: Bool,
                      isRepeat: Bool,
                      timers: List<TimerItem>,
@@ -39,7 +37,6 @@ class TimeSetItem: Object, NSCopying, Codable {
         self.init()
         self.id = id
         self.title = title
-        self.memo = memo
         self.isBookmark = isBookmark
         self.isRepeat = isRepeat
         self.timers = timers
@@ -60,7 +57,6 @@ class TimeSetItem: Object, NSCopying, Codable {
         
         return TimeSetItem(id: id,
                            title: title,
-                           memo: memo,
                            isBookmark: isBookmark,
                            isRepeat: isRepeat,
                            timers: timers,

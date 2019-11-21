@@ -115,9 +115,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
-            .compactMap { reactor.timeSet.item }
             .subscribe(onNext: { [weak self] in
-                guard let viewController = self?.coordinator.present(for: .timeSetMemo($0)) as? TimeSetMemoViewController else { return }
+                guard let viewController = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.history)) as? TimeSetMemoViewController else { return }
                 self?.bind(memo: viewController)
             })
             .disposed(by: disposeBag)

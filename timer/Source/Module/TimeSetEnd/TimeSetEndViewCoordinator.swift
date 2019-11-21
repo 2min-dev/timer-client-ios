@@ -12,6 +12,7 @@ class TimeSetEndViewCoordinator: CoordinatorProtocol {
     // MARK: - route enumeration
     enum Route {
         case home
+        case timeSetEdit(TimeSetItem)
     }
     
     // MARK: - properties
@@ -32,6 +33,9 @@ class TimeSetEndViewCoordinator: CoordinatorProtocol {
             guard let navigationController = self.viewController.presentingViewController as? UINavigationController else { return nil }
             navigationController.setViewControllers([viewController], animated: true)
             self.viewController.dismiss(animated: true)
+            
+        case .timeSetEdit(_):
+            self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         
         return viewController
@@ -42,6 +46,17 @@ class TimeSetEndViewCoordinator: CoordinatorProtocol {
         case .home:
             guard let navigationController = self.viewController.presentingViewController as? UINavigationController else { return nil }
             return navigationController.viewControllers.first
+            
+        case let .timeSetEdit(timeSetItem):
+            let coordinator = TimeSetEditViewCoordinator(provider: provider)
+            guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
+            let viewController = TimeSetEditViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
         }
     }
 }

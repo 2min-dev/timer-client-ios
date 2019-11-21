@@ -11,7 +11,7 @@
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
 		F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* TMTabBar.swift */; };
 		F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* TMTabBarItem.swift */; };
-		F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F266225CC9E900A11FAF /* RootViewController.swift */; };
+		F303F267225CC9E900A11FAF /* BaseNavicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F266225CC9E900A11FAF /* BaseNavicationController.swift */; };
 		F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */; };
 		F303F26D225CCAE400A11FAF /* LocalTimeSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */; };
 		F303F26F225CCAF500A11FAF /* LocalTimeSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26E225CCAF500A11FAF /* LocalTimeSetView.swift */; };
@@ -236,7 +236,7 @@
 		E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.release.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.release.xcconfig"; sourceTree = "<group>"; };
 		F302608E22EEAFC300E3E431 /* TMTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTabBar.swift; sourceTree = "<group>"; };
 		F302609022EEB89600E3E431 /* TMTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTabBarItem.swift; sourceTree = "<group>"; };
-		F303F266225CC9E900A11FAF /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		F303F266225CC9E900A11FAF /* BaseNavicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavicationController.swift; sourceTree = "<group>"; };
 		F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewController.swift; sourceTree = "<group>"; };
 		F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewReactor.swift; sourceTree = "<group>"; };
 		F303F26E225CCAF500A11FAF /* LocalTimeSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetView.swift; sourceTree = "<group>"; };
@@ -587,6 +587,15 @@
 			path = Default;
 			sourceTree = "<group>";
 		};
+		F35169842386DE1500EFE74C /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F302609022EEB89600E3E431 /* TMTabBarItem.swift */,
+				F302608E22EEAFC300E3E431 /* TMTabBar.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		F3735C9222CFA78100DC247C /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -603,30 +612,29 @@
 				F3D49922227F272600AC4B2B /* Common */,
 				F3735C9522CFA81100DC247C /* App */,
 				F3735C9622CFA82000DC247C /* Base */,
-				F3735C9422CFA7EC00DC247C /* Root */,
 				F3735C9722CFA83C00DC247C /* Intro */,
 				F3735C9922CFA8C000DC247C /* Main */,
+				F3735C9822CFA88700DC247C /* Productivity */,
+				F3735C9A22CFA98A00DC247C /* LocalTimeSet */,
+				F3F54138232778BC00D618D2 /* TimeSetManage */,
+				F3F5F86F233155AA003271B3 /* AllTimeSet */,
 				F3CD207E22FD95CC0059E1BA /* TimeSetEdit */,
 				F387AF2B22F181FA002ABDB6 /* TimeSetSave */,
 				F38702B222F970D20099241C /* TimeSetDetail */,
 				F3ADF67E2300671400F0FC67 /* TimeSetProcess */,
+				F3ADF4302312943E00FA9277 /* TimeSetMemo */,
+				F3060F93230E9ADB002A2E0E /* TimeSetEnd */,
 				F3A218F423535FA1007ABE3F /* HistoryList */,
+				F39BFF832354D31C0057816B /* HistoryDetail */,
 				F3735C9C22CFAA8200DC247C /* Setting */,
 				F3C0DF9B233369A400E49425 /* NoticeList */,
+				F3F21F69233389F80000597B /* NoticeDetail */,
 				F3C0DF8F2333500D00E49425 /* AlarmSetting */,
 				F3C0DF8323333F6800E49425 /* CountdownSetting */,
 				F3735C9D22CFAAA000DC247C /* TeamInfo */,
 				F30B9CDD233274AC003496A9 /* OpenSourceLicense */,
 			);
 			path = Module;
-			sourceTree = "<group>";
-		};
-		F3735C9422CFA7EC00DC247C /* Root */ = {
-			isa = PBXGroup;
-			children = (
-				F303F266225CC9E900A11FAF /* RootViewController.swift */,
-			);
-			path = Root;
 			sourceTree = "<group>";
 		};
 		F3735C9522CFA81100DC247C /* App */ = {
@@ -643,6 +651,7 @@
 			children = (
 				F3D1F7B1225CC2A9006DC162 /* BaseViewController.swift */,
 				F3F21F742333A8850000597B /* BaseHeaderViewController.swift */,
+				F303F266225CC9E900A11FAF /* BaseNavicationController.swift */,
 				F3C18755226306EC00B2C644 /* CoordinatorProtocol.swift */,
 			);
 			path = Base;
@@ -672,15 +681,12 @@
 		F3735C9922CFA8C000DC247C /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				F302609022EEB89600E3E431 /* TMTabBarItem.swift */,
-				F302608E22EEAFC300E3E431 /* TMTabBar.swift */,
+				F35169842386DE1500EFE74C /* View */,
 				F303F282225CD51400A11FAF /* MainViewController.swift */,
 				F30602292379812300A9C866 /* MainViewReactor.swift */,
 				F303F284225CD53A00A11FAF /* MainViewCoordinator.swift */,
 				F3AEA72F228B1D7500D563E0 /* TabBarInteractor.swift */,
 				F3AEA72C228B1A6300D563E0 /* TabBarAnimator.swift */,
-				F3735C9822CFA88700DC247C /* Productivity */,
-				F3735C9A22CFA98A00DC247C /* LocalTimeSet */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -693,8 +699,6 @@
 				F303F26E225CCAF500A11FAF /* LocalTimeSetView.swift */,
 				F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */,
 				F303F270225CCB6A00A11FAF /* LocalTimeSetViewCoordinator.swift */,
-				F3F54138232778BC00D618D2 /* TimeSetManage */,
-				F3F5F86F233155AA003271B3 /* AllTimeSet */,
 			);
 			path = LocalTimeSet;
 			sourceTree = "<group>";
@@ -792,7 +796,6 @@
 				F3A218F823535FB5007ABE3F /* HistoryListView.swift */,
 				F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */,
 				F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */,
-				F39BFF832354D31C0057816B /* HistoryDetail */,
 			);
 			path = HistoryList;
 			sourceTree = "<group>";
@@ -816,8 +819,6 @@
 				F3ADF6822300672800F0FC67 /* TimeSetProcessView.swift */,
 				F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */,
 				F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */,
-				F3ADF4302312943E00FA9277 /* TimeSetMemo */,
-				F3060F93230E9ADB002A2E0E /* TimeSetEnd */,
 			);
 			path = TimeSetProcess;
 			sourceTree = "<group>";
@@ -881,7 +882,6 @@
 				F3C0DF9F233369CE00E49425 /* NoticeListView.swift */,
 				F3C0DF9D233369CE00E49425 /* NoticeListViewReactor.swift */,
 				F3C0DF9C233369CE00E49425 /* NoticeListViewCoordinator.swift */,
-				F3F21F69233389F80000597B /* NoticeDetail */,
 			);
 			path = NoticeList;
 			sourceTree = "<group>";
@@ -1421,7 +1421,7 @@
 				F3ADF4372312945600FA9277 /* TimeSetMemoViewController.swift in Sources */,
 				F303F279225CCCE300A11FAF /* SettingViewReactor.swift in Sources */,
 				F3060F92230D19FE002A2E0E /* TimeSetEndView.swift in Sources */,
-				F303F267225CC9E900A11FAF /* RootViewController.swift in Sources */,
+				F303F267225CC9E900A11FAF /* BaseNavicationController.swift in Sources */,
 				F3AEA72D228B1A6300D563E0 /* TabBarAnimator.swift in Sources */,
 				F39B0B8D231F7D3B00C2785A /* RealmService.swift in Sources */,
 				F3C24CE0232D3FB200D7492C /* TimeSetManageCollectionViewCellReactor.swift in Sources */,

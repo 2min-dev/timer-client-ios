@@ -55,6 +55,8 @@ class FooterButton: UIButton {
             backgroundLayer.removeFromSuperlayer()
             backgroundLayer = isEnabled ? type.backgroundLayer : FooterButtonType.normal.backgroundLayer
             layer.insertSublayer(backgroundLayer, at: 0)
+            
+            setNeedsDisplay()
         }
     }
     
