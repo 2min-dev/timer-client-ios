@@ -47,7 +47,7 @@ class AppCoordinator {
             introViewCoordinator.viewController = introViewController
             introViewController.reactor = introViewReactor
             
-            let viewController: RootViewController = RootViewController(rootViewController: introViewController)
+            let viewController: BaseNavicationController = BaseNavicationController(rootViewController: introViewController)
             return viewController
         }
     }

@@ -96,7 +96,7 @@ class HistoryDetailViewReactor: Reactor {
                              endDate: endDate,
                              extraTime: item.timers.reduce(0) { $0 + $1.extra },
                              repeatCount: history.repeatCount,
-                             memo: item.memo,
+                             memo: history.memo,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
                              shouldSectionReload: true,
                              didTimeSetSaved: false)
@@ -140,7 +140,7 @@ class HistoryDetailViewReactor: Reactor {
     
     private func actionUpdateMemo(_ memo: String) -> Observable<Mutation> {
         // Update time set's memo
-        history.item?.memo = memo
+        history.memo = memo
         return .just(.setMemo(memo))
     }
     

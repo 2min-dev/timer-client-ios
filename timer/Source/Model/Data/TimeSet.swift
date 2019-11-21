@@ -78,7 +78,7 @@ class TimeSet: EventStreamProtocol {
     }
     
     convenience init(item: TimeSetItem, index: Int) {
-        self.init(item: item, history: History(item: item), index: index)
+        self.init(item: item, history: History(item: item, isSaved: item.id != nil), index: index)
     }
     
     // MARK: - private method

@@ -29,8 +29,14 @@ class HistoryDetailViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetEdit(_),
-             .timeSetProcess(_):
+        case .timeSetProcess(_):
+            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
+                return nil
+            }
+            let viewControllers = [rootViewController, viewController]
+            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            
+        case .timeSetEdit(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
         }
         

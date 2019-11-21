@@ -48,7 +48,7 @@ class TimeSetEndView: UIView {
         
         view.typingAttributes = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.doveGray,
+            .foregroundColor: Constants.Color.codGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
         ]
@@ -122,16 +122,20 @@ class TimeSetEndView: UIView {
     }()
     
     let overtimeButton: FooterButton = {
-        return FooterButton(title: "footer_button_overtime".localized, type: .normal)
+        FooterButton(title: "footer_button_overtime".localized, type: .sub)
+    }()
+    
+    let saveButton: FooterButton = {
+        FooterButton(title: "footer_button_save".localized, type: .normal)
     }()
     
     let restartButton: FooterButton = {
-        return FooterButton(title: "footer_button_restart".localized, type: .highlight)
+        FooterButton(title: "footer_button_restart".localized, type: .normal)
     }()
     
     lazy var footerView: Footer = {
         let view = Footer()
-        view.buttons = [overtimeButton, restartButton]
+        view.buttons = [overtimeButton, saveButton, restartButton]
         return view
     }()
     

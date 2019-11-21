@@ -15,20 +15,21 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
     private static let MAX_MEMO_LENGTH: Int = 1000
     
     // MARK: - view properties
-    private var timeSetEndView: TimeSetEndView { return view as! TimeSetEndView }
+    private var timeSetEndView: TimeSetEndView { view as! TimeSetEndView }
     
-    override var headerView: CommonHeader { return timeSetEndView.headerView }
+    override var headerView: CommonHeader { timeSetEndView.headerView }
     
-    private var titleLabel: UILabel { return timeSetEndView.titleLabel }
-    private var dateLabel: UILabel { return timeSetEndView.dateLabel }
+    private var titleLabel: UILabel { timeSetEndView.titleLabel }
+    private var dateLabel: UILabel { timeSetEndView.dateLabel }
     
-    private var memoTextView: UITextView { return timeSetEndView.memoTextView }
-    private var memoHintLabel: UILabel { return timeSetEndView.memoHintLabel }
-    private var memoExcessLabel: UILabel { return timeSetEndView.memoExcessLabel }
-    private var memoLengthLabel: UILabel { return timeSetEndView.memoLengthLabel }
+    private var memoTextView: UITextView { timeSetEndView.memoTextView }
+    private var memoHintLabel: UILabel { timeSetEndView.memoHintLabel }
+    private var memoExcessLabel: UILabel { timeSetEndView.memoExcessLabel }
+    private var memoLengthLabel: UILabel { timeSetEndView.memoLengthLabel }
     
-    fileprivate var overtimeButton: FooterButton { return timeSetEndView.overtimeButton }
-    fileprivate var restartButton: FooterButton { return timeSetEndView.restartButton }
+    fileprivate var overtimeButton: FooterButton { timeSetEndView.overtimeButton }
+    private var saveButton: FooterButton { timeSetEndView.saveButton }
+    fileprivate var restartButton: FooterButton { timeSetEndView.restartButton }
     
     // MARK: - properties
     var coordinator: TimeSetEndViewCoordinator
@@ -101,7 +102,7 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         rx.viewWillDisappear
-            .map { Reactor.Action.viewWillDisappear }
+            .map { Reactor.Action.saveHistory }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -114,6 +115,12 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
         
         overtimeButton.rx.tap
             .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
+            .disposed(by: disposeBag)
+        
+        saveButton.rx.tap
+            .do(onNext: { [weak self] in self?.view.endEditing(true)})
+            .map { Reactor.Action.saveTimeSet }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         restartButton.rx.tap
@@ -145,6 +152,21 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
             .map { $0.memo }
             .filter { [weak self] in self?.memoTextView.text != $0 }
             .bind(to: memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        let didTimeSetSaved = reactor.state
+            .map { $0.didTimeSetSaved }
+            .distinctUntilChanged()
+        
+        didTimeSetSaved
+            .map { !$0 }
+            .bind(to: saveButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        didTimeSetSaved
+            .skip(1)
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] in $0 ? self?.showTimeSetSavedToast() : nil })
             .disposed(by: disposeBag)
     }
     
@@ -182,6 +204,14 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
         let attributes: [NSAttributedString.Key: Any] = [.kern: -0.3]
         
         return NSAttributedString(string: dateString, attributes: attributes)
+    }
+    
+    private func showTimeSetSavedToast() {
+        guard let timeSetItem = reactor?.timeSetItem else { return }
+        Toast(content: "toast_time_set_saved_title".localized,
+              task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
+                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
+        }).show(animated: true, withDuration: 3)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
