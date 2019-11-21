@@ -60,7 +60,7 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
         
         memoTextView.rx.text
             .orEmpty
-            .filter { $0.lengthOfBytes(using: .utf16) > Self.MAX_MEMO_LENGTH }
+            .filter { $0.lengthOfBytes(using: .euc_kr) > Self.MAX_MEMO_LENGTH }
             .do(onNext: { [weak self] _ in self?.isExceeded.accept(true) })
             .map { String($0.dropLast()) }
             .bind(to: memoTextView.rx.text)
@@ -70,7 +70,7 @@ class TimeSetEndViewController: BaseHeaderViewController, View {
         Observable.combineLatest(
             memoTextView.rx.text
                 .orEmpty
-                .map { $0.lengthOfBytes(using: .utf16) }
+                .map { $0.lengthOfBytes(using: .euc_kr) }
                 .distinctUntilChanged(),
             isExceeded.distinctUntilChanged())
             .compactMap { [weak self] in self?.getMemoLengthAttributedString(length: $0, isExceeded: $1) }

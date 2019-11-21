@@ -73,7 +73,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         
         memoTextView.rx.text
             .orEmpty
-            .map { ($0, $0.lengthOfBytes(using: .utf16)) }
+            .map { ($0, $0.lengthOfBytes(using: .euc_kr)) }
             .filter { [weak self] in $0.1 > (self?.MAX_MEMO_LENGTH ?? 0) }
             .map { String($0.0.dropLast()) }
             .bind(to: memoTextView.rx.text)
@@ -153,7 +153,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         // Memo length
         let lengthOfBytes = reactor.state
             .map { $0.memo }
-            .map { $0.lengthOfBytes(using: .utf16) }
+            .map { $0.lengthOfBytes(using: .euc_kr) }
             .distinctUntilChanged()
             .share(replay: 1)
         

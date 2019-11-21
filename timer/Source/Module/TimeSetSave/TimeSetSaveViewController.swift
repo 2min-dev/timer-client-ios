@@ -12,6 +12,9 @@ import ReactorKit
 import RxDataSources
 
 class TimeSetSaveViewController: BaseHeaderViewController, View {
+    // MARK: - constants
+    private let MAX_TITLE_LENGTH: Int = 20
+    
     // MARK: - view properties
     private var timeSetSaveView: TimeSetSaveView { return view as! TimeSetSaveView }
     
@@ -54,6 +57,30 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - bine
+    override func bind() {
+        super.bind()
+        
+        titleTextField.rx.textChanged
+            .compactMap { $0 }
+            .map { !$0.isEmpty }
+            .bind(to: titleHintLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        titleTextField.rx.textChanged
+            .compactMap { $0 }
+            .map { $0.isEmpty }
+            .bind(to: titleClearButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        titleTextField.rx.text
+            .orEmpty
+            .map { ($0, $0.lengthOfBytes(using: .euc_kr)) }
+            .filter { [weak self] in $0.1 > (self?.MAX_TITLE_LENGTH ?? 0) }
+            .map { String($0.0.dropLast()) }
+            .bind(to: titleTextField.rx.text)
+            .disposed(by: disposeBag)
+    }
+    
     func bind(reactor: TimeSetSaveViewReactor) {
         // MARK: action
         rx.viewWillAppear

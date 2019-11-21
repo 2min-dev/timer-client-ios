@@ -354,7 +354,7 @@ class TimerOptionView: UIView, View {
         
         commentTextView.rx.text
             .orEmpty
-            .filter { $0.lengthOfBytes(using: .utf16) > Self.MAX_COMMENT_LENGTH }
+            .filter { $0.lengthOfBytes(using: .euc_kr) > Self.MAX_COMMENT_LENGTH }
             .do(onNext: { [weak self] _ in self?.isExceeded.accept(true) })
             .map { String($0.dropLast()) }
             .bind(to: commentTextView.rx.text)
@@ -364,7 +364,7 @@ class TimerOptionView: UIView, View {
         Observable.combineLatest(
             commentTextView.rx.text
                 .orEmpty
-                .map { $0.lengthOfBytes(using: .utf16) }
+                .map { $0.lengthOfBytes(using: .euc_kr) }
                 .distinctUntilChanged(),
             isExceeded.distinctUntilChanged())
             .compactMap { [weak self] in self?.getCommentLengthAttributedString(length: $0, isExceeded: $1) }
