@@ -93,7 +93,7 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
             
         case .setting:
             let coordinator = SettingViewCoordinator(provider: provider)
-            let reactor = SettingViewReactor(appService: provider.appService)
+            let reactor = SettingViewReactor(appService: provider.appService, networkService: provider.networkService)
             let viewController = SettingViewController(coordinator: coordinator)
             
             // DI

@@ -72,7 +72,7 @@ class TimeSetEndViewReactor: Reactor {
         initialState = State(title: history.item?.title ?? "",
                              startDate: history.startDate ?? Date(),
                              endDate: history.endDate ?? Date(),
-                             memo: history.memo ?? "",
+                             memo: history.memo,
                              didTimeSetSaved: history.isSaved)
     }
     

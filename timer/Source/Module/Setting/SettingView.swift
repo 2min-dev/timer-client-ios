@@ -13,7 +13,6 @@ class SettingView: UIView {
     let headerView: CommonHeader = {
         let view = CommonHeader()
         view.title = "setting_title".localized
-        view.additionalAttributedText = NSAttributedString(string: "setting_version_lastest_title".localized)
         return view
     }()
     

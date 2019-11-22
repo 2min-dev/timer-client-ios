@@ -60,7 +60,10 @@ class SettingViewController: BaseHeaderViewController, View {
     func bind(reactor: SettingViewReactor) {
         // MARK: action
         rx.viewWillAppear
-            .map { Reactor.Action.refresh }
+            .flatMap { Observable.merge(
+                .just(Reactor.Action.loadMenu),
+                .just(Reactor.Action.versionCheck)
+            )}
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -72,6 +75,15 @@ class SettingViewController: BaseHeaderViewController, View {
         
         // MARK: state
         reactor.state
+            .compactMap { $0.isLatestVersion }
+            .distinctUntilChanged()
+            .map { $0 ?
+                NSAttributedString(string: "setting_version_latest_title".localized) :
+                NSAttributedString(string: "setting_version_need_update_title".localized) }
+            .bind(to: headerView.rx.additionalText)
+            .disposed(by: disposeBag)
+        
+        reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.sections }
             .bind(to: settingTableView.rx.items(dataSource: dataSource))
@@ -80,11 +92,16 @@ class SettingViewController: BaseHeaderViewController, View {
     
     // MARK: - action
     /// Handle header button tap action according to button type
-    private func headerActionHandler(type: CommonHeader.ButtonType) {
-        switch type {
-        case .back:
-            navigationController?.popViewController(animated: true)
-
+    override func handleHeaderAction(_ action: Header.Action) {
+        super.handleHeaderAction(action)
+        
+        switch action {
+        case .additional:
+            guard let isLatestVersion = reactor?.currentState.isLatestVersion else { return }
+            if !isLatestVersion {
+                openAppStore()
+            }
+            
         default:
             break
         }

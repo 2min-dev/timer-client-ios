@@ -181,7 +181,7 @@
 "toast_task_edit_title" = "편집";
 
 // MARK: - Setting
-"setting_version_lastest_title" = "최신버전입니다!";
+"setting_version_latest_title" = "최신버전입니다!";
 "setting_version_need_update_title" = "업데이트가 필요해요!";
 "setting_alarm_setting_subtitle_format" = "현재 : %@";
 "setting_countdown_setting_subtitle_format" = "현재 : %d초";

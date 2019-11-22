@@ -20,8 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Initialize `SwiftBeaver`
         Logger.initialize()
-        // Firebase Analytics
+        // Firebase Analytics (only release)
+        #if DEBUG
+        #else
         FirebaseApp.configure()
+        #endif
         // Initialize `Realm`
         migrateRealm()
         
