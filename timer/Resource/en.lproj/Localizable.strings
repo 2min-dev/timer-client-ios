@@ -181,7 +181,7 @@
 "toast_task_edit_title" = "Edit";
 
 // MARK: - Setting
-"setting_version_lastest_title" = "Lastest!";
+"setting_version_latest_title" = "Latest!";
 "setting_version_need_update_title" = "Update!";
 "setting_alarm_setting_subtitle_format" = "Cur : %@";
 "setting_countdown_setting_subtitle_format" = "Cur : %dsec";
