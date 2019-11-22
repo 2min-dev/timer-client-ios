@@ -94,7 +94,7 @@ class HistoryDetailViewReactor: Reactor {
                              runningTime: history.runningTime,
                              startDate: startDate,
                              endDate: endDate,
-                             extraTime: item.timers.reduce(0) { $0 + $1.extra },
+                             extraTime: history.extraTime,
                              repeatCount: history.repeatCount,
                              memo: history.memo,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),

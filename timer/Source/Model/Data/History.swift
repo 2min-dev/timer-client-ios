@@ -28,6 +28,7 @@ import RealmSwift
     @objc dynamic var memo: String = ""
     @objc dynamic var repeatCount: Int = 0
     @objc dynamic var runningTime: TimeInterval = 0
+    @objc dynamic var extraTime: TimeInterval = 0
     @objc dynamic var endState: EndState = .none
     @objc dynamic var isSaved: Bool = false
     
@@ -41,6 +42,7 @@ import RealmSwift
                      memo: String = "",
                      repeatCount: Int = 0,
                      runningTime: TimeInterval = 0,
+                     extraTime: TimeInterval = 0,
                      endState: EndState = .none,
                      isSaved: Bool = false,
                      startDate: Date? = nil,
@@ -51,6 +53,7 @@ import RealmSwift
         self.memo = memo
         self.repeatCount = repeatCount
         self.runningTime = runningTime
+        self.extraTime = extraTime
         self.isSaved = isSaved
         self.endState = endState
         self.startDate = startDate
@@ -68,6 +71,7 @@ import RealmSwift
                        memo: memo,
                        repeatCount: repeatCount,
                        runningTime: runningTime,
+                       extraTime: extraTime,
                        endState: endState,
                        isSaved: isSaved,
                        startDate: startDate,

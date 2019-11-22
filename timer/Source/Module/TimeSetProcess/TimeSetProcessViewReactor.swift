@@ -73,9 +73,6 @@ class TimeSetProcessViewReactor: Reactor {
         /// Set current selected index
         case setSelectedIndex(at: Int)
         
-        /// Set should section reload value to `true`
-        case sectionReload
-        
         /// Set should dismiss value to `true`
         case dismiss
     }
@@ -337,10 +334,6 @@ class TimeSetProcessViewReactor: Reactor {
             state.selectedIndex = index
             return state
             
-        case .sectionReload:
-            state.shouldSectionReload = true
-            return state
-            
         case .dismiss:
             state.shouldDismiss = true
             return state
@@ -451,6 +444,7 @@ class TimeSetProcessViewReactor: Reactor {
         
         // Add extra time into current timer
         state.timer.extra += extra
+        timeSet.history.extraTime += extra
         
         let setExtraTime: Observable<Mutation> = .just(.setExtraTime(state.extraTime + extra))
         let setTime: Observable<Mutation> = .just(.setTime(state.time + extra))
