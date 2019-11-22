@@ -34,9 +34,9 @@ func getTime(interval: TimeInterval) -> (Int, Int, Int) {
     return (hours, minutes, seconds)
 }
 
-func roundCorners(view: UIView, byRoundingCorners: UIRectCorner, cornerRadius: CGFloat) {
-    let maskLayer = CAShapeLayer()
-    maskLayer.frame = view.bounds
-    maskLayer.path = UIBezierPath(roundedRect: view.bounds, byRoundingCorners: byRoundingCorners, cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
-    view.layer.mask = maskLayer
+func openAppStore(completionHandler: ((Bool) -> Void)? = nil) {
+    if let url = URL(string: "itms-apps://itunes.apple.com/app/id1483376212"),
+        UIApplication.shared.canOpenURL(url) {
+        UIApplication.shared.open(url, options: [:], completionHandler: completionHandler)
+    }
 }
