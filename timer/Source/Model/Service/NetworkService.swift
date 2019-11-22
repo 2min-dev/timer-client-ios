@@ -12,21 +12,36 @@ import RxSwift
 
 protocol NetworkServiceProtocol {
     /// Request app version
-    /// - endpoint: **~/app/version.json**
+    /// - end-point: **~/v1/app/version.json**
     func requestAppVersion() -> Single<AppVersion>
     
     /// Request notice list
-    /// - endpoint: **~/notice/list.json**
+    /// - end-point: **~/v1/notice/list.json**
     func requestNoticeList() -> Single<[Notice]>
     
-    /// Request notice detail
-    /// - endpoint: **~/notice/detail/id.json**
-    /// - parameters:
-    ///   - id: notice id
+    /// Request notice detail with id
+    /// - end-point: **~/v1/notice/detail/id.json**
+    /// - parameter id: notice identifier
     func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail>
 }
 
 class NetworkService: BaseService, NetworkServiceProtocol {
+    // MARK: - server url
+    enum Server {
+        case github
+        
+        var url: URL {
+            switch self {
+            case .github:
+                #if DEBUG
+                return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/develop")!
+                #else
+                return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/master")!
+                #endif
+            }
+        }
+    }
+    
     func requestAppVersion() -> Single<AppVersion> {
         return ApiProvider<AppApi>.request(.version)
     }
@@ -40,6 +55,7 @@ class NetworkService: BaseService, NetworkServiceProtocol {
     }
 }
 
+// MARK: - api provider
 struct ApiProvider<API: ApiType> {
     static func request<Model: Codable>(_ api: API) -> Single<Model> {
         Logger.info("request api : \(api.url.absoluteString)", tag: "NETWORK")
@@ -73,6 +89,7 @@ struct ApiProvider<API: ApiType> {
     }
 }
 
+// MARK: - api type
 protocol ApiType {
     /// Base url of api
     var baseUrl: URL { get }
@@ -101,30 +118,26 @@ enum AppApi: ApiType {
     
     // MARK: - protocol implement
     var baseUrl: URL {
-        #if DEBUG
-        return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/develop/app")!
-        #else
-        return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/master/app")!
-        #endif
+        NetworkService.Server.github.url
     }
     
     var path: String {
         switch self {
         case .version:
-            return "/version.json"
+            return "v1/app/version.json"
         }
     }
     
     var method: HTTPMethod {
-        return .get
+        .get
     }
     
     var parameters: Parameters? {
-        return nil
+        nil
     }
     
     var headers: HTTPHeaders? {
-        return nil
+        nil
     }
 }
 
@@ -136,32 +149,28 @@ enum NoticeApi: ApiType {
     
     // MARK: - protocol implement
     var baseUrl: URL {
-        #if DEBUG
-        return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/develop/notice")!
-        #else
-        return URL(string: "https://raw.githubusercontent.com/ChallengeProject/timer_api/master/notice")!
-        #endif
+        NetworkService.Server.github.url
     }
     
     var path: String {
         switch self {
         case .list:
-            return "/list.json"
+            return "v1/notice/list.json"
             
         case let .detail(id):
-            return "/detail/\(id).json"
+            return "v1/notice/detail/\(id).json"
         }
     }
     
     var method: HTTPMethod {
-        return .get
+        .get
     }
     
     var parameters: Parameters? {
-        return nil
+        nil
     }
     
     var headers: HTTPHeaders? {
-        return nil
+        nil
     }
 }
