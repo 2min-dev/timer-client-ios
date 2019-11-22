@@ -13,7 +13,7 @@ import RealmSwift
 class TimeSetEditViewReactor: Reactor {
     // MARK: - constants
     static let MAX_TIME_INTERVAL = TimeInterval(99 * Constants.Time.hour + 59 * Constants.Time.minute + 59)
-    static let MAX_TIMER_COUNT: Int = 10
+    static let MAX_TIMER_COUNT: Int = 20
     
     enum Action {
         /// Clear time set info
