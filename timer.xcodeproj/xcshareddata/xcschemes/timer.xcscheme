@@ -20,6 +20,34 @@
                ReferencedContainer = "container:timer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F31684212382838600EF1510"
+               BuildableName = "timerTests.xctest"
+               BlueprintName = "timerTests"
+               ReferencedContainer = "container:timer.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F3383DE923814F93005B16E9"
+               BuildableName = "timerUITests.xctest"
+               BlueprintName = "timerUITests"
+               ReferencedContainer = "container:timer.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -37,6 +65,26 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F31684212382838600EF1510"
+               BuildableName = "timerTests.xctest"
+               BlueprintName = "timerTests"
+               ReferencedContainer = "container:timer.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F3383DE923814F93005B16E9"
+               BuildableName = "timerUITests.xctest"
+               BlueprintName = "timerUITests"
+               ReferencedContainer = "container:timer.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
