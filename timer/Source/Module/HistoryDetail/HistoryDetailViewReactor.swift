@@ -51,6 +51,15 @@ class HistoryDetailViewReactor: Reactor {
         /// Memo of the time set
         var memo: String
         
+        /// End state of the time set
+        let endState: History.EndState
+        
+        /// Remained time of the time set
+        let remainedTime: TimeInterval
+        
+        /// Overtime of the time set
+        let overtime: TimeInterval
+        
         /// Section datasource to make sections
         let sectionDataSource: TimerBadgeDataSource
         
@@ -97,6 +106,9 @@ class HistoryDetailViewReactor: Reactor {
                              extraTime: history.extraTime,
                              repeatCount: history.repeatCount,
                              memo: history.memo,
+                             endState: history.endState,
+                             remainedTime: item.timers.reduce(0) { $0 + ($1.end - $1.current) },
+                             overtime: item.overtimer?.current ?? 0,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
                              shouldSectionReload: true,
                              didTimeSetSaved: false)
