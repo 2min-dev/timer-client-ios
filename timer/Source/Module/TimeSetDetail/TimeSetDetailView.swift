@@ -188,15 +188,15 @@ class TimeSetDetailView: UIView {
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(103.adjust())
             make.leading.equalTo(titleLabel)
             make.trailing.equalTo(titleLabel)
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-20.adjust())
         }
         
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(20.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(65.adjust())
         }
         
         return view
@@ -250,3 +250,30 @@ class TimeSetDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct TimeSetDetailPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> TimeSetDetailView {
+        return TimeSetDetailView()
+    }
+    
+    func updateUIView(_ uiView: TimeSetDetailView, context: Context) {
+        // Nothing
+    }
+}
+
+struct Previews_TimeSetDetailView: PreviewProvider {
+    static var previews: some View {
+        Group {
+            TimeSetDetailPreview()
+                .previewDevice("iPhone 6s")
+            
+            TimeSetDetailPreview()
+                .previewDevice("iPhone 11")
+        }
+    }
+}
+
+#endif

@@ -270,15 +270,15 @@ class TimeSetProcessView: UIView {
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(88.adjust())
             make.leading.equalTo(timeLabel)
             make.trailing.equalToSuperview().inset(25.adjust())
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-20.adjust())
         }
 
         timerBadgeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(21.adjust())
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(65.adjust())
         }
         
         dimedView.snp.makeConstraints { make in
