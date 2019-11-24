@@ -12,7 +12,7 @@
 // MARK: - App String
 // MARK: - Tab
 "tab_button_home" = "홈";
-"tab_button_my_time_set" = "마이 타임셋";
+"tab_button_my_time_set" = "마이";
 "tab_button_shared_time_set" = "공유 타임셋";
 
 // MARK: - Keyboard accessory
@@ -196,6 +196,7 @@
 // MARK: - Team information
 "team_info_email_copy_title" = "복사";
 "team_info_service_description" = "안녕하세요.\n\"2min\"을 사용해주셔서 감사드립니다.\n\n앞으로 더욱 발전된 앱으로 찾아뵙겠습니다.";
+"team_info_contact_email" = "ask2min@gmail.com";
 
 // MARK: - Notification
 "notification_timer_id_format" = "notification_timer_%d";

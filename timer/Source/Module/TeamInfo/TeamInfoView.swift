@@ -38,7 +38,7 @@ class TeamInfoView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
-        view.text = Constants.email
+        view.text = "team_info_contact_email".localized
         return view
     }()
     
