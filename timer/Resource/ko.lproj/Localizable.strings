@@ -143,7 +143,7 @@
 "time_set_state_countdown_format" = "시작 %d초 전";
 "time_set_state_pause_title" = "일시정지";
 "time_set_state_repeat_format" = "반복 %d회";
-"time_set_state_overtime_title" = "초과 타임셋";
+"time_set_state_overtime_title" = "초과기록";
 
 // MARK: - Timer
 "timer_alarm_title" = "사운드";
@@ -168,16 +168,17 @@
 "alert_button_delete" = "삭제";
 
 // MARK: - Toast
-"toast_alarm_all_apply_title" = "모든 타이머의 사운드가 %@으로 지정되었어요.";
-"toast_time_set_timer_selected_title" = "선택한 타이머부터 시작돼요.";
+"toast_alarm_all_apply_title" = "모든 타이머의 사운드가 %@으로 지정됐어요!";
+"toast_time_set_timer_selected_title" = "선택한 타이머부터 시작돼요!";
 "toast_time_set_add_bookmark_title" = "즐겨찾기에 추가되었어요!";
 "toast_time_set_remove_bookmark_title" = "즐겨찾기에서 삭제되었어요!";
-"toast_time_set_end_cancel_title" = "왜 타이머를 취소했는지 기록해보세요!";
+"toast_time_set_end_cancel_title" = "타임셋을 취소하셨어요. 결과를 확인해보세요!";
 "toast_time_set_end_overtime_title" = "왜 타이머를 초과 기록했는지 기록해보세요!";
 "toast_time_set_saved_title" = "타임셋이 저장되었어요! 타임셋을 편집하시려면 '편집'버튼을 눌러주세요.";
 "toast_team_info_copy_email_title" = "클립보드에 복사되었어요!";
 
 "toast_task_memo_title" = "메모 작성";
+"toast_task_move_title" = "이동";
 "toast_task_edit_title" = "편집";
 
 // MARK: - Setting
