@@ -104,7 +104,7 @@ class MainViewController: UITabBarController, View {
                 switch history.endState {
                 case .cancel:
                     Toast(content: "toast_time_set_end_cancel_title".localized,
-                          task: ToastTask(title: "toast_task_memo_title".localized, handler: { [weak self] in
+                          task: ToastTask(title: "toast_task_move_title".localized, handler: { [weak self] in
                         _ = self?.coordinator.present(for: .historyDetail(history))
                     })).show(animated: true, withDuration: 3)
                     
