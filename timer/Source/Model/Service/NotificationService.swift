@@ -35,7 +35,7 @@ class NotificationService: BaseService, NotificationServiceProtocol {
                     content.subtitle = "notification_time_set_end_sub_title".localized
                     content.body = timeSet.item.isRepeat ? "notification_time_set_end_repeat_body_title".localized : "notification_time_set_end_body_title".localized
                     
-                    if let fileName = timer.alarm.getFileName(type: .medium, withExt: true) {
+                    if let fileName = timer.alarm.getFileName(type: .long, withExt: true) {
                         // Set push notification sound that time set ended
                         content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: fileName))
                     }
@@ -43,7 +43,7 @@ class NotificationService: BaseService, NotificationServiceProtocol {
                     // Set content of timer end
                     content.subtitle = String(format: "notification_timer_end_sub_title_format".localized, offset + 1)
                     
-                    if let fileName = timer.alarm.getFileName(type: .short, withExt: true) {
+                    if let fileName = timer.alarm.getFileName(type: .medium, withExt: true) {
                         // Set push notification sound that timer ended
                         content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: fileName))
                     }
