@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 
 enum Constants {
-    static var email: String = "jsilver.dev@gmail.com"
-    
     static var appTitle: String? { return Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String }
     static var appVersion: String? { return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String }
     static var appBuild: String? { return Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String }

@@ -196,6 +196,7 @@
 // MARK: - Team information
 "team_info_email_copy_title" = "Copy";
 "team_info_service_description" = "Hello\nThanks for download our app \"2min\".\n\nSee you in the future for more advanced apps.";
+"team_info_contact_email" = "ask2min@gmail.com";
 
 // MARK: - Notification
 "notification_timer_id_format" = "notification_timer_%d";
