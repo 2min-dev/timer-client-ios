@@ -26,7 +26,7 @@ class ProductivityView: UIView {
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         view.textAlignment = .center
         return view
@@ -34,7 +34,7 @@ class ProductivityView: UIView {
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(10.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
         view.textAlignment = .center
         return view
@@ -60,7 +60,7 @@ class ProductivityView: UIView {
     let keyPadView: NumberKeyPad = {
         let view = NumberKeyPad()
         view.font = Constants.Font.Regular.withSize(24.adjust())
-        view.cancelButton.titleLabel?.font = Constants.Font.Regular.withSize(20.adjust())
+        view.cancelButton.titleLabel?.font = Constants.Font.Regular.withSize(18.adjust())
         view.foregroundColor = Constants.Color.codGray
         view.cancelButton.setHidden(true)
         

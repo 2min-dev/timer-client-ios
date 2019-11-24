@@ -142,6 +142,7 @@
 
 "time_set_state_countdown_format" = "시작 %d초 전";
 "time_set_state_pause_title" = "일시정지";
+"time_set_state_repeat_plural_format" = "반복 %d회";
 "time_set_state_repeat_format" = "반복 %d회";
 "time_set_state_overtime_title" = "초과기록";
 
