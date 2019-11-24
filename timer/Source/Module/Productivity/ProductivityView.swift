@@ -138,7 +138,7 @@ class ProductivityView: UIView {
         timeInfoView.snp.makeConstraints { make in
             make.top.equalTo(timerInputView.snp.bottom).offset(12.adjust())
             make.centerX.equalToSuperview()
-            make.width.equalTo(timerInputView.snp.width)
+            make.width.equalTo(280.adjust())
         }
         
         timeInputLabel.snp.makeConstraints { make in
