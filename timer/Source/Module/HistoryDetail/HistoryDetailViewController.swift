@@ -36,6 +36,8 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     private var saveButton: FooterButton { historyDetailView.saveButton }
     private var startButton: FooterButton { historyDetailView.startButton }
     
+    private var scrollView: UIScrollView { historyDetailView.scrollView }
+    
     // MARK: - properties
     var coordinator: HistoryDetailViewCoordinator
     
@@ -56,6 +58,11 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func bind() {
+        super.bind()
+        scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     // MARK: - bine
