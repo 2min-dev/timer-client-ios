@@ -462,7 +462,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         if history.repeatCount > 0 {
             // Append repetition state
             string += string.isEmpty ? "" : ", "
-            string += String(format: "time_set_state_repeat_format".localized, history.repeatCount)
+            
+            string += String(format:history.repeatCount == 1 ? "time_set_state_repeat_format".localized : "time_set_state_repeat_plural_format".localized,
+                             history.repeatCount)
         }
         
         return NSAttributedString(string: string, attributes: attributes)

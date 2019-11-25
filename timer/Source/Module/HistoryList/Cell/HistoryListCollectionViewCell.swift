@@ -93,7 +93,7 @@ class HistoryListCollectionViewCell: UICollectionViewCell, View {
         reactor.state
             .map { $0.startedDate }
             .distinctUntilChanged()
-            .map { getDateString(format: "history_started_date_format".localized, date: $0) }
+            .map { getDateString(format: "history_started_date_format".localized, date: $0, locale: Locale(identifier: Constants.Locale.USA)) }
             .bind(to: startedDateLabel.rx.text)
             .disposed(by: disposeBag)
     }
