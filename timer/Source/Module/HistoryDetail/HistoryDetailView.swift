@@ -18,14 +18,14 @@ class HistoryDetailView: UIView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
+        view.font = Constants.Font.ExtraBold.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
         return view
     }()
     
     private let runningTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
@@ -33,7 +33,7 @@ class HistoryDetailView: UIView {
     
     let runningTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -53,7 +53,7 @@ class HistoryDetailView: UIView {
     
     private let dateTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "history_date_title".localized
         return view
@@ -61,7 +61,7 @@ class HistoryDetailView: UIView {
     
     let dateLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -81,7 +81,7 @@ class HistoryDetailView: UIView {
     
     private let extraTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "history_extra_time_title".localized
         return view
@@ -89,7 +89,7 @@ class HistoryDetailView: UIView {
     
     let extraTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -109,7 +109,7 @@ class HistoryDetailView: UIView {
     
     private let repeatCountTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         view.text = "history_repeat_count_title".localized
         return view
@@ -117,7 +117,7 @@ class HistoryDetailView: UIView {
     
     let repeatCountLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.doveGray
         return view
     }()
@@ -138,7 +138,7 @@ class HistoryDetailView: UIView {
     private lazy var infoStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [runningTimeStackView, dateStackView, extraTimeStackView, repeatCountStackView])
         view.axis = .vertical
-        view.spacing = 15.adjust()
+        view.spacing = 9.adjust()
         return view
     }()
     
@@ -210,7 +210,7 @@ class HistoryDetailView: UIView {
         }
         
         memoTextView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(14.adjust())
+            make.top.equalToSuperview().inset(13.adjust())
             make.leading.equalTo(memoIconImageView.snp.trailing).inset(2.adjust())
             make.trailing.equalToSuperview().inset(11.adjust()).priorityHigh()
             make.bottom.equalToSuperview().inset(30.adjust()).priorityHigh()
@@ -255,11 +255,11 @@ class HistoryDetailView: UIView {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalTo(divider)
             make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
-            make.bottom.equalTo(divider.snp.top).inset(-18.adjust())
+            make.bottom.equalTo(divider.snp.top).inset(-13.adjust())
         }
         
         divider.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(54.adjust())
+            make.top.equalToSuperview().inset(49.adjust())
             make.leading.equalToSuperview().inset(60.adjust()).priorityHigh()
             make.trailing.equalToSuperview()
             make.height.equalTo(0.5)
@@ -272,7 +272,7 @@ class HistoryDetailView: UIView {
         }
         
         memoInputView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(67.adjust())
+            make.top.equalTo(infoStackView.snp.bottom).offset(61.adjust())
             make.leading.equalTo(divider)
             make.trailing.equalToSuperview().inset(20.adjust())
             make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-20.adjust()).priorityHigh()
@@ -281,7 +281,22 @@ class HistoryDetailView: UIView {
         timerBadgeCollectionView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(20.adjust())
+            make.bottom.equalToSuperview().inset(65.adjust())
+        }
+        
+        return view
+    }()
+    
+    lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.isScrollEnabled = false
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalToSuperview()
         }
         
         return view
@@ -318,7 +333,7 @@ class HistoryDetailView: UIView {
         backgroundColor = Constants.Color.alabaster
         
         // Set constraint of subviews
-        addAutolayoutSubviews([headerView, contentView, footerView])
+        addAutolayoutSubviews([headerView, scrollView, footerView])
         headerView.snp.makeConstraints { make in
             if #available(iOS 11.0, *) {
                 make.top.equalTo(safeAreaLayoutGuide)
@@ -329,7 +344,7 @@ class HistoryDetailView: UIView {
             make.trailing.equalToSuperview()
         }
         
-        contentView.snp.makeConstraints { make in
+        scrollView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
@@ -345,13 +360,44 @@ class HistoryDetailView: UIView {
                 make.bottom.equalToSuperview()
             }
         }
+        
+        // Add tap gesture in scroll view
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(gesture:)))
+        scrollView.addGestureRecognizer(tapGesture)
+        
+        // Observe keyboard notification
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - selector
+    @objc func scrollViewTapped(gesture: UITapGestureRecognizer) {
+        endEditing(true)
+    }
+    
+    @objc func keyboardWillShow(sender: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.scrollView.contentOffset.y = 60
+        }
+    }
+    
+    @objc func keyboardWillHide(sender: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.scrollView.contentOffset.y = 0
+        }
+    }
+    
     @objc private func touchCommentDone(_ sender: UIBarButtonItem) {
         memoTextView.endEditing(true)
+    }
+    
+    deinit {
+        // Remove notification observer
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
