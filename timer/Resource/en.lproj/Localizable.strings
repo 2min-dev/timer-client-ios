@@ -1,0 +1,210 @@
+/* 
+  Localizable.strings
+  timer
+
+  Created by JSilver on 19/04/2019.
+  Copyright © 2019 Jeong Jin Eun. All rights reserved.
+*/
+
+// MARK: - Default App String
+"CFBundleDisplayName" = "2min";
+
+// MARK: - App String
+// MARK: - Tab
+"tab_button_home" = "Home";
+"tab_button_my_time_set" = "My";
+"tab_button_shared_time_set" = "Shared";
+
+// MARK: - Keyboard accessory
+"keyboard_accessory_done_title" = "Done";
+
+// MARK: - Keypad
+"keypad_cancel" = "Reset";
+"keypad_delete" = "Delete";
+
+// MARK: - Header
+"header_button_cancel" = "Cancel";
+"header_button_confirm" = "Confirm";
+
+// MARK: - Footer
+"footer_button_cancel" = "Cancel";
+"footer_button_quit" = "Quit";
+"footer_button_confirm" = "Confirm";
+"footer_button_next" = "Next";
+"footer_button_save" = "Save";
+"footer_button_start" = "Start";
+"footer_button_pause" = "Pause";
+"footer_button_restart" = "Restart";
+"footer_button_overtime" = "Overtime";
+"footer_button_edit" = "Edit";
+
+// MARK: - Screen title
+"time_set_save_title" = "Timeset Save";
+"time_set_edit_title" = "Timeset Edit";
+"time_set_memo_title" = "Memo";
+"time_set_end_title" = "Timeset End";
+"local_time_set_title" = "My Timeset";
+"saved_time_set_title" = "Saved Timeset";
+"saved_time_set_management_title" = "Saved Timeset Management";
+"bookmarked_time_set_title" = "Bookmarked Timeset";
+"bookmarked_time_set_management_title" = "Bookmarked Timeset Management";
+"shared_time_set_title" = "Shared Timeset";
+"shared_time_set_more_title" = "Shared Timeset More";
+"my_shared_time_set_title" = "My Shared Timeset";
+"history_title" = "History";
+"history_detail_title" = "History Detail";
+"setting_title" = "Setting";
+"notice_title" = "Notice";
+"alarm_setting_title" = "Default alarm setting";
+"countdown_setting_title" = "Countdown setting";
+"team_info_title" = "Team information";
+"opensource_license_title" = "Opensource license";
+
+// MARK: - local time set
+"local_header_title" = "Collect your favorite timeset,\n timeset to help you manage your time :)";
+"local_saved_time_set_section_title" = "SAVED TIMESET";
+"local_saved_time_set_management_title" = "SAVED TIMESET MANAGEMENT";
+"local_saved_time_set_all_show_title" = "SHOW ALL SAVED TIMESET";
+"local_bookmarked_time_set_section_title" = "BOOKMARKED TIMESET";
+"local_bookmarked_time_set_management_title" = "BOOKMARKED TIMESET MANAGEMENT";
+"local_bookmarked_time_set_all_show_title" = "SHOW ALL BOOKMARKED TIMESET";
+"time_set_induce_title" = "Try add your timeset!";
+
+// MARK: - time set manage
+"time_set_manage_header_title" = "Set the timeset order to your liking";
+"time_set_manage_removed_time_set_title" = "Removed timeset";
+
+// MARK: - Productivity
+"productivity_button_hour_title" = "Hour";
+"productivity_button_minute_title" = "Min";
+"productivity_button_second_title" = "Sec";
+"productivity_time_input_prefix_title" = "+ ";
+
+// MARK: - Timer badge
+"timer_badge_index_title_format" = "%d/%d";
+
+// MARK: - Timer option
+"timer_option_title_format" = "Timer %d";
+"timer_option_alarm_silence_title" = "Silence";
+"timer_option_alarm_vibrate_title" = "Vibrate";
+"timer_option_alarm_default_title" = "Default";
+"timer_option_alarm_all_apply" = "Apply All";
+"timer_option_comment_hint_title" = "Leave a comment.";
+"timer_option_comment_excess_title" = "Exceeded the number of characters";
+"timer_option_comment_bytes_format" = "%d/%d bytes";
+
+// MARK: - Time set process
+"time_set_process_extra_time_format" = "x %d";
+"time_set_process_add_time_title" = "+1M";
+"time_set_process_memo_title" = "Memo";
+
+// MARK: - Time set alert
+"time_set_alert_timer_start_title_format" = "Do you want to start\nwith %d timer?";
+"time_set_alert_cancel_title" = "Note why you canceled\nthe timeset! :)";
+"time_set_alert_overtime_title" = "Note why you needed\nmore time! :)";
+
+// MARK: - Time set popup
+"time_set_popup_timer_end_title_format" = "Timer %d End";
+"time_set_popup_timer_end_info_format" = "%d/%d";
+"time_set_popup_time_set_repeat_title" = "Repeat Timeset End";
+"time_set_popup_time_set_repeat_info_format" = "%d repetations";
+
+// MARK: - History
+"history_empty_title" = "You don't have any timeset history yet. \nEnroll your own time!";
+"history_make_time_set_title" = "Create a timeset";
+"history_started_date_format" = "dd MMM yy";
+"history_date_title" = "Date";
+"history_extra_time_title" = "Extra";
+"history_repeat_count_title" = "Repetitions";
+"history_full_date_format" = "dd MMM yy / h:m a";
+"history_short_date_format" = "h:m a";
+"history_extra_time_format" = "+%dM";
+"history_repeat_count_format" = "%d";
+
+// MARK: - Time set
+"time_set_default_title" = "Utitled Timeset";
+"time_set_time_format" = "%02d:%02d:%02d";
+"time_set_end_title_format" = "%@ Ended";
+
+"time_set_all_time_title" = "Timeset";
+"time_set_all_time_title_format" = "Timeset %02d:%02d:%02d";
+
+"time_set_end_time_title" = "End time";
+"time_set_end_time_title_format" = "End time %@";
+"time_set_end_time_format" = "h:mm a";
+"time_set_end_time_full_format" = "HH:mm";
+
+"time_set_add_time_title" = "+1M";
+
+"time_set_memo_hint" = "Type memo about this timeset.";
+"time_set_memo_bytes_format" = "%d/%d bytes";
+"time_set_memo_excess_title" = "Exceeded the number of characters";
+
+"time_set_state_countdown_format" = "%d sec before start";
+"time_set_state_pause_title" = "Paused";
+"time_set_state_repeat_plural_format" = "%d repetitions";
+"time_set_state_repeat_format" = "%d repetition";
+"time_set_state_overtime_title" = "Overtime";
+
+// MARK: - Timer
+"timer_alarm_title" = "Sound";
+"timer_comment_title" = "Comment";
+
+// MARK: - Alarm
+"alarm_silence_title" = "Silence";
+"alarm_vibrate_title" = "Vibrate";
+"alarm_default_title" = "Default";
+
+// MARK: - Alert
+"alert_warning_time_set_init_title" = "Initialize Timeset";
+"alert_warning_time_set_init_description" = "The timeset will be initialized.\nAre you sure you want to initialize it?";
+"alert_warning_time_set_delete_title" = "Delete Timeset";
+"alert_warning_time_set_delete_description" = "Are you sure you want to delete it?";
+"alert_warning_time_set_edit_cancel_title" = "Cancel Timeset Edit";
+"alert_warning_time_set_edit_cancel_description" = "Editted timeset info will disappear.\nAre you sure you want to back?";
+"alert_alarm_all_apply_description" = "The alarm has been applied to all timers";
+"alert_button_cancel" = "Cancel";
+"alert_button_yes" = "Yes";
+"alert_button_init" = "Initialize";
+"alert_button_delete" = "Delete";
+
+// MARK: - Toast
+"toast_alarm_all_apply_title" = "All timer alarm set [%@]!";
+"toast_time_set_timer_selected_title" = "Timeset will be start from selected timer!";
+"toast_time_set_add_bookmark_title" = "Timeset added to your bookmarks!";
+"toast_time_set_remove_bookmark_title" = "Timeset removed from your bookmarks!";
+"toast_time_set_end_cancel_title" = "Timeset canceled. Move to check result!";
+"toast_time_set_end_overtime_title" = "Try to write memo that why timeset record overtime!";
+"toast_time_set_saved_title" = "Timeset saved! Press 'Edit' to edit saved timeset.";
+"toast_team_info_copy_email_title" = "Copied to clipboard!";
+
+"toast_task_memo_title" = "Memo";
+"toast_task_move_title" = "Move";
+"toast_task_edit_title" = "Edit";
+
+// MARK: - Setting
+"setting_version_latest_title" = "Latest!";
+"setting_version_need_update_title" = "Update!";
+"setting_alarm_setting_subtitle_format" = "Cur : %@";
+"setting_countdown_setting_subtitle_format" = "Cur : %dsec";
+
+// MARK: - Notice
+"notice_empty_title" = "There are no registered notices,\nI'll be right back with the good news!";
+
+// MARK: - Countdown setting
+"countdown_setting_second_title_format" = "%dsec";
+
+// MARK: - Team information
+"team_info_email_copy_title" = "Copy";
+"team_info_service_description" = "Hello\nThanks for download our app \"2min\".\n\nSee you in the future for more advanced apps.";
+"team_info_contact_email" = "ask2min@gmail.com";
+
+// MARK: - Notification
+"notification_timer_id_format" = "notification_timer_%d";
+"notification_timer_end_sub_title_format" = "Timer %d Ended!";
+"notification_time_set_end_sub_title" = "Timeset Ended!";
+"notification_time_set_end_body_title" = "Touch push to complete the timeset.\n🤔 Would you write memo about this?";
+"notification_time_set_end_repeat_body_title" = "Touch push to continue timeset.\n⚠️ App launch needed to repaet.";
+
+// MARK: - Widget String
+"widget_preparing_title" = "We are preparing a widget service.\nI'll be back soon.";

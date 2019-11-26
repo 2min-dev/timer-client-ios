@@ -1,0 +1,210 @@
+/* 
+  Localizable.strings
+  timer
+
+  Created by JSilver on 19/04/2019.
+  Copyright © 2019 Jeong Jin Eun. All rights reserved.
+*/
+
+// MARK: - Default App String
+"CFBundleDisplayName" = "2min";
+
+// MARK: - App String
+// MARK: - Tab
+"tab_button_home" = "홈";
+"tab_button_my_time_set" = "마이";
+"tab_button_shared_time_set" = "공유 타임셋";
+
+// MARK: - Keyboard accessory
+"keyboard_accessory_done_title" = "완료";
+
+// MARK: - Keypad
+"keypad_cancel" = "취소";
+"keypad_delete" = "삭제";
+
+// MARK: - Header
+"header_button_cancel" = "취소";
+"header_button_confirm" = "완료";
+
+// MARK: - Footer
+"footer_button_cancel" = "취소";
+"footer_button_quit" = "종료";
+"footer_button_confirm" = "완료";
+"footer_button_next" = "다음";
+"footer_button_save" = "저장";
+"footer_button_start" = "시작";
+"footer_button_pause" = "일시정지";
+"footer_button_restart" = "재시작";
+"footer_button_overtime" = "초과기록";
+"footer_button_edit" = "편집";
+
+// MARK: - Screen title
+"time_set_save_title" = "타임셋 저장";
+"time_set_edit_title" = "타임셋 편집";
+"time_set_memo_title" = "메모 입력";
+"time_set_end_title" = "타임셋 종료";
+"local_time_set_title" = "마이 타임셋";
+"saved_time_set_title" = "저장된 타임셋 모두보기";
+"saved_time_set_management_title" = "저장한 타임셋 관리";
+"bookmarked_time_set_title" = "즐겨찾는 타임셋 모두보기";
+"bookmarked_time_set_management_title" = "즐겨찾는 타임셋 관리";
+"shared_time_set_title" = "공유 타임셋";
+"shared_time_set_more_title" = "공유 타임셋 더보기";
+"my_shared_time_set_title" = "내가 공유한 타임셋";
+"history_title" = "히스토리";
+"history_detail_title" = "히스토리 상세";
+"setting_title" = "설정";
+"notice_title" = "공지사항";
+"alarm_setting_title" = "기본 사운드 설정";
+"countdown_setting_title" = "카운트 다운";
+"team_info_title" = "제작팀 정보";
+"opensource_license_title" = "오픈소스 라이센스";
+
+// MARK: - local time set
+"local_header_title" = "주로 쓰는 타임셋을 모아보세요,\n시간을 관리하는 데 도움이 될 거에요 :)";
+"local_saved_time_set_section_title" = "저장한 타임셋";
+"local_saved_time_set_management_title" = "저장한 타임셋 관리";
+"local_saved_time_set_all_show_title" = "저장한 타임셋 모두보기";
+"local_bookmarked_time_set_section_title" = "즐겨찾는 타임셋";
+"local_bookmarked_time_set_management_title" = "즐겨찾는 타임셋 관리";
+"local_bookmarked_time_set_all_show_title" = "즐겨찾는 타임셋 모두보기";
+"time_set_induce_title" = "타임셋을 추가해보세요!";
+
+// MARK: - time set manage
+"time_set_manage_header_title" = "원하는대로 타임셋 순서를 설정해서\n보다 편하게 사용해보세요";
+"time_set_manage_removed_time_set_title" = "삭제된 타임셋";
+
+// MARK: - Productivity
+"productivity_button_hour_title" = "시";
+"productivity_button_minute_title" = "분";
+"productivity_button_second_title" = "초";
+"productivity_time_input_prefix_title" = "+ ";
+
+// MARK: - Timer badge
+"timer_badge_index_title_format" = "%d/%d";
+ 
+// MARK: - Timer option
+"timer_option_title_format" = "%d번째 타이머";
+"timer_option_alarm_silence_title" = "무음";
+"timer_option_alarm_vibrate_title" = "진동";
+"timer_option_alarm_default_title" = "기본음";
+"timer_option_alarm_all_apply" = "전체 적용";
+"timer_option_comment_hint_title" = "코멘트를 입력하실 수 있어요.";
+"timer_option_comment_excess_title" = "작성 가능한 글자 수가 초과됐어요";
+"timer_option_comment_bytes_format" = "%d/%d bytes";
+
+// MARK: - Time set process
+"time_set_process_extra_time_format" = "x %d";
+"time_set_process_add_time_title" = "+1분";
+"time_set_process_memo_title" = "메모 입력";
+
+// MARK: - Time set alert
+"time_set_alert_timer_start_title_format" = "%d번째 타이머부터\n시작하시겠어요?";
+"time_set_alert_cancel_title" = "타임셋을 취소한 이유를\n기록해보세요! :)";
+"time_set_alert_overtime_title" = "시간이 더 필요했던 이유를\n기록해보세요! :)";
+
+// MARK: - Time set popup
+"time_set_popup_timer_end_title_format" = "%d번째 타이머 종료";
+"time_set_popup_timer_end_info_format" = "%d/%d";
+"time_set_popup_time_set_repeat_title" = "반복 타임셋 종료";
+"time_set_popup_time_set_repeat_info_format" = "%d회 반복";
+
+// MARK: - History
+"history_empty_title" = "타임셋 히스토리가 아직 없어요.\n나만의 시간을 자유롭게 등록해 보세요!";
+"history_make_time_set_title" = "타임셋 만들어 보기";
+"history_started_date_format" = "yy.MM.dd";
+"history_date_title" = "사용 일시";
+"history_extra_time_title" = "추가한 시간";
+"history_repeat_count_title" = "반복 횟수";
+"history_full_date_format" = "yy. M. d / h:m a";
+"history_short_date_format" = "h:m a";
+"history_extra_time_format" = "+%d분";
+"history_repeat_count_format" = "%d회";
+
+// MARK: - Time set
+"time_set_default_title" = "무제 타임셋";
+"time_set_time_format" = "%02d:%02d:%02d";
+"time_set_end_title_format" = "%@ 종료";
+
+"time_set_all_time_title" = "타임셋 시간";
+"time_set_all_time_title_format" = "타임셋 시간 %02d:%02d:%02d";
+
+"time_set_end_time_title" = "종료 예정";
+"time_set_end_time_title_format" = "종료 예정 %@";
+"time_set_end_time_format" = "h:mm a";
+"time_set_end_time_full_format" = "HH:mm";
+
+"time_set_add_time_title" = "+1분";
+
+"time_set_memo_hint" = "메모를 입력하세요.";
+"time_set_memo_bytes_format" = "%d/%d bytes";
+"time_set_memo_excess_title" = "작성 가능한 글자 수가 초과됐어요";
+
+"time_set_state_countdown_format" = "시작 %d초 전";
+"time_set_state_pause_title" = "일시정지";
+"time_set_state_repeat_plural_format" = "반복 %d회";
+"time_set_state_repeat_format" = "반복 %d회";
+"time_set_state_overtime_title" = "초과기록";
+
+// MARK: - Timer
+"timer_alarm_title" = "사운드";
+"timer_comment_title" = "코멘트";
+
+// MARK: - Alarm
+"alarm_silence_title" = "무음";
+"alarm_vibrate_title" = "진동";
+"alarm_default_title" = "기본음";
+
+// MARK: - Alert
+"alert_warning_time_set_init_title" = "타임셋 초기화";
+"alert_warning_time_set_init_description" = "설정한 타임셋이 초기화돼요.\n정말 초기화하시겠어요?";
+"alert_warning_time_set_delete_title" = "타임셋 삭제";
+"alert_warning_time_set_delete_description" = "타임셋을 정말 삭제하시겠어요?";
+"alert_warning_time_set_edit_cancel_title" = "타임셋 편집 취소";
+"alert_warning_time_set_edit_cancel_description" = "입력하신 정보가 사라져요.\n정말 돌아가시겠어요?";
+"alert_alarm_all_apply_description" = "알람이 모든 타이머에 적용되었습니다.";
+"alert_button_cancel" = "취소";
+"alert_button_yes" = "네";
+"alert_button_init" = "초기화";
+"alert_button_delete" = "삭제";
+
+// MARK: - Toast
+"toast_alarm_all_apply_title" = "모든 타이머의 사운드가 %@으로 지정됐어요!";
+"toast_time_set_timer_selected_title" = "선택한 타이머부터 시작돼요!";
+"toast_time_set_add_bookmark_title" = "즐겨찾기에 추가되었어요!";
+"toast_time_set_remove_bookmark_title" = "즐겨찾기에서 삭제되었어요!";
+"toast_time_set_end_cancel_title" = "타임셋을 취소하셨어요. 결과를 확인해보세요!";
+"toast_time_set_end_overtime_title" = "왜 타이머를 초과 기록했는지 기록해보세요!";
+"toast_time_set_saved_title" = "타임셋이 저장되었어요! 타임셋을 편집하시려면 '편집'버튼을 눌러주세요.";
+"toast_team_info_copy_email_title" = "클립보드에 복사되었어요!";
+
+"toast_task_memo_title" = "메모 작성";
+"toast_task_move_title" = "이동";
+"toast_task_edit_title" = "편집";
+
+// MARK: - Setting
+"setting_version_latest_title" = "최신버전입니다!";
+"setting_version_need_update_title" = "업데이트가 필요해요!";
+"setting_alarm_setting_subtitle_format" = "현재 : %@";
+"setting_countdown_setting_subtitle_format" = "현재 : %d초";
+
+// MARK: - Notice
+"notice_empty_title" = "등록된 공지사항이 없어요,\n좋은 소식으로 곧 찾아올게요!";
+
+// MARK: - Countdown setting
+"countdown_setting_second_title_format" = "%d초";
+
+// MARK: - Team information
+"team_info_email_copy_title" = "복사";
+"team_info_service_description" = "안녕하세요.\n\"2min\"을 사용해주셔서 감사드립니다.\n\n앞으로 더욱 발전된 앱으로 찾아뵙겠습니다.";
+"team_info_contact_email" = "ask2min@gmail.com";
+
+// MARK: - Notification
+"notification_timer_id_format" = "notification_timer_%d";
+"notification_timer_end_sub_title_format" = "%d번째 타이머가 종료되었어요!";
+"notification_time_set_end_sub_title" = "타임셋이 종료되었어요!";
+"notification_time_set_end_body_title" = "타임셋을 완료하기 위해 알림을 터치해주세요.\n🤔 이번 타임셋에 대해 메모도 작성해보시겠어요?";
+"notification_time_set_end_repeat_body_title" = "타임셋을 계속하기 위해 알림을 터치해주세요.\n⚠️ 다시 반복하기 위해 앱 실행이 필요합니다.";
+
+// MARK: - Widget String
+"widget_preparing_title" = "위젯 서비스를 준비중입니다.\n빠른 시일 내에 찾아뵙겠습니다.";

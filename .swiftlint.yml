@@ -1,12 +1,32 @@
+# Rule identifier to exclude
 disabled_rules:
 - line_length
 - trailing_whitespace
 - identifier_name
 - for_where
 - unused_closure_parameter
-
 - force_cast
+- no_fallthrough_only
+- multiple_closures_with_trailing_closure
+- large_tuple
+- function_body_length
+- cyclomatic_complexity
+- empty_enum_arguments
+- type_name
 
+# Optional rule
+opt_in_rules:
+
+# Path to include in Lint
 included:
+
+# Path to ignore in Lint
 excluded:
 - Pods
+
+type_body_length:
+  - 500
+  - 800
+file_length:
+  warning: 800
+  error: 1200
