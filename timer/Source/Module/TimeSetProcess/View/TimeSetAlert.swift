@@ -7,14 +7,15 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class TimeSetAlert: UIView {
     // MARK: - view properties
     private let textLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
         view.numberOfLines = 2
+        
         return view
     }()
     
@@ -24,8 +25,39 @@ class TimeSetAlert: UIView {
         return view
     }()
     
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        
+        // Set constraint of subviews
+        view.addAutolayoutSubviews([textLabel, cancelButton])
+        textLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20.adjust())
+            make.trailing.equalTo(cancelButton.snp.leading).inset(-5)
+            make.centerY.equalToSuperview()
+        }
+        
+        cancelButton.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.trailing.equalToSuperview().inset(5.adjust())
+            make.bottom.equalToSuperview()
+            make.width.equalTo(36.adjust())
+        }
+        
+        return view
+    }()
+    
+    private let confirmLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.fillColor = Constants.Color.carnation.cgColor
+        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.lineWidth = 1
+        return layer
+    }()
+    
     lazy var confirmButton: UIButton = {
         let view = UIButton()
+        view.layer.insertSublayer(confirmLayer, below: view.imageView?.layer)
+        
         view.setImage(UIImage(named: "btn_confirm_white"), for: .normal)
         return view
     }()
@@ -38,38 +70,16 @@ class TimeSetAlert: UIView {
         return layer
     }()
     
-    private let confirmLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.carnation.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
-        layer.lineWidth = 1
-        return layer
-    }()
-    
-    private lazy var containerView: UIView = {
-        let view = UIView()
-        view.layer.addSublayer(containerLayer)
-        view.layer.addSublayer(confirmLayer)
+    private lazy var containerStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [contentView, confirmButton])
+        view.layer.insertSublayer(containerLayer, at: 0)
         
         // Set constraint of subviews
-        view.addAutolayoutSubviews([textLabel, cancelButton, confirmButton])
-        textLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(20.adjust())
-            make.trailing.equalTo(cancelButton.snp.leading).inset(-6.adjust())
-            make.centerY.equalToSuperview()
-        }
-        
-        cancelButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalTo(confirmButton.snp.leading).inset(-4.adjust())
-            make.bottom.equalToSuperview()
-            make.width.equalTo(36.adjust())
+        contentView.snp.makeConstraints { make in
+            make.width.equalTo(200.adjust())
         }
         
         confirmButton.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
             make.width.equalTo(50.adjust())
         }
         
@@ -77,44 +87,21 @@ class TimeSetAlert: UIView {
     }()
     
     // MARK: - properties
-    let tailSize = CGSize(width: 12.adjust(), height: 8.adjust())
-    let tailPosition = CGPoint(x: 19.adjust(), y: 54.adjust())
+    private let tailSize = CGSize(width: 12.adjust(), height: 8.adjust())
+    private let tailPosition = CGPoint(x: 19.adjust(), y: 54.adjust())
     
-    override var intrinsicContentSize: CGSize {
-        return CGSize(width: 250.adjust(), height: 54.adjust())
-    }
+    private let text: String
+    private let confirmHandler: (() -> Void)?
     
-    var title: String? {
-        set {
-            guard let attributedString = textLabel.attributedText as? NSMutableAttributedString,
-                let string = newValue else { return }
-            
-            attributedString.mutableString.setString(string)
-            textLabel.attributedText = attributedString
-        }
-        get { return textLabel.attributedText?.string }
-    }
+    private var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(text: String, confirmHandler: (() -> Void)? = nil) {
+        self.text = text
+        self.confirmHandler = confirmHandler
+        super.init(frame: .zero)
         
-        // Set constraint of subviews
-        addAutolayoutSubview(containerView)
-        containerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-    
-    convenience init(text: String) {
-        self.init(frame: .zero)
-        // Create paragraph style
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8.adjust()
-        paragraphStyle.lineBreakMode = .byTruncatingTail
-        
-        // Set attributed string
-        textLabel.attributedText = NSAttributedString(string: text, attributes: [.paragraphStyle: paragraphStyle])
+        initLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -123,16 +110,39 @@ class TimeSetAlert: UIView {
     
     // MARK: - lifecycle
     override func draw(_ rect: CGRect) {
-        containerLayer.frame = containerView.bounds
-        containerLayer.path = drawContrainerBorderLayer(frame: containerView.frame, corner: 5.adjust()).cgPath
+        containerLayer.frame = containerStackView.bounds
+        containerLayer.path = drawBackgroundLayer(frame: containerLayer.bounds, corner: 5.adjust()).cgPath
         
         confirmLayer.frame = confirmButton.bounds
-        confirmLayer.path = drawConfirmBorderLayer(frame: confirmButton.frame, corner: 5.adjust()).cgPath
+        confirmLayer.path = drawConfirmBorderLayer(frame: confirmLayer.bounds, corner: 5.adjust()).cgPath
     }
     
     // MARK: - private method
-    /// Draw alert layer. (+ 0.5 pt is revision for prevent anti-aliasing of layer path)
-    private func drawContrainerBorderLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
+    private func initLayout() {
+        // Create paragraph style
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8.adjust()
+        paragraphStyle.lineBreakMode = .byTruncatingTail
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Constants.Font.Bold.withSize(12.adjust()),
+            .foregroundColor: Constants.Color.codGray,
+            .kern: -0.36,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        // Set attributed string
+        textLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
+        
+        // Set constraint of subviews
+        addAutolayoutSubview(containerStackView)
+        containerStackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.height.equalTo(54.adjust())
+        }
+    }
+    
+    private func drawBackgroundLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
         // Initial point of border path
         let initialPoint = CGPoint(x: radius, y: frame.height)
         // Tail points
@@ -183,23 +193,23 @@ class TimeSetAlert: UIView {
     
     private func drawConfirmBorderLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
         // Initial point of border path
-        let initialPoint = CGPoint(x: frame.origin.x, y: frame.height)
+        let initialPoint = CGPoint(x: 0, y: 0)
         // Round corner points
         let cornerPoints: [(CGPoint, CGPoint?, CGPoint?)] = [
-            // Right-Bottom
-            (CGPoint(x: frame.origin.x + frame.width - radius, y: frame.height), nil, nil),
-            (CGPoint(x: frame.origin.x + frame.width, y: frame.height - radius),
-             CGPoint(x: frame.origin.x + frame.width - radius * 0.5, y: frame.height),
-             CGPoint(x: frame.origin.x + frame.width, y: frame.height - radius * 0.5)),
-            // Right-Top
-            (CGPoint(x: frame.origin.x + frame.width, y: radius), nil, nil),
-            (CGPoint(x: frame.origin.x + frame.width - radius, y: 0),
-             CGPoint(x: frame.origin.x + frame.width, y: radius * 0.5),
-             CGPoint(x: frame.origin.x + frame.width - radius * 0.5, y: 0)),
-            // Left-Top
-            (CGPoint(x: frame.origin.x, y: 0), nil, nil),
             // Left-Bottom
-            (initialPoint, nil, nil)
+            (CGPoint(x: 0, y: frame.height), nil, nil),
+            // Right-Bottom
+            (CGPoint(x: frame.width - radius, y: frame.height), nil, nil),
+            (CGPoint(x: frame.width, y: frame.height - radius),
+             CGPoint(x: frame.width - radius * 0.5, y: frame.height),
+             CGPoint(x: frame.width, y: frame.height - radius * 0.5)),
+            // Right-Top
+            (CGPoint(x: frame.width, y: radius), nil, nil),
+            (CGPoint(x: frame.width - radius, y: 0),
+             CGPoint(x: frame.width, y: radius * 0.5),
+             CGPoint(x: frame.width - radius * 0.5, y: 0)),
+            // Left-Top
+            (CGPoint(x: -0.5, y: 0), nil, nil)
         ]
         
         // Draw path
@@ -221,3 +231,27 @@ class TimeSetAlert: UIView {
         Logger.verbose()
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct AlertPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> TimeSetAlert {
+        return TimeSetAlert(text: "Hello world!")
+    }
+    
+    func updateUIView(_ uiView: TimeSetAlert, context: Context) {
+        // Nothing
+    }
+}
+
+struct Previews_AlertEditView: PreviewProvider {
+    static var previews: some View {
+        Group {
+            AlertPreview()
+                .previewLayout(.fixed(width: 250, height: 54))
+        }
+    }
+}
+
+#endif
