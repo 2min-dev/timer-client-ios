@@ -44,10 +44,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         didSet { oldValue?.removeFromSuperview() }
     }
     private var timeSetAlert: TimeSetAlert? {
-        didSet {
-            oldValue?.removeFromSuperview()
-            timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil
-        }
+        didSet { timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil }
     }
     
     // MARK: - properties
@@ -366,18 +363,15 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     
     func bind(alert: TimeSetAlert, confirmHandler: @escaping () -> Void) {
         alertDisposeBag = DisposeBag()
-
-        alert.cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.timeSetAlert = nil
-            })
+        
+        Observable.merge(
+            alert.rx.cancel.asObservable(),
+            alert.rx.confirm.asObservable())
+            .subscribe(onNext: {[weak self] in self?.timeSetAlert = nil })
             .disposed(by: alertDisposeBag)
         
-        alert.confirmButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.timeSetAlert = nil
-                confirmHandler()
-            })
+        alert.rx.confirm
+            .subscribe(onNext: { confirmHandler() })
             .disposed(by: alertDisposeBag)
     }
     
@@ -391,10 +385,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Show start timer with selected index alert
     private func showTimerStartAlert(at indexPath: IndexPath) {
         // Create alert & binding
-        let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))
-        bind(alert: timeSetAlert) { [weak self] in
-            self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row))
-        }
+        let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1), type: .confirm)
+        bind(alert: timeSetAlert) { [weak self] in self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row)) }
         
         // Set constraint of alert
         view.addAutolayoutSubview(timeSetAlert)
@@ -463,8 +455,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             // Append repetition state
             string += string.isEmpty ? "" : ", "
             
-            string += String(format:history.repeatCount == 1 ? "time_set_state_repeat_format".localized : "time_set_state_repeat_plural_format".localized,
-                             history.repeatCount)
+            string += String(format:history.repeatCount == 1 ? "time_set_state_repeat_format".localized : "time_set_state_repeat_plural_format".localized, history.repeatCount)
         }
         
         return NSAttributedString(string: string, attributes: attributes)

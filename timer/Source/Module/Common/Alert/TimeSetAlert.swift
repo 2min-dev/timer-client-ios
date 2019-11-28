@@ -11,6 +11,11 @@ import RxSwift
 import RxCocoa
 
 class TimeSetAlert: UIView {
+    enum AlertType {
+        case cancel
+        case confirm
+    }
+    
     // MARK: - view properties
     private let textLabel: UILabel = {
         let view = UILabel()
@@ -19,7 +24,7 @@ class TimeSetAlert: UIView {
         return view
     }()
     
-    let cancelButton: UIButton = {
+    fileprivate let cancelButton: UIButton = {
         let view = UIButton()
         view.setImage(UIImage(named: "btn_clear"), for: .normal)
         return view
@@ -54,7 +59,7 @@ class TimeSetAlert: UIView {
         return layer
     }()
     
-    lazy var confirmButton: UIButton = {
+    fileprivate lazy var confirmButton: UIButton = {
         let view = UIButton()
         view.layer.insertSublayer(confirmLayer, below: view.imageView?.layer)
         
@@ -91,17 +96,16 @@ class TimeSetAlert: UIView {
     private let tailPosition = CGPoint(x: 19.adjust(), y: 54.adjust())
     
     private let text: String
-    private let confirmHandler: (() -> Void)?
     
     private var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(text: String, confirmHandler: (() -> Void)? = nil) {
+    init(text: String, type: AlertType = .cancel) {
         self.text = text
-        self.confirmHandler = confirmHandler
         super.init(frame: .zero)
         
         initLayout()
+        bind()
     }
     
     required init?(coder: NSCoder) {
@@ -115,6 +119,15 @@ class TimeSetAlert: UIView {
         
         confirmLayer.frame = confirmButton.bounds
         confirmLayer.path = drawConfirmBorderLayer(frame: confirmLayer.bounds, corner: 5.adjust()).cgPath
+    }
+    
+    // MARK: - bind
+    private func bind() {
+        Observable.merge(
+            cancelButton.rx.tap.asObservable(),
+            confirmButton.rx.tap.asObservable())
+            .subscribe(onNext: { [weak self] in self?.removeFromSuperview() })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - private method
@@ -229,6 +242,16 @@ class TimeSetAlert: UIView {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+extension Reactive where Base: TimeSetAlert {
+    var cancel: ControlEvent<Void> {
+        return ControlEvent(events: base.cancelButton.rx.tap)
+    }
+    
+    var confirm: ControlEvent<Void> {
+        return ControlEvent(events: base.confirmButton.rx.tap)
     }
 }
 
