@@ -72,12 +72,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func migrateRealm() {
         let config = Realm.Configuration(
             // Set the new schema version. This must be greater than the previously used
-            schemaVersion: 0,
+            schemaVersion: 1,
 
             // Set the block which will be called automatically when opening a Realm with
             // a schema version lower than the one set above
             migrationBlock: { migration, oldSchemaVersion in
-                // Nothing yet
+                if oldSchemaVersion < 1 {
+                    // TODO: migrate from scheme version 0
+                    // * TimeSetItem
+                    
+                    // Migrate history model
+                    migration.enumerateObjects(ofType: History.className()) { oldObject, newObject in
+                        // Migrate to set end index by timer's current time
+                        let timeSetItem = oldObject!["item"]! as! MigrationObject
+                        let timers = timeSetItem["timers"] as! List<MigrationObject>
+                        newObject!["endIndex"] = timers.firstIndex {
+                            let current = $0["current"] as! TimeInterval
+                            let target = $0["target"] as! TimeInterval
+                            let extra = $0["extra"] as! TimeInterval
+                            return current < target + extra
+                        } ?? timers.count - 1
+                    }
+                }
             })
 
         // Tell Realm to use this new configuration object for the default Realm

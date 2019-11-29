@@ -62,7 +62,9 @@ class TimeSet: EventStreamProtocol {
     private(set) var timer: JSTimer! {
         didSet { event.onNext(.timerChanged(timer, at: currentIndex)) }
     }
-    private(set) var currentIndex: Int
+    private(set) var currentIndex: Int {
+        didSet { history.endIndex = currentIndex }
+    }
     
     private var disposeBag = DisposeBag()
     
@@ -74,11 +76,13 @@ class TimeSet: EventStreamProtocol {
         self.item = item
         self.history = history
         currentIndex = index
-        timer = createTimer(at: index)
+        
+        history.endIndex = index // Set end index of history
+        timer = createTimer(at: index) // Create timer at index
     }
     
     convenience init(item: TimeSetItem, index: Int) {
-        self.init(item: item, history: History(item: item, isSaved: item.id != nil), index: index)
+        self.init(item: item, history: History(item: item), index: index)
     }
     
     // MARK: - private method

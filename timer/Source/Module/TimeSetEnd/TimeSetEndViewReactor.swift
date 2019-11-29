@@ -73,7 +73,7 @@ class TimeSetEndViewReactor: Reactor {
                              startDate: history.startDate ?? Date(),
                              endDate: history.endDate ?? Date(),
                              memo: history.memo,
-                             didTimeSetSaved: history.isSaved)
+                             didTimeSetSaved: history.item?.id != nil)
     }
     
     // MARK: - Mutate
