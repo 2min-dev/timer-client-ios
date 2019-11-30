@@ -1,5 +1,5 @@
 //
-//  TimeSetAlert.swift
+//  BubbleAlert.swift
 //  timer
 //
 //  Created by JSilver on 28/08/2019.
@@ -10,8 +10,8 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TimeSetAlert: UIView {
-    enum AlertType {
+class BubbleAlert: UIView {
+    enum ButtonType {
         case cancel
         case confirm
     }
@@ -92,20 +92,32 @@ class TimeSetAlert: UIView {
     }()
     
     // MARK: - properties
-    private let tailSize = CGSize(width: 12.adjust(), height: 8.adjust())
-    private let tailPosition = CGPoint(x: 19.adjust(), y: 54.adjust())
-    
-    private let text: String
-    
     private var disposeBag: DisposeBag = DisposeBag()
     
-    // MARK: - constructor
-    init(text: String, type: AlertType = .cancel) {
-        self.text = text
+    // MARK: - constructor    
+    private init(type: ButtonType = .cancel) {
         super.init(frame: .zero)
         
-        initLayout()
+        // Set constraint of subviews
+        addAutolayoutSubview(containerStackView)
+        containerStackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.height.equalTo(54.adjust())
+        }
+        
         bind()
+        
+        confirmButton.isHidden = type == .cancel
+    }
+    
+    convenience init(attributedText: NSAttributedString, type: ButtonType = .cancel) {
+        self.init(type: type)
+        textLabel.attributedText = attributedText
+    }
+    
+    convenience init(text: String, type: ButtonType = .cancel) {
+        self.init(type: type)
+        textLabel.attributedText = makeAttributedText(string: text)
     }
     
     required init?(coder: NSCoder) {
@@ -115,10 +127,10 @@ class TimeSetAlert: UIView {
     // MARK: - lifecycle
     override func draw(_ rect: CGRect) {
         containerLayer.frame = containerStackView.bounds
-        containerLayer.path = drawBackgroundLayer(frame: containerLayer.bounds, corner: 5.adjust()).cgPath
+        containerLayer.path = drawContainerLayer(frame: containerLayer.bounds, corner: 5.adjust()).cgPath
         
         confirmLayer.frame = confirmButton.bounds
-        confirmLayer.path = drawConfirmBorderLayer(frame: confirmLayer.bounds, corner: 5.adjust()).cgPath
+        confirmLayer.path = drawConfirmLayer(frame: confirmLayer.bounds, corner: 5.adjust()).cgPath
     }
     
     // MARK: - bind
@@ -131,12 +143,12 @@ class TimeSetAlert: UIView {
     }
     
     // MARK: - private method
-    private func initLayout() {
+    private func makeAttributedText(string: String) -> NSAttributedString {
         // Create paragraph style
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8.adjust()
-        paragraphStyle.lineBreakMode = .byTruncatingTail
+        paragraphStyle.lineSpacing = 4.adjust()
         
+        // Create attributes
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Bold.withSize(12.adjust()),
             .foregroundColor: Constants.Color.codGray,
@@ -144,18 +156,14 @@ class TimeSetAlert: UIView {
             .paragraphStyle: paragraphStyle
         ]
         
-        // Set attributed string
-        textLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
-        
-        // Set constraint of subviews
-        addAutolayoutSubview(containerStackView)
-        containerStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.height.equalTo(54.adjust())
-        }
+        return NSAttributedString(string: string, attributes: attributes)
     }
     
-    private func drawBackgroundLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
+    private func drawContainerLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
+        // Bubble tail configuration
+        let tailSize = CGSize(width: 12.adjust(), height: 8.adjust())
+        let tailPosition = CGPoint(x: 19.adjust(), y: 54.adjust())
+        
         // Initial point of border path
         let initialPoint = CGPoint(x: radius, y: frame.height)
         // Tail points
@@ -204,7 +212,7 @@ class TimeSetAlert: UIView {
         return path
     }
     
-    private func drawConfirmBorderLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
+    private func drawConfirmLayer(frame: CGRect, corner radius: CGFloat) -> UIBezierPath {
         // Initial point of border path
         let initialPoint = CGPoint(x: 0, y: 0)
         // Round corner points
@@ -245,7 +253,7 @@ class TimeSetAlert: UIView {
     }
 }
 
-extension Reactive where Base: TimeSetAlert {
+extension Reactive where Base: BubbleAlert {
     var cancel: ControlEvent<Void> {
         return ControlEvent(events: base.cancelButton.rx.tap)
     }
@@ -259,11 +267,11 @@ extension Reactive where Base: TimeSetAlert {
 import SwiftUI
 
 struct AlertPreview: UIViewRepresentable {
-    func makeUIView(context: Context) -> TimeSetAlert {
-        return TimeSetAlert(text: "Hello world!")
+    func makeUIView(context: Context) -> BubbleAlert {
+        return BubbleAlert(text: "Hello world!")
     }
     
-    func updateUIView(_ uiView: TimeSetAlert, context: Context) {
+    func updateUIView(_ uiView: BubbleAlert, context: Context) {
         // Nothing
     }
 }

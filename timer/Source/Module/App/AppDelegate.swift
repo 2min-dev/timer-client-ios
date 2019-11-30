@@ -90,7 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             let current = $0["current"] as! TimeInterval
                             let target = $0["target"] as! TimeInterval
                             let extra = $0["extra"] as! TimeInterval
-                            return current < target + extra
+                            return current > 0 && current < target + extra
                         } ?? timers.count - 1
                     }
                 }
