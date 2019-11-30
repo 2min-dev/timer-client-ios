@@ -13,16 +13,18 @@ import ReactorKit
 class MainViewController: UITabBarController, View {
     // MARK: - constants
     enum TabType: Int {
-        case productivity = 0
-        case localTimeSet
+        case localTimeSet = 0
+        case productivity
+        case preset
     }
     
     // MARK: - view properties
     let _tabBar: TMTabBar = {
         let view = TMTabBar()
         view.tabBarItems = [
+            TMTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
             TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
-            TMTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my"))
+            TMTabBarItem(title: "tab_button_preset".localized, icon: UIImage(named: "btn_tab_share"))
         ]
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.tintColor = Constants.Color.carnation
@@ -57,8 +59,9 @@ class MainViewController: UITabBarController, View {
         initLayout()
         
         // Set view controllers
-        viewControllers = [coordinator.get(for: .productivity),
-                           coordinator.get(for: .local)]
+        viewControllers = [coordinator.get(for: .local),
+                           coordinator.get(for: .productivity),
+                           coordinator.get(for: .preset)]
             .compactMap { $0 }
         
         // Set tab bar view controller delegate for swipable

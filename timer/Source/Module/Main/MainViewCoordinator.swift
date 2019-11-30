@@ -14,6 +14,7 @@ class MainViewCoordinator: CoordinatorProtocol {
     enum Route {
         case productivity
         case local
+        case preset
         case timeSetProcess(TimeSetItem)
         case historyDetail(History)
     }
@@ -64,6 +65,17 @@ class MainViewCoordinator: CoordinatorProtocol {
             let coordinator = LocalTimeSetViewCoordinator(provider: provider)
             let reactor = LocalTimeSetViewReactor(timeSetService: provider.timeSetService)
             let viewController = LocalTimeSetViewController(coordinator: coordinator)
+            
+            // DI
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
+            
+            return viewController
+            
+        case .preset:
+            let coordinator = PresetViewCoordinator(provider: provider)
+            let reactor = PresetViewReactor(networkService: provider.networkService)
+            let viewController = PresetViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

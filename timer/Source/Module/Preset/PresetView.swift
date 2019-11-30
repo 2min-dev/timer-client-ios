@@ -10,15 +10,51 @@ import UIKit
 
 class PresetView: UIView {
     // MARK: - view properties
-    let root: UIView = {
-        let view = UIView()
+    let headerView: CommonHeader = {
+        let view = CommonHeader()
+        view.backButton.isHidden = true
+        view.additionalButtons = [.history, .setting]
+        view.title = "preset_title".localized
+        return view
+    }()
+    
+    let timeSetCollectionView: UICollectionView = {
+        let layout = JSCollectionViewLayout()
+        layout.globalInset = UIEdgeInsets(top: 20.adjust(), left: 0, bottom: 40.adjust(), right: 0)
+        
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.backgroundColor = Constants.Color.clear
+        view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
         return view
     }()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = Constants.Color.alabaster
         
+        // Set contraints of subviews
+        addAutolayoutSubviews([timeSetCollectionView, headerView])
+        timeSetCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide).priorityHigh()
+            } else {
+                make.bottom.equalToSuperview().priorityHigh()
+            }
+        }
+        
+        headerView.snp.makeConstraints { make in
+            if #available(iOS 11.0, *) {
+                make.top.equalTo(safeAreaLayoutGuide)
+            } else {
+                make.top.equalToSuperview().inset(20)
+            }
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

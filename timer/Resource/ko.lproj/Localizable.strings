@@ -13,6 +13,7 @@
 // MARK: - Tab
 "tab_button_home" = "홈";
 "tab_button_my_time_set" = "마이";
+"tab_button_preset" = "프리셋";
 "tab_button_shared_time_set" = "공유 타임셋";
 
 // MARK: - Keyboard accessory
@@ -48,6 +49,7 @@
 "saved_time_set_management_title" = "저장한 타임셋 관리";
 "bookmarked_time_set_title" = "즐겨찾는 타임셋 모두보기";
 "bookmarked_time_set_management_title" = "즐겨찾는 타임셋 관리";
+"preset_title" = "프리셋";
 "shared_time_set_title" = "공유 타임셋";
 "shared_time_set_more_title" = "공유 타임셋 더보기";
 "my_shared_time_set_title" = "내가 공유한 타임셋";
@@ -73,6 +75,9 @@
 // MARK: - time set manage
 "time_set_manage_header_title" = "원하는대로 타임셋 순서를 설정해서\n보다 편하게 사용해보세요";
 "time_set_manage_removed_time_set_title" = "삭제된 타임셋";
+
+// MARK: - Preset
+"preset_header_title" = "2min이 준비한 프리셋으로\n간편하게 시간의 효율을 높여보세요!";
 
 // MARK: - Productivity
 "productivity_button_hour_title" = "시";
