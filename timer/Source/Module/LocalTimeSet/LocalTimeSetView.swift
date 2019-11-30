@@ -18,11 +18,6 @@ class LocalTimeSetView: UIView {
         return view
     }()
     
-    let titleLabel: UILabel = {
-        let view = UILabel()
-        return view
-    }()
-    
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
         layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 30.adjust(), right: 0)
