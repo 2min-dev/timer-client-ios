@@ -83,10 +83,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     
                     // Migrate history model
                     migration.enumerateObjects(ofType: History.className()) { oldObject, newObject in
+                        guard let oldObject = oldObject, let newObject = newObject else { return }
+                        
                         // Migrate to set end index by timer's current time
-                        let timeSetItem = oldObject!["item"]! as! MigrationObject
+                        let timeSetItem = oldObject["item"]! as! MigrationObject
                         let timers = timeSetItem["timers"] as! List<MigrationObject>
-                        newObject!["endIndex"] = timers.firstIndex {
+                        newObject["endIndex"] = timers.firstIndex {
                             let current = $0["current"] as! TimeInterval
                             let target = $0["target"] as! TimeInterval
                             let extra = $0["extra"] as! TimeInterval

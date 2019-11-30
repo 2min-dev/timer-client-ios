@@ -111,7 +111,10 @@ class HistoryDetailViewReactor: Reactor {
                              memo: history.memo,
                              endState: history.endState,
                              endIndex: history.endIndex,
-                             remainedTime: item.timers.reduce(0) { $0 + ($1.end - $1.current) },
+                             remainedTime: item.timers.enumerated()
+                                .filter { $0.offset >= history.endIndex }
+                                .map { $0.element }
+                                .reduce(0) { $0 + ($1.end - $1.current) },
                              overtime: item.overtimer?.current ?? 0,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
                              shouldSectionReload: true,
