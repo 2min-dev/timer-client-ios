@@ -15,6 +15,10 @@ protocol NetworkServiceProtocol {
     /// - end-point: **~/v1/app/version.json**
     func requestAppVersion() -> Single<AppVersion>
     
+    /// Request time set preset list
+    /// - end-point: **~/v1/timeset/preset/list.json**
+    func requestPresets() -> Single<[TimeSetItem]>
+    
     /// Request notice list
     /// - end-point: **~/v1/notice/list.json**
     func requestNoticeList() -> Single<[Notice]>
@@ -44,6 +48,10 @@ class NetworkService: BaseService, NetworkServiceProtocol {
     
     func requestAppVersion() -> Single<AppVersion> {
         return ApiProvider<AppApi>.request(.version)
+    }
+    
+    func requestPresets() -> Single<[TimeSetItem]> {
+        return ApiProvider<TimeSetApi>.request(.list)
     }
     
     func requestNoticeList() -> Single<[Notice]> {
@@ -126,6 +134,32 @@ enum AppApi: ApiType {
         case .version:
             return "v1/app/version.json"
         }
+    }
+    
+    var method: HTTPMethod {
+        .get
+    }
+    
+    var parameters: Parameters? {
+        nil
+    }
+    
+    var headers: HTTPHeaders? {
+        nil
+    }
+}
+
+enum TimeSetApi: ApiType {
+    // MARK: - api list
+    case list
+    
+    // MARK: - protocol implement
+    var baseUrl: URL {
+        NetworkService.Server.github.url
+    }
+    
+    var path: String {
+        "v1/timeset/preset/list/\("localizable_server_flag".localized).json"
     }
     
     var method: HTTPMethod {

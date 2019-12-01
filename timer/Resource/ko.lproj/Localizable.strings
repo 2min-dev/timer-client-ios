@@ -9,6 +9,9 @@
 // MARK: - Default App String
 "CFBundleDisplayName" = "2min";
 
+// MARK: - Localizable
+"localizable_server_flag" = "kr";
+
 // MARK: - App String
 // MARK: - Tab
 "tab_button_home" = "홈";
