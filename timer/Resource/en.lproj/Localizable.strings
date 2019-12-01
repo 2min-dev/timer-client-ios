@@ -128,8 +128,8 @@
 "history_repeat_count_format" = "%d";
 
 // MARK: - History alert
-"history_alert_time_set_cancel_format" = "Timeset canceld\nat %d timer";
-"history_alert_time_set_overtime_format" = "%@\nover record";
+"history_alert_time_set_cancel_format" = "Canceled at %d timer\nwith %@ left";
+"history_alert_time_set_overtime_format" = "%@\nOver record";
 
 // MARK: - Time set
 "time_set_default_title" = "Utitled Timeset";
