@@ -44,7 +44,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         didSet { oldValue?.removeFromSuperview() }
     }
     private var bubbleAlert: BubbleAlert? {
-        didSet { timerBadgeCollectionView.isScrollEnabled = bubbleAlert == nil }
+        didSet {
+            oldValue?.removeFromSuperview()
+            timerBadgeCollectionView.isScrollEnabled = bubbleAlert == nil
+        }
     }
     
     // MARK: - properties
