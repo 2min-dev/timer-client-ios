@@ -54,6 +54,9 @@ class HistoryDetailViewReactor: Reactor {
         /// End state of the time set
         let endState: History.EndState
         
+        /// End index of the time set
+        let endIndex: Int
+        
         /// Remained time of the time set
         let remainedTime: TimeInterval
         
@@ -107,7 +110,11 @@ class HistoryDetailViewReactor: Reactor {
                              repeatCount: history.repeatCount,
                              memo: history.memo,
                              endState: history.endState,
-                             remainedTime: item.timers.reduce(0) { $0 + ($1.end - $1.current) },
+                             endIndex: history.endIndex,
+                             remainedTime: item.timers.enumerated()
+                                .filter { $0.offset >= history.endIndex }
+                                .map { $0.element }
+                                .reduce(0) { $0 + ($1.end - $1.current) },
                              overtime: item.overtimer?.current ?? 0,
                              sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
                              shouldSectionReload: true,

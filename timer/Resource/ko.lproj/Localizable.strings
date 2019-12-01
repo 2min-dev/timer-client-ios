@@ -100,8 +100,6 @@
 
 // MARK: - Time set alert
 "time_set_alert_timer_start_title_format" = "%d번째 타이머부터\n시작하시겠어요?";
-"time_set_alert_cancel_title" = "타임셋을 취소한 이유를\n기록해보세요! :)";
-"time_set_alert_overtime_title" = "시간이 더 필요했던 이유를\n기록해보세요! :)";
 
 // MARK: - Time set popup
 "time_set_popup_timer_end_title_format" = "%d번째 타이머 종료";
@@ -120,6 +118,10 @@
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%d분";
 "history_repeat_count_format" = "%d회";
+
+// MARK: - History alert
+"history_alert_time_set_cancel_format" = "%d번째 타이머에서\n%@ 남기고 취소";
+"history_alert_time_set_overtime_format" = "%@\n초과기록";
 
 // MARK: - Time set
 "time_set_default_title" = "무제 타임셋";

@@ -43,11 +43,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     private var timeSetPopup: TimeSetPopup? {
         didSet { oldValue?.removeFromSuperview() }
     }
-    private var timeSetAlert: TimeSetAlert? {
-        didSet {
-            oldValue?.removeFromSuperview()
-            timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil
-        }
+    private var bubbleAlert: BubbleAlert? {
+        didSet { timerBadgeCollectionView.isScrollEnabled = bubbleAlert == nil }
     }
     
     // MARK: - properties
@@ -247,12 +244,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.selectedIndex }
             .distinctUntilChanged()
-            .filter { [weak self] _ in
-                guard let self = self else { return false }
-                return self.timeSetAlert == nil
-            }
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
-            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .subscribe(onNext: { [weak self] in self?.scrollBadgeIfCan(at: $0) })
             .disposed(by: disposeBag)
 
         // Timer end popup
@@ -364,20 +357,17 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .disposed(by: popupDisposeBag)
     }
     
-    func bind(alert: TimeSetAlert, confirmHandler: @escaping () -> Void) {
+    func bind(alert: BubbleAlert, confirmHandler: @escaping () -> Void) {
         alertDisposeBag = DisposeBag()
-
-        alert.cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.timeSetAlert = nil
-            })
+        
+        Observable.merge(
+            alert.rx.cancel.asObservable(),
+            alert.rx.confirm.asObservable())
+            .subscribe(onNext: {[weak self] in self?.bubbleAlert = nil })
             .disposed(by: alertDisposeBag)
         
-        alert.confirmButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.timeSetAlert = nil
-                confirmHandler()
-            })
+        alert.rx.confirm
+            .subscribe(onNext: { confirmHandler() })
             .disposed(by: alertDisposeBag)
     }
     
@@ -391,25 +381,23 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Show start timer with selected index alert
     private func showTimerStartAlert(at indexPath: IndexPath) {
         // Create alert & binding
-        let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))
-        bind(alert: timeSetAlert) { [weak self] in
-            self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row))
-        }
+        let alert = BubbleAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1), type: .confirm)
+        bind(alert: alert) { [weak self] in self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row)) }
         
         // Set constraint of alert
-        view.addAutolayoutSubview(timeSetAlert)
-        timeSetAlert.snp.makeConstraints { make in
+        view.addAutolayoutSubview(alert)
+        alert.snp.makeConstraints { make in
             make.leading.equalTo(timerBadgeCollectionView).inset(60.adjust())
             make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-3.adjust())
         }
 
-        self.timeSetAlert = timeSetAlert
+        bubbleAlert = alert
     }
     
     // MARK: - state method
     /// Scroll badge if view can scroll
     private func scrollBadgeIfCan(at indexPath: IndexPath) {
-        guard timeSetAlert == nil else { return }
+        guard bubbleAlert == nil else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
     }
     
@@ -463,7 +451,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             // Append repetition state
             string += string.isEmpty ? "" : ", "
             
-            string += String(format:history.repeatCount == 1 ? "time_set_state_repeat_format".localized : "time_set_state_repeat_plural_format".localized,
+            string += String(format: history.repeatCount == 1 ?
+                "time_set_state_repeat_format".localized :
+                "time_set_state_repeat_plural_format".localized,
                              history.repeatCount)
         }
         
@@ -516,7 +506,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             
         case .end:
             // Remove alert
-            timeSetAlert = nil
+            bubbleAlert = nil
 
             // Present end view
             if history.endState == .normal {

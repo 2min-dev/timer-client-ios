@@ -41,6 +41,22 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     // MARK: - properties
     var coordinator: HistoryDetailViewCoordinator
     
+    private var bubbleAlert: BubbleAlert? {
+        didSet {
+            timerBadgeCollectionView.isScrollEnabled = bubbleAlert == nil
+            guard let alert = bubbleAlert else { return }
+            // Bind view event
+            bind(alert: alert)
+            
+            // Set constraint of alert
+            view.addAutolayoutSubview(alert)
+            alert.snp.makeConstraints { make in
+                make.leading.equalTo(timerBadgeCollectionView).inset(60.adjust())
+                make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-3.adjust())
+            }
+        }
+    }
+    
     // MARK: - constructor
     init(coordinator: HistoryDetailViewCoordinator) {
         self.coordinator = coordinator
@@ -130,7 +146,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             reactor.state
                 .map { $0.endDate }
                 .distinctUntilChanged())
-            .map { [weak self] in self?.getDateAttributedString(startDate: $0, endDate: $1) }
+            .map { [weak self] in self?.makeDateAttributedString(startDate: $0, endDate: $1) }
             .bind(to: dateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
@@ -171,7 +187,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         
         // Length text
         Observable.combineLatest(lengthOfBytes, isMemoExceeded)
-            .compactMap { [weak self] in self?.getMemoLengthAttributedString(length: $0, isExcess: $1) }
+            .compactMap { [weak self] in self?.makeMemoLengthAttributedString(length: $0, isExcess: $1) }
             .bind(to: memoLengthLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
@@ -194,6 +210,18 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
+        // End state
+        reactor.state
+            .map { $0.endState }
+            .distinctUntilChanged()
+            .withLatestFrom(
+                Observable.zip(
+                    reactor.state.map { $0.endIndex },
+                    reactor.state.map { $0.remainedTime },
+                    reactor.state.map { $0.overtime })) { ($0, $1.0, $1.1, $1.2) }
+            .subscribe(onNext: { [weak self] in self?.showTimeSetEndStateAlert($0, index: $1, remainedTime: $2, overtime: $3) })
+            .disposed(by: disposeBag)
+        
         let didTimeSetSaved = reactor.state
             .map { $0.didTimeSetSaved }
             .distinctUntilChanged()
@@ -209,10 +237,32 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
     }
     
+    func bind(alert: BubbleAlert) {
+        Observable.merge(
+            alert.rx.cancel.asObservable(),
+            alert.rx.confirm.asObservable())
+            .subscribe(onNext: {[weak self] in self?.bubbleAlert = nil })
+            .disposed(by: disposeBag)
+    }
+    
     // MARK: - action method
     // MARK: - state method
-    /// Get memo length attributed string
-    private func getMemoLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {
+    /// Show time set end state alert
+    private func showTimeSetEndStateAlert(_ endState: History.EndState, index: Int, remainedTime: TimeInterval, overtime: TimeInterval) {
+        switch endState {
+        case .cancel:
+            showTimeSetCancelAlert(index: index, remained: remainedTime)
+            
+        case .overtime:
+            showTimeSetOvertimeAlert(overtime: overtime)
+            
+        default:
+            break
+        }
+    }
+    
+    /// Make memo length attributed string
+    private func makeMemoLengthAttributedString(length: Int, isExcess: Bool) -> NSAttributedString {
         let lengthString = String(format: "time_set_memo_bytes_format".localized, length, MAX_MEMO_LENGTH)
         let attributedString = NSMutableAttributedString(string: lengthString)
         
@@ -225,8 +275,8 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         return attributedString
     }
     
-    /// Get date attributed string
-    private func getDateAttributedString(startDate: Date, endDate: Date) -> NSAttributedString {
+    /// Make time set history date attributed string
+    private func makeDateAttributedString(startDate: Date, endDate: Date) -> NSAttributedString {
         // Get day of dates
         let startDay = Calendar.current.component(.day, from: startDate)
         let endDay = Calendar.current.component(.day, from: endDate)
@@ -246,12 +296,49 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         return NSAttributedString(string: dateString, attributes: attributes)
     }
     
+    /// Sohw time set saved toast
     private func showTimeSetSavedToast() {
         guard let timeSetItem = reactor?.timeSetItem else { return }
         Toast(content: "toast_time_set_saved_title".localized,
               task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
                 _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
         }).show(animated: true, withDuration: 3)
+    }
+    
+    // MARK: - private method
+    /// Show time set canceled alert
+    private func showTimeSetCancelAlert(index: Int, remained time: TimeInterval) {
+        let (hour, minute, second) = getTime(interval: time)
+        let timeString = String(format: "time_set_time_format".localized, hour, minute, second)
+        
+        // Create bubble alert view
+        bubbleAlert = BubbleAlert(text: String(format: "history_alert_time_set_cancel_format".localized, index + 1, timeString))
+    }
+    
+    /// Show time set overtime alert
+    private func showTimeSetOvertimeAlert(overtime: TimeInterval) {
+        let (hour, minute, second) = getTime(interval: overtime)
+        let timeString = String(format: "time_set_time_format".localized, hour, minute, second)
+        
+        // Create paragraph style
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 4.adjust()
+        
+        // Create attributes
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Constants.Font.Bold.withSize(12.adjust()),
+            .foregroundColor: Constants.Color.codGray,
+            .kern: -0.36,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        let text = String(format: "history_alert_time_set_overtime_format".localized, timeString)
+        let attributedString = NSMutableAttributedString(string: text, attributes: attributes)
+        // Highlight time string
+        attributedString.addAttributes([.foregroundColor: Constants.Color.carnation], range: (text as NSString).range(of: timeString))
+        
+        // Create alert & binding
+        bubbleAlert = BubbleAlert(attributedText: attributedString)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
