@@ -9,10 +9,14 @@
 // MARK: - Default App String
 "CFBundleDisplayName" = "2min";
 
+// MARK: - Localizable
+"localizable_server_flag" = "en";
+
 // MARK: - App String
 // MARK: - Tab
 "tab_button_home" = "Home";
 "tab_button_my_time_set" = "My";
+"tab_button_preset" = "Preset";
 "tab_button_shared_time_set" = "Shared";
 
 // MARK: - Keyboard accessory
@@ -48,6 +52,7 @@
 "saved_time_set_management_title" = "Saved Timeset Management";
 "bookmarked_time_set_title" = "Bookmarked Timeset";
 "bookmarked_time_set_management_title" = "Bookmarked Timeset Management";
+"preset_title" = "Preset";
 "shared_time_set_title" = "Shared Timeset";
 "shared_time_set_more_title" = "Shared Timeset More";
 "my_shared_time_set_title" = "My Shared Timeset";
@@ -69,6 +74,9 @@
 "local_bookmarked_time_set_management_title" = "BOOKMARKED TIMESET MANAGEMENT";
 "local_bookmarked_time_set_all_show_title" = "SHOW ALL BOOKMARKED TIMESET";
 "time_set_induce_title" = "Try add your timeset!";
+
+// MARK: - Preset
+"preset_header_title" = "Easily boost your time\nwith presets prepared by 2min!";
 
 // MARK: - time set manage
 "time_set_manage_header_title" = "Set the timeset order to your liking";

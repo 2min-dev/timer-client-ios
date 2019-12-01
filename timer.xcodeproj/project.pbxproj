@@ -145,6 +145,11 @@
 		F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C18755226306EC00B2C644 /* CoordinatorProtocol.swift */; };
 		F3C18758226318DB00B2C644 /* AppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C18757226318DB00B2C644 /* AppService.swift */; };
 		F3C24CE0232D3FB200D7492C /* TimeSetManageCollectionViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C24CDF232D3FB200D7492C /* TimeSetManageCollectionViewCellReactor.swift */; };
+		F3C2D0022392456C004D2219 /* PresetViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2CFFE2392456C004D2219 /* PresetViewCoordinator.swift */; };
+		F3C2D0032392456C004D2219 /* PresetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2CFFF2392456C004D2219 /* PresetViewReactor.swift */; };
+		F3C2D0042392456C004D2219 /* PresetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2D0002392456C004D2219 /* PresetViewController.swift */; };
+		F3C2D0052392456C004D2219 /* PresetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2D0012392456C004D2219 /* PresetView.swift */; };
+		F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2D0062393AA58004D2219 /* RevisionValue.swift */; };
 		F3C2E7B9228318C500C69FF2 /* TimerBadgeCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2E7B8228318C500C69FF2 /* TimerBadgeCellReactor.swift */; };
 		F3C81BE023351C3800105549 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C81BDF23351C3800105549 /* Header.swift */; };
 		F3CD184622F61776008DB221 /* FooterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CD184522F61776008DB221 /* FooterButton.swift */; };
@@ -387,6 +392,12 @@
 		F3C18755226306EC00B2C644 /* CoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorProtocol.swift; sourceTree = "<group>"; };
 		F3C18757226318DB00B2C644 /* AppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppService.swift; sourceTree = "<group>"; };
 		F3C24CDF232D3FB200D7492C /* TimeSetManageCollectionViewCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageCollectionViewCellReactor.swift; sourceTree = "<group>"; };
+		F3C2CFFE2392456C004D2219 /* PresetViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetViewCoordinator.swift; sourceTree = "<group>"; };
+		F3C2CFFF2392456C004D2219 /* PresetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetViewReactor.swift; sourceTree = "<group>"; };
+		F3C2D0002392456C004D2219 /* PresetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetViewController.swift; sourceTree = "<group>"; };
+		F3C2D0012392456C004D2219 /* PresetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetView.swift; sourceTree = "<group>"; };
+		F3C2D0062393AA58004D2219 /* RevisionValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevisionValue.swift; sourceTree = "<group>"; };
+		F3C2D0082393B79A004D2219 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F3C2E7B8228318C500C69FF2 /* TimerBadgeCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCellReactor.swift; sourceTree = "<group>"; };
 		F3C81BDF23351C3800105549 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		F3CD184522F61776008DB221 /* FooterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterButton.swift; sourceTree = "<group>"; };
@@ -664,6 +675,7 @@
 				F3735C9922CFA8C000DC247C /* Main */,
 				F3735C9822CFA88700DC247C /* Productivity */,
 				F3735C9A22CFA98A00DC247C /* LocalTimeSet */,
+				F3C2CFFD23924559004D2219 /* Preset */,
 				F3F54138232778BC00D618D2 /* TimeSetManage */,
 				F3F5F86F233155AA003271B3 /* AllTimeSet */,
 				F3CD207E22FD95CC0059E1BA /* TimeSetEdit */,
@@ -947,6 +959,7 @@
 				F39BFF8C2355F9EA0057816B /* History.swift */,
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 				F3E1FBF82387B3B3008FB3AB /* Version.swift */,
+				F3C2D0062393AA58004D2219 /* RevisionValue.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -975,6 +988,17 @@
 				F39B0B87231F71E200C2785A /* Error.swift */,
 			);
 			path = Constant;
+			sourceTree = "<group>";
+		};
+		F3C2CFFD23924559004D2219 /* Preset */ = {
+			isa = PBXGroup;
+			children = (
+				F3C2D0002392456C004D2219 /* PresetViewController.swift */,
+				F3C2D0012392456C004D2219 /* PresetView.swift */,
+				F3C2CFFF2392456C004D2219 /* PresetViewReactor.swift */,
+				F3C2CFFE2392456C004D2219 /* PresetViewCoordinator.swift */,
+			);
+			path = Preset;
 			sourceTree = "<group>";
 		};
 		F3C2CFFB23924162004D2219 /* Toast */ = {
@@ -1516,6 +1540,7 @@
 				F39B0B8D231F7D3B00C2785A /* RealmService.swift in Sources */,
 				F3C24CE0232D3FB200D7492C /* TimeSetManageCollectionViewCellReactor.swift in Sources */,
 				F3C0DF8823333F9F00E49425 /* CountdownSettingViewCoordinator.swift in Sources */,
+				F3C2D0022392456C004D2219 /* PresetViewCoordinator.swift in Sources */,
 				F3C18756226306EC00B2C644 /* CoordinatorProtocol.swift in Sources */,
 				F373CCD42265F995007ECCA0 /* TimeSetService.swift in Sources */,
 				F38975982343317200BBAAF3 /* TimeSetSaveViewController.swift in Sources */,
@@ -1607,6 +1632,7 @@
 				F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */,
 				F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */,
 				F3ADF4352312945600FA9277 /* TimeSetMemoViewCoordinator.swift in Sources */,
+				F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */,
 				F3F541432327E07500D618D2 /* TimeSetManageCollectionViewCell.swift in Sources */,
 				F3F97A8E2378111F0041341B /* Toast.swift in Sources */,
 				F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */,
@@ -1614,6 +1640,7 @@
 				F3C0DF8923333F9F00E49425 /* CountdownSettingViewReactor.swift in Sources */,
 				F3D8EDFF234B7F06003CAF08 /* Alarm.swift in Sources */,
 				F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */,
+				F3C2D0042392456C004D2219 /* PresetViewController.swift in Sources */,
 				F303F285225CD53A00A11FAF /* MainViewCoordinator.swift in Sources */,
 				F3F5F874233155E8003271B3 /* AllTimeSetViewCoordinator.swift in Sources */,
 				F3F21F6F23338A100000597B /* NoticeDetailViewReactor.swift in Sources */,
@@ -1629,6 +1656,7 @@
 				F3756F242322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift in Sources */,
 				F3CD208622FD95E20059E1BA /* TimeSetEditView.swift in Sources */,
 				F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */,
+				F3C2D0032392456C004D2219 /* PresetViewReactor.swift in Sources */,
 				F35E05FF22FF023D00A66ED9 /* TimeKeyPad.swift in Sources */,
 				F37041C9226B65550012EA16 /* TimerItem.swift in Sources */,
 				F39B0B88231F71E200C2785A /* Error.swift in Sources */,
@@ -1650,6 +1678,7 @@
 				F3CD208322FD95E20059E1BA /* TimeSetEditViewCoordinator.swift in Sources */,
 				F35169832386863B00EFE74C /* String+encoding.swift in Sources */,
 				F3F54140232778D100D618D2 /* TimeSetManageView.swift in Sources */,
+				F3C2D0052392456C004D2219 /* PresetView.swift in Sources */,
 				F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */,
 				F3C187542262052300B2C644 /* TeamInfoView.swift in Sources */,
 				F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */,

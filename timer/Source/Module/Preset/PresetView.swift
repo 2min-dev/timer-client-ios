@@ -1,28 +1,26 @@
 //
-//  LocalTimeSetView.swfit
+//  PresetView.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 2019/11/30.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 
-class LocalTimeSetView: UIView {
+class PresetView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
         view.backButton.isHidden = true
         view.additionalButtons = [.history, .setting]
-        view.title = "local_time_set_title".localized
+        view.title = "preset_title".localized
         return view
     }()
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 30.adjust(), right: 0)
-        layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
-        layout.minimumInteritemSpacing = 5.adjust()
+        layout.globalInset = UIEdgeInsets(top: 20.adjust(), left: 0, bottom: 40.adjust(), right: 0)
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
@@ -30,13 +28,15 @@ class LocalTimeSetView: UIView {
         return view
     }()
     
+    let loadingView: CommonLoading = CommonLoading()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.alabaster
         
         // Set contraints of subviews
-        addAutolayoutSubviews([timeSetCollectionView, headerView])
+        addAutolayoutSubviews([timeSetCollectionView, headerView, loadingView])
         timeSetCollectionView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
@@ -56,6 +56,10 @@ class LocalTimeSetView: UIView {
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+        }
+        
+        loadingView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

@@ -45,6 +45,16 @@ class TimeSetItem: Object, NSCopying, Codable {
         self.bookmarkSortingKey = bookmarkSortingKey
     }
     
+    required convenience init(from decoder: Decoder) throws {
+        self.init()
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try? container.decode(String.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        isRepeat = try container.decode(Bool.self, forKey: .isRepeat)
+        timers = try container.decode([TimerItem].self, forKey: .timers).toList()
+    }
+    
     // MARK: - realm method
     override class func primaryKey() -> String? {
         return "id"
