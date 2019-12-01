@@ -19,6 +19,8 @@ class PresetViewController: BaseHeaderViewController, View {
     
     private var timeSetCollectionView: UICollectionView { presetView.timeSetCollectionView }
     
+    private var loadingView: CommonLoading { presetView.loadingView }
+    
     // MARK: - properties
     var coordinator: PresetViewCoordinator
     
@@ -79,7 +81,7 @@ class PresetViewController: BaseHeaderViewController, View {
     func bind(reactor: PresetViewReactor) {
         // MARK: action
         rx.viewWillAppear
-            .map { Reactor.Action.refresh }
+            .map { .refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -92,10 +94,26 @@ class PresetViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Preset section
         reactor.state
             .filter { $0.shouldSectionReload }
             .map { $0.sections }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        // Loading
+        reactor.state
+            .map { $0.isLoading }
+            .distinctUntilChanged()
+            .bind(to: loadingView.rx.isLoading)
+            .disposed(by: disposeBag)
+        
+        // Error
+        reactor.state
+            .map { $0.error }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .subscribe(onNext: { Logger.error($0) })
             .disposed(by: disposeBag)
     }
     

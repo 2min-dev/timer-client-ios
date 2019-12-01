@@ -149,6 +149,7 @@
 		F3C2D0032392456C004D2219 /* PresetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2CFFF2392456C004D2219 /* PresetViewReactor.swift */; };
 		F3C2D0042392456C004D2219 /* PresetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2D0002392456C004D2219 /* PresetViewController.swift */; };
 		F3C2D0052392456C004D2219 /* PresetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2D0012392456C004D2219 /* PresetView.swift */; };
+		F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2D0062393AA58004D2219 /* RevisionValue.swift */; };
 		F3C2E7B9228318C500C69FF2 /* TimerBadgeCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C2E7B8228318C500C69FF2 /* TimerBadgeCellReactor.swift */; };
 		F3C81BE023351C3800105549 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C81BDF23351C3800105549 /* Header.swift */; };
 		F3CD184622F61776008DB221 /* FooterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CD184522F61776008DB221 /* FooterButton.swift */; };
@@ -395,6 +396,8 @@
 		F3C2CFFF2392456C004D2219 /* PresetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetViewReactor.swift; sourceTree = "<group>"; };
 		F3C2D0002392456C004D2219 /* PresetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetViewController.swift; sourceTree = "<group>"; };
 		F3C2D0012392456C004D2219 /* PresetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetView.swift; sourceTree = "<group>"; };
+		F3C2D0062393AA58004D2219 /* RevisionValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevisionValue.swift; sourceTree = "<group>"; };
+		F3C2D0082393B79A004D2219 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F3C2E7B8228318C500C69FF2 /* TimerBadgeCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCellReactor.swift; sourceTree = "<group>"; };
 		F3C81BDF23351C3800105549 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		F3CD184522F61776008DB221 /* FooterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterButton.swift; sourceTree = "<group>"; };
@@ -956,6 +959,7 @@
 				F39BFF8C2355F9EA0057816B /* History.swift */,
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 				F3E1FBF82387B3B3008FB3AB /* Version.swift */,
+				F3C2D0062393AA58004D2219 /* RevisionValue.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1628,6 +1632,7 @@
 				F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */,
 				F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */,
 				F3ADF4352312945600FA9277 /* TimeSetMemoViewCoordinator.swift in Sources */,
+				F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */,
 				F3F541432327E07500D618D2 /* TimeSetManageCollectionViewCell.swift in Sources */,
 				F3F97A8E2378111F0041341B /* Toast.swift in Sources */,
 				F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */,
