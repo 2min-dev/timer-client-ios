@@ -142,72 +142,89 @@ class TimeSetProcessViewReactor: Reactor {
     private var countdownTimer: JSTimer
     
     // MARK: - constructor
-    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem? = nil, start index: Int = 0) {
+    private init(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, origin: TimeSetItem, timeSet: TimeSet) {
         self.appService = appService
         self.timeSetService = timeSetService
-        
-        var index = index
-        if let timeSetItem = timeSetItem {
-            guard index >= 0 && index < timeSetItem.timers.count else {
-                Logger.error("can't start from \(index) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
-                return nil
-            }
-            
-            // Copy time set item to preserve origin data
-            guard let copiedItem = timeSetItem.copy() as? TimeSetItem else { return nil }
-            
-            origin = timeSetItem
-            timeSet = TimeSet(item: copiedItem, index: index)
-        } else {
-            // Fetch running time set from time set service
-            guard let runningTimeSet = timeSetService.runningTimeSet else {
-                Logger.error("no running time set.", tag: "TIME SET PROCESS")
-                return nil
-            }
-            
-            origin = runningTimeSet.origin
-            timeSet = runningTimeSet.timeSet
-            
-            index = timeSet.currentIndex
-        }
+
+        self.origin = origin
+        self.timeSet = timeSet
         
         // Create countdown timer
         countdownTimer = JSTimer(item: TimerItem(target: TimeInterval(appService.getCountdown())))
-        if timeSetItem == nil {
-            // Countdown end if time set isn't initial state
-            countdownTimer.end()
-        }
         
         // Calculate remainted time
+        let index = timeSet.currentIndex
         remainedTime = timeSet.item.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.end }
         
         // Get initial state
         let timer = timeSet.item.timers[index]
-        let allTime = timeSet.item.timers.reduce(0) { $0 + $1.end }
-        let extraTime = timeSet.item.timers.reduce(0) { $0 + $1.extra }
         let time = timer.end + timer.extra - timer.current
-        let remainedTime = self.remainedTime + time
         
         // Create seciont datasource
         let dataSource = TimerBadgeDataSource(timers: timeSet.item.timers.toArray(), index: index)
         
-        initialState = State(title: timeSet.item.title,
-                             time: time,
-                             allTime: allTime,
-                             remainedTime: remainedTime,
-                             isRepeat: timeSet.item.isRepeat,
-                             extraTime: extraTime,
-                             countdownState: countdownTimer.state,
-                             countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
-                             timeSetState: timeSet.state,
-                             timerState: timeSet.timer.state,
-                             sectionDataSource: dataSource,
-                             timer: timer,
-                             selectedIndex: index,
-                             shouldSectionReload: true,
-                             shouldDismiss: false)
+        initialState = State(
+            title: timeSet.item.title,
+            time: time,
+            allTime: timeSet.item.timers.reduce(0) { $0 + $1.end },
+            remainedTime: remainedTime + time,
+            isRepeat: timeSet.item.isRepeat,
+            extraTime: timeSet.item.timers.reduce(0) { $0 + $1.extra },
+            countdownState: countdownTimer.state,
+            countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
+            timeSetState: timeSet.state,
+            timerState: timeSet.timer.state,
+            sectionDataSource: dataSource,
+            timer: timer,
+            selectedIndex: index,
+            shouldSectionReload: true,
+            shouldDismiss: false
+        )
+    }
+    
+    convenience init?(
+        appService: AppServiceProtocol,
+        timeSetService: TimeSetServiceProtocol
+    ) {
+        // Fetch running time set from time set service
+        guard let runningTimeSet = timeSetService.runningTimeSet else {
+            Logger.error("no running time set.", tag: "TIME SET PROCESS")
+            return nil
+        }
+        
+        self.init(
+            appService: appService,
+            timeSetService: timeSetService,
+            origin: runningTimeSet.origin,
+            timeSet: runningTimeSet.timeSet
+        )
+        
+        // End countdown timer
+        countdownTimer.end()
+    }
+    
+    convenience init?(
+        appService: AppServiceProtocol,
+        timeSetService: TimeSetServiceProtocol,
+        timeSetItem: TimeSetItem,
+        startIndex: Int = 0
+    ) {
+        guard startIndex >= 0 && startIndex < timeSetItem.timers.count else {
+            Logger.error("can't start from \(startIndex) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
+            return nil
+        }
+        
+        // Copy time set item to preserve origin data
+        guard let copiedItem = timeSetItem.copy() as? TimeSetItem else { return nil }
+        
+        self.init(
+            appService: appService,
+            timeSetService: timeSetService,
+            origin: timeSetItem,
+            timeSet: TimeSet(item: copiedItem, index: startIndex)
+        )
     }
     
     // MARK: - mutate

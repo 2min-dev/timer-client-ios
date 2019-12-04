@@ -65,7 +65,7 @@ class TimeSetDetailViewCoordinator: CoordinatorProtocol {
             
         case let .timeSetProcess(timeSetItem, start: index):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, start: index) else { return nil }
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, startIndex: index) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI
