@@ -125,6 +125,9 @@ class TimeSetProcessViewReactor: Reactor {
         /// Flag that represent need to section reload
         var shouldSectionReload: Bool
         
+        /// Flag that represent current time set can save
+        let canTimeSetSave: Bool
+        
         /// Flag that view should dismiss
         var shouldDismiss: Bool
     }
@@ -142,7 +145,13 @@ class TimeSetProcessViewReactor: Reactor {
     private var countdownTimer: JSTimer
     
     // MARK: - constructor
-    private init(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, origin: TimeSetItem, timeSet: TimeSet) {
+    private init(
+        appService: AppServiceProtocol,
+        timeSetService: TimeSetServiceProtocol,
+        origin: TimeSetItem,
+        timeSet: TimeSet,
+        canSave: Bool
+    ) {
         self.appService = appService
         self.timeSetService = timeSetService
 
@@ -180,6 +189,7 @@ class TimeSetProcessViewReactor: Reactor {
             timer: timer,
             selectedIndex: index,
             shouldSectionReload: true,
+            canTimeSetSave: canSave,
             shouldDismiss: false
         )
     }
@@ -198,7 +208,8 @@ class TimeSetProcessViewReactor: Reactor {
             appService: appService,
             timeSetService: timeSetService,
             origin: runningTimeSet.origin,
-            timeSet: runningTimeSet.timeSet
+            timeSet: runningTimeSet.timeSet,
+            canSave: runningTimeSet.canSave
         )
         
         // End countdown timer
@@ -209,7 +220,8 @@ class TimeSetProcessViewReactor: Reactor {
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
         timeSetItem: TimeSetItem,
-        startIndex: Int = 0
+        startIndex: Int = 0,
+        canSave: Bool
     ) {
         guard startIndex >= 0 && startIndex < timeSetItem.timers.count else {
             Logger.error("can't start from \(startIndex) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
@@ -223,7 +235,8 @@ class TimeSetProcessViewReactor: Reactor {
             appService: appService,
             timeSetService: timeSetService,
             origin: timeSetItem,
-            timeSet: TimeSet(item: copiedItem, index: startIndex)
+            timeSet: TimeSet(item: copiedItem, index: startIndex),
+            canSave: canSave
         )
     }
     
@@ -497,7 +510,11 @@ class TimeSetProcessViewReactor: Reactor {
             
             if timeSetService.runningTimeSet == nil {
                 // Set running time set only first time
-                timeSetService.runningTimeSet = RunningTimeSet(timeSet: timeSet, origin: origin)
+                timeSetService.runningTimeSet = RunningTimeSet(
+                    timeSet: timeSet,
+                    origin: origin,
+                    canSave: currentState.canTimeSetSave
+                )
             }
             
             return .concat(setTimeSetState, setExtraTime)

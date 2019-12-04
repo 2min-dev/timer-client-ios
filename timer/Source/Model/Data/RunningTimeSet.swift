@@ -11,18 +11,21 @@ import Foundation
 struct RunningTimeSet: Codable {
     let timeSet: TimeSet
     let origin: TimeSetItem
+    let canSave: Bool
     
     enum CodingKeys: String, CodingKey {
         case item
         case history
         case origin
         case index
+        case canSave
     }
     
     // MARK: - constructor
-    init(timeSet: TimeSet, origin: TimeSetItem) {
+    init(timeSet: TimeSet, origin: TimeSetItem, canSave: Bool) {
         self.timeSet = timeSet
         self.origin = origin
+        self.canSave = canSave
     }
     
     init(from decoder: Decoder) throws {
@@ -33,6 +36,7 @@ struct RunningTimeSet: Codable {
         
         origin = try container.decode(TimeSetItem.self, forKey: .origin)
         timeSet = TimeSet(item: item, history: history, index: index)
+        canSave = try container.decode(Bool.self, forKey: .canSave)
     }
     
     // MARK: - codable
@@ -42,5 +46,6 @@ struct RunningTimeSet: Codable {
         try container.encode(timeSet.history, forKey: .history)
         try container.encode(origin, forKey: .origin)
         try container.encode(timeSet.currentIndex, forKey: .index)
+        try container.encode(canSave, forKey: .canSave)
     }
 }

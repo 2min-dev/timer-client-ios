@@ -74,8 +74,11 @@ class HistoryDetailViewReactor: Reactor {
         /// Need to reload section
         var shouldSectionReload: Bool
         
-        /// Time set saved
-        var didTimeSetSaved: Bool
+        /// Flag that represent current time set can save
+        var canTimeSetSave: Bool
+        
+        /// Flag that time set is saved
+        var didTimeSetSaved: RevisionValue<Bool?>
     }
     
     // MARK: - properties
@@ -102,23 +105,27 @@ class HistoryDetailViewReactor: Reactor {
         
         self.timeSetService = timeSetService
         self.history = history
-        initialState = State(title: item.title,
-                             runningTime: history.runningTime,
-                             startDate: startDate,
-                             endDate: endDate,
-                             extraTime: history.extraTime,
-                             repeatCount: history.repeatCount,
-                             memo: history.memo,
-                             endState: history.endState,
-                             endIndex: history.endIndex,
-                             remainedTime: item.timers.enumerated()
-                                .filter { $0.offset >= history.endIndex }
-                                .map { $0.element }
-                                .reduce(0) { $0 + ($1.end - $1.current) },
-                             overtime: item.overtimer?.current ?? 0,
-                             sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
-                             shouldSectionReload: true,
-                             didTimeSetSaved: false)
+        
+        initialState = State(
+            title: item.title,
+            runningTime: history.runningTime,
+            startDate: startDate,
+            endDate: endDate,
+            extraTime: history.extraTime,
+            repeatCount: history.repeatCount,
+            memo: history.memo,
+            endState: history.endState,
+            endIndex: history.endIndex,
+            remainedTime: item.timers.enumerated()
+                .filter { $0.offset >= history.endIndex }
+                .map { $0.element }
+                .reduce(0) { $0 + ($1.end - $1.current) },
+            overtime: item.overtimer?.current ?? 0,
+            sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
+            shouldSectionReload: true,
+            canTimeSetSave: true,
+            didTimeSetSaved: RevisionValue(nil)
+        )
     }
     
     // MARK: - mutation
@@ -146,7 +153,8 @@ class HistoryDetailViewReactor: Reactor {
             return state
             
         case .save:
-            state.didTimeSetSaved = true
+            state.canTimeSetSave = false
+            state.didTimeSetSaved = state.didTimeSetSaved.next(true)
             return state
         }
     }

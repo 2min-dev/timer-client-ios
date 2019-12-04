@@ -222,18 +222,20 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             .subscribe(onNext: { [weak self] in self?.showTimeSetEndStateAlert($0, index: $1, remainedTime: $2, overtime: $3) })
             .disposed(by: disposeBag)
         
-        let didTimeSetSaved = reactor.state
-            .map { $0.didTimeSetSaved }
+        // Time set can save
+        reactor.state
+            .map { $0.canTimeSetSave }
             .distinctUntilChanged()
-        
-        didTimeSetSaved
-            .map { !$0 }
             .bind(to: saveButton.rx.isEnabled)
             .disposed(by: disposeBag)
         
-        didTimeSetSaved
+        // Time set did saved
+        reactor.state
+            .map { $0.didTimeSetSaved }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
             .filter { $0 }
-            .subscribe(onNext: { [weak self] in $0 ? self?.showTimeSetSavedToast() : nil })
+            .subscribe(onNext: { [weak self] _ in self?.showTimeSetSavedToast() })
             .disposed(by: disposeBag)
     }
     
