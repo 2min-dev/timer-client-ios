@@ -43,7 +43,7 @@ class TimeSetSaveViewCoordinator: CoordinatorProtocol {
         switch route {
         case let .timeSetDetail(timeSetItem):
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem)
+            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: false)
             let viewController = TimeSetDetailViewController(coordinator: coordinator)
             
             // DI

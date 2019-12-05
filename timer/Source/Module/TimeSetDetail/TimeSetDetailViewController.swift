@@ -17,21 +17,23 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
     private let FOOTER_BUTTON_START = 1
     
     // MARK: - view properties
-    private var timeSetDetailView: TimeSetDetailView { return view as! TimeSetDetailView }
+    private var timeSetDetailView: TimeSetDetailView { view as! TimeSetDetailView }
     
-    override var headerView: CommonHeader { return timeSetDetailView.headerView }
+    override var headerView: CommonHeader { timeSetDetailView.headerView }
     
-    private var titleLabel: UILabel { return timeSetDetailView.titleLabel }
+    private var titleLabel: UILabel { timeSetDetailView.titleLabel }
     
-    private var allTimeLabel: UILabel { return timeSetDetailView.allTimeLabel }
-    private var endOfTimeSetLabel: UILabel { return timeSetDetailView.endOfTimeSetLabel }
-    private var alarmLabel: UILabel { return timeSetDetailView.alarmLabel }
-    private var commentTextView: UITextView { return timeSetDetailView.commentTextView }
+    private var allTimeLabel: UILabel { timeSetDetailView.allTimeLabel }
+    private var endOfTimeSetLabel: UILabel { timeSetDetailView.endOfTimeSetLabel }
+    private var alarmLabel: UILabel { timeSetDetailView.alarmLabel }
+    private var commentTextView: UITextView { timeSetDetailView.commentTextView }
     
-    private var timerBadgeCollectionView: TimerBadgeCollectionView { return timeSetDetailView.timerBadgeCollectionView }
+    private var timerBadgeCollectionView: TimerBadgeCollectionView { timeSetDetailView.timerBadgeCollectionView }
     
-    private var editButton: FooterButton { return timeSetDetailView.editButton }
-    private var startButton: FooterButton { return timeSetDetailView.startButton }
+    private var footerView: Footer { timeSetDetailView.footerView }
+    private var saveButton: FooterButton { timeSetDetailView.saveButton }
+    private var editButton: FooterButton { timeSetDetailView.editButton }
+    private var startButton: FooterButton { timeSetDetailView.startButton }
     
     // MARK: - properties
     var coordinator: TimeSetDetailViewCoordinator
@@ -62,7 +64,12 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .withLatestFrom(reactor.state.map { $0.selectedIndex }, resultSelector: { ($0, $1) })
             .filter { $0.0.section == TimerBadgeSectionType.regular.rawValue }
-            .map { Reactor.Action.selectTimer(at: $0.0.item) }
+            .map { .selectTimer(at: $0.0.item) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        saveButton.rx.tap
+            .map { .saveTimeSet }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -82,7 +89,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         let isBookmark = reactor.state
             .map { $0.isBookmark }
             .distinctUntilChanged()
-            .share(replay: 1)
+            .share()
         
         isBookmark
             .filter { [weak self] _ in self?.headerView.buttons[.bookmark] != nil }
@@ -125,7 +132,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         let timer = reactor.state
             .map { $0.timer }
             .distinctUntilChanged()
-            .share(replay: 1)
+            .share()
         
         // Alarm
         timer.map { $0.alarm.title }
@@ -148,7 +155,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         let selectedIndex = reactor.state
             .map { $0.selectedIndex }
             .distinctUntilChanged()
-            .share(replay: 1)
+            .share()
         
         selectedIndex
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
@@ -158,6 +165,22 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         selectedIndex
             .skipUntil(rx.viewDidAppear)
             .subscribe(onNext: { _ in Toast(content: "toast_time_set_timer_selected_title".localized).show(animated: true, withDuration: 3) })
+            .disposed(by: disposeBag)
+        
+        // Time set can save
+        reactor.state
+            .map { $0.canTimeSetSave }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in self?.updateLayout(timeSet: $0) })
+            .disposed(by: disposeBag)
+        
+        // Time set did saved
+        reactor.state
+            .map { $0.didTimeSetSaved }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .filter { $0 }
+            .subscribe(onNext: { _ in Toast(content: "toast_time_set_saved_title".localized).show(animated: true, withDuration: 3) })
             .disposed(by: disposeBag)
     }
     
@@ -173,6 +196,12 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         default:
             break
         }
+    }
+    
+    /// Update layout by time set can save
+    private func updateLayout(timeSet canSave: Bool) {
+        headerView.additionalButtons = canSave ? [] : [.bookmark]
+        footerView.buttons = canSave ? [saveButton, startButton] : [editButton, startButton]
     }
     
     deinit {
