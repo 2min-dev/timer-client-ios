@@ -20,14 +20,6 @@ class ConfirmHeader: Header {
         return view
     }()
     
-    let titleLabel: UILabel = {
-        let view = UILabel()
-        view.textAlignment = .center
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
-        return view
-    }()
-    
     let confirmButton: UIButton = {
         let view = UIButton()
         view.setTitle("header_button_confirm".localized, for: .normal)
@@ -35,12 +27,6 @@ class ConfirmHeader: Header {
         view.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
         return view
     }()
-    
-    // MARK: - properties
-    override var title: String? {
-        set { titleLabel.text = newValue }
-        get { return titleLabel.text }
-    }
     
     // MARK: - properties
     override var intrinsicContentSize: CGSize {

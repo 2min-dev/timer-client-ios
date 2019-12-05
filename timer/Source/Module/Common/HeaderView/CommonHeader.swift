@@ -97,43 +97,39 @@ class CommonHeader: Header {
         return view
     }()
     
-    let titleLabel: UILabel = {
+    private var additionalTextLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.setContentHuggingPriority(.required, for: .horizontal)
+        view.isUserInteractionEnabled = true
+        
+        view.font = Constants.Font.Regular.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
+        
+        // Create tap gesture recognizer
+        view.addGestureRecognizer(UITapGestureRecognizer())
+        
         return view
     }()
     
-    private lazy var additionalButtonsStackView: UIStackView = {
+    private lazy var additionalStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         view.spacing = 5.adjust()
         return view
     }()
     
-    private var additionalTextLabel: UILabel = {
-        let view = UILabel()
-        view.isUserInteractionEnabled = true
-        view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
-        view.isHidden = true
-        return view
-    }()
-    
     // MARK: - properties
-    override var title: String? {
-        set { titleLabel.text = newValue }
-        get { return titleLabel.text }
-    }
     var additionalButtons: [ButtonType] = [] {
         didSet { setAdditionalButton(types: additionalButtons) }
     }
     var additionalAttributedText: NSAttributedString? {
-        didSet { setAdditionalAttributedText(additionalAttributedText) }
+        didSet {
+            guard let attributedText = additionalAttributedText else { return }
+            setAdditionalAttributedText(attributedText)
+        }
     }
     
-    lazy var buttons: [ButtonType: UIButton] = [.back: backButton]
+    private(set) lazy var buttons: [ButtonType: UIButton] = [.back: backButton]
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: UIScreen.main.bounds.width, height: 75.adjust())
@@ -146,7 +142,7 @@ class CommonHeader: Header {
         backgroundColor = Constants.Color.alabaster
         
         // Set consraint of subviews
-        addAutolayoutSubviews([backButton, titleLabel, additionalButtonsStackView, additionalTextLabel])
+        addAutolayoutSubviews([backButton, titleLabel, additionalStackView])
         backButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(10.adjust())
             make.centerY.equalToSuperview()
@@ -156,21 +152,15 @@ class CommonHeader: Header {
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priorityHigh()
-            make.trailing.equalTo(additionalButtonsStackView.snp.leading).offset(-5.adjust())
+            make.trailing.equalTo(additionalStackView.snp.leading).offset(-5.adjust())
             make.centerY.equalToSuperview()
         }
         
-        additionalButtonsStackView.snp.makeConstraints { make in
+        additionalStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.trailing.equalToSuperview().inset(10.adjust())
-            make.centerY.equalToSuperview()
-            // Set minimum stack view size if arranged views are empty
-            make.width.equalTo(36).priorityHigh()
-            make.height.equalTo(36).priorityHigh()
-        }
-        
-        additionalTextLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(20.adjust())
-            make.centerY.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.width.greaterThanOrEqualTo(36)
         }
     }
     
@@ -180,59 +170,40 @@ class CommonHeader: Header {
     
     // MARK: - bind
     override func bind() {
-        buttons.values.forEach { button in
-            button.rx.tap
-                .flatMap { () -> Observable<Action> in
-                    guard let type = ButtonType(rawValue: button.tag) else { return .empty() }
-                    return .just(type.action)
-                }
-                .bind(to: action)
-                .disposed(by: self.disposeBag)
-        }
-        
-        // Remove additional text label gesture recognizer
-        additionalTextLabel.gestureRecognizers?.forEach { additionalTextLabel.removeGestureRecognizer($0) }
-        // Create new tap gesture recognizer
-        let tapGesture = UITapGestureRecognizer()
-        additionalTextLabel.addGestureRecognizer(tapGesture)
-        
-        tapGesture.rx.event
-            .map { _ in .additional }
+        // Additional button tap
+        Observable.merge(buttons.values.map { button in
+            button.rx.tap.compactMap { ButtonType(rawValue: button.tag)?.action }
+        })
             .bind(to: action)
             .disposed(by: disposeBag)
+        
+        if let gestures = additionalTextLabel.gestureRecognizers {
+            // Additional text tap
+            Observable.merge(gestures.map { $0.rx.event.asObservable() })
+                .map { _ in .additional }
+                .bind(to: action)
+                .disposed(by: disposeBag)
+        }
     }
     
     // MARK: - private method
     private func setAdditionalButton(types: [ButtonType]) {
-        guard !types.isEmpty else { return }
-        
-        additionalButtonsStackView.isHidden = false
-        additionalTextLabel.isHidden = true
-        
-        // Remake title constraint
-        titleLabel.snp.remakeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priorityHigh()
-            make.trailing.equalTo(additionalButtonsStackView.snp.leading).offset(-5.adjust())
-            make.centerY.equalToSuperview()
-        }
-        
         // Remove all buttons
-        additionalButtonsStackView.arrangedSubviews.forEach {
-            $0.removeFromSuperview()
-            
-            // Remove buttons in button stack view from `buttons`
-            guard let buttonType = ButtonType(rawValue: $0.tag) else { return }
-            self.buttons[buttonType] = nil
-        }
+        additionalStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         // Add all header buttons
         types.forEach { type in
-            let button = type.button
-            
-            button.addTarget(self, action: #selector(touchButton(sender:)), for: .touchUpInside)
+            let button: UIButton
+            if let reusableButton = self.buttons[type] {
+                button = reusableButton
+            } else {
+                // Make new button
+                button = type.button
+                button.addTarget(self, action: #selector(touchButton(sender:)), for: .touchUpInside)
+            }
             
             // Set constraint of subviews
-            additionalButtonsStackView.addArrangedSubview(button)
+            additionalStackView.addArrangedSubview(button)
             button.snp.makeConstraints { make in
                 make.width.equalTo(36.adjust())
             }
@@ -244,18 +215,9 @@ class CommonHeader: Header {
         disposeBag = DisposeBag()
     }
     
-    private func setAdditionalAttributedText(_ attributedText: NSAttributedString?) {
-        guard attributedText != nil else { return }
-        
-        additionalButtonsStackView.isHidden = true
-        additionalTextLabel.isHidden = false
-        
-        // Remake title constraint
-        titleLabel.snp.remakeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priorityHigh()
-            make.trailing.equalTo(additionalTextLabel.snp.leading).offset(-5.adjust())
-            make.centerY.equalToSuperview()
-        }
+    private func setAdditionalAttributedText(_ attributedText: NSAttributedString) {
+        additionalStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        additionalStackView.addArrangedSubview(additionalTextLabel)
         
         additionalTextLabel.attributedText = additionalAttributedText
         
@@ -276,7 +238,11 @@ class CommonHeader: Header {
 }
 
 extension Reactive where Base: CommonHeader {
+    var additionalButtons: Binder<[Base.ButtonType]> {
+        return Binder(base) { header, buttons in header.additionalButtons = buttons }
+    }
+    
     var additionalText: Binder<NSAttributedString> {
-        return Binder(base) { _, attributedText in self.base.additionalAttributedText = attributedText }
+        return Binder(base) { header, attributedText in header.additionalAttributedText = attributedText }
     }
 }
