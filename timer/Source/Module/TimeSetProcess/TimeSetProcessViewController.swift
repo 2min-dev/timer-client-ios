@@ -332,7 +332,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         // Overtime record
         viewController.rx.tapOvertime
-            .map { Reactor.Action.startOvertimeRecord }
+            .do(onNext: { [weak self] in self?.bubbleAlert = nil }) // Remove alert
+            .map { .startOvertimeRecord }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -511,9 +512,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             }
             
         case .end:
-            // Remove alert
-            bubbleAlert = nil
-
             // Present end view
             if history.endState == .normal {
                 guard let viewController = coordinator.present(for: .timeSetEnd(history, canSave: canSave)) as? TimeSetEndViewController else { return }
