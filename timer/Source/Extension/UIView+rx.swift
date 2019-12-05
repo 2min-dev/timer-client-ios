@@ -16,8 +16,10 @@ extension UIView {
             self.isHidden = false
             UIView.animate(withDuration: 0.3, animations: {
                 self.alpha = isHidden ? 0 : 1
-            }, completion: { _ in
-                self.isHidden = isHidden
+            }, completion: {
+                if $0 {
+                    self.isHidden = isHidden
+                }
             })
         } else {
             self.isHidden = isHidden

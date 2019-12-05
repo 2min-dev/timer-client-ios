@@ -49,7 +49,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
             bind(alert: alert)
             
             // Set constraint of alert
-            view.addAutolayoutSubview(alert)
+            scrollView.addAutolayoutSubview(alert)
             alert.snp.makeConstraints { make in
                 make.leading.equalTo(timerBadgeCollectionView).inset(60.adjust())
                 make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-3.adjust())

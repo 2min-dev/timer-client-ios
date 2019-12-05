@@ -327,12 +327,16 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Close
         viewController.rx.tapHeader
             .filter { $0 == .close }
-            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: false) })
+            .subscribe(onNext: { [weak self] _ in
+                self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+                self?.dismissOrPopViewController(animated: false)
+            })
             .disposed(by: disposeBag)
         
         // Overtime record
         viewController.rx.tapOvertime
-            .map { Reactor.Action.startOvertimeRecord }
+            .do(onNext: { [weak self] in self?.bubbleAlert = nil }) // Remove alert
+            .map { .startOvertimeRecord }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -511,9 +515,6 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             }
             
         case .end:
-            // Remove alert
-            bubbleAlert = nil
-
             // Present end view
             if history.endState == .normal {
                 guard let viewController = coordinator.present(for: .timeSetEnd(history, canSave: canSave)) as? TimeSetEndViewController else { return }
