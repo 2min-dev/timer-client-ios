@@ -327,7 +327,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Close
         viewController.rx.tapHeader
             .filter { $0 == .close }
-            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: false) })
+            .subscribe(onNext: { [weak self] _ in
+                self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+                self?.dismissOrPopViewController(animated: false)
+            })
             .disposed(by: disposeBag)
         
         // Overtime record
