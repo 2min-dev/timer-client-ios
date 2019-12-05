@@ -284,9 +284,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
                 .map { $0.timeSetState }
                 .distinctUntilChanged(),
             rx.viewWillAppear
-                .take(1))
-            .map { ($0.0, reactor.timeSet.history) }
-            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1) })
+                .take(1)
+            ).withLatestFrom(reactor.state.map { $0.canTimeSetSave }) { ($0.0, $1) }
+            .map { ($0.0, reactor.timeSet.history, $0.1) }
+            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1, canSave: $2) })
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -312,8 +313,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .filter { $0 == .close }
             .withLatestFrom(reactor.state.map { $0.timeSetState })
             .filter { $0 == .end }
-            .subscribe(onNext: { [weak self] _ in
-                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history)) as? TimeSetEndViewController else { return }
+            .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
+            .subscribe(onNext: { [weak self] in
+                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history, canSave: $0)) as? TimeSetEndViewController else { return }
                 self?.bind(end: viewController)
             })
             .disposed(by: disposeBag)
@@ -336,7 +338,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         
         // Restart
         viewController.rx.tapRestart
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin)) })
+            .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin, canSave: $0)) })
             .disposed(by: disposeBag)
     }
     
@@ -477,7 +480,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     /// Update layout by current state of time set
-    private func updateLayoutByTimeSetState(_ state: TimeSet.State, history: History) {
+    private func updateLayoutByTimeSetState(_ state: TimeSet.State, history: History, canSave: Bool) {
         UIApplication.shared.isIdleTimerDisabled = false
         
         switch state {
@@ -513,7 +516,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
 
             // Present end view
             if history.endState == .normal {
-                guard let viewController = coordinator.present(for: .timeSetEnd(history)) as? TimeSetEndViewController else { return }
+                guard let viewController = coordinator.present(for: .timeSetEnd(history, canSave: canSave)) as? TimeSetEndViewController else { return }
                 bind(end: viewController)
             }
             

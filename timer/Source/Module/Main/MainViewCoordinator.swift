@@ -15,7 +15,6 @@ class MainViewCoordinator: CoordinatorProtocol {
         case productivity
         case local
         case preset
-        case timeSetProcess(TimeSetItem)
         case historyDetail(History)
     }
     
@@ -31,13 +30,6 @@ class MainViewCoordinator: CoordinatorProtocol {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetProcess:
-            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
-                return nil
-            }
-            let viewControllers = [rootViewController, viewController]
-            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
-            
         case .historyDetail(_):
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
             
@@ -76,17 +68,6 @@ class MainViewCoordinator: CoordinatorProtocol {
             let coordinator = PresetViewCoordinator(provider: provider)
             let reactor = PresetViewReactor(networkService: provider.networkService)
             let viewController = PresetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
-            
-        case let .timeSetProcess(timeSetItem):
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController

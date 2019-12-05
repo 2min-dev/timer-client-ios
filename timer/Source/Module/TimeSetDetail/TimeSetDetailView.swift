@@ -202,15 +202,13 @@ class TimeSetDetailView: UIView {
         return view
     }()
     
-    let editButton: FooterButton = {
-        return FooterButton(title: "footer_button_edit".localized, type: .sub)
-    }()
+    let saveButton: FooterButton = FooterButton(title: "footer_button_save".localized, type: .sub)
     
-    let startButton: FooterButton = {
-        return FooterButton(title: "footer_button_start".localized, type: .highlight)
-    }()
+    let editButton: FooterButton = FooterButton(title: "footer_button_edit".localized, type: .sub)
     
-    private lazy var footerView: Footer = {
+    let startButton: FooterButton = FooterButton(title: "footer_button_start".localized, type: .highlight)
+    
+    lazy var footerView: Footer = {
         let view = Footer()
         view.buttons = [editButton, startButton]
         return view

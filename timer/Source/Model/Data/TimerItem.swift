@@ -29,7 +29,9 @@ class TimerItem: Object, Codable, NSCopying, Recordable, Alertable {
     enum CodingKeys: String, CodingKey {
         case comment
         case alarm
+        case current
         case target = "end"
+        case extra
     }
     
     // MARK: - constructor
@@ -52,13 +54,16 @@ class TimerItem: Object, Codable, NSCopying, Recordable, Alertable {
         self.alarm = alarm
     }
     
+    // MARK: - decoable
     required convenience init(from decoder: Decoder) throws {
         self.init()
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         comment = try container.decode(String.self, forKey: .comment)
         alarm = try container.decode(Alarm.self, forKey: .alarm)
+        current = (try? container.decode(TimeInterval.self, forKey: .current)) ?? 0
         target = try container.decode(TimeInterval.self, forKey: .target)
+        extra = (try? container.decode(TimeInterval.self, forKey: .extra)) ?? 0
     }
     
     // MARK: - public method

@@ -56,7 +56,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             
         case let .timeSetProcess(timeSetItem):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
+            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: true) else { return nil }
             let viewController = TimeSetProcessViewController(coordinator: coordinator)
             
             // DI
