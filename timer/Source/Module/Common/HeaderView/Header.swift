@@ -26,14 +26,26 @@ class Header: UIView {
         case close
     }
     
+    // MARK: - view properties
+    let titleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.textColor = Constants.Color.codGray
+        return view
+    }()
+    
     // MARK: - properties
+    var title: String? {
+        set { titleLabel.text = newValue }
+        get { titleLabel.text }
+    }
+    
     var action: PublishRelay<Action> = PublishRelay()
     var disposeBag: DisposeBag = DisposeBag() {
         didSet { bind() }
     }
     
-    var title: String?
-    
+    // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         bind()
@@ -57,6 +69,6 @@ extension Reactive where Base: Header {
     
     /// The title of header view
     var title: Binder<String> {
-        return Binder(base) { _, title in self.base.title = title }
+        return Binder(base) { header, title in header.title = title }
     }
 }

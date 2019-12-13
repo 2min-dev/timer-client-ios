@@ -217,7 +217,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     }
     
     /// Perform present by selected cell type
-    private func timeSetSelected(cell type: TimeSetCellType) {
+    private func timeSetSelected(cell type: LocalTimeSetCellType) {
         switch type {
         case let .regular(reactor):
             _ = coordinator.present(for: .timeSetDetail(reactor.timeSetItem))
@@ -305,14 +305,14 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
 }
 
 // MARK: - local time set datasource
-typealias TimeSetSectionModel = SectionModel<Void, TimeSetCellType>
+typealias TimeSetSectionModel = SectionModel<Void, LocalTimeSetCellType>
 
 enum LocalTimeSetSectionType: Int {
     case saved
     case bookmarked
 }
 
-enum TimeSetCellType {
+enum LocalTimeSetCellType {
     case regular(TimeSetCollectionViewCellReactor)
     case empty
     

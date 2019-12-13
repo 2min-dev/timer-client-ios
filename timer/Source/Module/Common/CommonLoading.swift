@@ -103,7 +103,8 @@ class CommonLoading: UIView {
         let groupAnimation = CAAnimationGroup()
         groupAnimation.animations = [endAnimation, startAnimation]
         groupAnimation.duration = 1.4
-        groupAnimation.repeatCount = Float.greatestFiniteMagnitude
+        groupAnimation.repeatCount = .infinity
+        groupAnimation.isRemovedOnCompletion = false
         
         CATransaction.begin()
         // Start animation

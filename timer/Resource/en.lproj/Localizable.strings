@@ -9,10 +9,14 @@
 // MARK: - Default App String
 "CFBundleDisplayName" = "2min";
 
+// MARK: - Localizable
+"localizable_server_flag" = "en";
+
 // MARK: - App String
 // MARK: - Tab
 "tab_button_home" = "Home";
 "tab_button_my_time_set" = "My";
+"tab_button_preset" = "Preset";
 "tab_button_shared_time_set" = "Shared";
 
 // MARK: - Keyboard accessory
@@ -48,6 +52,7 @@
 "saved_time_set_management_title" = "Saved Timeset Management";
 "bookmarked_time_set_title" = "Bookmarked Timeset";
 "bookmarked_time_set_management_title" = "Bookmarked Timeset Management";
+"preset_title" = "Preset";
 "shared_time_set_title" = "Shared Timeset";
 "shared_time_set_more_title" = "Shared Timeset More";
 "my_shared_time_set_title" = "My Shared Timeset";
@@ -69,6 +74,9 @@
 "local_bookmarked_time_set_management_title" = "BOOKMARKED TIMESET MANAGEMENT";
 "local_bookmarked_time_set_all_show_title" = "SHOW ALL BOOKMARKED TIMESET";
 "time_set_induce_title" = "Try add your timeset!";
+
+// MARK: - Preset
+"preset_header_title" = "Easily boost your time\nwith presets prepared by 2min!";
 
 // MARK: - time set manage
 "time_set_manage_header_title" = "Set the timeset order to your liking";
@@ -100,8 +108,6 @@
 
 // MARK: - Time set alert
 "time_set_alert_timer_start_title_format" = "Do you want to start\nwith %d timer?";
-"time_set_alert_cancel_title" = "Note why you canceled\nthe timeset! :)";
-"time_set_alert_overtime_title" = "Note why you needed\nmore time! :)";
 
 // MARK: - Time set popup
 "time_set_popup_timer_end_title_format" = "Timer %d End";
@@ -120,6 +126,10 @@
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%dM";
 "history_repeat_count_format" = "%d";
+
+// MARK: - History alert
+"history_alert_time_set_cancel_format" = "Canceled at %d timer\nwith %@ left";
+"history_alert_time_set_overtime_format" = "%@\nOver record";
 
 // MARK: - Time set
 "time_set_default_title" = "Utitled Timeset";

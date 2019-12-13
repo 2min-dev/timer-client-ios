@@ -42,8 +42,11 @@ class TimeSetEndViewReactor: Reactor {
         /// Memo of time set
         var memo: String
         
-        /// Time set saved
-        var didTimeSetSaved: Bool
+        /// Flag that represent current time set can save
+        var canTimeSetSave: Bool
+        
+        /// Flag that time set is saved
+        var didTimeSetSaved: RevisionValue<Bool?>
     }
     
     // MARK: - properties
@@ -65,15 +68,18 @@ class TimeSetEndViewReactor: Reactor {
     }
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, history: History) {
+    init(timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
         self.timeSetService = timeSetService
         self.history = history
         
-        initialState = State(title: history.item?.title ?? "",
-                             startDate: history.startDate ?? Date(),
-                             endDate: history.endDate ?? Date(),
-                             memo: history.memo,
-                             didTimeSetSaved: history.isSaved)
+        initialState = State(
+            title: history.item?.title ?? "",
+            startDate: history.startDate ?? Date(),
+            endDate: history.endDate ?? Date(),
+            memo: history.memo,
+            canTimeSetSave: canSave,
+            didTimeSetSaved: RevisionValue(nil)
+        )
     }
     
     // MARK: - Mutate
@@ -100,7 +106,8 @@ class TimeSetEndViewReactor: Reactor {
             return state
             
         case .save:
-            state.didTimeSetSaved = true
+            state.canTimeSetSave = false
+            state.didTimeSetSaved = state.didTimeSetSaved.next(true)
             return state
         }
     }

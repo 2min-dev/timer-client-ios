@@ -1,25 +1,23 @@
 //
-//  ProductivityViewCoordinator.swift
+//  PresetViewCoordinator.swift
 //  timer
 //
-//  Created by Jeong Jin Eun on 09/04/2019.
+//  Created by JSilver on 2019/11/30.
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
 import UIKit
 
-/// Route from one touch timer view
-class ProductivityViewCoordinator: CoordinatorProtocol {
-     // MARK: - route enumeration
+class PresetViewCoordinator: CoordinatorProtocol {
+    // MARK: - route enumeration
     enum Route {
-        case timeSetSave(TimeSetItem)
-        case timeSetProcess(TimeSetItem)
+        case timeSetDetail(TimeSetItem)
         case history
         case setting
     }
-
+    
     // MARK: - properties
-    weak var viewController: ProductivityViewController!
+    weak var viewController: UIViewController!
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
@@ -27,12 +25,12 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
         self.provider = provider
     }
     
+    // MARK: - presentation
     func present(for route: Route) -> UIViewController? {
         guard let viewController = get(for: route) else { return nil }
         
         switch route {
-        case .timeSetSave(_),
-             .timeSetProcess(_),
+        case .timeSetDetail(_),
              .history,
              .setting:
             self.viewController.navigationController?.pushViewController(viewController, animated: true)
@@ -43,28 +41,17 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     
     func get(for route: Route) -> UIViewController? {
         switch route {
-        case let .timeSetSave(timeSetItem):
-            let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem)
-            let viewController = TimeSetSaveViewController(coordinator: coordinator)
+        case let .timeSetDetail(timeSetItem):
+            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
+            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: true)
+            let viewController = TimeSetDetailViewController(coordinator: coordinator)
             
             // DI
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
             return viewController
-            
-        case let .timeSetProcess(timeSetItem):
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: true) else { return nil }
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
-            
+
         case .history:
             let coordinator = HistoryListViewCoordinator(provider: provider)
             let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)

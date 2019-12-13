@@ -22,42 +22,48 @@ import RealmSwift
     }
     
     // MARK: - properties
-    @objc dynamic private(set) var id: Int = -1
-    @objc dynamic var item: TimeSetItem?
+    @objc dynamic private(set) var id: Int = -1                         // Identifier
+    @objc dynamic var item: TimeSetItem?                                // Origin time set info of history
     
-    @objc dynamic var memo: String = ""
-    @objc dynamic var repeatCount: Int = 0
-    @objc dynamic var runningTime: TimeInterval = 0
-    @objc dynamic var extraTime: TimeInterval = 0
-    @objc dynamic var endState: EndState = .none
-    @objc dynamic var isSaved: Bool = false
-    
-    @objc dynamic var startDate: Date? {
+    @objc dynamic var startDate: Date? {                                // Executed dates
         didSet { id = Int(startDate?.timeIntervalSince1970 ?? -1) }
     }
     @objc dynamic var endDate: Date?
+    @objc dynamic var memo: String = ""                                 // Memo of ran time set
+    @objc dynamic var repeatCount: Int = 0                              // Repeated count of ran time set
+    @objc dynamic var runningTime: TimeInterval = 0                     // Total running time of ran time set
+    @objc dynamic var extraTime: TimeInterval = 0                       // Added all extra time of rna time set
+    
+    @objc dynamic var endState: EndState = .none                        // End state of ran time set
+    @objc dynamic var endIndex: Int = 0                                 // End index of ran time set
     
     // MARK: - constructor
-    convenience init(item: TimeSetItem?,
-                     memo: String = "",
-                     repeatCount: Int = 0,
-                     runningTime: TimeInterval = 0,
-                     extraTime: TimeInterval = 0,
-                     endState: EndState = .none,
-                     isSaved: Bool = false,
-                     startDate: Date? = nil,
-                     endDate: Date? = nil) {
+    convenience init(item: TimeSetItem) {
         self.init()
-        self.id = Int(startDate?.timeIntervalSince1970 ?? -1)
         self.item = item
+    }
+    
+    private convenience init(id: Int,
+                             item: TimeSetItem?,
+                             startDate: Date?,
+                             endDate: Date?,
+                             memo: String,
+                             repeatCount: Int,
+                             runningTime: TimeInterval,
+                             extraTime: TimeInterval,
+                             endState: EndState,
+                             endIndex: Int) {
+        self.init()
+        self.id = id
+        self.item = item
+        self.startDate = startDate
+        self.endDate = endDate
         self.memo = memo
         self.repeatCount = repeatCount
         self.runningTime = runningTime
         self.extraTime = extraTime
-        self.isSaved = isSaved
         self.endState = endState
-        self.startDate = startDate
-        self.endDate = endDate
+        self.endIndex = endIndex
     }
     
     // MARK: - realm method
@@ -67,14 +73,15 @@ import RealmSwift
     
     // MARK: - public method
     func copy(with zone: NSZone? = nil) -> Any {
-        return History(item: item?.copy() as? TimeSetItem,
+        return History(id: id,
+                       item: item?.copy() as? TimeSetItem,
+                       startDate: startDate,
+                       endDate: endDate,
                        memo: memo,
                        repeatCount: repeatCount,
                        runningTime: runningTime,
                        extraTime: extraTime,
                        endState: endState,
-                       isSaved: isSaved,
-                       startDate: startDate,
-                       endDate: endDate)
+                       endIndex: endIndex)
     }
 }

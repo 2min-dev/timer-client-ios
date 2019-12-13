@@ -43,10 +43,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     private var timeSetPopup: TimeSetPopup? {
         didSet { oldValue?.removeFromSuperview() }
     }
-    private var timeSetAlert: TimeSetAlert? {
+    private var bubbleAlert: BubbleAlert? {
         didSet {
             oldValue?.removeFromSuperview()
-            timerBadgeCollectionView.isScrollEnabled = timeSetAlert == nil
+            timerBadgeCollectionView.isScrollEnabled = bubbleAlert == nil
         }
     }
     
@@ -247,12 +247,8 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.selectedIndex }
             .distinctUntilChanged()
-            .filter { [weak self] _ in
-                guard let self = self else { return false }
-                return self.timeSetAlert == nil
-            }
             .map { IndexPath(item: $0, section: TimerBadgeSectionType.regular.rawValue) }
-            .subscribe(onNext: { [weak self] in self?.timerBadgeCollectionView.scrollToBadge(at: $0, animated: true) })
+            .subscribe(onNext: { [weak self] in self?.scrollBadgeIfCan(at: $0) })
             .disposed(by: disposeBag)
 
         // Timer end popup
@@ -288,9 +284,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
                 .map { $0.timeSetState }
                 .distinctUntilChanged(),
             rx.viewWillAppear
-                .take(1))
-            .map { ($0.0, reactor.timeSet.history) }
-            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1) })
+                .take(1)
+            ).withLatestFrom(reactor.state.map { $0.canTimeSetSave }) { ($0.0, $1) }
+            .map { ($0.0, reactor.timeSet.history, $0.1) }
+            .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1, canSave: $2) })
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -316,8 +313,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .filter { $0 == .close }
             .withLatestFrom(reactor.state.map { $0.timeSetState })
             .filter { $0 == .end }
-            .subscribe(onNext: { [weak self] _ in
-                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history)) as? TimeSetEndViewController else { return }
+            .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
+            .subscribe(onNext: { [weak self] in
+                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history, canSave: $0)) as? TimeSetEndViewController else { return }
                 self?.bind(end: viewController)
             })
             .disposed(by: disposeBag)
@@ -329,18 +327,23 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         // Close
         viewController.rx.tapHeader
             .filter { $0 == .close }
-            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: false) })
+            .subscribe(onNext: { [weak self] _ in
+                self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+                self?.dismissOrPopViewController(animated: false)
+            })
             .disposed(by: disposeBag)
         
         // Overtime record
         viewController.rx.tapOvertime
-            .map { Reactor.Action.startOvertimeRecord }
+            .do(onNext: { [weak self] in self?.bubbleAlert = nil }) // Remove alert
+            .map { .startOvertimeRecord }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // Restart
         viewController.rx.tapRestart
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin)) })
+            .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin, canSave: $0)) })
             .disposed(by: disposeBag)
     }
     
@@ -364,20 +367,17 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .disposed(by: popupDisposeBag)
     }
     
-    func bind(alert: TimeSetAlert, confirmHandler: @escaping () -> Void) {
+    func bind(alert: BubbleAlert, confirmHandler: @escaping () -> Void) {
         alertDisposeBag = DisposeBag()
-
-        alert.cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.timeSetAlert = nil
-            })
+        
+        Observable.merge(
+            alert.rx.cancel.asObservable(),
+            alert.rx.confirm.asObservable())
+            .subscribe(onNext: {[weak self] in self?.bubbleAlert = nil })
             .disposed(by: alertDisposeBag)
         
-        alert.confirmButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.timeSetAlert = nil
-                confirmHandler()
-            })
+        alert.rx.confirm
+            .subscribe(onNext: { confirmHandler() })
             .disposed(by: alertDisposeBag)
     }
     
@@ -391,25 +391,23 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     /// Show start timer with selected index alert
     private func showTimerStartAlert(at indexPath: IndexPath) {
         // Create alert & binding
-        let timeSetAlert = TimeSetAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1))
-        bind(alert: timeSetAlert) { [weak self] in
-            self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row))
-        }
+        let alert = BubbleAlert(text: String(format: "time_set_alert_timer_start_title_format".localized, indexPath.row + 1), type: .confirm)
+        bind(alert: alert) { [weak self] in self?.reactor?.action.onNext(.startTimeSet(at: indexPath.row)) }
         
         // Set constraint of alert
-        view.addAutolayoutSubview(timeSetAlert)
-        timeSetAlert.snp.makeConstraints { make in
+        view.addAutolayoutSubview(alert)
+        alert.snp.makeConstraints { make in
             make.leading.equalTo(timerBadgeCollectionView).inset(60.adjust())
             make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-3.adjust())
         }
 
-        self.timeSetAlert = timeSetAlert
+        bubbleAlert = alert
     }
     
     // MARK: - state method
     /// Scroll badge if view can scroll
     private func scrollBadgeIfCan(at indexPath: IndexPath) {
-        guard timeSetAlert == nil else { return }
+        guard bubbleAlert == nil else { return }
         timerBadgeCollectionView.scrollToBadge(at: indexPath, animated: true)
     }
     
@@ -463,7 +461,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             // Append repetition state
             string += string.isEmpty ? "" : ", "
             
-            string += String(format:history.repeatCount == 1 ? "time_set_state_repeat_format".localized : "time_set_state_repeat_plural_format".localized,
+            string += String(format: history.repeatCount == 1 ?
+                "time_set_state_repeat_format".localized :
+                "time_set_state_repeat_plural_format".localized,
                              history.repeatCount)
         }
         
@@ -484,7 +484,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
     }
     
     /// Update layout by current state of time set
-    private func updateLayoutByTimeSetState(_ state: TimeSet.State, history: History) {
+    private func updateLayoutByTimeSetState(_ state: TimeSet.State, history: History, canSave: Bool) {
         UIApplication.shared.isIdleTimerDisabled = false
         
         switch state {
@@ -515,12 +515,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             }
             
         case .end:
-            // Remove alert
-            timeSetAlert = nil
-
             // Present end view
             if history.endState == .normal {
-                guard let viewController = coordinator.present(for: .timeSetEnd(history)) as? TimeSetEndViewController else { return }
+                guard let viewController = coordinator.present(for: .timeSetEnd(history, canSave: canSave)) as? TimeSetEndViewController else { return }
                 bind(end: viewController)
             }
             

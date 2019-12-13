@@ -16,6 +16,9 @@ class TimeSetDetailViewReactor: Reactor {
         
         /// Select the timer
         case selectTimer(at: Int)
+        
+        /// Save the time set
+        case saveTimeSet
     }
     
     enum Mutation {
@@ -27,6 +30,9 @@ class TimeSetDetailViewReactor: Reactor {
         
         /// Set selected index
         case setSelectedIndex(at: Int)
+        
+        /// Save the time set
+        case save
     }
     
     struct State {
@@ -53,6 +59,12 @@ class TimeSetDetailViewReactor: Reactor {
         /// Current selected timer index
         var selectedIndex: Int
         
+        /// Flag that represent current time set can save
+        var canTimeSetSave: Bool
+        
+        /// Flag that time set is saved
+        var didTimeSetSaved: RevisionValue<Bool?>
+        
         /// Need section reload
         var shouldSectionReload: Bool
     }
@@ -64,20 +76,24 @@ class TimeSetDetailViewReactor: Reactor {
     var timeSetItem: TimeSetItem
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem) {
+    init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem, canSave: Bool) {
         self.timeSetService = timeSetService
         self.timeSetItem = timeSetItem
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: self.timeSetItem.timers.toArray(), index: 0)
+        let dataSource = TimerBadgeDataSource(timers: timeSetItem.timers.toArray(), index: 0)
         
-        initialState = State(isBookmark: timeSetItem.isBookmark,
-                             title: timeSetItem.title,
-                             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
-                             timer: timeSetItem.timers.first ?? TimerItem(),
-                             sectionDataSource: dataSource,
-                             selectedIndex: 0,
-                             shouldSectionReload: true)
+        initialState = State(
+            isBookmark: timeSetItem.isBookmark,
+            title: timeSetItem.title,
+            allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
+            timer: timeSetItem.timers.first ?? TimerItem(),
+            sectionDataSource: dataSource,
+            selectedIndex: 0,
+            canTimeSetSave: canSave,
+            didTimeSetSaved: RevisionValue(nil),
+            shouldSectionReload: true
+        )
     }
     
     // MARK: - mutation
@@ -88,6 +104,9 @@ class TimeSetDetailViewReactor: Reactor {
 
         case let .selectTimer(at: index):
             return actionSelectTimer(at: index)
+            
+        case .saveTimeSet:
+            return actionSaveTimeSet()
         }
     }
     
@@ -109,6 +128,11 @@ class TimeSetDetailViewReactor: Reactor {
             guard index >= 0 && index < state.sections[section].items.count else { return state }
             
             state.selectedIndex = index
+            return state
+            
+        case .save:
+            state.canTimeSetSave = false
+            state.didTimeSetSaved = state.didTimeSetSaved.next(true)
             return state
         }
     }
@@ -138,6 +162,13 @@ class TimeSetDetailViewReactor: Reactor {
         let setTimer: Observable<Mutation> = .just(.setTimer(timeSetItem.timers[index]))
         
         return .concat(setSelectedIndex, setTimer)
+    }
+    
+    private func actionSaveTimeSet() -> Observable<Mutation> {
+        // Create the time set
+        return timeSetService.createTimeSet(item: timeSetItem).asObservable()
+            .do(onNext: { self.timeSetItem = $0 })
+            .map { _ in .save }
     }
     
     deinit {
