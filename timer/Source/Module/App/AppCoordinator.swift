@@ -9,46 +9,56 @@
 import UIKit
 
 /// Route from app initialze
-class AppCoordinator {
+class AppCoordinator: LaunchCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case intro
     }
 
     // MARK: - properties
-    let window: UIWindow
-    let provider: ServiceProviderProtocol
+    var window: UIWindow
+    var provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    init(provider: ServiceProviderProtocol, window: UIWindow) {
-        self.provider = provider
+    init(window: UIWindow, provider: ServiceProviderProtocol) {
         self.window = window
+        self.provider = provider
     }
     
-    func present(for route: Route) {
-        let viewController = get(for: route)
+    // MARK: - presentation
+    @discardableResult
+    func present(for route: Route) -> UIViewController? {
+        guard let (controller, _) = get(for: route) else { return nil }
         
+        var presentingViewController = controller
         switch route {
         case .intro:
+            // Wrap view to naviagtion container
+            presentingViewController = BaseNavicationController(rootViewController: presentingViewController)
             // Present intro view
-            window.rootViewController = viewController
+            window.rootViewController = presentingViewController
             window.makeKeyAndVisible()
         }
+        
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .intro:
-            let introViewCoordinator = IntroViewCoordinator(provider: provider)
-            let introViewReactor = IntroViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
-            let introViewController = IntroViewController(coordinator: introViewCoordinator)
+            let coordinator = IntroViewCoordinator(provider: provider)
+            let reactor = IntroViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
+            let viewController = IntroViewController(coordinator: coordinator)
             
             // DI
-            introViewCoordinator.viewController = introViewController
-            introViewController.reactor = introViewReactor
+            coordinator.viewController = viewController
+            viewController.reactor = reactor
             
-            let viewController: BaseNavicationController = BaseNavicationController(rootViewController: introViewController)
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

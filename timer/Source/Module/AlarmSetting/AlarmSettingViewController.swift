@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import AVFoundation
 
-class AlarmSettingViewController: BaseHeaderViewController, View {
+class AlarmSettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var alarmSettingView: AlarmSettingView { return view as! AlarmSettingView }
     

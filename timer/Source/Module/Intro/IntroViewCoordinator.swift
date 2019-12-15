@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from intro view
-class IntroViewCoordinator: NSObject, CoordinatorProtocol {
+class IntroViewCoordinator: NSObject, ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case main
@@ -17,33 +17,42 @@ class IntroViewCoordinator: NSObject, CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: IntroViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
+    // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
 
-        self.viewController.navigationController?.delegate = self
+        // Set transition delegate
+        viewController.navigationController?.delegate = self
         
         switch route {
         case .main:
             // Present main view
-            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            viewController.navigationController?.setViewControllers([presentingViewController], animated: true)
             
         case .timeSetProcess:
-            guard let mainViewController = get(for: .main) else { return nil }
-            self.viewController.navigationController?.setViewControllers([mainViewController, viewController], animated: true)
+            guard let mainViewController = get(for: .main)?.controller else { return nil }
+            
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .main:
             let coordinator = MainViewCoordinator(provider: provider)
@@ -56,7 +65,8 @@ class IntroViewCoordinator: NSObject, CoordinatorProtocol {
             
             // set tab bar view controller initial index
             viewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
-            return viewController
+            
+            return (viewController, coordinator)
             
         case .timeSetProcess:
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
@@ -67,8 +77,12 @@ class IntroViewCoordinator: NSObject, CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }
 

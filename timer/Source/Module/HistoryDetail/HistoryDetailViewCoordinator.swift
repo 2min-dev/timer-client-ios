@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HistoryDetailViewCoordinator: CoordinatorProtocol {
+class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case timeSetEdit(TimeSetItem)
@@ -16,34 +16,39 @@ class HistoryDetailViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: UIViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .timeSetProcess(_):
-            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
-                return nil
-            }
-            let viewControllers = [rootViewController, viewController]
-            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: true)
             
         case .timeSetEdit(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            self.viewController.navigationController?.pushViewController(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetEdit(timeSetItem):
             let coordinator = TimeSetEditViewCoordinator(provider: provider)
@@ -54,7 +59,7 @@ class HistoryDetailViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case let .timeSetProcess(timeSetItem):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
@@ -65,7 +70,11 @@ class HistoryDetailViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

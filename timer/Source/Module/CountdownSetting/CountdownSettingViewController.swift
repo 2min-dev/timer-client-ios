@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class CountdownSettingViewController: BaseHeaderViewController, View {
+class CountdownSettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var countdownSettingView: CountdownSettingView { return view as! CountdownSettingView }
     

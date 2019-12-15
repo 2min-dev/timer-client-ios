@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class TimeSetSaveViewController: BaseHeaderViewController, View {
+class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constants
     private let MAX_TITLE_LENGTH: Int = 20
     

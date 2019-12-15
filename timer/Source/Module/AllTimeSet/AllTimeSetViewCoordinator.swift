@@ -8,34 +8,40 @@
 
 import UIKit
 
-class AllTimeSetViewCoordinator: CoordinatorProtocol {
+class AllTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case timeSetDetail(TimeSetItem)
     }
     
     // MARK: - properties
-    weak var viewController: UIViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .timeSetDetail(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetDetail(timeSetItem):
             let coordinator = TimeSetDetailViewCoordinator(provider: provider)
@@ -46,7 +52,11 @@ class AllTimeSetViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

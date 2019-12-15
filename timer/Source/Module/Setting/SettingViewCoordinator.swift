@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from setting view
-class SettingViewCoordinator: CoordinatorProtocol {
+class SettingViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
         case noticeList
@@ -20,16 +20,21 @@ class SettingViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: SettingViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
+    // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .noticeList,
@@ -37,13 +42,15 @@ class SettingViewCoordinator: CoordinatorProtocol {
              .countdownSetting,
              .teamInfo,
              .license:
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .noticeList:
             let coordinator = NoticeListViewCoordinator(provider: provider)
@@ -54,7 +61,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .alarmSetting:
             let coordinator = AlarmSettingViewCoordinator(provider: provider)
@@ -65,7 +72,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .countdownSetting:
             let coordinator = CountdownSettingViewCoordinator(provider: provider)
@@ -76,7 +83,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .teamInfo:
             let coordinator = TeamInfoViewCoordinator(provider: provider)
@@ -87,7 +94,7 @@ class SettingViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .license:
             let coordinator = OpenSourceLicenseViewCoordinator(provider: provider)
@@ -98,7 +105,11 @@ class SettingViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

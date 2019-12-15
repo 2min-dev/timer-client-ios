@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class MainViewController: UITabBarController, View {
+class MainViewController: UITabBarController, ViewControllable, View {
     // MARK: - constants
     enum TabType: Int {
         case localTimeSet = 0
@@ -62,7 +62,7 @@ class MainViewController: UITabBarController, View {
         viewControllers = [coordinator.get(for: .local),
                            coordinator.get(for: .productivity),
                            coordinator.get(for: .preset)]
-            .compactMap { $0 }
+            .compactMap { $0?.controller }
         
         // Set tab bar view controller delegate for swipable
         delegate = self

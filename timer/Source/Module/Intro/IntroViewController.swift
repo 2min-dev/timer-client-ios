@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class IntroViewController: BaseViewController, View {
+class IntroViewController: BaseViewController, ViewControllable, View {
     // MARK: - view properties
     private var introView: IntroView { return view as! IntroView }
     

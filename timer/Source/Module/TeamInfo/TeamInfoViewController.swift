@@ -9,7 +9,7 @@
 import RxSwift
 import ReactorKit
 
-class TeamInfoViewController: BaseHeaderViewController, View {
+class TeamInfoViewController: BaseHeaderViewController, ViewControllable, View {
 	// MARK: - view properties
 	private var teamInfoView: TeamInfoView { return view as! TeamInfoView }
     

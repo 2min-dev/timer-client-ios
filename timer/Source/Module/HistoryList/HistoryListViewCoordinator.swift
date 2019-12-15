@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HistoryListViewCoordinator: CoordinatorProtocol {
+class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case productivity
@@ -16,36 +16,42 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: UIViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .productivity:
-            guard let mainViewController = viewController as? MainViewController else { return nil }
+            guard let mainViewController = viewController.navigationController?.viewControllers.first as? MainViewController else { return nil }
             // Select productivity tab
             mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
-            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            viewController.navigationController?.setViewControllers([mainViewController], animated: true)
             
         case .detail:
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .productivity:
-            return self.viewController.navigationController?.viewControllers.first
+            return (viewController, self)
             
         case let .detail(history):
             let coordinator = HistoryDetailViewCoordinator(provider: provider)
@@ -56,7 +62,11 @@ class HistoryListViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

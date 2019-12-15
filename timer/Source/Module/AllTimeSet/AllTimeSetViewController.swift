@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class AllTimeSetViewController: BaseHeaderViewController, View {
+class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var allTimeSetView: AllTimeSetView { return view as! AllTimeSetView }
     

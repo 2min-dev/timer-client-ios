@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class TimeSetManageViewController: BaseHeaderViewController, View {
+class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var timeSetManageView: TimeSetManageView { return view as! TimeSetManageView }
     

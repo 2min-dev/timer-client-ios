@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class TimeSetDetailViewController: BaseHeaderViewController, View {
+class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constraints
     private let FOOTER_BUTTON_EDIT = 0
     private let FOOTER_BUTTON_START = 1

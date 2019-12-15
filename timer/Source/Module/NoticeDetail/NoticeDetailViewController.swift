@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class NoticeDetailViewController: BaseHeaderViewController, View {
+class NoticeDetailViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var noticeDetailView: NoticeDetailView { return view as! NoticeDetailView }
     

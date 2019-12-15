@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class ProductivityViewController: BaseHeaderViewController, View {
+class ProductivityViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
     

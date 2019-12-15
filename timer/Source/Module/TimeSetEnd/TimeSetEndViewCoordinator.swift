@@ -8,44 +8,47 @@
 
 import UIKit
 
-class TimeSetEndViewCoordinator: CoordinatorProtocol {
+class TimeSetEndViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case home
+        case dismiss
         case timeSetEdit(TimeSetItem)
     }
     
     // MARK: - properties
-    weak var viewController: TimeSetEndViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
-        case .home:
-            guard let navigationController = self.viewController.presentingViewController as? UINavigationController else { return nil }
-            navigationController.setViewControllers([viewController], animated: true)
-            self.viewController.dismiss(animated: true)
+        case .dismiss:
+            dismiss?(presentingViewController)
             
         case .timeSetEdit(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
-        case .home:
-            guard let navigationController = self.viewController.presentingViewController as? UINavigationController else { return nil }
-            return navigationController.viewControllers.first
+        case .dismiss:
+            return (viewController, self)
             
         case let .timeSetEdit(timeSetItem):
             let coordinator = TimeSetEditViewCoordinator(provider: provider)
@@ -56,7 +59,11 @@ class TimeSetEndViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class LocalTimeSetViewController: BaseHeaderViewController, View {
+class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     

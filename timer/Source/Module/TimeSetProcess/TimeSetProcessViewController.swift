@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class TimeSetProcessViewController: BaseHeaderViewController, View {
+class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var timeSetProcessView: TimeSetProcessView { view as! TimeSetProcessView }
     

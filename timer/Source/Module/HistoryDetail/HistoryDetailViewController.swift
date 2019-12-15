@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class HistoryDetailViewController: BaseHeaderViewController, View {
+class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constants
     private let MAX_MEMO_LENGTH: Int = 1000
     

@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class NoticeListViewController: BaseHeaderViewController, View {
+class NoticeListViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var noticeListView: NoticeListView { return view as! NoticeListView }
     

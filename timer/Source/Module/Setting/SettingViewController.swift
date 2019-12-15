@@ -10,7 +10,7 @@ import RxSwift
 import RxDataSources
 import ReactorKit
 
-class SettingViewController: BaseHeaderViewController, View {
+class SettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var settingView: SettingView { return view as! SettingView }
     

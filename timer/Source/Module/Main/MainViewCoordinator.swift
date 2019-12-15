@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from main view (tab bar)
-class MainViewCoordinator: CoordinatorProtocol {
+class MainViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
         case productivity
@@ -18,29 +18,36 @@ class MainViewCoordinator: CoordinatorProtocol {
         case historyDetail(History)
     }
     
-    weak var viewController: MainViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
+    // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .historyDetail(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
             
         default:
             break
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .productivity:
             let coordinator = ProductivityViewCoordinator(provider: provider)
@@ -51,7 +58,7 @@ class MainViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .local:
             let coordinator = LocalTimeSetViewCoordinator(provider: provider)
@@ -62,7 +69,7 @@ class MainViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .preset:
             let coordinator = PresetViewCoordinator(provider: provider)
@@ -73,7 +80,7 @@ class MainViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case let .historyDetail(history):
             let coordinator = HistoryDetailViewCoordinator(provider: provider)
@@ -84,7 +91,11 @@ class MainViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

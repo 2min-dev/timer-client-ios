@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class OpenSourceLicenseViewController: BaseHeaderViewController, View {
+class OpenSourceLicenseViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var openSourceLicenseView: OpenSourceLicenseView { return view as! OpenSourceLicenseView }
     

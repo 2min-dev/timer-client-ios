@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         
         // Present intro view
-        let appCoordinator: AppCoordinator = AppCoordinator(provider: provider, window: window!)
+        let appCoordinator: AppCoordinator = AppCoordinator(window: window!, provider: provider)
         appCoordinator.present(for: .intro)
         
         return true

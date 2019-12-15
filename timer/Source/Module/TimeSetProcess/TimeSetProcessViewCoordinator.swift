@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TimeSetProcessViewCoordinator: CoordinatorProtocol {
+class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case home
@@ -18,49 +18,59 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: TimeSetProcessViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        var presentingViewController = controller
         // Set enable that navigation controller pop gesture recognizer before present
-        self.viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch route {
         case .home:
-            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
+            viewController.navigationController?.setViewControllers([mainViewController], animated: true)
         
         case .timeSetProcess(_):
-            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
-                return nil
-            }
-            let viewControllers = [rootViewController, viewController]
-            self.viewController.navigationController?.setViewControllers(viewControllers, animated: false)
+            guard var viewControllers = viewController.navigationController?.viewControllers else { return nil }
+            
+            viewControllers.removeLast()
+            viewControllers.append(presentingViewController)
+            
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.setViewControllers(viewControllers, animated: false)
+
+        case .timeSetEnd(_):
+            // Wrap view to navigation container
+            presentingViewController = BaseNavicationController(rootViewController: coordinator.viewController)
+            fallthrough
             
         case .timeSetMemo(_):
-            viewController.modalPresentationStyle = .fullScreen
-            self.viewController.present(viewController, animated: true)
+            presentingViewController.modalPresentationStyle = .fullScreen
             
-        case .timeSetEnd(_):
-            let navigationController = BaseNavicationController(rootViewController: viewController)
-            navigationController.modalPresentationStyle = .fullScreen
-            
-            self.viewController.present(navigationController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = dismissViewController
+            viewController.present(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .home:
-            return self.viewController.navigationController?.viewControllers.first
+            return (viewController, self)
             
         case let .timeSetProcess(timeSetItem, canSave: canSave):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
@@ -71,7 +81,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case let .timeSetMemo(history):
             let coordinator = TimeSetMemoViewCoordinator(provider: provider)
@@ -82,7 +92,7 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case let .timeSetEnd(history, canSave: canSave):
             let coordinator = TimeSetEndViewCoordinator(provider: provider)
@@ -93,7 +103,11 @@ class TimeSetProcessViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

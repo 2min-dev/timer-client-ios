@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class HistoryListViewController: BaseHeaderViewController, View {
+class HistoryListViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var historyListView: HistoryListView { return view as! HistoryListView }
     

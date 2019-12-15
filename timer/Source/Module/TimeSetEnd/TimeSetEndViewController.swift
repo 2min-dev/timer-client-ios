@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TimeSetEndViewController: BaseHeaderViewController, View {
+class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constants
     private static let MAX_MEMO_LENGTH: Int = 1000
     

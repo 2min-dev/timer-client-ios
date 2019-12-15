@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class PresetViewController: BaseHeaderViewController, View {
+class PresetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var presetView: PresetView { view as! PresetView }
     

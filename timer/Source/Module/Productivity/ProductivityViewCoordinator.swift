@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from one touch timer view
-class ProductivityViewCoordinator: CoordinatorProtocol {
+class ProductivityViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
         case timeSetSave(TimeSetItem)
@@ -19,29 +19,36 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
     }
 
     // MARK: - properties
-    weak var viewController: ProductivityViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
+    // MARK: - presentation
+    @discardableResult
     func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .timeSetSave(_),
              .timeSetProcess(_),
              .history,
              .setting:
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetSave(timeSetItem):
             let coordinator = TimeSetSaveViewCoordinator(provider: provider)
@@ -52,7 +59,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case let .timeSetProcess(timeSetItem):
             let coordinator = TimeSetProcessViewCoordinator(provider: provider)
@@ -63,7 +70,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .history:
             let coordinator = HistoryListViewCoordinator(provider: provider)
@@ -74,7 +81,7 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
             
         case .setting:
             let coordinator = SettingViewCoordinator(provider: provider)
@@ -85,7 +92,11 @@ class ProductivityViewCoordinator: CoordinatorProtocol {
             coordinator.viewController = viewController
             viewController.reactor = reactor
             
-            return viewController
+            return (viewController, coordinator)
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }
