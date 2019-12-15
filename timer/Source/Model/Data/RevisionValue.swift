@@ -8,7 +8,7 @@
 
 struct RevisionValue<T>: Equatable {
     private let revision: UInt
-    let value: T
+    var value: T
     
     private init(revision: UInt, value: T) {
         self.revision = revision
@@ -20,8 +20,12 @@ struct RevisionValue<T>: Equatable {
         self.value = value
     }
     
-    func next(_ value: T) -> RevisionValue {
-        RevisionValue(revision: revision + 1, value: value)
+    func next(_ value: T? = nil) -> RevisionValue {
+        guard let value = value else {
+            return RevisionValue(revision: revision + 1, value: self.value)
+        }
+        
+        return RevisionValue(revision: revision + 1, value: value)
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
