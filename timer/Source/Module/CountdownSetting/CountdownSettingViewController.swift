@@ -55,6 +55,10 @@ class CountdownSettingViewController: BaseHeaderViewController, ViewControllable
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         countdownSettingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -82,6 +86,18 @@ class CountdownSettingViewController: BaseHeaderViewController, ViewControllable
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.countdownSettingTableView.selectRow(at: $0, animated: true, scrollPosition: .none) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
+        default:
+            break
+        }
     }
     
     deinit {

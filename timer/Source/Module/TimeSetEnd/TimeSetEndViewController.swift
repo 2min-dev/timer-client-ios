@@ -114,7 +114,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         overtimeButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss) })
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
@@ -124,7 +124,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         restartButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -225,11 +225,15 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
 }
 
 extension Reactive where Base: TimeSetEndViewController {
-    var tapOvertime: ControlEvent<Void> {
-        return ControlEvent(events: base.overtimeButton.rx.tap)
+    var close: ControlEvent<Void> {
+        ControlEvent(events: base.headerView.rx.tap.filter { $0 == .close }.map { _ in })
     }
     
-    var tapRestart: ControlEvent<Void> {
-        return ControlEvent(events: base.restartButton.rx.tap)
+    var overtime: ControlEvent<Void> {
+        ControlEvent(events: base.overtimeButton.rx.tap)
+    }
+    
+    var restart: ControlEvent<Void> {
+        ControlEvent(events: base.restartButton.rx.tap)
     }
 }

@@ -138,3 +138,9 @@ class TimeSetMemoViewController: BaseHeaderViewController, ViewControllable, Vie
         Logger.verbose()
     }
 }
+
+extension Reactive where Base: TimeSetMemoViewController {
+    var close: ControlEvent<Void> {
+        ControlEvent(events: base.headerView.rx.tap.filter { $0 == .close }.map { _ in })
+    }
+}

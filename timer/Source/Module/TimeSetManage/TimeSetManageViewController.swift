@@ -111,6 +111,10 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -140,15 +144,16 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
             .map { $0.shouldDismiss }
             .distinctUntilChanged()
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: true) })
+            .subscribe(onNext: { [weak self] _ in self?.coordinator.present(for: .dismiss) })
             .disposed(by: disposeBag)
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: ConfirmHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: ConfirmHeader.Action) {
         switch action {
+        case .cancel:
+            coordinator.present(for: .dismiss)
+            
         case .confirm:
             guard let reactor = reactor else { return }
             reactor.action.onNext(.apply)

@@ -309,8 +309,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
         guard let reactor = reactor else { return }
         
         // Close
-        viewController.rx.tapHeader
-            .filter { $0 == .close }
+        viewController.rx.close
             .withLatestFrom(reactor.state.map { $0.timeSetState })
             .filter { $0 == .end }
             .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
@@ -325,23 +324,22 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
         guard let reactor = reactor else { return }
         
         // Close
-        viewController.rx.tapHeader
-            .filter { $0 == .close }
+        viewController.rx.close
             .subscribe(onNext: { [weak self] _ in
                 self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self?.dismissOrPopViewController(animated: false)
+                self?.coordinator.present(for: .dismiss)
             })
             .disposed(by: disposeBag)
         
         // Overtime record
-        viewController.rx.tapOvertime
+        viewController.rx.overtime
             .do(onNext: { [weak self] in self?.bubbleAlert = nil }) // Remove alert
             .map { .startOvertimeRecord }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // Restart
-        viewController.rx.tapRestart
+        viewController.rx.restart
             .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin, canSave: $0)) })
             .disposed(by: disposeBag)

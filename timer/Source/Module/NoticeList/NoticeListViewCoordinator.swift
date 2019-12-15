@@ -11,6 +11,7 @@ import UIKit
 class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case noticeDetail(Notice)
     }
     
@@ -32,6 +33,9 @@ class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController)
+            
         case .noticeDetail(_):
             coordinator.dismiss = popViewController
             viewController.navigationController?.pushViewController(presentingViewController, animated: true)
@@ -42,6 +46,9 @@ class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
     
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case let .noticeDetail(notice):
             let coordinator = NoticeDetailViewCoordinator(provider: provider)
             let reactor = NoticeDetailViewReactor(networkService: provider.networkService, notice: notice)

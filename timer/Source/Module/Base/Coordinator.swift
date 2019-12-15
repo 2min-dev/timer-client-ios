@@ -27,7 +27,7 @@ protocol ViewCoordinatorType {
 
 extension ViewCoordinatorType {
     var popViewController: (UIViewController) -> Void {
-        {
+        return {
             guard var viewControllers = $0.navigationController?.viewControllers,
                 let index = viewControllers.firstIndex(of: $0) else { return }
             viewControllers.remove(at: index)
@@ -36,9 +36,7 @@ extension ViewCoordinatorType {
     }
     
     var dismissViewController: (UIViewController) -> Void {
-        {
-            $0.dismiss(animated: true)
-        }
+        return { $0.dismiss(animated: true) }
     }
 }
 

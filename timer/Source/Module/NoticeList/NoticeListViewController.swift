@@ -59,6 +59,10 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         noticeTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -91,6 +95,17 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Show notice empty view in table view if notice is empty
     private func showNoticeEmptyView(isEmpty: Bool) {

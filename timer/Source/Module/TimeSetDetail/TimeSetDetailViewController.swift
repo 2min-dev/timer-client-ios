@@ -57,6 +57,14 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
         super.viewDidLoad()
     }
     
+    override func bind() {
+        super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+    }
+    
     // MARK: - bine
     func bind(reactor: TimeSetDetailViewReactor) {
         // MARK: action
@@ -186,10 +194,11 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
     
     // MARK: - action method
     /// Handle header button tap action according to button type
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
         case .bookmark:
             reactor?.action.onNext(.toggleBookmark)
             

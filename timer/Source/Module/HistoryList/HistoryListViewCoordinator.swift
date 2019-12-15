@@ -11,6 +11,7 @@ import UIKit
 class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case productivity
         case detail(History)
     }
@@ -33,6 +34,9 @@ class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController)
+            
         case .productivity:
             guard let mainViewController = viewController.navigationController?.viewControllers.first as? MainViewController else { return nil }
             // Select productivity tab
@@ -50,6 +54,9 @@ class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
     
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case .productivity:
             return (viewController, self)
             

@@ -92,6 +92,10 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
     override func bind() {
         super.bind()
 
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         canTimeSetStart
             .distinctUntilChanged()
             .bind(to: confirmButton.rx.isEnabled)
@@ -290,7 +294,7 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
     
     // MARK: - action method
     /// - warning: Don't call `super.handleHeaderAction()` to override default action
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         
         switch action {
@@ -388,7 +392,7 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
                 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self.dismissOrPopViewController(animated: true)
+                self.coordinator.present(for: .dismiss)
             })
             .build()
         // Present warning alert view controller

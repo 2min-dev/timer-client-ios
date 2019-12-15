@@ -78,6 +78,11 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
     
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -248,6 +253,17 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Show time set end state alert
     private func showTimeSetEndStateAlert(_ endState: History.EndState, index: Int, remainedTime: TimeInterval, overtime: TimeInterval) {

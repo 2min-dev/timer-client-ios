@@ -60,6 +60,10 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         titleTextField.rx.textChanged
             .compactMap { $0 }
             .map { !$0.isEmpty }
@@ -115,7 +119,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss) })
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
@@ -197,6 +201,18 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
             .observeOn(MainScheduler.instance) // Ignore rx error
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
+        default:
+            break
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

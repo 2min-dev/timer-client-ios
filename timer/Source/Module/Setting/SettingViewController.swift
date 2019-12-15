@@ -54,6 +54,11 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - bind
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         settingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -92,10 +97,11 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
     
     // MARK: - action
     /// Handle header button tap action according to button type
-    override func handleHeaderAction(_ action: Header.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: Header.Action) {
         switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
         case .additional:
             guard let isLatestVersion = reactor?.currentState.isLatestVersion else { return }
             if !isLatestVersion {

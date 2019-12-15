@@ -12,6 +12,7 @@ import UIKit
 class SettingViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
+        case dismiss
         case noticeList
         case alarmSetting
         case countdownSetting
@@ -37,6 +38,9 @@ class SettingViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController)
+            
         case .noticeList,
              .alarmSetting,
              .countdownSetting,
@@ -52,6 +56,9 @@ class SettingViewCoordinator: ViewCoordinator, ServiceContainer {
     
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case .noticeList:
             let coordinator = NoticeListViewCoordinator(provider: provider)
             let reactor = NoticeListViewReactor(networkService: provider.networkService)

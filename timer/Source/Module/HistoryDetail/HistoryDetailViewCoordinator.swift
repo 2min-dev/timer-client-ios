@@ -11,6 +11,7 @@ import UIKit
 class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case timeSetEdit(TimeSetItem)
         case timeSetProcess(TimeSetItem)
     }
@@ -33,6 +34,9 @@ class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController)
+            
         case .timeSetProcess(_):
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
             // Set dismiss handler
@@ -50,6 +54,9 @@ class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
     
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case let .timeSetEdit(timeSetItem):
             let coordinator = TimeSetEditViewCoordinator(provider: provider)
             guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }

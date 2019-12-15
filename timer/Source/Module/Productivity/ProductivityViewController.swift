@@ -115,6 +115,10 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
             .subscribe(onNext: { [weak self] in self?.showFooterView(isShow: $0) })
             .disposed(by: disposeBag)
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         canTimeSetStart
             .subscribe(onNext: { [weak self] in self?.updateLayoutFrom(canTimeSetStart: $0) })
             .disposed(by: disposeBag)
@@ -306,9 +310,7 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
     }
 
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
             _ = coordinator.present(for: .history)

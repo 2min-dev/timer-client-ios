@@ -175,6 +175,10 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -201,9 +205,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
             _ = coordinator.present(for: .history)

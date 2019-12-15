@@ -118,6 +118,10 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -151,6 +155,17 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get header title by type
     private func getHeaderTitleByType(_ type: AllTimeSetViewReactor.TimeSetType) -> String {

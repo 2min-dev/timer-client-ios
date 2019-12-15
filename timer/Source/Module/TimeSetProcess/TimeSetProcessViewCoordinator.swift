@@ -11,6 +11,7 @@ import UIKit
 class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case home
         case timeSetProcess(TimeSetItem, canSave: Bool)
         case timeSetMemo(History)
@@ -37,6 +38,9 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
         viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController)
+            
         case .home:
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
             viewController.navigationController?.setViewControllers([mainViewController], animated: true)
@@ -69,6 +73,9 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case .home:
             return (viewController, self)
             

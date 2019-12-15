@@ -45,6 +45,11 @@ class TeamInfoViewController: BaseHeaderViewController, ViewControllable, View {
 	// MARK: - bind
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -57,6 +62,18 @@ class TeamInfoViewController: BaseHeaderViewController, ViewControllable, View {
 
 		// MARK: state
 	}
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss)
+            
+        default:
+            break
+        }
+    }
     
     deinit {
         Logger.verbose()

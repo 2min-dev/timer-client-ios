@@ -78,9 +78,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // a schema version lower than the one set above
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
-                    // TODO: migrate from scheme version 0
-                    // * TimeSetItem
-                    
                     // Migrate history model
                     migration.enumerateObjects(ofType: History.className()) { oldObject, newObject in
                         guard let oldObject = oldObject, let newObject = newObject else { return }
