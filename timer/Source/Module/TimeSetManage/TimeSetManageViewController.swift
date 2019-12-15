@@ -122,7 +122,7 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
         // MARK: action
         rx.viewWillAppear
             .take(1)
-            .map { Reactor.Action.viewWillAppear }
+            .map { .load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -134,15 +134,19 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
             .bind(to: headerView.rx.title)
             .disposed(by: disposeBag)
         
+        // Sections
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
+        // Applied changes
         reactor.state
-            .map { $0.shouldDismiss }
+            .map { $0.applied }
             .distinctUntilChanged()
+            .map { $0.value }
             .filter { $0 }
             .subscribe(onNext: { [weak self] _ in self?.coordinator.present(for: .dismiss) })
             .disposed(by: disposeBag)
@@ -155,8 +159,7 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
             coordinator.present(for: .dismiss)
             
         case .confirm:
-            guard let reactor = reactor else { return }
-            reactor.action.onNext(.apply)
+            reactor?.action.onNext(.apply)
             
         default:
             break
@@ -240,17 +243,5 @@ extension TimeSetManageViewController: JSCollectionViewDelegateLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {
         guard section > 0 else { return false }
         return collectionView.numberOfItems(inSection: section) > 0
-    }
-}
-
-// MARK: - time set manage datasource
-typealias TimeSetManageSectionModel = AnimatableSectionModel<TimeSetManageSectionType, TimeSetManageCollectionViewCellReactor>
-
-enum TimeSetManageSectionType: Int, IdentifiableType {
-    case normal
-    case removed
-    
-    var identity: Int {
-        return rawValue
     }
 }

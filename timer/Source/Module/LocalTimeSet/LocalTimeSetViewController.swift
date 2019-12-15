@@ -172,6 +172,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
         }
     }
     
+    // MARK: - bind
     override func bind() {
         super.bind()
         
@@ -182,7 +183,6 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
-    // MARK: - bind
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
         Observable.merge(rx.viewDidLoad.asObservable(),
