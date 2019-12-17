@@ -89,7 +89,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     private var timeSets: [TimeSetItem]?
     var runningTimeSet: RunningTimeSet? {
         didSet {
-            guard let timeSet = runningTimeSet?.timeSet else { return }
+            guard let timeSet = storeTimeSet() else { return }
             disposeBag = DisposeBag()
             
             timeSet.event
@@ -225,7 +225,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     @discardableResult
     func storeTimeSet() -> TimeSet? {
-        guard let runningTimeSet = runningTimeSet, runningTimeSet.timeSet.state == .run else {
+        guard let runningTimeSet = runningTimeSet else {
             provider.appService.setRunningTimeSet(nil)
             return nil
         }
