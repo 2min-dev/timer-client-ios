@@ -61,15 +61,8 @@ class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .detail(history):
-            let coordinator = HistoryDetailViewCoordinator(provider: provider)
-            guard let reactor = HistoryDetailViewReactor(timeSetService: provider.timeSetService, history: history) else { return nil }
-            let viewController = HistoryDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = HistoryDetailViewBuilder.Dependency(provider: provider, history: history)
+            return HistoryDetailViewBuilder(with: dependency).build()
         }
     }
     

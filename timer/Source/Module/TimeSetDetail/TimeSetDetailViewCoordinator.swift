@@ -58,26 +58,12 @@ class TimeSetDetailViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .timeSetEdit(timeSetItem):
-            let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
-            let viewController = TimeSetEditViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetEditViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem)
+            return TimeSetEditViewBuilder(with: dependency).build()
             
         case let .timeSetProcess(timeSetItem, startAt: index, canSave: canSave):
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, startIndex: index, canSave: canSave) else { return nil }
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, startIndex: index, canSave: canSave)
+            return TimeSetProcessViewBuilder(with: dependency).build()
         }
     }
     

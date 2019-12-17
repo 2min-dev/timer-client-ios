@@ -46,15 +46,8 @@ class AppCoordinator: LaunchCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .intro:
-            let coordinator = IntroViewCoordinator(provider: provider)
-            let reactor = IntroViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
-            let viewController = IntroViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = IntroViewBuilder.Dependency(provider: provider)
+            return IntroViewBuilder(with: dependency).build()
         }
     }
     

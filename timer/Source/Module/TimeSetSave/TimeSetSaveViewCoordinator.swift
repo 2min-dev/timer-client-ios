@@ -53,15 +53,8 @@ class TimeSetSaveViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .timeSetDetail(timeSetItem):
-            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: false)
-            let viewController = TimeSetDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: false)
+            return TimeSetDetailViewBuilder(with: dependency).build()
         }
     }
     

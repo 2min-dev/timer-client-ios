@@ -50,15 +50,8 @@ class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .noticeDetail(notice):
-            let coordinator = NoticeDetailViewCoordinator(provider: provider)
-            let reactor = NoticeDetailViewReactor(networkService: provider.networkService, notice: notice)
-            let viewController = NoticeDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = NoticeDetailViewBuilder.Dependency(provider: provider, notice: notice)
+            return NoticeDetailViewBuilder(with: dependency).build()
         }
     }
     

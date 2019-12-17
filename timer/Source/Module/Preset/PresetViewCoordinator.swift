@@ -48,37 +48,16 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetDetail(timeSetItem):
-            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: true)
-            let viewController = TimeSetDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
+            return TimeSetDetailViewBuilder(with: dependency).build()
 
         case .history:
-            let coordinator = HistoryListViewCoordinator(provider: provider)
-            let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)
-            let viewController = HistoryListViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = HistoryListViewBuilder.Dependency(provider: provider)
+            return HistoryListViewBuilder(with: dependency).build()
             
         case .setting:
-            let coordinator = SettingViewCoordinator(provider: provider)
-            let reactor = SettingViewReactor(appService: provider.appService, networkService: provider.networkService)
-            let viewController = SettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = SettingViewBuilder.Dependency(provider: provider)
+            return SettingViewBuilder(with: dependency).build()
         }
     }
     

@@ -8,6 +8,7 @@
 
 import UIKit
 
+// MARK: - coordinator
 protocol Routable {
     associatedtype Route
     
@@ -43,11 +44,23 @@ extension ViewCoordinatorType {
 typealias LaunchCoordinator = LaunchCoordinatorType & Routable
 typealias ViewCoordinator = ViewCoordinatorType & Routable
 
+// MARK: - view controller
 protocol ViewControllable where Self: UIViewController {
     associatedtype Coordinator: ViewCoordinator
     var coordinator: Coordinator { get }
 }
 
+// MARK: - builder
+protocol Builder {
+    associatedtype Dependency
+    
+    var dependency: Dependency { get }
+    
+    init(with dependency: Dependency)
+    func build() -> (UIViewController, ViewCoordinatorType)?
+}
+
+// MARK: - application
 protocol ServiceContainer {
     var provider: ServiceProviderProtocol { get }
 }

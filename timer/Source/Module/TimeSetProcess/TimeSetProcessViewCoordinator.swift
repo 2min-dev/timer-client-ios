@@ -80,37 +80,16 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .timeSetProcess(timeSetItem, canSave: canSave):
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: canSave) else { return nil }
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, startIndex: nil, canSave: canSave)
+            return TimeSetProcessViewBuilder(with: dependency).build()
             
         case let .timeSetMemo(history):
-            let coordinator = TimeSetMemoViewCoordinator(provider: provider)
-            let reactor = TimeSetMemoViewReactor(history: history)
-            let viewController = TimeSetMemoViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetMemoViewBuilder.Dependency(provider: provider, history: history)
+            return TimeSetMemoViewBuilder(with: dependency).build()
             
         case let .timeSetEnd(history, canSave: canSave):
-            let coordinator = TimeSetEndViewCoordinator(provider: provider)
-            let reactor = TimeSetEndViewReactor(timeSetService: provider.timeSetService, history: history, canSave: canSave)
-            let viewController = TimeSetEndViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetEndViewBuilder.Dependency(provider: provider, history: history, canSave: canSave)
+            return TimeSetEndViewBuilder(with: dependency).build()
         }
     }
     

@@ -55,29 +55,12 @@ class IntroViewCoordinator: NSObject, ViewCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .main:
-            let coordinator = MainViewCoordinator(provider: provider)
-            let reactor = MainViewReactor(timeSetService: provider.timeSetService)
-            let viewController = MainViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            // set tab bar view controller initial index
-            viewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
-            
-            return (viewController, coordinator)
+            let dependency = MainViewBuilder.Dependency(provider: provider)
+            return MainViewBuilder(with: dependency).build()
             
         case .timeSetProcess:
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider)
+            return TimeSetProcessViewBuilder(with: dependency).build()
         }
     }
     

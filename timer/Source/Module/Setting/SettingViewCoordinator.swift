@@ -60,59 +60,24 @@ class SettingViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case .noticeList:
-            let coordinator = NoticeListViewCoordinator(provider: provider)
-            let reactor = NoticeListViewReactor(networkService: provider.networkService)
-            let viewController = NoticeListViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = NoticeListViewBuilder.Dependency(provider: provider)
+            return NoticeListViewBuilder(with: dependency).build()
             
         case .alarmSetting:
-            let coordinator = AlarmSettingViewCoordinator(provider: provider)
-            let reactor = AlarmSettingViewReactor(appService: provider.appService)
-            let viewController = AlarmSettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = AlarmSettingViewBuilder.Dependency(provider: provider)
+            return AlarmSettingViewBuilder(with: dependency).build()
             
         case .countdownSetting:
-            let coordinator = CountdownSettingViewCoordinator(provider: provider)
-            let reactor = CountdownSettingViewReactor(appService: provider.appService)
-            let viewController = CountdownSettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = CountdownSettingViewBuilder.Dependency(provider: provider)
+            return CountdownSettingViewBuilder(with: dependency).build()
             
         case .teamInfo:
-            let coordinator = TeamInfoViewCoordinator(provider: provider)
-            let reactor = TeamInfoViewReactor()
-            let viewController = TeamInfoViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TeamInfoViewBuilder.Dependency(provider: provider)
+            return TeamInfoViewBuilder(with: dependency).build()
             
         case .license:
-            let coordinator = OpenSourceLicenseViewCoordinator(provider: provider)
-            let reactor = OpenSourceLicenseViewReactor()
-            let viewController = OpenSourceLicenseViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = OpenSourceLicenseViewBuilder.Dependency(provider: provider)
+            return OpenSourceLicenseViewBuilder(with: dependency).build()
         }
     }
     

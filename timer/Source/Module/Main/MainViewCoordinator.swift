@@ -50,48 +50,20 @@ class MainViewCoordinator: ViewCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .productivity:
-            let coordinator = ProductivityViewCoordinator(provider: provider)
-            let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
-            let viewController = ProductivityViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = ProductivityViewBuilder.Dependency(provider: provider)
+            return ProductivityViewBuilder(with: dependency).build()
             
         case .local:
-            let coordinator = LocalTimeSetViewCoordinator(provider: provider)
-            let reactor = LocalTimeSetViewReactor(timeSetService: provider.timeSetService)
-            let viewController = LocalTimeSetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = LocalTimeSetViewBuilder.Dependency(provider: provider)
+            return LocalTimeSetViewBuilder(with: dependency).build()
             
         case .preset:
-            let coordinator = PresetViewCoordinator(provider: provider)
-            let reactor = PresetViewReactor(networkService: provider.networkService)
-            let viewController = PresetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = PresetViewBuilder.Dependency(provider: provider)
+            return PresetViewBuilder(with: dependency).build()
             
         case let .historyDetail(history):
-            let coordinator = HistoryDetailViewCoordinator(provider: provider)
-            let reactor = HistoryDetailViewReactor(timeSetService: provider.timeSetService, history: history)
-            let viewController = HistoryDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = HistoryDetailViewBuilder.Dependency(provider: provider, history: history)
+            return HistoryDetailViewBuilder(with: dependency).build()
         }
     }
     

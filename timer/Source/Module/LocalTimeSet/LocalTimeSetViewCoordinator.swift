@@ -57,59 +57,24 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetManage(type):
-            let coordinator = TimeSetManageViewCoordinator(provider: provider)
-            let reactor = TimeSetManageViewReactor(timeSetService: provider.timeSetService, type: type)
-            let viewController = TimeSetManageViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetManageViewBuilder.Dependency(provider: provider, type: type)
+            return TimeSetManageViewBuilder(with: dependency).build()
             
         case let .allTimeSet(type):
-            let coordinator = AllTimeSetViewCoordinator(provider: provider)
-            let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService, type: type)
-            let viewController = AllTimeSetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: type)
+            return AllTimeSetViewBuilder(with: dependency).build()
             
         case let .timeSetDetail(timeSetItem):
-            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: false)
-            let viewController = TimeSetDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: false)
+            return TimeSetDetailViewBuilder(with: dependency).build()
 
         case .history:
-            let coordinator = HistoryListViewCoordinator(provider: provider)
-            let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)
-            let viewController = HistoryListViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = HistoryListViewBuilder.Dependency(provider: provider)
+            return HistoryListViewBuilder(with: dependency).build()
             
         case .setting:
-            let coordinator = SettingViewCoordinator(provider: provider)
-            let reactor = SettingViewReactor(appService: provider.appService, networkService: provider.networkService)
-            let viewController = SettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = SettingViewBuilder.Dependency(provider: provider)
+            return SettingViewBuilder(with: dependency).build()
         }
     }
     

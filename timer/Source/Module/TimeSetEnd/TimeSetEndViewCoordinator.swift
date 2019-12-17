@@ -51,15 +51,8 @@ class TimeSetEndViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .timeSetEdit(timeSetItem):
-            let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
-            let viewController = TimeSetEditViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return (viewController, coordinator)
+            let dependency = TimeSetEditViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem)
+            return TimeSetEditViewBuilder(with: dependency).build()
         }
     }
     
