@@ -23,7 +23,7 @@ class TimerItem: Object, Codable, NSCopying, Recordable, Alertable {
         target + extra
     }
     var isEnded: Bool {
-        current >= end + extra
+        current >= end
     }
     
     enum CodingKeys: String, CodingKey {
