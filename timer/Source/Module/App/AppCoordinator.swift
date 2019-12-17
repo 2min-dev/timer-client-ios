@@ -34,7 +34,7 @@ class AppCoordinator: LaunchCoordinator, ServiceContainer {
         switch route {
         case .intro:
             // Wrap view to naviagtion container
-            presentingViewController = BaseNavicationController(rootViewController: presentingViewController)
+            presentingViewController = BaseNavigationController(rootViewController: presentingViewController)
             // Present intro view
             window.rootViewController = presentingViewController
             window.makeKeyAndVisible()

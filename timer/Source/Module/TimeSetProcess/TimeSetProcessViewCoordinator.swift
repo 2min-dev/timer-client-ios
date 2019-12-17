@@ -11,7 +11,7 @@ import UIKit
 class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss
+        case dismiss(animated: Bool)
         case home
         case timeSetProcess(TimeSetItem, canSave: Bool)
         case timeSetMemo(History)
@@ -20,7 +20,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - properties
     unowned var viewController: UIViewController!
-    var dismiss: ((UIViewController) -> Void)?
+    var dismiss: ((UIViewController, Bool) -> Void)?
     
     let provider: ServiceProviderProtocol
     
@@ -38,8 +38,8 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
         viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch route {
-        case .dismiss:
-            dismiss?(presentingViewController)
+        case let .dismiss(animated: animated):
+            dismiss?(presentingViewController, animated)
             
         case .home:
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
@@ -57,7 +57,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
 
         case .timeSetEnd(_):
             // Wrap view to navigation container
-            presentingViewController = BaseNavicationController(rootViewController: coordinator.viewController)
+            presentingViewController = BaseNavigationController(rootViewController: coordinator.viewController)
             fallthrough
             
         case .timeSetMemo(_):
@@ -80,7 +80,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
             return (viewController, self)
             
         case let .timeSetProcess(timeSetItem, canSave: canSave):
-            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, startIndex: nil, canSave: canSave)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: canSave)
             return TimeSetProcessViewBuilder(with: dependency).build()
             
         case let .timeSetMemo(history):

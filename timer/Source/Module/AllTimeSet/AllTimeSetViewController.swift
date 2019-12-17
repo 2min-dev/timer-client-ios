@@ -159,7 +159,7 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss)
+            coordinator.present(for: .dismiss(animated: true))
             
         default:
             break

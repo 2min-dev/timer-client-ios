@@ -11,14 +11,14 @@ import UIKit
 class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss
+        case dismiss(animated: Bool)
         case productivity
         case detail(History)
     }
     
     // MARK: - properties
     unowned var viewController: UIViewController!
-    var dismiss: ((UIViewController) -> Void)?
+    var dismiss: ((UIViewController, Bool) -> Void)?
     
     let provider: ServiceProviderProtocol
     
@@ -34,8 +34,8 @@ class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
-        case .dismiss:
-            dismiss?(presentingViewController)
+        case let .dismiss(animated: animated):
+            dismiss?(presentingViewController, animated)
             
         case .productivity:
             guard let mainViewController = viewController.navigationController?.viewControllers.first as? MainViewController else { return nil }

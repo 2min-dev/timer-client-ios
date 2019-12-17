@@ -279,13 +279,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
-        Observable.combineLatest(
-            reactor.state
-                .map { $0.timeSetState }
-                .distinctUntilChanged(),
-            rx.viewWillAppear
-                .take(1)
-            ).withLatestFrom(reactor.state.map { $0.canTimeSetSave }) { ($0.0, $1) }
+        reactor.state
+            .map { $0.timeSetState }
+            .distinctUntilChanged()
+            .withLatestFrom(reactor.state.map { $0.canTimeSetSave }) { ($0, $1) }
             .map { ($0.0, reactor.timeSet.history, $0.1) }
             .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1, canSave: $2) })
             .disposed(by: self.disposeBag)
@@ -327,7 +324,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
         viewController.rx.close
             .subscribe(onNext: { [weak self] _ in
                 self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self?.coordinator.present(for: .dismiss)
+                self?.coordinator.present(for: .dismiss(animated: false))
             })
             .disposed(by: disposeBag)
         

@@ -15,7 +15,7 @@ class TimeSetProcessViewBuilder: Builder {
         let startIndex: Int?
         let canSave: Bool?
         
-        init(provider: ServiceProviderProtocol, timeSetItem: TimeSetItem, startIndex: Int?, canSave: Bool) {
+        init(provider: ServiceProviderProtocol, timeSetItem: TimeSetItem, startIndex: Int = 0, canSave: Bool) {
             self.provider = provider
             self.timeSetItem = timeSetItem
             self.startIndex = startIndex

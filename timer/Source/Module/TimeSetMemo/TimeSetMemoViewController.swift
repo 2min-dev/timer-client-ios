@@ -51,6 +51,10 @@ class TimeSetMemoViewController: BaseHeaderViewController, ViewControllable, Vie
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         memoTextView.rx.text
             .map { !$0!.isEmpty }
             .bind(to: memoHintLabel.rx.isHidden)
@@ -115,6 +119,17 @@ class TimeSetMemoViewController: BaseHeaderViewController, ViewControllable, Vie
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: CommonHeader.Action) {
+        switch action {
+        case .close:
+            coordinator.present(for: .dismiss(animated: true))
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get memo length attributed string
     private func getMemoLengthAttributedString(length: Int, isExceeded: Bool) -> NSAttributedString {

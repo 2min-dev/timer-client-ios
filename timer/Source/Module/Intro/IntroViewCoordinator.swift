@@ -18,7 +18,7 @@ class IntroViewCoordinator: NSObject, ViewCoordinator, ServiceContainer {
     
     // MARK: - properties
     unowned var viewController: UIViewController!
-    var dismiss: ((UIViewController) -> Void)?
+    var dismiss: ((UIViewController, Bool) -> Void)?
     
     let provider: ServiceProviderProtocol
     

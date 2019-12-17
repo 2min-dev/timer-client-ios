@@ -23,21 +23,21 @@ protocol LaunchCoordinatorType {
 
 protocol ViewCoordinatorType {
     var viewController: UIViewController! { get }
-    var dismiss: ((UIViewController) -> Void)? { get set }
+    var dismiss: ((UIViewController, Bool) -> Void)? { get set }
 }
 
 extension ViewCoordinatorType {
-    var popViewController: (UIViewController) -> Void {
+    var popViewController: (UIViewController, Bool) -> Void {
         return {
             guard var viewControllers = $0.navigationController?.viewControllers,
                 let index = viewControllers.firstIndex(of: $0) else { return }
             viewControllers.remove(at: index)
-            $0.navigationController?.setViewControllers(viewControllers, animated: true)
+            $0.navigationController?.setViewControllers(viewControllers, animated: $1)
         }
     }
     
-    var dismissViewController: (UIViewController) -> Void {
-        return { $0.dismiss(animated: true) }
+    var dismissViewController: (UIViewController, Bool) -> Void {
+        return { $0.dismiss(animated: $1) }
     }
 }
 

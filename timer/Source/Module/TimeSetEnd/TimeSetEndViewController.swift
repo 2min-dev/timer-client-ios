@@ -54,6 +54,10 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         memoTextView.rx.text
             .map { !$0!.isEmpty }
             .bind(to: memoHintLabel.rx.isHidden)
@@ -114,7 +118,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         overtimeButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss(animated: true)) })
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
@@ -124,7 +128,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         restartButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss(animated: true)) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -169,6 +173,18 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .filter { $0 }
             .subscribe(onNext: { [weak self] _ in self?.showTimeSetSavedToast() })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: CommonHeader.Action) {
+        switch action {
+        case .close:
+            coordinator.present(for: .dismiss(animated: true))
+            
+        default:
+            break
+        }
     }
     
     // MARK: - state method

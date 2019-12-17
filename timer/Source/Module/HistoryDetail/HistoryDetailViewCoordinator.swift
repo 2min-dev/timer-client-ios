@@ -11,14 +11,14 @@ import UIKit
 class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss
+        case dismiss(animated: Bool)
         case timeSetEdit(TimeSetItem)
         case timeSetProcess(TimeSetItem)
     }
     
     // MARK: - properties
     unowned var viewController: UIViewController!
-    var dismiss: ((UIViewController) -> Void)?
+    var dismiss: ((UIViewController, Bool) -> Void)?
     
     let provider: ServiceProviderProtocol
     
@@ -34,8 +34,8 @@ class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
-        case .dismiss:
-            dismiss?(presentingViewController)
+        case let .dismiss(animated: animated):
+            dismiss?(presentingViewController, animated)
             
         case .timeSetProcess(_):
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
@@ -62,7 +62,7 @@ class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
             return TimeSetEditViewBuilder(with: dependency).build()
             
         case let .timeSetProcess(timeSetItem):
-            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, startIndex: nil, canSave: true)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
             return TimeSetProcessViewBuilder(with: dependency).build()
         }
     }

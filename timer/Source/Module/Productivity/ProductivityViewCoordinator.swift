@@ -20,7 +20,7 @@ class ProductivityViewCoordinator: ViewCoordinator, ServiceContainer {
 
     // MARK: - properties
     unowned var viewController: UIViewController!
-    var dismiss: ((UIViewController) -> Void)?
+    var dismiss: ((UIViewController, Bool) -> Void)?
     
     let provider: ServiceProviderProtocol
     
@@ -55,7 +55,7 @@ class ProductivityViewCoordinator: ViewCoordinator, ServiceContainer {
             return TimeSetSaveViewBuilder(with: dependency).build()
             
         case let .timeSetProcess(timeSetItem):
-            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, startIndex: nil, canSave: true)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
             return TimeSetProcessViewBuilder(with: dependency).build()
             
         case .history:

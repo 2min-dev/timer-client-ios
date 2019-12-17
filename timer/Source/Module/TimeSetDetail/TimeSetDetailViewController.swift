@@ -197,7 +197,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
     func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss)
+            coordinator.present(for: .dismiss(animated: true))
             
         case .bookmark:
             reactor?.action.onNext(.toggleBookmark)

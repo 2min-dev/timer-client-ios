@@ -119,7 +119,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss(animated: true)) })
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
@@ -208,7 +208,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss)
+            coordinator.present(for: .dismiss(animated: true))
             
         default:
             break

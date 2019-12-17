@@ -11,13 +11,13 @@ import UIKit
 class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss
+        case dismiss(animated: Bool)
         case noticeDetail(Notice)
     }
     
     // MARK: - properties
     unowned var viewController: UIViewController!
-    var dismiss: ((UIViewController) -> Void)?
+    var dismiss: ((UIViewController, Bool) -> Void)?
     
     let provider: ServiceProviderProtocol
     
@@ -33,8 +33,8 @@ class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
-        case .dismiss:
-            dismiss?(presentingViewController)
+        case let .dismiss(animated: animated):
+            dismiss?(presentingViewController, animated)
             
         case .noticeDetail(_):
             coordinator.dismiss = popViewController

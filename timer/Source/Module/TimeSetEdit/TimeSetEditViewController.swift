@@ -392,7 +392,7 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
                 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self.coordinator.present(for: .dismiss)
+                self.coordinator.present(for: .dismiss(animated: true))
             })
             .build()
         // Present warning alert view controller

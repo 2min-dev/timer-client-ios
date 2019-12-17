@@ -33,4 +33,3 @@ class OpenSourceLicenseViewBuilder: Builder {
         return (viewController, coordinator)
     }
 }
-
