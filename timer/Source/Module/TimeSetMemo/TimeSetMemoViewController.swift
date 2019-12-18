@@ -123,7 +123,7 @@ class TimeSetMemoViewController: BaseHeaderViewController, ViewControllable, Vie
     func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .close:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break

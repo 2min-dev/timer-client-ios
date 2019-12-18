@@ -11,7 +11,7 @@ import UIKit
 class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss(animated: Bool)
+        case dismiss
         case home
         case timeSetProcess(TimeSetItem, canSave: Bool)
         case timeSetMemo(History)
@@ -31,19 +31,19 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         var presentingViewController = controller
         // Set enable that navigation controller pop gesture recognizer before present
         viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch route {
-        case let .dismiss(animated: animated):
+        case .dismiss:
             dismiss?(presentingViewController, animated)
             
         case .home:
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
-            viewController.navigationController?.setViewControllers([mainViewController], animated: true)
+            viewController.navigationController?.setViewControllers([mainViewController], animated: animated)
         
         case .timeSetProcess(_):
             guard var viewControllers = viewController.navigationController?.viewControllers else { return nil }
@@ -53,7 +53,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
             
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            viewController.navigationController?.setViewControllers(viewControllers, animated: false)
+            viewController.navigationController?.setViewControllers(viewControllers, animated: animated)
 
         case .timeSetEnd(_):
             // Wrap view to navigation container
@@ -65,7 +65,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
             
             // Set dismiss handler
             coordinator.dismiss = dismissViewController
-            viewController.present(presentingViewController, animated: true)
+            viewController.present(presentingViewController, animated: animated)
         }
         
         return controller

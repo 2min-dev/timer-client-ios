@@ -76,7 +76,7 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
         noticeTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.noticeTableView.deselectRow(at: $0, animated: true) })
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .noticeDetail($0)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .noticeDetail($0), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -99,7 +99,7 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break

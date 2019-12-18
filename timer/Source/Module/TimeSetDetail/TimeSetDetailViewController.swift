@@ -82,14 +82,14 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
             .disposed(by: disposeBag)
         
         editButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetItem))})
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetItem), animated: true)})
             .disposed(by: disposeBag)
         
         startButton.rx.tap
             .withLatestFrom(reactor.state
                 .map { $0.selectedIndex }
                 .distinctUntilChanged())
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem, startAt: $0, canSave: false)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem, startAt: $0, canSave: false), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -197,7 +197,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
     func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         case .bookmark:
             reactor?.action.onNext(.toggleBookmark)

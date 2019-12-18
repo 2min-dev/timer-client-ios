@@ -93,7 +93,7 @@ class PresetViewController: BaseHeaderViewController, ViewControllable, View {
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
             .subscribe(onNext: { [weak self] in
                 let timeSetItem = $1[$0.section].items[$0.item].timeSetItem
-                _ = self?.coordinator.present(for: .timeSetDetail(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetDetail(timeSetItem), animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -125,10 +125,10 @@ class PresetViewController: BaseHeaderViewController, ViewControllable, View {
     func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            _ = coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            _ = coordinator.present(for: .setting, animated: true)
             
         default:
             break

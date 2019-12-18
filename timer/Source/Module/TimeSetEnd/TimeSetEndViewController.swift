@@ -118,7 +118,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         overtimeButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss(animated: true)) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss, animated: true) })
             .disposed(by: disposeBag)
         
         saveButton.rx.tap
@@ -128,7 +128,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         restartButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss(animated: true)) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss, animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -180,7 +180,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
     func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .close:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break
@@ -227,7 +227,7 @@ class TimeSetEndViewController: BaseHeaderViewController, ViewControllable, View
         guard let timeSetItem = reactor?.timeSetItem else { return }
         Toast(content: "toast_time_set_saved_title".localized,
               task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
-                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem), animated: true)
         }).show(animated: true, withDuration: 3)
     }
     

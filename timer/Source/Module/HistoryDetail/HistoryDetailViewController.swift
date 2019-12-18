@@ -122,7 +122,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         startButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let timeSetItem = reactor.timeSetItem else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem), animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -257,7 +257,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break
@@ -319,7 +319,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         guard let timeSetItem = reactor?.timeSetItem else { return }
         Toast(content: "toast_time_set_saved_title".localized,
               task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
-                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem), animated: true)
         }).show(animated: true, withDuration: 3)
     }
     

@@ -32,7 +32,7 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
         
@@ -40,7 +40,7 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         case .timeSetManage(_):
             // Set dismiss handler
             coordinator.dismiss = dismissViewController
-            viewController.present(presentingViewController, animated: true)
+            viewController.present(presentingViewController, animated: animated)
              
         case .allTimeSet(_),
              .timeSetDetail(_),
@@ -48,7 +48,7 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
              .setting:
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
         return controller

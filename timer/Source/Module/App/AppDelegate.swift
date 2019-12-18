@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Present intro view
         let appCoordinator: AppCoordinator = AppCoordinator(window: window!, provider: provider)
-        appCoordinator.present(for: .intro)
+        appCoordinator.present(for: .intro, animated: true)
         
         return true
     }

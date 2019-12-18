@@ -148,7 +148,7 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
             .distinctUntilChanged()
             .map { $0.value }
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in self?.coordinator.present(for: .dismiss(animated: true)) })
+            .subscribe(onNext: { [weak self] _ in self?.coordinator.present(for: .dismiss, animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -156,7 +156,7 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
     func handleHeaderAction(_ action: ConfirmHeader.Action) {
         switch action {
         case .cancel:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         case .confirm:
             reactor?.action.onNext(.apply)

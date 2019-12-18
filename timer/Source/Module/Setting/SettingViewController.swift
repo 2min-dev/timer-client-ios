@@ -75,7 +75,7 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
         settingTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.settingTableView.deselectRow(at: $0, animated: true) })
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route, animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -100,7 +100,7 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         case .additional:
             guard let isLatestVersion = reactor?.currentState.isLatestVersion else { return }

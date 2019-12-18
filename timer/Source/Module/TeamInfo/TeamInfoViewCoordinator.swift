@@ -11,7 +11,7 @@ import UIKit
 class TeamInfoViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
-        case dismiss(animated: Bool)
+        case dismiss
     }
     
 	// MARK: - properties
@@ -27,12 +27,12 @@ class TeamInfoViewCoordinator: ViewCoordinator, ServiceContainer {
 
     // MARK: - presentation
     @discardableResult
-	func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, _)? = get(for: route) else { return nil }
         let presentingViewController = controller
         
         switch route {
-        case let .dismiss(animated: animated):
+        case .dismiss:
             dismiss?(presentingViewController, animated)
         }
         

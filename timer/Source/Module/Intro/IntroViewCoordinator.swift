@@ -29,7 +29,7 @@ class IntroViewCoordinator: NSObject, ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
 
@@ -39,14 +39,14 @@ class IntroViewCoordinator: NSObject, ViewCoordinator, ServiceContainer {
         switch route {
         case .main:
             // Present main view
-            viewController.navigationController?.setViewControllers([presentingViewController], animated: true)
+            viewController.navigationController?.setViewControllers([presentingViewController], animated: animated)
             
         case .timeSetProcess:
             guard let mainViewController = get(for: .main)?.controller else { return nil }
             
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: true)
+            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: animated)
         }
         
         return controller

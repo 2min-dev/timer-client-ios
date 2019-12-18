@@ -273,12 +273,12 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
         
         reactor.state
             .filter { $0.shouldSave }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         reactor.state
             .filter { $0.shouldStart }
-            .do(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem)) })
+            .do(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem), animated: true) })
             .observeOn(MainScheduler.asyncInstance)
             .map { _ in Reactor.Action.clearTimeSet }
             .bind(to: reactor.action)
@@ -313,10 +313,10 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
     func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            _ = coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            _ = coordinator.present(for: .setting, animated: true)
             
         default:
             break

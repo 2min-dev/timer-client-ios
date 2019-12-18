@@ -29,7 +29,7 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
         
@@ -39,7 +39,7 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
              .setting:
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            self.viewController.navigationController?.pushViewController(presentingViewController, animated: true)
+            self.viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
         return controller

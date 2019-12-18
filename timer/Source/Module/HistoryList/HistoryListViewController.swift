@@ -33,7 +33,7 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
         if let self = self {
             // Bind create button action
             supplementaryView.createButton.rx.tap
-                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .productivity) })
+                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .productivity, animated: true) })
                 .disposed(by: self.disposeBag)
         }
         
@@ -87,7 +87,7 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
             .withLatestFrom(reactor.state.map { $0.sections },
                             resultSelector: { $1.first?.items[$0.item] })
             .compactMap { $0 }
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .detail($0.history)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .detail($0.history), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -103,7 +103,7 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break

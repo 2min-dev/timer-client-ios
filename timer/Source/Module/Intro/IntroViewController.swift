@@ -61,10 +61,10 @@ class IntroViewController: BaseViewController, ViewControllable, View {
     private func presentByState(_ state: IntroViewReactor.IntroState) {
         switch state {
         case .done:
-            _ = coordinator.present(for: .main)
+            _ = coordinator.present(for: .main, animated: true)
             
         case .running:
-            _ = coordinator.present(for: .timeSetProcess)
+            _ = coordinator.present(for: .timeSetProcess, animated: true)
             
         case .none:
             break

@@ -104,7 +104,7 @@ class NoticeDetailViewController: BaseHeaderViewController, ViewControllable, Vi
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break

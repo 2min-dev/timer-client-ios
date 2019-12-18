@@ -27,7 +27,7 @@ class AppCoordinator: LaunchCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard let (controller, _) = get(for: route) else { return nil }
         
         var presentingViewController = controller

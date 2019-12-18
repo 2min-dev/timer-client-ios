@@ -108,13 +108,13 @@ class MainViewController: UITabBarController, ViewControllable, View {
                 case .cancel:
                     Toast(content: "toast_time_set_end_cancel_title".localized,
                           task: ToastTask(title: "toast_task_move_title".localized, handler: { [weak self] in
-                        _ = self?.coordinator.present(for: .historyDetail(history))
+                            _ = self?.coordinator.present(for: .historyDetail(history), animated: true)
                     })).show(animated: true, withDuration: 3)
                     
                 case .overtime:
                     Toast(content: "toast_time_set_end_overtime_title".localized,
                           task: ToastTask(title: "toast_task_memo_title".localized, handler: {
-                        _ = self?.coordinator.present(for: .historyDetail(history))
+                            _ = self?.coordinator.present(for: .historyDetail(history), animated: true)
                     })).show(animated: true, withDuration: 3)
                     
                 default:

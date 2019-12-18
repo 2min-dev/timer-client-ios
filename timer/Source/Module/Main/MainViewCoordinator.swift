@@ -30,7 +30,7 @@ class MainViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
         
@@ -38,7 +38,7 @@ class MainViewCoordinator: ViewCoordinator, ServiceContainer {
         case .historyDetail(_):
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
             
         default:
             break

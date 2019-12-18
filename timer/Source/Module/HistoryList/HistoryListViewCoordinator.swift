@@ -11,7 +11,7 @@ import UIKit
 class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss(animated: Bool)
+        case dismiss
         case productivity
         case detail(History)
     }
@@ -29,24 +29,24 @@ class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
         
         switch route {
-        case let .dismiss(animated: animated):
+        case .dismiss:
             dismiss?(presentingViewController, animated)
             
         case .productivity:
             guard let mainViewController = viewController.navigationController?.viewControllers.first as? MainViewController else { return nil }
             // Select productivity tab
             mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
-            viewController.navigationController?.setViewControllers([mainViewController], animated: true)
+            viewController.navigationController?.setViewControllers([mainViewController], animated: animated)
             
         case .detail:
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            viewController.navigationController?.pushViewController(presentingViewController, animated: true)
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
         return controller

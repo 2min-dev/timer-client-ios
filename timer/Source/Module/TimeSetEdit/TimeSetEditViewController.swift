@@ -256,7 +256,7 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
         
         reactor.state
             .filter { $0.shouldSave }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // Scroll to selected badge when timer option view visible
@@ -271,7 +271,7 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
             .map { $0.shouldDismiss }
             .distinctUntilChanged()
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home) })
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home, animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -392,7 +392,7 @@ class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, Vie
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
                 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self.coordinator.present(for: .dismiss(animated: true))
+                self.coordinator.present(for: .dismiss, animated: true)
             })
             .build()
         // Present warning alert view controller

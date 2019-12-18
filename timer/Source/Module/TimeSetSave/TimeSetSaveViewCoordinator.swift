@@ -11,7 +11,7 @@ import UIKit
 class TimeSetSaveViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case dismiss(animated: Bool)
+        case dismiss
         case timeSetDetail(TimeSetItem)
     }
     
@@ -28,12 +28,12 @@ class TimeSetSaveViewCoordinator: ViewCoordinator, ServiceContainer {
     
     // MARK: - presentation
     @discardableResult
-    func present(for route: Route) -> UIViewController? {
+    func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
         
         switch route {
-        case let .dismiss(animated: animated):
+        case .dismiss:
             dismiss?(presentingViewController, animated)
             
         case .timeSetDetail(_):
@@ -41,7 +41,7 @@ class TimeSetSaveViewCoordinator: ViewCoordinator, ServiceContainer {
             
             // Set dismiss handler
             coordinator.dismiss = popViewController
-            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: true)
+            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: animated)
         }
         
         return controller

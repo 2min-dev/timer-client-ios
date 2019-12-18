@@ -13,7 +13,7 @@ protocol Routable {
     associatedtype Route
     
     @discardableResult
-    func present(for route: Route) -> UIViewController?
+    func present(for route: Route, animated: Bool) -> UIViewController?
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)?
 }
 

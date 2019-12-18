@@ -119,7 +119,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss(animated: true)) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss, animated: true) })
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
@@ -195,11 +195,10 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
 
         // Time set saved
         reactor.state
-            .map { $0.savedTimeSet }
+            .compactMap { $0.savedTimeSet }
             .distinctUntilChanged { $0 === $1 }
-            .filter { $0 != nil }
             .observeOn(MainScheduler.instance) // Ignore rx error
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0), animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -208,7 +207,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, Vie
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break

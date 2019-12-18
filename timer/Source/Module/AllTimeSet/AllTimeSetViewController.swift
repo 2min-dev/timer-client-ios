@@ -136,7 +136,7 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
         
         timeSetCollectionView.rx.itemSelected
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($1[$0.section].items[$0.item].timeSetItem)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($1[$0.section].items[$0.item].timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -159,7 +159,7 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     func handleHeaderAction(_ action: Header.Action) {
         switch action {
         case .back:
-            coordinator.present(for: .dismiss(animated: true))
+            coordinator.present(for: .dismiss, animated: true)
             
         default:
             break
