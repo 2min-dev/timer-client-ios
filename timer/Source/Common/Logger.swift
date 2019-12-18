@@ -50,6 +50,7 @@ class Logger {
     static func error(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
+        let tag = tag.isEmpty ? tag : "[\(tag)] "
         SwiftyBeaver.error("\(className).\(function):\(line) \(tag)\(message)")
         #endif
     }

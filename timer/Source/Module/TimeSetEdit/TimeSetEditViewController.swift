@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class TimeSetEditViewController: BaseHeaderViewController, View {
+class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
@@ -92,6 +92,10 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
 
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         canTimeSetStart
             .distinctUntilChanged()
             .bind(to: confirmButton.rx.isEnabled)
@@ -252,7 +256,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         
         reactor.state
             .filter { $0.shouldSave }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // Scroll to selected badge when timer option view visible
@@ -267,7 +271,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .map { $0.shouldDismiss }
             .distinctUntilChanged()
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home) })
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home, animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -290,7 +294,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     
     // MARK: - action method
     /// - warning: Don't call `super.handleHeaderAction()` to override default action
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         
         switch action {
@@ -388,7 +392,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
                 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self.dismissOrPopViewController(animated: true)
+                self.coordinator.present(for: .dismiss, animated: true)
             })
             .build()
         // Present warning alert view controller

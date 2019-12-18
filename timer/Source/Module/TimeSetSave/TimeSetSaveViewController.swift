@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class TimeSetSaveViewController: BaseHeaderViewController, View {
+class TimeSetSaveViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constants
     private let MAX_TITLE_LENGTH: Int = 20
     
@@ -59,6 +59,10 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
     // MARK: - bine
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         titleTextField.rx.textChanged
             .compactMap { $0 }
@@ -115,7 +119,7 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.dismissOrPopViewController(animated: true) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .dismiss, animated: true) })
             .disposed(by: disposeBag)
         
         confirmButton.rx.tap
@@ -191,12 +195,23 @@ class TimeSetSaveViewController: BaseHeaderViewController, View {
 
         // Time set saved
         reactor.state
-            .map { $0.savedTimeSet }
+            .compactMap { $0.savedTimeSet }
             .distinctUntilChanged { $0 === $1 }
-            .filter { $0 != nil }
             .observeOn(MainScheduler.instance) // Ignore rx error
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0!)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($0), animated: true) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

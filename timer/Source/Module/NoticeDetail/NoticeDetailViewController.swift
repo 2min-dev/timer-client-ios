@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class NoticeDetailViewController: BaseHeaderViewController, View {
+class NoticeDetailViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var noticeDetailView: NoticeDetailView { return view as! NoticeDetailView }
     
@@ -45,6 +45,10 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
     // MARK: - bine
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         noticeTextView.rx.setDelegate(self).disposed(by: disposeBag)
     }
@@ -96,6 +100,17 @@ class NoticeDetailViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get notice attributed text from string
     private func getNoticeAttributedText(_ text: String) -> NSAttributedString {

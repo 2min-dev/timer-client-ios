@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class HistoryDetailViewController: BaseHeaderViewController, View {
+class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constants
     private let MAX_MEMO_LENGTH: Int = 1000
     
@@ -78,6 +78,11 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         scrollView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -117,7 +122,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         startButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let timeSetItem = reactor.timeSetItem else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem), animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -248,6 +253,17 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Show time set end state alert
     private func showTimeSetEndStateAlert(_ endState: History.EndState, index: Int, remainedTime: TimeInterval, overtime: TimeInterval) {
@@ -303,7 +319,7 @@ class HistoryDetailViewController: BaseHeaderViewController, View {
         guard let timeSetItem = reactor?.timeSetItem else { return }
         Toast(content: "toast_time_set_saved_title".localized,
               task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
-                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem), animated: true)
         }).show(animated: true, withDuration: 3)
     }
     

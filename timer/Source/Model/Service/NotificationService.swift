@@ -50,7 +50,7 @@ class NotificationService: BaseService, NotificationServiceProtocol {
                 }
                 
                 // Create notification trigger and request
-                let delay = timer.end + timer.extra - timer.current
+                let delay = timer.end - timer.current
                 guard baseTime + delay > 0 else { return }
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: baseTime + delay, repeats: false)

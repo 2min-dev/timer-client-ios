@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class PresetViewController: BaseHeaderViewController, View {
+class PresetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var presetView: PresetView { view as! PresetView }
     
@@ -75,6 +75,10 @@ class PresetViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -89,7 +93,7 @@ class PresetViewController: BaseHeaderViewController, View {
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
             .subscribe(onNext: { [weak self] in
                 let timeSetItem = $1[$0.section].items[$0.item].timeSetItem
-                _ = self?.coordinator.present(for: .timeSetDetail(timeSetItem))
+                _ = self?.coordinator.present(for: .timeSetDetail(timeSetItem), animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -118,15 +122,13 @@ class PresetViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            _ = coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            _ = coordinator.present(for: .setting, animated: true)
             
         default:
             break

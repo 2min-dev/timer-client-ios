@@ -10,7 +10,7 @@ import RxSwift
 import RxDataSources
 import ReactorKit
 
-class SettingViewController: BaseHeaderViewController, View {
+class SettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var settingView: SettingView { return view as! SettingView }
     
@@ -54,6 +54,11 @@ class SettingViewController: BaseHeaderViewController, View {
     // MARK: - bind
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         settingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -70,7 +75,7 @@ class SettingViewController: BaseHeaderViewController, View {
         settingTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.settingTableView.deselectRow(at: $0, animated: true) })
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route, animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -92,10 +97,11 @@ class SettingViewController: BaseHeaderViewController, View {
     
     // MARK: - action
     /// Handle header button tap action according to button type
-    override func handleHeaderAction(_ action: Header.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: Header.Action) {
         switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
         case .additional:
             guard let isLatestVersion = reactor?.currentState.isLatestVersion else { return }
             if !isLatestVersion {

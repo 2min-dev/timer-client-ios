@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class TimeSetProcessViewController: BaseHeaderViewController, View {
+class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var timeSetProcessView: TimeSetProcessView { view as! TimeSetProcessView }
     
@@ -116,7 +116,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         memoButton.rx.tap
             .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
             .subscribe(onNext: { [weak self] in
-                guard let viewController = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.history)) as? TimeSetMemoViewController else { return }
+                guard let viewController = self?.coordinator.present(for: .timeSetMemo(reactor.timeSet.history), animated: true) as? TimeSetMemoViewController else { return }
                 self?.bind(memo: viewController)
             })
             .disposed(by: disposeBag)
@@ -279,13 +279,10 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
             .bind(to: stateLabel.rx.attributedText)
             .disposed(by: disposeBag)
         
-        Observable.combineLatest(
-            reactor.state
-                .map { $0.timeSetState }
-                .distinctUntilChanged(),
-            rx.viewWillAppear
-                .take(1)
-            ).withLatestFrom(reactor.state.map { $0.canTimeSetSave }) { ($0.0, $1) }
+        reactor.state
+            .map { $0.timeSetState }
+            .distinctUntilChanged()
+            .withLatestFrom(reactor.state.map { $0.canTimeSetSave }) { ($0, $1) }
             .map { ($0.0, reactor.timeSet.history, $0.1) }
             .subscribe(onNext: { [weak self] in self?.updateLayoutByTimeSetState($0, history: $1, canSave: $2) })
             .disposed(by: self.disposeBag)
@@ -309,13 +306,12 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         guard let reactor = reactor else { return }
         
         // Close
-        viewController.rx.tapHeader
-            .filter { $0 == .close }
+        viewController.rx.close
             .withLatestFrom(reactor.state.map { $0.timeSetState })
             .filter { $0 == .end }
             .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
             .subscribe(onNext: { [weak self] in
-                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history, canSave: $0)) as? TimeSetEndViewController else { return }
+                guard let viewController = self?.coordinator.present(for: .timeSetEnd(reactor.timeSet.history, canSave: $0), animated: true) as? TimeSetEndViewController else { return }
                 self?.bind(end: viewController)
             })
             .disposed(by: disposeBag)
@@ -325,25 +321,24 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         guard let reactor = reactor else { return }
         
         // Close
-        viewController.rx.tapHeader
-            .filter { $0 == .close }
+        viewController.rx.close
             .subscribe(onNext: { [weak self] _ in
                 self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self?.dismissOrPopViewController(animated: false)
+                self?.coordinator.present(for: .dismiss, animated: false)
             })
             .disposed(by: disposeBag)
         
         // Overtime record
-        viewController.rx.tapOvertime
+        viewController.rx.overtime
             .do(onNext: { [weak self] in self?.bubbleAlert = nil }) // Remove alert
             .map { .startOvertimeRecord }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // Restart
-        viewController.rx.tapRestart
+        viewController.rx.restart
             .withLatestFrom(reactor.state.map { $0.canTimeSetSave })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin, canSave: $0)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.origin, canSave: $0), animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -517,7 +512,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, View {
         case .end:
             // Present end view
             if history.endState == .normal {
-                guard let viewController = coordinator.present(for: .timeSetEnd(history, canSave: canSave)) as? TimeSetEndViewController else { return }
+                guard let viewController = coordinator.present(for: .timeSetEnd(history, canSave: canSave), animated: true) as? TimeSetEndViewController else { return }
                 bind(end: viewController)
             }
             

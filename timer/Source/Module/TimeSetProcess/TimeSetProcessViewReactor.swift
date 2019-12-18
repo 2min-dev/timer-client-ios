@@ -169,7 +169,7 @@ class TimeSetProcessViewReactor: Reactor {
         
         // Get initial state
         let timer = timeSet.item.timers[index]
-        let time = timer.end + timer.extra - timer.current
+        let time = timer.end - timer.current
         
         // Create seciont datasource
         let dataSource = TimerBadgeDataSource(timers: timeSet.item.timers.toArray(), index: index)
@@ -220,10 +220,10 @@ class TimeSetProcessViewReactor: Reactor {
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
         timeSetItem: TimeSetItem,
-        startIndex: Int = 0,
+        startIndex: Int,
         canSave: Bool
     ) {
-        guard startIndex >= 0 && startIndex < timeSetItem.timers.count else {
+        guard (0 ..< timeSetItem.timers.count).contains(startIndex) else {
             Logger.error("can't start from \(startIndex) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
             return nil
         }
@@ -468,6 +468,7 @@ class TimeSetProcessViewReactor: Reactor {
         return .empty()
     }
     
+    // FIXME: refactor method to reduce repeated `+ extra` assignment
     private func actionAddExtraTime(_ extra: TimeInterval) -> Observable<Mutation> {
         let state = currentState
         guard state.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME else { return .empty() }

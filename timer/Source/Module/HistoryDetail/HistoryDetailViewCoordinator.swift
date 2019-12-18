@@ -8,64 +8,66 @@
 
 import UIKit
 
-class HistoryDetailViewCoordinator: CoordinatorProtocol {
+class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case timeSetEdit(TimeSetItem)
         case timeSetProcess(TimeSetItem)
     }
     
     // MARK: - properties
-    weak var viewController: UIViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
+            
         case .timeSetProcess(_):
-            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
-                return nil
-            }
-            let viewControllers = [rootViewController, viewController]
-            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: animated)
             
         case .timeSetEdit(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            self.viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case let .timeSetEdit(timeSetItem):
-            let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
-            let viewController = TimeSetEditViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetEditViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem)
+            return TimeSetEditViewBuilder(with: dependency).build()
             
         case let .timeSetProcess(timeSetItem):
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: true) else { return nil }
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
+            return TimeSetProcessViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

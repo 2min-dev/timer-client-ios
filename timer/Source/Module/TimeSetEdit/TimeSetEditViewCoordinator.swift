@@ -8,52 +8,63 @@
 
 import UIKit
 
-class TimeSetEditViewCoordinator: CoordinatorProtocol {
+class TimeSetEditViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case home
         case timeSetSave(TimeSetItem)
     }
     
     // MARK: - properties
-    weak var viewController: TimeSetEditViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
+            
         case .home:
-            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+            guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
+            viewController.navigationController?.setViewControllers([mainViewController], animated: animated)
             
         case .timeSetSave(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case .home:
-            return self.viewController.navigationController?.viewControllers.first
+            return (viewController, self)
             
         case let .timeSetSave(timeSetItem):
-            let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-            let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem)
-            let viewController = TimeSetSaveViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetSaveViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem)
+            return TimeSetSaveViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

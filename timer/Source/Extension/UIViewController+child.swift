@@ -9,37 +9,6 @@
 import UIKit
 
 extension UIViewController {
-    var isModal: Bool {
-        if let index = navigationController?.viewControllers.firstIndex(of: self), index > 0 {
-            return false
-        }
-        
-        if presentingViewController != nil {
-            return true
-        }
-        
-        if navigationController?.presentingViewController?.presentedViewController == navigationController {
-            return true
-        }
-        
-        if tabBarController?.presentingViewController is UITabBarController {
-            return true
-        }
-        
-        return false
-    }
-    
-    func dismissOrPopViewController(animated: Bool, completion: (() -> Void)? = nil) {
-        if isModal {
-            dismiss(animated: animated, completion: completion)
-        } else {
-            guard var viewControllers = navigationController?.viewControllers,
-                let index = navigationController?.viewControllers.firstIndex(of: self) else { return }
-            viewControllers.remove(at: index)
-            navigationController?.setViewControllers(viewControllers, animated: animated)
-        }
-    }
-    
     func addChild(_ viewController: UIViewController, in view: UIView) {
         addChild(viewController)
         

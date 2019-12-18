@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class TimeSetDetailViewController: BaseHeaderViewController, View {
+class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constraints
     private let FOOTER_BUTTON_EDIT = 0
     private let FOOTER_BUTTON_START = 1
@@ -57,6 +57,14 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
         super.viewDidLoad()
     }
     
+    override func bind() {
+        super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+    }
+    
     // MARK: - bine
     func bind(reactor: TimeSetDetailViewReactor) {
         // MARK: action
@@ -74,14 +82,14 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         editButton.rx.tap
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetItem))})
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetEdit(reactor.timeSetItem), animated: true)})
             .disposed(by: disposeBag)
         
         startButton.rx.tap
             .withLatestFrom(reactor.state
                 .map { $0.selectedIndex }
                 .distinctUntilChanged())
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem, startAt: $0, canSave: false)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem, startAt: $0, canSave: false), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -186,10 +194,11 @@ class TimeSetDetailViewController: BaseHeaderViewController, View {
     
     // MARK: - action method
     /// Handle header button tap action according to button type
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
         case .bookmark:
             reactor?.action.onNext(.toggleBookmark)
             

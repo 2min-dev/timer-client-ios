@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from local time set view
-class LocalTimeSetViewCoordinator: CoordinatorProtocol {
+class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
         case timeSetManage(TimeSetManageViewReactor.TimeSetType)
@@ -20,87 +20,65 @@ class LocalTimeSetViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: LocalTimeSetViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    // MARK: - presentation
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .timeSetManage(_):
-            self.viewController.present(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = dismissViewController
+            viewController.present(presentingViewController, animated: animated)
              
         case .allTimeSet(_),
              .timeSetDetail(_),
              .history,
              .setting:
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetManage(type):
-            let coordinator = TimeSetManageViewCoordinator(provider: provider)
-            let reactor = TimeSetManageViewReactor(timeSetService: provider.timeSetService, type: type)
-            let viewController = TimeSetManageViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetManageViewBuilder.Dependency(provider: provider, type: type)
+            return TimeSetManageViewBuilder(with: dependency).build()
             
         case let .allTimeSet(type):
-            let coordinator = AllTimeSetViewCoordinator(provider: provider)
-            let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService, type: type)
-            let viewController = AllTimeSetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: type)
+            return AllTimeSetViewBuilder(with: dependency).build()
             
         case let .timeSetDetail(timeSetItem):
-            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: false)
-            let viewController = TimeSetDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: false)
+            return TimeSetDetailViewBuilder(with: dependency).build()
 
         case .history:
-            let coordinator = HistoryListViewCoordinator(provider: provider)
-            let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)
-            let viewController = HistoryListViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = HistoryListViewBuilder.Dependency(provider: provider)
+            return HistoryListViewBuilder(with: dependency).build()
             
         case .setting:
-            let coordinator = SettingViewCoordinator(provider: provider)
-            let reactor = SettingViewReactor(appService: provider.appService, networkService: provider.networkService)
-            let viewController = SettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = SettingViewBuilder.Dependency(provider: provider)
+            return SettingViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

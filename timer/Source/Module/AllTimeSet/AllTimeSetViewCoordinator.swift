@@ -8,45 +8,55 @@
 
 import UIKit
 
-class AllTimeSetViewCoordinator: CoordinatorProtocol {
+class AllTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case timeSetDetail(TimeSetItem)
     }
     
     // MARK: - properties
-    weak var viewController: UIViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
+            
         case .timeSetDetail(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case let .timeSetDetail(timeSetItem):
-            let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-            let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, timeSetItem: timeSetItem, canSave: false)
-            let viewController = TimeSetDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: false)
+            return TimeSetDetailViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

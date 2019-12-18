@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class LocalTimeSetViewController: BaseHeaderViewController, View {
+class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     
@@ -89,7 +89,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to saved time set manage
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.saved)) })
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.saved), animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             } else {
                 // Bookmarked time set
@@ -98,7 +98,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to bookmarked time set manage
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.bookmarked)) })
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.bookmarked), animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             }
             
@@ -119,7 +119,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to all saved time set
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.saved)) })
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.saved), animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             } else {
                 // Bookmarked time set
@@ -127,7 +127,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to all bookmarked time set
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.bookmarked)) })
+                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.bookmarked), animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             }
             
@@ -172,13 +172,17 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
         }
     }
     
+    // MARK: - bind
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
-    // MARK: - bind
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
         Observable.merge(rx.viewDidLoad.asObservable(),
@@ -201,15 +205,13 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            _ = coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            _ = coordinator.present(for: .setting, animated: true)
             
         default:
             break
@@ -220,7 +222,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     private func timeSetSelected(cell type: LocalTimeSetCellType) {
         switch type {
         case let .regular(reactor):
-            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetItem))
+            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetItem), animated: true)
             
         case .empty:
             (tabBarController as? MainViewController)?.select(at: MainViewController.TabType.productivity.rawValue, animated: true)

@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class HistoryListViewController: BaseHeaderViewController, View {
+class HistoryListViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var historyListView: HistoryListView { return view as! HistoryListView }
     
@@ -33,7 +33,7 @@ class HistoryListViewController: BaseHeaderViewController, View {
         if let self = self {
             // Bind create button action
             supplementaryView.createButton.rx.tap
-                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .productivity) })
+                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .productivity, animated: true) })
                 .disposed(by: self.disposeBag)
         }
         
@@ -69,6 +69,10 @@ class HistoryListViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         historyCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -83,7 +87,7 @@ class HistoryListViewController: BaseHeaderViewController, View {
             .withLatestFrom(reactor.state.map { $0.sections },
                             resultSelector: { $1.first?.items[$0.item] })
             .compactMap { $0 }
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .detail($0.history)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .detail($0.history), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -92,6 +96,18 @@ class HistoryListViewController: BaseHeaderViewController, View {
             .map { $0.sections }
             .bind(to: historyCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
     }
     
     deinit {

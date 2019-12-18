@@ -79,4 +79,8 @@ class IntroViewReactor: Reactor {
         
         return .just(.setIntroState(.done))
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }

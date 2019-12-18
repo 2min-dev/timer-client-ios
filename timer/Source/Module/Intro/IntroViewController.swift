@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class IntroViewController: BaseViewController, View {
+class IntroViewController: BaseViewController, ViewControllable, View {
     // MARK: - view properties
     private var introView: IntroView { return view as! IntroView }
     
@@ -61,10 +61,10 @@ class IntroViewController: BaseViewController, View {
     private func presentByState(_ state: IntroViewReactor.IntroState) {
         switch state {
         case .done:
-            _ = coordinator.present(for: .main)
+            _ = coordinator.present(for: .main, animated: true)
             
         case .running:
-            _ = coordinator.present(for: .timeSetProcess)
+            _ = coordinator.present(for: .timeSetProcess, animated: true)
             
         case .none:
             break

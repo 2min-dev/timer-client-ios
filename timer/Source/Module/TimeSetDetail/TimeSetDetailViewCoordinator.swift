@@ -8,71 +8,66 @@
 
 import UIKit
 
-class TimeSetDetailViewCoordinator: CoordinatorProtocol {
+class TimeSetDetailViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
-        case home
+        case dismiss
         case timeSetEdit(TimeSetItem)
         case timeSetProcess(TimeSetItem, startAt: Int, canSave: Bool)
     }
     
     // MARK: - properties
-    weak var viewController: TimeSetDetailViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
-        case .home:
-            self.viewController.navigationController?.setViewControllers([viewController], animated: true)
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
             
         case .timeSetEdit(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
             
         case .timeSetProcess(_, startAt: _, canSave: _):
-            guard let rootViewController = self.viewController.navigationController?.viewControllers.first else {
-                return nil
-            }
-            let viewControllers = [rootViewController, viewController]
-            self.viewController.navigationController?.setViewControllers(viewControllers, animated: true)
+            guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
-        case .home:
-            return self.viewController.navigationController?.viewControllers.first
+        case .dismiss:
+            return (viewController, self)
             
         case let .timeSetEdit(timeSetItem):
-            let coordinator = TimeSetEditViewCoordinator(provider: provider)
-            guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem) else { return nil }
-            let viewController = TimeSetEditViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetEditViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem)
+            return TimeSetEditViewBuilder(with: dependency).build()
             
         case let .timeSetProcess(timeSetItem, startAt: index, canSave: canSave):
-            let coordinator = TimeSetProcessViewCoordinator(provider: provider)
-            guard let reactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: timeSetItem, startIndex: index, canSave: canSave) else { return nil }
-            let viewController = TimeSetProcessViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, startIndex: index, canSave: canSave)
+            return TimeSetProcessViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

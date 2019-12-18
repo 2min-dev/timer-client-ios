@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class CountdownSettingViewController: BaseHeaderViewController, View {
+class CountdownSettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var countdownSettingView: CountdownSettingView { return view as! CountdownSettingView }
     
@@ -55,6 +55,10 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         countdownSettingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -82,6 +86,18 @@ class CountdownSettingViewController: BaseHeaderViewController, View {
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.countdownSettingTableView.selectRow(at: $0, animated: true, scrollPosition: .none) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
     }
     
     deinit {

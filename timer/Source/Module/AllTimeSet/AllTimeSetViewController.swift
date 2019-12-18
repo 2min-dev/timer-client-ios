@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class AllTimeSetViewController: BaseHeaderViewController, View {
+class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var allTimeSetView: AllTimeSetView { return view as! AllTimeSetView }
     
@@ -118,6 +118,10 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -132,7 +136,7 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
         
         timeSetCollectionView.rx.itemSelected
             .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($1[$0.section].items[$0.item].timeSetItem)) })
+            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($1[$0.section].items[$0.item].timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -151,6 +155,17 @@ class AllTimeSetViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get header title by type
     private func getHeaderTitleByType(_ type: AllTimeSetViewReactor.TimeSetType) -> String {
