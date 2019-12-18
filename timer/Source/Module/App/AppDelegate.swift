@@ -43,7 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         provider.appService.setBackgroundDate(Date())
         
         // Store current running time set data into user defaults
-        guard let timeSet = provider.timeSetService.storeTimeSet() else { return }
+        guard let timeSet = provider.timeSetService.runningTimeSet?.timeSet,
+            timeSet.state == .run else { return }
+        provider.timeSetService.storeTimeSet()
         timeSet.pause()
         
         // Register time set notification
@@ -55,8 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let backgroundDate = provider.appService.getBackgroundDate() else { return }
         let passedTime = Date().timeIntervalSince1970 - backgroundDate.timeIntervalSince1970
         
-        guard let timeSet = provider.timeSetService.runningTimeSet?.timeSet,
-            provider.appService.getRunningTimeSet() != nil else { return }
+        guard let timeSet = provider.timeSetService.restoreTimeSet() else { return }
         
         // Consume the passed time and restart the time set
         timeSet.consume(time: passedTime)

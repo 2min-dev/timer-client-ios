@@ -49,7 +49,7 @@ protocol TimeSetServiceProtocol {
     func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]>
     
     /// Store current running time set data into user defaults
-    func storeTimeSet() -> TimeSet?
+    func storeTimeSet()
     
     /// Restore and set current running time set from user defaults
     func restoreTimeSet() -> TimeSet?
@@ -89,9 +89,10 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     private var timeSets: [TimeSetItem]?
     var runningTimeSet: RunningTimeSet? {
         didSet {
-            guard let timeSet = storeTimeSet() else { return }
+            guard let timeSet = runningTimeSet?.timeSet else { return }
             disposeBag = DisposeBag()
             
+            // Bind time set event
             timeSet.event
                 .compactMap {
                     switch $0 {
@@ -223,23 +224,23 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.updated) })
     }
     
-    @discardableResult
-    func storeTimeSet() -> TimeSet? {
-        guard let runningTimeSet = runningTimeSet else {
-            provider.appService.setRunningTimeSet(nil)
-            return nil
-        }
-        
+    func storeTimeSet() {
         // Create running time set object and store into user defaults
         provider.appService.setRunningTimeSet(runningTimeSet)
-        
-        return runningTimeSet.timeSet
     }
     
     func restoreTimeSet() -> TimeSet? {
-        // Resotre running time set from user defaults
-        runningTimeSet = provider.appService.getRunningTimeSet()
-        return runningTimeSet?.timeSet
+        let runningTimeSet = provider.appService.getRunningTimeSet()
+        provider.appService.setRunningTimeSet(nil)
+        
+        guard runningTimeSet != nil else { return nil }
+        
+        if self.runningTimeSet == nil {
+            // Resotre running time set from user defaults
+            self.runningTimeSet = runningTimeSet
+        }
+        
+        return self.runningTimeSet?.timeSet
     }
     
     // MARK: - history
