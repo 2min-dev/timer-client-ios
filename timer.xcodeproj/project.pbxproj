@@ -107,6 +107,7 @@
 		F387AF3322F18215002ABDB6 /* TimeSetSaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2F22F18215002ABDB6 /* TimeSetSaveView.swift */; };
 		F38975982343317200BBAAF3 /* TimeSetSaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2E22F18215002ABDB6 /* TimeSetSaveViewController.swift */; };
 		F38C37A323253C55000A0596 /* TimeSetInduceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */; };
+		F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */; };
 		F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */; };
 		F3962B08234DB94B0054DF7A /* TimeSetEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3962B07234DB94B0054DF7A /* TimeSetEndViewController.swift */; };
 		F3962B0A234DB9950054DF7A /* TimeSetEndViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3962B09234DB9950054DF7A /* TimeSetEndViewCoordinator.swift */; };
@@ -376,6 +377,7 @@
 		F387AF2E22F18215002ABDB6 /* TimeSetSaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveViewController.swift; sourceTree = "<group>"; };
 		F387AF2F22F18215002ABDB6 /* TimeSetSaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveView.swift; sourceTree = "<group>"; };
 		F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInduceCollectionViewCell.swift; sourceTree = "<group>"; };
+		F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevisionValueTests.swift; sourceTree = "<group>"; };
 		F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3962B07234DB94B0054DF7A /* TimeSetEndViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewController.swift; sourceTree = "<group>"; };
 		F3962B09234DB9950054DF7A /* TimeSetEndViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewCoordinator.swift; sourceTree = "<group>"; };
@@ -634,6 +636,7 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
 				F3E1FC152387C88F008FB3AB /* VersionTests.swift */,
 				F31684242382838600EF1510 /* timerTests.swift */,
 				F31684262382838600EF1510 /* Info.plist */,
@@ -1560,6 +1563,7 @@
 			files = (
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
+				F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

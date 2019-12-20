@@ -53,6 +53,7 @@ class IntroViewController: BaseViewController, ViewControllable, View {
         reactor.state
             .map { $0.introState }
             .distinctUntilChanged()
+            .compactMap { $0.value }
             .subscribe(onNext: { [weak self] in self?.presentByState($0) })
             .disposed(by: disposeBag)
     }
@@ -65,9 +66,6 @@ class IntroViewController: BaseViewController, ViewControllable, View {
             
         case .running:
             _ = coordinator.present(for: .timeSetProcess, animated: true)
-            
-        case .none:
-            break
         }
     }
     
