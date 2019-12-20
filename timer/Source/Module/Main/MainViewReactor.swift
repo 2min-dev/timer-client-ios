@@ -16,14 +16,10 @@ class MainViewReactor: Reactor {
     
     enum Mutation {
         case setPreviousHistory(History)
-        
-        case timeSetEnded
     }
     
     struct State {
-        var didTimeSetEnded: Bool
-
-        var previousHistory: History?
+        var previousHistory: RevisionValue<History?>
     }
     
     // MARK: - properties
@@ -33,7 +29,8 @@ class MainViewReactor: Reactor {
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol) {
         self.timeSetService = timeSetService
-        initialState = State(didTimeSetEnded: false)
+        
+        initialState = State(previousHistory: RevisionValue(nil))
     }
     
     // MARK: - mutation
@@ -57,25 +54,17 @@ class MainViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.didTimeSetEnded = false
         
         switch mutation {
         case let .setPreviousHistory(history):
-            state.previousHistory = history
-            return state
-            
-        case .timeSetEnded:
-            state.didTimeSetEnded = true
+            state.previousHistory = state.previousHistory.next(history)
             return state
         }
     }
     
     // MARK: - action method
     private func actionTimeSetEnded(history: History) -> Observable<Mutation> {
-        return .concat(
-            .just(.setPreviousHistory(history)),
-            .just(.timeSetEnded)
-        )
+        return .just(.setPreviousHistory(history))
     }
     
     deinit {
