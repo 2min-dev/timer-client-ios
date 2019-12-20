@@ -40,4 +40,8 @@ class TimeSetCollectionViewCellReactor: Reactor {
                              allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
                              timerCount: timeSetItem.timers.count)
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }

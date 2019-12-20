@@ -245,3 +245,10 @@ extension TimeSetManageViewController: JSCollectionViewDelegateLayout {
         return collectionView.numberOfItems(inSection: section) > 0
     }
 }
+
+extension Reactive where Base: TimeSetManageViewController {
+    var applied: ControlEvent<Void> {
+        guard let reactor = base.reactor else { return ControlEvent(events: Observable.empty()) }
+        return ControlEvent(events: reactor.state.map { $0.applied }.distinctUntilChanged().map { _ in })
+    }
+}
