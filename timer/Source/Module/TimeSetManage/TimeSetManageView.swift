@@ -29,7 +29,6 @@ class TimeSetManageView: UIView {
         // Register supplimentary view
         view.register(TimeSetManageHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetManageHeaderCollectionReusableView.name)
         view.register(TimeSetManageSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetManageSectionCollectionReusableView.name)
-        
         // Register cell
         view.register(TimeSetManageCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetManageCollectionViewCell.name)
         
