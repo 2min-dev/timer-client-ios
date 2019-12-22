@@ -26,6 +26,12 @@ class HistoryListView: UIView {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
         view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
+        
+        // Register reusable view
+        view.register(HistoryListEmptyCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HistoryListEmptyCollectionReusableView.name)
+        // Register cell
+        view.register(HistoryListCollectionViewCell.self, forCellWithReuseIdentifier: HistoryListCollectionViewCell.name)
+        
         return view
     }()
     

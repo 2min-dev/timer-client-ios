@@ -55,16 +55,6 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
         view = HistoryListView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Register reusable view
-        historyCollectionView.register(HistoryListEmptyCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HistoryListEmptyCollectionReusableView.name)
-        
-        // Register cell
-        historyCollectionView.register(HistoryListCollectionViewCell.self, forCellWithReuseIdentifier: HistoryListCollectionViewCell.name)
-    }
-    
     // MARK: - bine
     override func bind() {
         super.bind()
@@ -84,16 +74,15 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
             .disposed(by: disposeBag)
         
         historyCollectionView.rx.itemSelected
-            .withLatestFrom(reactor.state.map { $0.sections },
-                            resultSelector: { $1.first?.items[$0.item] })
-            .compactMap { $0 }
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .detail($0.history), animated: true) })
+            .withLatestFrom(reactor.state.map { $0.sections.value }) { $1[$0.section].items[$0.item] }
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .detail($0.history), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: historyCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -122,7 +111,7 @@ extension HistoryListViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard reactor?.currentState.sections.first?.items.count ?? 0 == 0,
+        guard reactor?.currentState.sections.value.first?.items.count ?? 0 == 0,
             let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
         
         // Calculate inset size of header view
@@ -136,6 +125,3 @@ extension HistoryListViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: 0, height: collectionView.bounds.height - inset)
     }
 }
-
-// MARK: - setting datasource
-typealias HistorySectionModel = SectionModel<Void, HistoryListCollectionViewCellReactor>
