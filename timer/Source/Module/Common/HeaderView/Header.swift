@@ -64,7 +64,11 @@ class Header: UIView {
 extension Reactive where Base: Header {
     /// The button tap event
     var tap: ControlEvent<Base.Action> {
-        return ControlEvent(events: base.action)
+        let source = base.action
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+        
+        return ControlEvent(events: source)
+            
     }
     
     /// The title of header view
