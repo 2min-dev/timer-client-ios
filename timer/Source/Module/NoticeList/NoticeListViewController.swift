@@ -49,12 +49,6 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
         view = NoticeListView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register cell
-        noticeTableView.register(NoticeListTableViewCell.self, forCellReuseIdentifier: NoticeListTableViewCell.name)
-    }
-    
     // MARK: - bine
     override func bind() {
         super.bind()
@@ -75,14 +69,15 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
         
         noticeTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.noticeTableView.deselectRow(at: $0, animated: true) })
-            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .noticeDetail($0), animated: true) })
+            .withLatestFrom(reactor.state.compactMap { $0.sections.value }) { $1[$0.section].items[$0.row] }
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .noticeDetail($0), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
             .do(onNext: { [weak self] in self?.showNoticeEmptyView(isEmpty: $0.isEmpty || $0[0].items.isEmpty) })
             .bind(to: noticeTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
@@ -123,6 +118,3 @@ class NoticeListViewController: BaseHeaderViewController, ViewControllable, View
         Logger.verbose()
     }
 }
-
-// MARK: - countdown setting datasource
-typealias NoticeListSectionModel = SectionModel<Void, Notice>
