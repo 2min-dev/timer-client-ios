@@ -61,7 +61,8 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
         guard let `self` = self else { return }
         
         Observable.just((sourceIndexPath, destinationIndexPath))
-            .map { Reactor.Action.moveTimeSet(at: $0, to: $1) }
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .moveTimeSet(at: $0, to: $1) }
             .subscribe(onNext: { self.reactor?.action.onNext($0) })
             .disposed(by: self.disposeBag)
     })
@@ -85,13 +86,6 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Register supplimentary view
-        timeSetCollectionView.register(TimeSetManageHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetManageHeaderCollectionReusableView.name)
-        timeSetCollectionView.register(TimeSetManageSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetManageSectionCollectionReusableView.name)
-        
-        // Register cell
-        timeSetCollectionView.register(TimeSetManageCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetManageCollectionViewCell.name)
         
         // Add pan gesture recognizer
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler(gesture:)))
@@ -182,6 +176,8 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
     @objc private func panHandler(gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .began:
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            
             let location = gesture.location(in: timeSetCollectionView.superview)
             timeSetCollectionView.beginInteractiveWithLocation(location)
             

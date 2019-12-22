@@ -44,7 +44,7 @@ class TimeSetManageCollectionViewCellReactor: Reactor, IdentifiableType {
         
         initialState = State(allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
                              title: timeSetItem.title,
-                             type: .normal)
+                             type: .saved)
     }
     
     // MARK: - mutation
