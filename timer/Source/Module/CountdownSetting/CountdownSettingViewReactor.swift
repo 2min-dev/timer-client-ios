@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxDataSources
 import ReactorKit
 
 class CountdownSettingViewReactor: Reactor {
@@ -20,36 +21,35 @@ class CountdownSettingViewReactor: Reactor {
     
     enum Mutation {
         /// Set selected index path
-        case setSelectedIndexPath(IndexPath)
+        case setSelectedIndex(Int)
         
         /// Set countdown menu sections
         case setSections([CountdownSettingSectionModel])
-        
-        /// Set should section reload `true`
-        case sectionReload
     }
     
     struct State {
-        /// Current selected index path
-        var selectedIndexPath: IndexPath
+        /// Current selected index
+        var selectedIndex: Int
         
         /// Countdown menu sections
-        var sections: [CountdownSettingSectionModel]
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
+        var sections: RevisionValue<[CountdownSettingSectionModel]>
     }
     
     // MARK: - properties
     var initialState: State
     private let appService: AppServiceProtocol
     
+    private var dataSource: CountdownSettingSectionDataSource
+    
     // MARK: - constructor
     init(appService: AppServiceProtocol) {
         self.appService = appService
-        initialState = State(selectedIndexPath: IndexPath(item: 0, section: 0),
-                                  sections: [],
-                                  shouldSectionReload: true)
+        dataSource = CountdownSettingSectionDataSource()
+        
+        initialState = State(
+            selectedIndex: 0,
+            sections: RevisionValue(dataSource.makeSections())
+        )
     }
     
     // MARK: - mutation
@@ -66,19 +66,14 @@ class CountdownSettingViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
-        case let .setSelectedIndexPath(indexPath):
-            state.selectedIndexPath = indexPath
+        case let .setSelectedIndex(index):
+            state.selectedIndex = index
             return state
             
         case let .setSections(sections):
-            state.sections = sections
-            return state
-            
-        case .sectionReload:
-            state.shouldSectionReload = true
+            state.sections = state.sections.next(sections)
             return state
         }
     }
@@ -94,28 +89,45 @@ class CountdownSettingViewReactor: Reactor {
             CountdownSettingMenu(seconds: 0)
         ]
         
+        dataSource.setItems(items)
+        
         let countdown = appService.getCountdown()
-        var indexPath = IndexPath(item: 0, section: 0)
-        if let index = items.firstIndex(where: { $0.seconds == countdown }) {
-            indexPath = IndexPath(item: index, section: 0)
-        }
+        let index = items.firstIndex(where: { $0.seconds == countdown }) ?? 0
         
-        let setSections: Observable<Mutation> = .just(.setSections([CountdownSettingSectionModel(model: Void(), items: items)]))
-        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndexPath(indexPath))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        let setSections: Observable<Mutation> = .just(.setSections(dataSource.makeSections()))
+        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndex(index))
         
-        return .concat(setSections, setSelectedIndexPath, sectionReload)
+        return .concat(setSections, setSelectedIndexPath)
     }
     
     private func actionSelect(indexPath: IndexPath) -> Observable<Mutation> {
         // Save selected countdown seconds
-        let countdown = currentState.sections[indexPath.section].items[indexPath.row].seconds
+        let countdown = dataSource.countdownSection[indexPath.item].seconds
         appService.setCountdown(countdown)
         
-        return .just(.setSelectedIndexPath(indexPath))
+        return .just(.setSelectedIndex(indexPath.item))
     }
     
     deinit {
         Logger.verbose()
+    }
+}
+
+// MARK: - countdown setting datasource
+typealias CountdownSettingSectionModel = SectionModel<Void, CountdownSettingMenu>
+
+typealias CountdownSettingCellType = CountdownSettingMenu
+
+struct CountdownSettingSectionDataSource {
+    // MARK: - section
+    private(set) var countdownSection: [CountdownSettingCellType] = []
+    
+    // MARK: - public method
+    mutating func setItems(_ items: [CountdownSettingMenu]) {
+        countdownSection = items
+    }
+    
+    func makeSections() -> [CountdownSettingSectionModel] {
+        [CountdownSettingSectionModel(model: Void(), items: countdownSection)]
     }
 }

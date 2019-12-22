@@ -45,12 +45,6 @@ class CountdownSettingViewController: BaseHeaderViewController, ViewControllable
         view = CountdownSettingView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register cell
-        countdownSettingTableView.register(CountdownSettingTableViewCell.self, forCellReuseIdentifier: CountdownSettingTableViewCell.name)
-    }
-    
     // MARK: - bine
     override func bind() {
         super.bind()
@@ -65,25 +59,28 @@ class CountdownSettingViewController: BaseHeaderViewController, ViewControllable
     func bind(reactor: CountdownSettingViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.load }
+            .map { .load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         countdownSettingTableView.rx.itemSelected
-            .map { Reactor.Action.select($0) }
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .select($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: countdownSettingTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.selectedIndexPath }
+            .map { $0.selectedIndex }
             .distinctUntilChanged()
+            .map { IndexPath(item: $0, section: 0) }
             .subscribe(onNext: { [weak self] in self?.countdownSettingTableView.selectRow(at: $0, animated: true, scrollPosition: .none) })
             .disposed(by: disposeBag)
     }
@@ -104,9 +101,6 @@ class CountdownSettingViewController: BaseHeaderViewController, ViewControllable
         Logger.verbose()
     }
 }
-
-// MARK: - countdown setting datasource
-typealias CountdownSettingSectionModel = SectionModel<Void, CountdownSettingMenu>
 
 struct CountdownSettingMenu {
     let title: String
