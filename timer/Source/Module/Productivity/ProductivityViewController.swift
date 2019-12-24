@@ -258,8 +258,9 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
         
         // Timer badge
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
@@ -272,12 +273,18 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldSave }
+            .map { $0.shouldSave }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .filter { $0 }
             .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldStart }
+            .map { $0.shouldStart }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .filter { $0 }
             .do(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem), animated: true) })
             .observeOn(MainScheduler.asyncInstance)
             .map { _ in Reactor.Action.clearTimeSet }
@@ -364,7 +371,7 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
     private func selectBadge(at indexPath: IndexPath) -> TimeSetEditViewReactor.Action? {
         guard let reactor = reactor else { return nil }
         
-        let cellType = reactor.currentState.sections[indexPath.section].items[indexPath.item]
+        let cellType = reactor.currentState.sections.value[indexPath.section].items[indexPath.item]
         switch cellType {
         case .regular(_):
             return .selectTimer(at: indexPath.item)
@@ -375,7 +382,7 @@ class ProductivityViewController: BaseHeaderViewController, ViewControllable, Vi
                 return .addTimer
                 
             case .repeat:
-                return .toggleRepeat
+                return nil
             }
         }
     }

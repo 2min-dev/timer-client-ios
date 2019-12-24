@@ -108,13 +108,8 @@ class TimeSetProcessViewReactor: Reactor {
         /// Current running timer state of time set
         var timerState: JSTimer.State
         
-        /// Section datasource to make sections
-        let sectionDataSource: TimerBadgeDataSource
-        
         /// The timer list badge sections
-        var sections: [TimerBadgeSectionModel] {
-            sectionDataSource.makeSections()
-        }
+        var sections: RevisionValue<[TimerBadgeSectionModel]>
         
         /// Current running timer item
         var timer: TimerItem
@@ -136,6 +131,8 @@ class TimeSetProcessViewReactor: Reactor {
     var initialState: State
     private let appService: AppServiceProtocol
     private var timeSetService: TimeSetServiceProtocol
+    
+    private var dataSource: TimerBadgeSectionDataSource
     
     let origin: TimeSetItem
     let timeSet: TimeSet // Running time set
@@ -172,7 +169,7 @@ class TimeSetProcessViewReactor: Reactor {
         let time = timer.end - timer.current
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: timeSet.item.timers.toArray(), index: index)
+        dataSource = TimerBadgeSectionDataSource(regulars: timeSet.item.timers.toArray(), index: index)
         
         initialState = State(
             title: timeSet.item.title,
@@ -185,7 +182,7 @@ class TimeSetProcessViewReactor: Reactor {
             countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
             timeSetState: timeSet.state,
             timerState: timeSet.timer.state,
-            sectionDataSource: dataSource,
+            sections: RevisionValue(dataSource.makeSections()),
             timer: timer,
             selectedIndex: index,
             shouldSectionReload: true,
@@ -394,9 +391,9 @@ class TimeSetProcessViewReactor: Reactor {
         
         // Update selected timer state
         if index != previousIndex {
-            state.sectionDataSource.regulars[previousIndex].action.onNext(.select(false))
+            dataSource.setSelected(false, at: previousIndex)
         }
-        state.sectionDataSource.regulars[index].action.onNext(.select(true))
+        dataSource.setSelected(true, at: index)
         
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
         let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.item.timers[index]))

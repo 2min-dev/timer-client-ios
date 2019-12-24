@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxDataSources
 import ReactorKit
 
 class SettingViewReactor: Reactor {
@@ -24,9 +25,6 @@ class SettingViewReactor: Reactor {
         
         /// Set menu sections
         case setSections([SettingSectionModel])
-        
-        /// Set should section reload `true`
-        case sectionReload
     }
     
     struct State {
@@ -34,10 +32,7 @@ class SettingViewReactor: Reactor {
         var isLatestVersion: Bool?
         
         /// Menu sections
-        var sections: [SettingSectionModel]
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
+        var sections: RevisionValue<[SettingSectionModel]>
     }
     
     // MARK: - properties
@@ -45,14 +40,17 @@ class SettingViewReactor: Reactor {
     private let appService: AppServiceProtocol
     private let networkService: NetworkServiceProtocol
     
+    private var dataSource: SettingSectionDataSource
+    
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
     init(appService: AppServiceProtocol, networkService: NetworkServiceProtocol) {
         self.appService = appService
         self.networkService = networkService
+        dataSource = SettingSectionDataSource()
         
-        initialState = State(sections: [], shouldSectionReload: true)
+        initialState = State(sections: RevisionValue(dataSource.makeSections()))
     }
     
     // MARK: - mutate
@@ -69,7 +67,6 @@ class SettingViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
         case let .setLatestVersion(isLatestVersion):
@@ -77,11 +74,7 @@ class SettingViewReactor: Reactor {
             return state
             
         case let .setSections(sections):
-            state.sections = sections
-            return state
-            
-        case .sectionReload:
-            state.shouldSectionReload = true
+            state.sections = state.sections.next(sections)
             return state
         }
     }
@@ -91,18 +84,15 @@ class SettingViewReactor: Reactor {
         let alarm = appService.getAlarm()
         let countdown = appService.getCountdown()
         
-        let items: [SettingMenu] = [
+        dataSource.setItems([
             .notice,
             .alarm(alarm.title),
             .countdown(countdown),
             .teamInfo,
             .license
-        ]
+        ])
         
-        let setSections: Observable<Mutation> = .just(.setSections([SettingSectionModel(model: Void(), items: items)]))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        return .concat(setSections, sectionReload)
+        return .just(.setSections(dataSource.makeSections()))
     }
     
     private func actionVersionCheck() -> Observable<Mutation> {
@@ -118,5 +108,24 @@ class SettingViewReactor: Reactor {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+// MARK: - setting datasource
+typealias SettingSectionModel = SectionModel<Void, SettingMenu>
+
+typealias SettingCellType = SettingMenu
+
+struct SettingSectionDataSource {
+    // MARK: - section
+    private var menuSection: [SettingCellType] = []
+    
+    // MARK: - public method
+    mutating func setItems(_ items: [SettingMenu]) {
+        menuSection = items
+    }
+    
+    func makeSections() -> [SettingSectionModel] {
+        [SettingSectionModel(model: Void(), items: menuSection)]
     }
 }

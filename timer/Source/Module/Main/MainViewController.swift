@@ -101,27 +101,36 @@ class MainViewController: UITabBarController, ViewControllable, View {
         
         // MARK: state
         reactor.state
-            .filter { $0.didTimeSetEnded }
-            .compactMap { $0.previousHistory }
-            .subscribe(onNext: { [weak self] history in
-                switch history.endState {
-                case .cancel:
-                    Toast(content: "toast_time_set_end_cancel_title".localized,
-                          task: ToastTask(title: "toast_task_move_title".localized, handler: { [weak self] in
-                            _ = self?.coordinator.present(for: .historyDetail(history), animated: true)
-                    })).show(animated: true, withDuration: 3)
-                    
-                case .overtime:
-                    Toast(content: "toast_time_set_end_overtime_title".localized,
-                          task: ToastTask(title: "toast_task_memo_title".localized, handler: {
-                            _ = self?.coordinator.present(for: .historyDetail(history), animated: true)
-                    })).show(animated: true, withDuration: 3)
-                    
-                default:
-                    break
-                }
-            })
+            .map { $0.previousHistory }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .subscribe(onNext: { [weak self] in self?.showTimeSetEndToast(history: $0) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    // MARK: - state method
+    private func showTimeSetEndToast(history: History) {
+        switch history.endState {
+        case .cancel:
+            Toast(
+                content: "toast_time_set_end_cancel_title".localized,
+                task: ToastTask(title: "toast_task_move_title".localized, handler: {
+                    _ = self.coordinator.present(for: .historyDetail(history), animated: true)
+                })
+            ).show(animated: true, withDuration: 3)
+            
+        case .overtime:
+            Toast(
+                content: "toast_time_set_end_overtime_title".localized,
+                task: ToastTask(title: "toast_task_memo_title".localized, handler: {
+                    _ = self.coordinator.present(for: .historyDetail(history), animated: true)
+                })
+            ).show(animated: true, withDuration: 3)
+            
+        default:
+            break
+        }
     }
     
     // MARK: - private method

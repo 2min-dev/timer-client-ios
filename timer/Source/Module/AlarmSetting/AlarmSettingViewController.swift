@@ -64,12 +64,6 @@ class AlarmSettingViewController: BaseHeaderViewController, ViewControllable, Vi
         view = AlarmSettingView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register cell
-        alarmSettingTableView.register(AlarmSettingTableViewCell.self, forCellReuseIdentifier: AlarmSettingTableViewCell.name)
-    }
-    
     // MARK: - bine
     override func bind() {
         super.bind()
@@ -84,19 +78,21 @@ class AlarmSettingViewController: BaseHeaderViewController, ViewControllable, Vi
     func bind(reactor: AlarmSettingViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.load }
+            .map { .load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         alarmSettingTableView.rx.itemSelected
-            .map { Reactor.Action.select($0.item) }
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .select($0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: alarmSettingTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
@@ -165,6 +161,3 @@ extension AlarmSettingViewController: AVAudioPlayerDelegate {
         reactor?.action.onNext(.stop)
     }
 }
-
-// MARK: - alarm setting datasource
-typealias AlarmSettingSectionModel = SectionModel<Void, AlarmSettingTableViewCellReactor>

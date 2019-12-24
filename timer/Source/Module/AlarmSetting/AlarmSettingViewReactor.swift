@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxDataSources
 import ReactorKit
 
 class AlarmSettingViewReactor: Reactor {
@@ -33,9 +34,6 @@ class AlarmSettingViewReactor: Reactor {
         
         /// Set countdown menu sections
         case setSections([AlarmSettingSectionModel])
-        
-        /// Set should section reload `true`
-        case sectionReload
     }
     
     struct State {
@@ -46,22 +44,24 @@ class AlarmSettingViewReactor: Reactor {
         var selectedIndex: Int
         
         /// Countdown menu sections
-        var sections: [AlarmSettingSectionModel]
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
+        var sections: RevisionValue<[AlarmSettingSectionModel]>
     }
     
     // MARK: - properties
     var initialState: State
     private let appService: AppServiceProtocol
     
+    private var dataSource: AlarmSettingSectionDataSource
+    
     // MARK: - constructor
     init(appService: AppServiceProtocol) {
         self.appService = appService
-        initialState = State(selectedIndex: 0,
-                             sections: [],
-                             shouldSectionReload: true)
+        dataSource = AlarmSettingSectionDataSource()
+        
+        initialState = State(
+            selectedIndex: 0,
+            sections: RevisionValue(dataSource.makeSections())
+        )
     }
     
     // MARK: - mutation
@@ -84,7 +84,6 @@ class AlarmSettingViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
         case let .setPlayIndex(index):
@@ -96,11 +95,7 @@ class AlarmSettingViewReactor: Reactor {
             return state
             
         case let .setSections(sections):
-            state.sections = sections
-            return state
-            
-        case .sectionReload:
-            state.shouldSectionReload = true
+            state.sections = state.sections.next(sections)
             return state
         }
     }
@@ -110,16 +105,16 @@ class AlarmSettingViewReactor: Reactor {
         let items = Alarm.allCases
         let index = items.firstIndex(of: appService.getAlarm()) ?? 0
         
-        let setSections: Observable<Mutation> = .just(.setSections([AlarmSettingSectionModel(model: Void(), items: items.map { AlarmSettingTableViewCellReactor(alarm: $0) })]))
-        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndex(index))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
+        dataSource.setItems(items)
         
-        return .concat(setSections, setSelectedIndexPath, sectionReload)
+        let setSections: Observable<Mutation> = .just(.setSections(dataSource.makeSections()))
+        let setSelectedIndexPath: Observable<Mutation> = .just(.setSelectedIndex(index))
+        
+        return .concat(setSections, setSelectedIndexPath)
     }
     
     private func actionSelect(index: Int) -> Observable<Mutation> {
-        let state = currentState
-        let items = state.sections[0].items
+        let items = dataSource.alarmSection
         guard (0 ..< items.count).contains(index) else { return .empty() }
         
         // Save selected alarm
@@ -134,14 +129,14 @@ class AlarmSettingViewReactor: Reactor {
         guard let index = state.playIndex else { return .empty() }
         
         // Emit stop action to mutate alarm item state
-        state.sections[0].items[index].action.onNext(.stop)
+        dataSource.alarmSection[index].action.onNext(.stop)
         
         return .empty()
     }
     
     private func actionPlay(at index: Int) -> Observable<Mutation> {
         let state = currentState
-        let items = state.sections[0].items
+        let items = dataSource.alarmSection
         guard (0 ..< items.count).contains(index) else { return .empty() }
         
         if let previousIndex = state.playIndex {
@@ -156,5 +151,25 @@ class AlarmSettingViewReactor: Reactor {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+// MARK: - alarm setting datasource
+typealias AlarmSettingSectionModel = SectionModel<Void, AlarmSettingTableViewCellReactor>
+
+typealias AlarmSettingCellType = AlarmSettingTableViewCellReactor
+
+struct AlarmSettingSectionDataSource {
+    // MARK: - section
+    private(set) var alarmSection: [AlarmSettingCellType] = []
+    
+    // MARK: - public method
+    mutating func setItems(_ items: [Alarm]) {
+        alarmSection = items
+            .map { AlarmSettingTableViewCellReactor(alarm: $0) }
+    }
+    
+    func makeSections() -> [AlarmSettingSectionModel] {
+        [AlarmSettingSectionModel(model: Void(), items: alarmSection)]
     }
 }

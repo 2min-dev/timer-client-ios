@@ -34,18 +34,6 @@ class TimeSetManageViewReactor: Reactor {
         /// Set sections
         case setSections([TimeSetManageSectionModel])
         
-        /// Remove a time set from section
-        case removeTimeSet(at: IndexPath)
-        
-        /// Append a time set from section
-        case appendTimeSet(TimeSetManageCollectionViewCellReactor, TimeSetManageSectionType)
-        
-        /// Move time set
-        case swapTimeSet(at: IndexPath, to: IndexPath)
-        
-        /// Section reload
-        case sectionReload
-        
         /// Set time set changes applied to `true`
         case apply
     }
@@ -64,17 +52,17 @@ class TimeSetManageViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
+
+    private var dataSource: TimeSetManageSectionDataSource
     
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
         self.timeSetService = timeSetService
+        dataSource = TimeSetManageSectionDataSource()
         
         initialState = State(
             type: type,
-            sections: RevisionValue([
-                TimeSetManageSectionModel(model: .normal, items: []),
-                TimeSetManageSectionModel(model: .removed, items: [])
-            ]),
+            sections: RevisionValue(dataSource.makeSections()),
             applied: RevisionValue(false)
         )
     }
@@ -105,43 +93,6 @@ class TimeSetManageViewReactor: Reactor {
             state.sections = state.sections.next(sections)
             return state
             
-        case let .removeTimeSet(at: indexPath):
-            // Remove item at index path
-            var sections = state.sections.value
-            sections[indexPath.section].items.remove(at: indexPath.row)
-            
-            state.sections.value = sections
-            return state
-            
-        case let .appendTimeSet(item, section):
-            // Emit item's section changed event to cell reactor
-            item.action.onNext(.sectionMoved(section))
-            
-            // Append item to section
-            var sections = state.sections.value
-            sections[section.rawValue].items.append(item)
-            
-            state.sections.value = sections
-            return state
-            
-        case let .swapTimeSet(at: sourceIndexPath, to: destinationIndexPath):
-            var sections = state.sections.value
-            if sourceIndexPath.section == destinationIndexPath.section {
-                // Swap items
-                sections[sourceIndexPath.section].items.swapAt(sourceIndexPath.row, destinationIndexPath.row)
-            } else {
-                // Remove item from source section and insert item to destination section
-                let item = sections[sourceIndexPath.section].items.remove(at: sourceIndexPath.row)
-                sections[destinationIndexPath.section].items.insert(item, at: destinationIndexPath.row)
-            }
-            
-            state.sections.value = sections
-            return state
-            
-        case .sectionReload:
-            state.sections = state.sections.next()
-            return state
-            
         case .apply:
             state.applied = state.applied.next(true)
             return state
@@ -150,42 +101,35 @@ class TimeSetManageViewReactor: Reactor {
     
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
-        let state = currentState
-        
         return timeSetService.fetchTimeSets().asObservable()
-            .flatMap { timeSets -> Observable<Mutation> in
-                let items = timeSets
-                    .filter { state.type == .saved || (state.type == .bookmarked && $0.isBookmark) }
-                    .sorted(by: {
-                        state.type == .saved ?
-                            $0.sortingKey < $1.sortingKey :
-                            $0.bookmarkSortingKey < $1.bookmarkSortingKey
-                    })
-                    .map { TimeSetManageCollectionViewCellReactor(timeSetItem: $0) }
-                
-                return .just(.setSections([
-                    TimeSetManageSectionModel(model: .normal, items: items),
-                    TimeSetManageSectionModel(model: .removed, items: [])
-                ]))
-        }
+            .map {
+                self.dataSource.setItems($0, type: self.currentState.type)
+                return .setSections(self.dataSource.makeSections())
+            }
     }
     
     private func actionEditTimeSet(at indexPath: IndexPath) -> Observable<Mutation> {
-        guard let fromSection = TimeSetManageSectionType(rawValue: indexPath.section) else { return .empty() }
+        let section = currentState.sections.value[indexPath.section].model
         
-        let toSection: TimeSetManageSectionType = fromSection == .normal ? .removed : .normal // Get section to move
-        let item = currentState.sections.value[indexPath.section].items[indexPath.row] // Get item to move
-        
-        let removeTimeSet: Observable<Mutation> = .just(.removeTimeSet(at: indexPath))
-        let appendTimeSet: Observable<Mutation> = .just(.appendTimeSet(item, toSection))
-        let sectionReload: Observable<Mutation> = .just(.sectionReload)
-        
-        return .concat(removeTimeSet, appendTimeSet, sectionReload)
+        switch section {
+        case .saved:
+            let item = dataSource.remove(at: indexPath.item)
+            item.action.onNext(.sectionMoved(.removed))
+            
+        case .removed:
+            let item = dataSource.restore(at: indexPath.item)
+            item.action.onNext(.sectionMoved(.saved))
+        }
+
+        return .just(.setSections(dataSource.makeSections()))
     }
     
     private func actionMoveTimeSet(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) -> Observable<Mutation> {
         guard sourceIndexPath.section == destinationIndexPath.section else { return .empty() }
-        return .just(.swapTimeSet(at: sourceIndexPath, to: destinationIndexPath))
+        let section = currentState.sections.value[sourceIndexPath.section].model
+        
+        dataSource.swap(at: sourceIndexPath.item, to: destinationIndexPath.item, section: section)
+        return .empty()
     }
     
     private func actionApply() -> Observable<Mutation> {
@@ -218,11 +162,60 @@ class TimeSetManageViewReactor: Reactor {
 }
 
 // MARK: - time set manage datasource
-typealias TimeSetManageSectionModel = AnimatableSectionModel<TimeSetManageSectionType, TimeSetManageCollectionViewCellReactor>
+typealias TimeSetManageSectionModel = AnimatableSectionModel<TimeSetManageSectionType, TimeSetManageCellType>
 
 enum TimeSetManageSectionType: Int, CaseIterable, IdentifiableType {
-    case normal
+    case saved
     case removed
     
     var identity: Int { rawValue }
+}
+
+typealias TimeSetManageCellType = TimeSetManageCollectionViewCellReactor
+
+struct TimeSetManageSectionDataSource {
+    // MARK: - section
+    private var savedTimeSetSection: [TimeSetManageCellType] = []
+    private var removedTimeSetSection: [TimeSetManageCellType] = []
+    
+    // MARK: - public method
+    mutating func setItems(_ items: [TimeSetItem], type: TimeSetManageViewReactor.TimeSetType) {
+        savedTimeSetSection = items
+            .filter { type == .saved || (type == .bookmarked && $0.isBookmark) }
+            .sorted(by: { type == .saved ? $0.sortingKey < $1.sortingKey : $0.bookmarkSortingKey < $1.bookmarkSortingKey })
+            .map { TimeSetManageCollectionViewCellReactor(timeSetItem: $0) }
+    }
+    
+    mutating func remove(at index: Int) -> TimeSetManageCellType {
+        // Remove item from saved section and append to removed section
+        let item = savedTimeSetSection.remove(at: index)
+        removedTimeSetSection.append(item)
+        
+        return item
+    }
+    
+    mutating func restore(at index: Int) -> TimeSetManageCellType {
+        // Remove item from removed section and append to saved section
+        let item = removedTimeSetSection.remove(at: index)
+        savedTimeSetSection.append(item)
+        
+        return item
+    }
+    
+    mutating func swap(at sourceIndex: Int, to destinationIndex: Int, section: TimeSetManageSectionType) {
+        switch section {
+        case .saved:
+            savedTimeSetSection.swapAt(sourceIndex, destinationIndex)
+            
+        case .removed:
+            removedTimeSetSection.swapAt(sourceIndex, destinationIndex)
+        }
+    }
+    
+    func makeSections() -> [TimeSetManageSectionModel] {
+        let savedTimeSetSection = TimeSetManageSectionModel(model: .saved, items: self.savedTimeSetSection)
+        let removedTimeSetSection = TimeSetManageSectionModel(model: .removed, items: self.removedTimeSetSection)
+        
+        return [savedTimeSetSection, removedTimeSetSection]
+    }
 }

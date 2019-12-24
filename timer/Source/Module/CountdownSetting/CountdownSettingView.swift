@@ -21,6 +21,10 @@ class CountdownSettingView: UIView {
         view.backgroundColor = Constants.Color.clear
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
+        
+        // Register cell
+        view.register(CountdownSettingTableViewCell.self, forCellReuseIdentifier: CountdownSettingTableViewCell.name)
+        
         return view
     }()
     

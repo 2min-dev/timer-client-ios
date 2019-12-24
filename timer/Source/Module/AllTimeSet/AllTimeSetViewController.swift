@@ -101,14 +101,6 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register supplimentary view
-        timeSetCollectionView.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
-        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
-        // Register cell
-        timeSetCollectionView.register(SavedTimeSetHighlightCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name)
-        timeSetCollectionView.register(SavedTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetCollectionViewCell.name)
-        timeSetCollectionView.register(BookmaredTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: BookmaredTimeSetCollectionViewCell.name)
-        
         // Set layout delegate
         if let layout = timeSetCollectionView.collectionViewLayout as? JSCollectionViewLayout {
             layout.delegate = self
@@ -130,13 +122,13 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
         // MARK: action
         rx.viewWillAppear
             .take(1)
-            .map { Reactor.Action.viewWillAppear }
+            .map { .load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
-            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetDetail($1[$0.section].items[$0.item].timeSetItem), animated: true) })
+            .withLatestFrom(reactor.state.map { $0.sections.value }, resultSelector: { ($0, $1) })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .timeSetDetail($1[$0.section].items[$0.item].timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -148,8 +140,9 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -219,6 +212,3 @@ extension AllTimeSetViewController: JSCollectionViewDelegateLayout {
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 87.adjust())
     }
 }
-
-// MARK: - all time set datasource
-typealias AllTimeSetSectionModel = SectionModel<Void, TimeSetCollectionViewCellReactor>

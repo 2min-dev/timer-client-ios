@@ -12,9 +12,8 @@ import ReactorKit
 
 class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
-    let repeatButton: UIButton = {
+    private let repeatButton: UIButton = {
         let view = UIButton()
-        view.isUserInteractionEnabled = false
         view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
         view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
         view.setImage(UIImage(named: "btn_repeat_disable"), for: .disabled)
@@ -73,7 +72,14 @@ class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell, View {
     // MARK: - bind
     func bind(reactor: TimerBadgeRepeatCellReactor) {
         // MARK: action
+        repeatButton.rx.tap
+            .do(onNext: { UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .toggleRepeat }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         // MARK: state
+        // Repeat
         reactor.state
             .map { $0.isRepeat }
             .distinctUntilChanged()

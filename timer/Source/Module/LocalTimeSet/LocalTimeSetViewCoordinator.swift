@@ -12,6 +12,7 @@ import UIKit
 class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
+        case productivity
         case timeSetManage(TimeSetManageViewReactor.TimeSetType)
         case allTimeSet(AllTimeSetViewReactor.TimeSetType)
         case timeSetDetail(TimeSetItem)
@@ -37,6 +38,10 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
+        case .productivity:
+            guard let mainViewController = presentingViewController.tabBarController as? MainViewController else { return nil }
+            mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: animated)
+            
         case .timeSetManage(_):
             // Set dismiss handler
             coordinator.dismiss = dismissViewController
@@ -56,6 +61,9 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
     
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .productivity:
+            return (viewController, self)
+            
         case let .timeSetManage(type):
             let dependency = TimeSetManageViewBuilder.Dependency(provider: provider, type: type)
             return TimeSetManageViewBuilder(with: dependency).build()

@@ -45,12 +45,6 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
         view = SettingView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register cell
-        settingTableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.name)
-    }
-    
     // MARK: - bind
     override func bind() {
         super.bind()
@@ -74,7 +68,7 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
         
         settingTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.settingTableView.deselectRow(at: $0, animated: true) })
-            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
+            .withLatestFrom(reactor.state.map { $0.sections.value }) { $1[$0.section].items[$0.row] }
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: $0.route, animated: true) })
             .disposed(by: disposeBag)
         
@@ -89,8 +83,9 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: settingTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -117,9 +112,6 @@ class SettingViewController: BaseHeaderViewController, ViewControllable, View {
         Logger.verbose()
     }
 }
-
-// MARK: - setting datasource
-typealias SettingSectionModel = SectionModel<Void, SettingMenu>
 
 enum SettingMenu {
     case notice

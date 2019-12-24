@@ -96,7 +96,7 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         reactor.state
             .map { $0.type }
             .distinctUntilChanged()
-            .map { UIImage(named: $0 == .normal ? "btn_timeset_delete" : "btn_timeset_recover") }
+            .map { UIImage(named: $0 == .saved ? "btn_timeset_delete" : "btn_timeset_recover") }
             .bind(to: editButton.rx.image(for: .normal))
             .disposed(by: disposeBag)
         

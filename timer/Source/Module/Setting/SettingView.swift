@@ -21,6 +21,10 @@ class SettingView: UIView {
         view.backgroundColor = Constants.Color.clear
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
+        
+        // Register cell
+        view.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.name)
+        
         return view
     }()
     

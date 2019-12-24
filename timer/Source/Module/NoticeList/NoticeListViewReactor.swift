@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxDataSources
 import ReactorKit
 
 class NoticeListViewReactor: Reactor {
@@ -17,34 +18,35 @@ class NoticeListViewReactor: Reactor {
     
     enum Mutation {
         /// Set countdown menu sections
-        case setSections([NoticeListSectionModel])
+        case setSections([NoticeListSectionModel]?)
         
         /// Set loading flag
         case setLoading(Bool)
-        
-        /// Set should section reload `true`
-        case sectionReload
     }
     
     struct State {
         /// Countdown menu sections
-        var sections: [NoticeListSectionModel]
+        var sections: RevisionValue<[NoticeListSectionModel]?>
         
         /// Is loading to process
         var isLoading: Bool
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
     }
     
     // MARK: - properties
     var initialState: State
     private let networkService: NetworkServiceProtocol
     
+    private var dataSource: NoticeListSectionDataSource
+    
     // MARK: - constructor
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
-        initialState = State(sections: [], isLoading: true, shouldSectionReload: true)
+        dataSource = NoticeListSectionDataSource()
+        
+        initialState = State(
+            sections: RevisionValue(dataSource.makeSections()),
+            isLoading: true
+        )
     }
     
     // MARK: - mutation
@@ -58,33 +60,28 @@ class NoticeListViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
         case let .setSections(sections):
-            state.sections = sections
+            state.sections = state.sections.next(sections)
             return state
             
         case let .setLoading(isLoading):
             state.isLoading = isLoading
-            return state
-            
-        case .sectionReload:
-            state.shouldSectionReload = true
             return state
         }
     }
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
+        guard dataSource.noticeSection == nil else { return .empty() }
+        
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
         let requestNoticeList: Observable<Mutation> = networkService.requestNoticeList().asObservable()
-            .flatMap { notices -> Observable<Mutation> in
-                let setSections: Observable<Mutation> = .just(.setSections([NoticeListSectionModel(model: Void(), items: notices)]))
-                let sectionReload: Observable<Mutation> = .just(.sectionReload)
-                
-                return .concat(setSections, sectionReload)
-        }
+            .map {
+                self.dataSource.setItems($0)
+                return .setSections(self.dataSource.makeSections())
+            }
         let endLoading: Observable<Mutation> = .just(.setLoading(false))
         
         return .concat(startLoading, requestNoticeList, endLoading)
@@ -92,5 +89,25 @@ class NoticeListViewReactor: Reactor {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+// MARK: - countdown setting datasource
+typealias NoticeListSectionModel = SectionModel<Void, Notice>
+
+typealias NoticeListCellType = Notice
+
+struct NoticeListSectionDataSource {
+    // MARK: - section
+    private(set) var noticeSection: [NoticeListCellType]?
+    
+    // MARK: - public method
+    mutating func setItems(_ items: [Notice]) {
+        noticeSection = items
+    }
+    
+    func makeSections() -> [NoticeListSectionModel]? {
+        guard let items = noticeSection else { return nil }
+        return [NoticeListSectionModel(model: Void(), items: items)]
     }
 }
