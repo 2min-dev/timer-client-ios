@@ -239,8 +239,9 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
         
         // Timer badge
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
@@ -257,7 +258,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
             .distinctUntilChanged()
             .filter { $0 == .end }
             .withLatestFrom(reactor.state.map { ($0.selectedIndex,
-                                                 $0.sectionDataSource.regulars.count,
+                                                 $0.sections.value[1].items.count,
                                                  $0.isRepeat,
                                                  reactor.timeSet.history.repeatCount) })
             .subscribe(onNext: { [weak self] in self?.showTimeSetPopup(index: $0, count: $1, isRepeat: $2, repeatCount: $3) })

@@ -155,8 +155,9 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
         
         // Timer badge
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         

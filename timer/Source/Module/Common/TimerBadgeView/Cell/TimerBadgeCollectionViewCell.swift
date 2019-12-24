@@ -43,8 +43,6 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     }()
     
     // MARK: - properties
-    private var isEnabled: Bool = true
-    
     var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
@@ -123,12 +121,6 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.isEnabled }
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] in self?.setEnabled($0) })
-            .disposed(by: disposeBag)
-        
-        reactor.state
             .map { $0.isSelected }
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] in self?.setSelected($0) })
@@ -142,10 +134,6 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
         contentView.layer.cornerRadius = 5.adjust()
         contentView.layer.borderColor = Constants.Color.silver.cgColor
         contentView.layer.borderWidth = 0.5
-    }
-    
-    private func setEnabled(_ isEnabled: Bool) {
-        self.isEnabled = isEnabled
     }
     
     private func setSelected(_ isSelected: Bool) {

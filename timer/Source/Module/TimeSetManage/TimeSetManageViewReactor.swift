@@ -129,7 +129,7 @@ class TimeSetManageViewReactor: Reactor {
         let section = currentState.sections.value[sourceIndexPath.section].model
         
         dataSource.swap(at: sourceIndexPath.item, to: destinationIndexPath.item, section: section)
-        return .just(.setSections(dataSource.makeSections()))
+        return .empty()
     }
     
     private func actionApply() -> Observable<Mutation> {

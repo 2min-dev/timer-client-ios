@@ -22,9 +22,6 @@ class TimerBadgeCellReactor: Reactor {
         
         /// Select badge
         case select(Bool)
-        
-        /// Enable  badge
-        case enable(Bool)
     }
     
     enum Mutation {
@@ -39,9 +36,6 @@ class TimerBadgeCellReactor: Reactor {
         
         /// Set badge is selected
         case setSelected(Bool)
-        
-        /// Set badge is enabled
-        case setEnabled(Bool)
     }
     
     struct State {
@@ -56,22 +50,22 @@ class TimerBadgeCellReactor: Reactor {
         
         /// Selected state of badge
         var isSelected: Bool
-        
-        /// Enable state of badge
-        var isEnabled: Bool
     }
     
     // MARK: - properties
     var initialState: State
+    
     let id: Int
     
-    init(id: Int = 0, time: TimeInterval = 0, index: Int = 0, count: Int = 1, isSelected: Bool = false, isEnabled: Bool = true) {
+    init(id: Int = 0, time: TimeInterval = 0, index: Int = 0, count: Int = 1, isSelected: Bool = false) {
         self.id = id
-        initialState = State(index: index,
-                                  count: count,
-                                  time: time,
-                                  isSelected: isSelected,
-                                  isEnabled: isEnabled)
+        
+        initialState = State(
+            index: index,
+            count: count,
+            time: time,
+            isSelected: isSelected
+        )
     }
     
     // MARK: - mutate
@@ -88,9 +82,6 @@ class TimerBadgeCellReactor: Reactor {
             
         case let .select(isSelected):
             return .just(.setSelected(isSelected))
-            
-        case let .enable(isEnabled):
-            return .just(.setEnabled(isEnabled))
         }
     }
     
@@ -112,10 +103,6 @@ class TimerBadgeCellReactor: Reactor {
             
         case let .setSelected(isSelected):
             state.isSelected = isSelected
-            return state
-            
-        case let .setEnabled(isEnabled):
-            state.isEnabled = isEnabled
             return state
         }
     }
