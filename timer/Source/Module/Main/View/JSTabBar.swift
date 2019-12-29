@@ -1,5 +1,5 @@
 //
-//  TMTabBar.swift
+//  JSTabBar.swift
 //  timer
 //
 //  Created by JSilver on 29/07/2019.
@@ -10,11 +10,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-protocol TMTabBarDelegate: class {
-    func tabBar(_ tabBar: TMTabBar, didSelect index: Int)
+protocol JSTabBarDelegate: class {
+    func tabBar(_ tabBar: JSTabBar, didSelect index: Int)
 }
 
-class TMTabBar: UIView {
+class JSTabBar: UIView {
+    // MARK: - constants
+    private static let ANIMATION_DURATION: TimeInterval = 0.3
+    
     // MARK: - view properties
     private lazy var tabBarStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: tabBarItems)
@@ -31,12 +34,11 @@ class TMTabBar: UIView {
     
     private let indicatorView: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 2))
-        view.backgroundColor = UIColor(hex: "#007AFF")
         return view
     }()
     
     // MARK: - properties
-    var tabBarItems: [TMTabBarItem] = [] {
+    var tabBarItems: [JSTabBarItem] = [] {
         didSet {
             // Remove all added tab bar items
             tabBarStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
@@ -46,6 +48,7 @@ class TMTabBar: UIView {
                 
                 // Set default properties of tab bar item
                 element.tag = index
+                element.tintColor = tintColor
                 element.title.font = font
                 
                 // Add touch event
@@ -55,24 +58,30 @@ class TMTabBar: UIView {
     }
     // Observe tint color did changed to update background color of indicator view
     override var tintColor: UIColor! {
-        didSet { indicatorView.backgroundColor = tintColor }
+        didSet {
+            tabBarItems.forEach { $0.tintColor = tintColor }
+            indicatorView.backgroundColor = tintColor
+        }
     }
     // Observe font did changed to update font of title of tab bar item
-    var font: UIFont! {
+    var font: UIFont = UIFont.systemFont(ofSize: 17.0) {
         didSet { tabBarItems.forEach { $0.title.font = font } }
     }
-    var isIconHighlight: Bool = true
     
-    // Indicator animation & icon highlighting properties
+    var isIconHighlight: Bool = true {
+        didSet { select(at: selectedIndex) }
+    }
+    
+    // Indicator animator
     private var lastAnimator: UIViewPropertyAnimator?
-    var selectedItem: TMTabBarItem?
+    private var selectedIndex: Int = 0
     
-    weak var delegate: TMTabBarDelegate?
+    weak var delegate: JSTabBarDelegate?
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor(hex: "#FDFDFD")
+        backgroundColor = Constants.Color.white_fdfdfd
         
         addAutolayoutSubviews([tabBarStackView, dividerView, indicatorView])
         tabBarStackView.snp.makeConstraints { make in
@@ -96,14 +105,25 @@ class TMTabBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
+    // MARK: - lifecycle
+    override func draw(_ rect: CGRect) {
         // Calculate indicator view width accourding to tab bar item's count
-        indicatorView.frame.size.width = frame.width / CGFloat(tabBarItems.count)
+        let width = frame.width / CGFloat(tabBarItems.count)
         
-        if let item = selectedItem, let index = tabBarItems.firstIndex(of: item) {
-            // Select tab if need to reselect current tab
-            _ = select(at: index, animated: false)
+        indicatorView.frame.size.width = width
+        indicatorView.frame.origin.x = width * CGFloat(selectedIndex)
+    }
+    
+    // MARK: - private method
+    private func select(at index: Int) {
+        guard (0 ..< tabBarItems.count).contains(index) else { return }
+        if isIconHighlight {
+            // De & select tab bar item if `isIconHighlight` is `true`
+            tabBarItems[selectedIndex].isSelected = false
+            tabBarItems[index].isSelected = true
         }
+        
+        selectedIndex = index
     }
     
     // MARK: - public method
@@ -122,50 +142,51 @@ class TMTabBar: UIView {
     ///
     /// ## Conclusion
     /// For now, I set animation duration short enough to make impossible to cancel interaction.
+    @discardableResult
     func select(at index: Int, animated: Bool) -> UIViewPropertyAnimator? {
-        guard index < tabBarItems.count else { return nil }
-        let item = tabBarItems[index]
+        guard (0 ..< tabBarItems.count).contains(index) else { return nil }
         
-        var frame = indicatorView.frame
-        frame.origin.x = frame.width * CGFloat(index)
+        // Get indicator view frame
+        let frame = indicatorView.frame
+        let toPosition = frame.width * CGFloat(index)
         
         if animated {
-            let animator = UIViewPropertyAnimator(duration: 0.3,
-                                                  controlPoint1: CGPoint(x: 0.65, y: 0.0),
-                                                  controlPoint2: CGPoint(x: 0.35, y: 1.0)) {
-                self.indicatorView.frame = frame
+            if let animator = lastAnimator {
+                // Stop animator if last animator is running still
+                animator.stopAnimation(true)
             }
             
-            animator.addCompletion({ position in
-                if animator == self.lastAnimator && self.isIconHighlight && position == .end {
+            let animator = UIViewPropertyAnimator(
+                duration: Self.ANIMATION_DURATION,
+                controlPoint1: CGPoint(x: 0.65, y: 0.0),
+                controlPoint2: CGPoint(x: 0.35, y: 1.0)
+            ) {
+                self.indicatorView.frame.origin.x = toPosition
+            }
+            
+            animator.addCompletion { position in
+                if animator == self.lastAnimator && position == .end {
                     // If a completed animator is the last requested animator, set the icon highlight
                     self.lastAnimator = nil
-                    self.select(item: item)
+                    self.select(at: index)
                 }
-            })
+            }
             
             animator.startAnimation()
             lastAnimator = animator // Update the last animator per request
+            
             return animator
         } else {
             // If non animated, indicator move & icon highlight
-            indicatorView.frame = frame
-            select(item: item)
+            indicatorView.frame.origin.x = toPosition
+            select(at: index)
             
             return nil
         }
     }
     
-    // MARK: - private method
-    private func select(item: TMTabBarItem) {
-        selectedItem?.isSelected = false
-        selectedItem = item
-        selectedItem?.isSelected = true
-    }
-    
     // MARK: - selector
     @objc private func tabBarItemSelect(sender: UIButton) {
-        _ = select(at: sender.tag, animated: true)
         delegate?.tabBar(self, didSelect: sender.tag)
     }
 }
