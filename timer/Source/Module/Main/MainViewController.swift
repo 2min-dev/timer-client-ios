@@ -33,12 +33,12 @@ class MainViewController: UITabBarController, ViewControllable, View {
     }()
     
     // MARK: - properties
-    private var panGestureRecognizer: UIPanGestureRecognizer!
+    private var panGesture: UIPanGestureRecognizer!
     private var panGestureDirection: UIRectEdge?
     
     // Enable/Disable swipes on the tab bar controller
     var swipeEnable = true {
-        didSet { panGestureRecognizer.isEnabled = swipeEnable }
+        didSet { panGesture.isEnabled = swipeEnable }
     }
     
     var coordinator: MainViewCoordinator
@@ -70,8 +70,8 @@ class MainViewController: UITabBarController, ViewControllable, View {
         delegate = self
         _tabBar.delegate = self
         
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(gestureHandler(gesture:)))
-        view.addGestureRecognizer(panGestureRecognizer)
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
+        view.addGestureRecognizer(panGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -163,17 +163,17 @@ class MainViewController: UITabBarController, ViewControllable, View {
     }
     
     // MARK: - selector
-    @objc private func gestureHandler(gesture: UIPanGestureRecognizer) {
+    @objc private func panGestureHandler(gesture: UIPanGestureRecognizer) {
         // Do not attempt to begin an interactive transition if one is already
         guard transitionCoordinator == nil else { return }
         
         if gesture.state == .began || gesture.state == .changed {
             let translation = gesture.translation(in: view)
-            if translation.x > 0.0 && selectedIndex > 0 {
+            if translation.x > 0 && selectedIndex > 0 {
                 // Panning right, transition to the left view controller.
                 panGestureDirection = .left
                 selectedIndex -= 1
-            } else if translation.x < 0.0 && selectedIndex + 1 < viewControllers?.count ?? 0 {
+            } else if translation.x < 0 && selectedIndex + 1 < viewControllers?.count ?? 0 {
                 // Panning left, transition to the right view controller.
                 panGestureDirection = .right
                 selectedIndex += 1
@@ -202,14 +202,12 @@ extension MainViewController: UITabBarControllerDelegate {
             let animationController = animationController as? TabBarAnimator else { return nil }
 
         // Return interactor only change selected tab by pan gesture
-        if panGestureRecognizer.state == .began || panGestureRecognizer.state == .changed {
+        if let direction = panGestureDirection, panGesture.state == .began || panGesture.state == .changed {
             // Get animator to use for interaction
             guard let animator = tabBarController._tabBar.select(at: animationController.toIndex, animated: true) else { return nil }
             animator.pauseAnimation() // Pause animator to control through `fractionComplete`
             
-            return TabBarInteractor(animator: animator,
-                                    gestureRecognizer: panGestureRecognizer,
-                                    direction: panGestureDirection ?? .top)
+            return TabBarInteractor(tabBarAnimator: animator, gesture: panGesture, direction: direction)
         } else {
             return nil
         }

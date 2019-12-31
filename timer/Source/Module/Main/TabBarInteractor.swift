@@ -10,48 +10,54 @@ import UIKit
 
 class TabBarInteractor: UIPercentDrivenInteractiveTransition {
     // MARK: - constants
-    private let completeVelocity: CGFloat = 200.0
-    private let cancleVelocity: CGFloat = 30.0
+    private let completeVelocity: CGFloat = 200
+    private let cancleVelocity: CGFloat = 30
     
     // MARK: - properties
-    private let animator: UIViewPropertyAnimator
-    private let gestureRecognizer: UIPanGestureRecognizer
+    private let tabBarAnimator: UIViewPropertyAnimator
+    private let gesture: UIPanGestureRecognizer
     private let direction: UIRectEdge
     
     // MARK: - constructor
-    init(animator: UIViewPropertyAnimator, gestureRecognizer: UIPanGestureRecognizer, direction: UIRectEdge) {
-        self.animator = animator
-        self.gestureRecognizer = gestureRecognizer
+    init?(tabBarAnimator: UIViewPropertyAnimator, gesture: UIPanGestureRecognizer, direction: UIRectEdge) {
+        guard direction == .left || direction == .right else { return nil }
+        
+        self.tabBarAnimator = tabBarAnimator
+        self.gesture = gesture
         self.direction = direction
         super.init()
         
-        gestureRecognizer.addTarget(self, action: #selector(handleGesture(gesture:)))
+        gesture.addTarget(self, action: #selector(panGestureHandler))
     }
     
     // MARK: - selector
-    @objc private func handleGesture(gesture: UIPanGestureRecognizer) {
-        guard let containerView = gestureRecognizer.view else { return }
+    @objc private func panGestureHandler(gesture: UIPanGestureRecognizer) {
+        guard let containerView = gesture.view else { return }
         
-        let transition = gestureRecognizer.translation(in: containerView)
+        let transition = gesture.translation(in: containerView)
         let progress = transition.x / containerView.bounds.width
     
         switch gesture.state {
         case .began:
             break
+            
         case .changed:
             let percent = percentOfProgress(progress, by: direction)
             
             update(percent)
-            animator.fractionComplete = percent // Update tab bar animator
+            tabBarAnimator.fractionComplete = percent // Update tab bar animator
+            
         case .ended:
-            let velocity = gestureRecognizer.velocity(in: containerView)
+            let velocity = gesture.velocity(in: containerView)
             
             var shouldComplete = false
             switch direction {
             case .left:
                 shouldComplete = progress >= 0.5 || velocity.x > completeVelocity
+                
             case .right:
                 shouldComplete = progress <= -0.5 || velocity.x < -completeVelocity
+                
             default:
                 break
             }
@@ -60,14 +66,20 @@ class TabBarInteractor: UIPercentDrivenInteractiveTransition {
                 finish()
             } else {
                 cancel()
-                animator.isReversed = true // Tab bar animator reverse when transition canceled
+                tabBarAnimator.isReversed = true // Tab bar animator reverse when transition canceled
             }
-            animator.startAnimation() // Resume tab bar animation
+            tabBarAnimator.startAnimation() // Resume tab bar animation
             
             // Remove gesture recognizer when pan gesture ended (1 transition - 1 swipe)
-            gestureRecognizer.removeTarget(self, action: #selector(handleGesture(gesture:)))
+            gesture.removeTarget(self, action: #selector(panGestureHandler))
+            
         default:
             cancel()
+            
+            tabBarAnimator.isReversed = true
+            tabBarAnimator.startAnimation()
+
+            gesture.removeTarget(self, action: #selector(panGestureHandler))
         }
     }
     
@@ -76,8 +88,10 @@ class TabBarInteractor: UIPercentDrivenInteractiveTransition {
         switch direction {
         case .left:
             return abs(min(max(progress, 0), 1))
+            
         case .right:
             return abs(max(min(progress, 0), -1))
+            
         default:
             return 0
         }
