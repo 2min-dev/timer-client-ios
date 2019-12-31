@@ -40,7 +40,7 @@ class HistoryListViewCoordinator: ViewCoordinator, ServiceContainer {
         case .productivity:
             guard let mainViewController = viewController.navigationController?.viewControllers.first as? MainViewController else { return nil }
             // Select productivity tab
-            mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
+            mainViewController.select(tab: .productivity, animated: false)
             viewController.navigationController?.setViewControllers([mainViewController], animated: animated)
             
         case .detail:

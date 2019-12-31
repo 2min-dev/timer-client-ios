@@ -12,22 +12,23 @@ import ReactorKit
 
 class MainViewController: UITabBarController, ViewControllable, View {
     // MARK: - constants
-    enum TabType: Int {
+    enum Tab: Int {
         case localTimeSet = 0
         case productivity
         case preset
     }
     
     // MARK: - view properties
-    let _tabBar: TMTabBar = {
-        let view = TMTabBar()
-        view.tabBarItems = [
-            TMTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
-            TMTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
-            TMTabBarItem(title: "tab_button_preset".localized, icon: UIImage(named: "btn_tab_share"))
-        ]
+    let _tabBar: JSTabBar = {
+        let view = JSTabBar()
         view.font = Constants.Font.Regular.withSize(12.adjust())
         view.tintColor = Constants.Color.carnation
+        
+        view.tabBarItems = [
+            JSTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
+            JSTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
+            JSTabBarItem(title: "tab_button_preset".localized, icon: UIImage(named: "btn_tab_share"))
+        ]
         return view
     }()
     
@@ -59,10 +60,11 @@ class MainViewController: UITabBarController, ViewControllable, View {
         initLayout()
         
         // Set view controllers
-        viewControllers = [coordinator.get(for: .local),
-                           coordinator.get(for: .productivity),
-                           coordinator.get(for: .preset)]
-            .compactMap { $0?.controller }
+        viewControllers = [
+            coordinator.get(for: .local),
+            coordinator.get(for: .productivity),
+            coordinator.get(for: .preset)
+        ].compactMap { $0?.controller }
         
         // Set tab bar view controller delegate for swipable
         delegate = self
@@ -74,6 +76,7 @@ class MainViewController: UITabBarController, ViewControllable, View {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         if #available(iOS 11.0, *) {
             // Nothing newer than iOS 11.0
         } else {
@@ -84,6 +87,7 @@ class MainViewController: UITabBarController, ViewControllable, View {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
         // Update child view controller view size
         viewControllers?.forEach {
             if #available(iOS 11.0, *) {
@@ -115,17 +119,19 @@ class MainViewController: UITabBarController, ViewControllable, View {
         case .cancel:
             Toast(
                 content: "toast_time_set_end_cancel_title".localized,
-                task: ToastTask(title: "toast_task_move_title".localized, handler: {
-                    _ = self.coordinator.present(for: .historyDetail(history), animated: true)
-                })
+                task: ToastTask(
+                    title: "toast_task_move_title".localized,
+                    handler: { _ = self.coordinator.present(for: .historyDetail(history), animated: true) }
+                )
             ).show(animated: true, withDuration: 3)
             
         case .overtime:
             Toast(
                 content: "toast_time_set_end_overtime_title".localized,
-                task: ToastTask(title: "toast_task_memo_title".localized, handler: {
-                    _ = self.coordinator.present(for: .historyDetail(history), animated: true)
-                })
+                task: ToastTask(
+                    title: "toast_task_memo_title".localized,
+                    handler: { _ = self.coordinator.present(for: .historyDetail(history), animated: true) }
+                )
             ).show(animated: true, withDuration: 3)
             
         default:
@@ -135,7 +141,6 @@ class MainViewController: UITabBarController, ViewControllable, View {
     
     // MARK: - private method
     private func initLayout() {
-        view.backgroundColor = Constants.Color.white
         tabBar.isHidden = true
         
         // Set constraints of subviews
@@ -149,8 +154,12 @@ class MainViewController: UITabBarController, ViewControllable, View {
     
     // MARK: - public method
     func select(at index: Int, animated: Bool) {
+        _tabBar.select(at: index, animated: animated)
         selectedIndex = index
-        _ = _tabBar.select(at: index, animated: animated)
+    }
+    
+    func select(tab: Tab, animated: Bool) {
+        select(at: tab.rawValue, animated: animated)
     }
     
     // MARK: - selector
@@ -207,8 +216,13 @@ extension MainViewController: UITabBarControllerDelegate {
     }
 }
 
-extension MainViewController: TMTabBarDelegate {
-    func tabBar(_ tabBar: TMTabBar, didSelect index: Int) {
-        selectedViewController = viewControllers?[index]
+extension MainViewController: JSTabBarDelegate {
+    func tabBar(_ tabBar: JSTabBar, didSelect index: Int) {
+        // Guard transition by tab bar select if transition already in progress
+        guard transitionCoordinator == nil else { return }
+        
+        // Animate tab bar indicator animation
+        tabBar.select(at: index, animated: true)
+        selectedIndex = index
     }
 }
