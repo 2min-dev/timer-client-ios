@@ -45,11 +45,35 @@ enum Constants {
     enum Color {
         static let clear: UIColor = .clear
         
+        static let alabaster: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "alabaster")!
+            } else {
+                return UIColor(hex: "#FAFAFA")
+            }
+        }()
+
+        static let carnation: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "carnation")!
+            } else {
+                return UIColor(hex: "#F24150")
+            }
+        }()
+        
         static let codGray: UIColor = {
             if #available(iOS 11.0, *) {
                 return UIColor(named: "cod_gray")!
             } else {
                 return UIColor(hex: "#0A0A0A")
+            }
+        }()
+        
+        static let darkBlue: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "dark_blue")!
+            } else {
+                return UIColor(hex: "#0009AC")
             }
         }()
 
@@ -61,43 +85,11 @@ enum Constants {
             }
         }()
 
-        static let silver: UIColor = {
-            if #available(iOS 11.0, *) {
-                return UIColor(named: "silver")!
-            } else {
-                return UIColor(hex: "#C8C8C8")
-            }
-        }()
-
         static let gallery: UIColor = {
             if #available(iOS 11.0, *) {
                 return UIColor(named: "gallery")!
             } else {
                 return UIColor(hex: "#F0F0F0")
-            }
-        }()
-        
-        static let alabaster: UIColor = {
-            if #available(iOS 11.0, *) {
-                return UIColor(named: "alabaster")!
-            } else {
-                return UIColor(hex: "#FAFAFA")
-            }
-        }()
-
-        static let white: UIColor = {
-            if #available(iOS 11.0, *) {
-                return UIColor(named: "white")!
-            } else {
-                return UIColor(hex: "#FFFFFF")
-            }
-        }()
-
-        static let carnation: UIColor = {
-            if #available(iOS 11.0, *) {
-                return UIColor(named: "carnation")!
-            } else {
-                return UIColor(hex: "#F24150")
             }
         }()
 
@@ -108,12 +100,28 @@ enum Constants {
                 return UIColor(hex: "#020873")
             }
         }()
-        
-        static let darkBlue: UIColor = {
+
+        static let silver: UIColor = {
             if #available(iOS 11.0, *) {
-                return UIColor(named: "dark_blue")!
+                return UIColor(named: "silver")!
             } else {
-                return UIColor(hex: "#0009AC")
+                return UIColor(hex: "#C8C8C8")
+            }
+        }()
+
+        static let white: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "white")!
+            } else {
+                return UIColor(hex: "#FFFFFF")
+            }
+        }()
+        
+        static let white_fdfdfd: UIColor = {
+            if #available(iOS 11.0, *) {
+                return UIColor(named: "white#fdfdfd")!
+            } else {
+                return UIColor(hex: "#FDFDFD")
             }
         }()
     }

@@ -11,6 +11,7 @@ import UIKit
 class MainViewBuilder: Builder {
     struct Dependency {
         let provider: ServiceProviderProtocol
+        let selectedTab: MainViewController.Tab
     }
     
     var dependency: Dependency
@@ -31,7 +32,7 @@ class MainViewBuilder: Builder {
         viewController.reactor = reactor
         
         // set tab bar view controller initial index
-        viewController.select(at: MainViewController.TabType.productivity.rawValue, animated: false)
+        viewController.select(tab: dependency.selectedTab, animated: false)
         
         return (viewController, coordinator)
     }

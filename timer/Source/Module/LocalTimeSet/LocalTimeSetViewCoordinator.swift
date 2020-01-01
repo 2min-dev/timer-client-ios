@@ -40,7 +40,7 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         switch route {
         case .productivity:
             guard let mainViewController = presentingViewController.tabBarController as? MainViewController else { return nil }
-            mainViewController.select(at: MainViewController.TabType.productivity.rawValue, animated: animated)
+            mainViewController.select(tab: .productivity, animated: animated)
             
         case .timeSetManage(_):
             // Set dismiss handler

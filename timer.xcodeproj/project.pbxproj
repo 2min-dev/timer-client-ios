@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		567B95F9C61A02A2A653A4D4 /* Pods_timerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3396B81EE1BA9386DA9B77DF /* Pods_timerTests.framework */; };
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
-		F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* TMTabBar.swift */; };
-		F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* TMTabBarItem.swift */; };
+		F302608F22EEAFC300E3E431 /* JSTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* JSTabBar.swift */; };
+		F302609122EEB89600E3E431 /* JSTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* JSTabBarItem.swift */; };
 		F303F267225CC9E900A11FAF /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F266225CC9E900A11FAF /* BaseNavigationController.swift */; };
 		F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */; };
 		F303F26D225CCAE400A11FAF /* LocalTimeSetViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */; };
@@ -275,8 +275,8 @@
 		8DAA476B776A79A887A8BAB2 /* Pods-timer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.debug.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.debug.xcconfig"; sourceTree = "<group>"; };
 		CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-test.release.xcconfig"; path = "Target Support Files/Pods-test/Pods-test.release.xcconfig"; sourceTree = "<group>"; };
 		E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.release.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.release.xcconfig"; sourceTree = "<group>"; };
-		F302608E22EEAFC300E3E431 /* TMTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTabBar.swift; sourceTree = "<group>"; };
-		F302609022EEB89600E3E431 /* TMTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMTabBarItem.swift; sourceTree = "<group>"; };
+		F302608E22EEAFC300E3E431 /* JSTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTabBar.swift; sourceTree = "<group>"; };
+		F302609022EEB89600E3E431 /* JSTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTabBarItem.swift; sourceTree = "<group>"; };
 		F303F266225CC9E900A11FAF /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		F303F26A225CCADB00A11FAF /* LocalTimeSetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewController.swift; sourceTree = "<group>"; };
 		F303F26C225CCAE400A11FAF /* LocalTimeSetViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTimeSetViewReactor.swift; sourceTree = "<group>"; };
@@ -697,8 +697,8 @@
 		F35169842386DE1500EFE74C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				F302609022EEB89600E3E431 /* TMTabBarItem.swift */,
-				F302608E22EEAFC300E3E431 /* TMTabBar.swift */,
+				F302609022EEB89600E3E431 /* JSTabBarItem.swift */,
+				F302608E22EEAFC300E3E431 /* JSTabBar.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1693,7 +1693,7 @@
 				F3C0DFA523336E0000E49425 /* Notice.swift in Sources */,
 				F3E5C3522296E52000148139 /* UITabBar+height.swift in Sources */,
 				F3E1FBF92387B3B3008FB3AB /* Version.swift in Sources */,
-				F302609122EEB89600E3E431 /* TMTabBarItem.swift in Sources */,
+				F302609122EEB89600E3E431 /* JSTabBarItem.swift in Sources */,
 				F3CD208522FD95E20059E1BA /* TimeSetEditViewController.swift in Sources */,
 				F3F541452327E0FE00D618D2 /* TimeSetManageHeaderCollectionReusableView.swift in Sources */,
 				F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */,
@@ -1748,7 +1748,7 @@
 				F39B0B88231F71E200C2785A /* Error.swift in Sources */,
 				F37CA0B323A8F23E00A8990F /* AllTimeSetViewBuilder.swift in Sources */,
 				F37CA0CD23A8FCF500A8990F /* CountdownSettingViewBuilder.swift in Sources */,
-				F302608F22EEAFC300E3E431 /* TMTabBar.swift in Sources */,
+				F302608F22EEAFC300E3E431 /* JSTabBar.swift in Sources */,
 				F3962B0A234DB9950054DF7A /* TimeSetEndViewCoordinator.swift in Sources */,
 				F33CFA2623675B3700C4032A /* Alertable.swift in Sources */,
 				F3D1F7BB225CC357006DC162 /* Primitive+adjust.swift in Sources */,

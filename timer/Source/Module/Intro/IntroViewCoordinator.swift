@@ -55,7 +55,7 @@ class IntroViewCoordinator: NSObject, ViewCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .main:
-            let dependency = MainViewBuilder.Dependency(provider: provider)
+            let dependency = MainViewBuilder.Dependency(provider: provider, selectedTab: .productivity)
             return MainViewBuilder(with: dependency).build()
             
         case .timeSetProcess:
