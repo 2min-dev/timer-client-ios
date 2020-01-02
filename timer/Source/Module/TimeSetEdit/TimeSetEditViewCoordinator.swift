@@ -32,6 +32,8 @@ class TimeSetEditViewCoordinator: ViewCoordinator, ServiceContainer {
     func present(for route: Route, animated: Bool) -> UIViewController? {
         guard case (let controller, var coordinator)? = get(for: route) else { return nil }
         let presentingViewController = controller
+        // Set enable that navigation controller pop gesture recognizer before present
+        viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
         switch route {
         case .dismiss:
