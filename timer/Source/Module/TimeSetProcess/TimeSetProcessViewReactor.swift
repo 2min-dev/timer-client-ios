@@ -108,13 +108,8 @@ class TimeSetProcessViewReactor: Reactor {
         /// Current running timer state of time set
         var timerState: JSTimer.State
         
-        /// Section datasource to make sections
-        let sectionDataSource: TimerBadgeDataSource
-        
         /// The timer list badge sections
-        var sections: [TimerBadgeSectionModel] {
-            sectionDataSource.makeSections()
-        }
+        var sections: RevisionValue<[TimerBadgeSectionModel]>
         
         /// Current running timer item
         var timer: TimerItem
@@ -136,6 +131,8 @@ class TimeSetProcessViewReactor: Reactor {
     var initialState: State
     private let appService: AppServiceProtocol
     private var timeSetService: TimeSetServiceProtocol
+    
+    private var dataSource: TimerBadgeSectionDataSource
     
     let origin: TimeSetItem
     let timeSet: TimeSet // Running time set
@@ -169,10 +166,10 @@ class TimeSetProcessViewReactor: Reactor {
         
         // Get initial state
         let timer = timeSet.item.timers[index]
-        let time = timer.end + timer.extra - timer.current
+        let time = timer.end - timer.current
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: timeSet.item.timers.toArray(), index: index)
+        dataSource = TimerBadgeSectionDataSource(regulars: timeSet.item.timers.toArray(), index: index)
         
         initialState = State(
             title: timeSet.item.title,
@@ -185,7 +182,7 @@ class TimeSetProcessViewReactor: Reactor {
             countdown: Int(ceil(countdownTimer.item.end - countdownTimer.item.current)),
             timeSetState: timeSet.state,
             timerState: timeSet.timer.state,
-            sectionDataSource: dataSource,
+            sections: RevisionValue(dataSource.makeSections()),
             timer: timer,
             selectedIndex: index,
             shouldSectionReload: true,
@@ -220,10 +217,10 @@ class TimeSetProcessViewReactor: Reactor {
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
         timeSetItem: TimeSetItem,
-        startIndex: Int = 0,
+        startIndex: Int,
         canSave: Bool
     ) {
-        guard startIndex >= 0 && startIndex < timeSetItem.timers.count else {
+        guard (0 ..< timeSetItem.timers.count).contains(startIndex) else {
             Logger.error("can't start from \(startIndex) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
             return nil
         }
@@ -394,9 +391,9 @@ class TimeSetProcessViewReactor: Reactor {
         
         // Update selected timer state
         if index != previousIndex {
-            state.sectionDataSource.regulars[previousIndex].action.onNext(.select(false))
+            dataSource.setSelected(false, at: previousIndex)
         }
-        state.sectionDataSource.regulars[index].action.onNext(.select(true))
+        dataSource.setSelected(true, at: index)
         
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
         let setTimer: Observable<Mutation> = .just(.setTimer(timeSet.item.timers[index]))
@@ -468,6 +465,7 @@ class TimeSetProcessViewReactor: Reactor {
         return .empty()
     }
     
+    // FIXME: refactor method to reduce repeated `+ extra` assignment
     private func actionAddExtraTime(_ extra: TimeInterval) -> Observable<Mutation> {
         let state = currentState
         guard state.extraTime < TimeSetProcessViewReactor.MAX_EXTRA_TIME else { return .empty() }

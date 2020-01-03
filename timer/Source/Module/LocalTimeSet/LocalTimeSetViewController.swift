@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class LocalTimeSetViewController: BaseHeaderViewController, View {
+class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var localTimeSetView: LocalTimeSetView { return view as! LocalTimeSetView }
     
@@ -23,8 +23,8 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     var coordinator: LocalTimeSetViewCoordinator
     
     // Time set datasource
-    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<TimeSetSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
-        guard let sectionType = LocalTimeSetSectionType(rawValue: indexPath.section) else { return UICollectionViewCell() }
+    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<LocalTimeSetSectionModel>(configureCell: { dataSource, collectionView, indexPath, cellType -> UICollectionViewCell in
+        let sectionType = dataSource.sectionModels[indexPath.section].model
         
         switch cellType {
         case let .regular(reactor):
@@ -65,13 +65,11 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
             // Section header
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView,
-                let sectionType = LocalTimeSetSectionType(rawValue: indexPath.section) else {
-                return UICollectionReusableView()
-            }
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView  else { return UICollectionReusableView() }
             
+            let sectionType = dataSource.sectionModels[indexPath.section].model
             // Set view type
-            let cellType = self?.reactor?.currentState.sections[indexPath.section].items.first
+            let cellType = self?.reactor?.currentState.sections.value[indexPath.section].items.first
             switch cellType {
             case .regular(_):
                 supplementaryView.type = .header
@@ -89,7 +87,10 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to saved time set manage
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.saved)) })
+                    .subscribe(onNext: { [weak self] in
+                        guard let viewController = self?.coordinator.present(for: .timeSetManage(.saved), animated: true) as? TimeSetManageViewController else { return }
+                        self?.bind(manage: viewController)
+                    })
                     .disposed(by: supplementaryView.disposeBag)
             } else {
                 // Bookmarked time set
@@ -98,18 +99,20 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to bookmarked time set manage
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetManage(.bookmarked)) })
+                    .subscribe(onNext: { [weak self] in
+                        guard let viewController = self?.coordinator.present(for: .timeSetManage(.bookmarked), animated: true) as? TimeSetManageViewController else { return }
+                        self?.bind(manage: viewController)
+                        
+                    })
                     .disposed(by: supplementaryView.disposeBag)
             }
             
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionFooter.kind:
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView,
-                let sectionType = LocalTimeSetSectionType(rawValue: indexPath.section) else {
-                    return UICollectionReusableView()
-            }
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else { return UICollectionReusableView() }
             
+            let sectionType = dataSource.sectionModels[indexPath.section].model
             // Set view type footer
             supplementaryView.type = .footer
             
@@ -119,7 +122,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to all saved time set
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.saved)) })
+                    .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .allTimeSet(.saved), animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             } else {
                 // Bookmarked time set
@@ -127,7 +130,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
                 
                 // Present to all bookmarked time set
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .allTimeSet(.bookmarked)) })
+                    .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .allTimeSet(.bookmarked), animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             }
             
@@ -156,29 +159,23 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register supplimentary view
-        timeSetCollectionView.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
-        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
-        timeSetCollectionView.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionFooter.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
-        // Register cell
-        timeSetCollectionView.register(TimeSetInduceCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetInduceCollectionViewCell.name)
-        timeSetCollectionView.register(SavedTimeSetHighlightCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name)
-        timeSetCollectionView.register(SavedTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetCollectionViewCell.name)
-        timeSetCollectionView.register(BookmaredTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: BookmaredTimeSetCollectionViewCell.name)
-        
         // Set layout delegate
         if let layout = timeSetCollectionView.collectionViewLayout as? JSCollectionViewLayout {
             layout.delegate = self
         }
     }
     
+    // MARK: - bind
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
-    // MARK: - bind
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
         Observable.merge(rx.viewDidLoad.asObservable(),
@@ -188,28 +185,36 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
-            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
+            .withLatestFrom(reactor.state.map { $0.sections.value }, resultSelector: { ($0, $1) })
             .subscribe(onNext: { [weak self] in self?.timeSetSelected(cell: $1[$0.section].items[$0.item]) })
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
     
-    // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
+    private func bind(manage viewControler: TimeSetManageViewController) {
+        guard let reactor = reactor else { return }
         
+        viewControler.rx.applied
+            .map { .refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            coordinator.present(for: .setting, animated: true)
             
         default:
             break
@@ -220,10 +225,10 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
     private func timeSetSelected(cell type: LocalTimeSetCellType) {
         switch type {
         case let .regular(reactor):
-            _ = coordinator.present(for: .timeSetDetail(reactor.timeSetItem))
+            coordinator.present(for: .timeSetDetail(reactor.timeSetItem), animated: true)
             
         case .empty:
-            (tabBarController as? MainViewController)?.select(at: MainViewController.TabType.productivity.rawValue, animated: true)
+            coordinator.present(for: .productivity, animated: true)
         }
     }
     
@@ -234,19 +239,21 @@ class LocalTimeSetViewController: BaseHeaderViewController, View {
 
 extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout,
+            let sectionType = reactor?.currentState.sections.value[indexPath.section].model else { return .zero }
         
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 0)
         
-        if indexPath.section == LocalTimeSetSectionType.saved.rawValue {
+        switch sectionType {
+        case .saved:
             // Saved time set
             size.height = 140.adjust()
             if indexPath.row > 0 {
                 // Set width that half of collection view width except first time set
                 size.width = (size.width - layout.minimumInteritemSpacing) / 2
             }
-        } else {
+        case .bookmarked:
             // Bookmarked time set
             size.height = 90.adjust()
         }
@@ -259,9 +266,7 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard let reactor = reactor, let cellType = reactor.currentState.sections[section].items.first else {
-            return .zero
-        }
+        guard let cellType = reactor?.currentState.sections.value[section].items.first else { return .zero }
         
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         switch cellType {
@@ -286,43 +291,22 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {
-        guard let reactor = reactor, !reactor.currentState.sections[section].items.isEmpty else { return false }
-        return true
+        !(reactor?.currentState.sections.value[section].items.isEmpty ?? false)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleFooterInSection section: Int) -> Bool {
         guard let reactor = reactor else { return false }
         
+        let sectionType = reactor.currentState.sections.value[section].model
         let savedTimeSetCount = reactor.currentState.savedTimeSetCount
         let bookmarkedTimeSetCount = reactor.currentState.bookmarkedTimeSetCount
         
-        if section == LocalTimeSetSectionType.saved.rawValue {
+        switch sectionType {
+        case .saved:
             return savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET
-        } else {
-            return bookmarkedTimeSetCount > LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET
-        }
-    }
-}
-
-// MARK: - local time set datasource
-typealias TimeSetSectionModel = SectionModel<Void, LocalTimeSetCellType>
-
-enum LocalTimeSetSectionType: Int {
-    case saved
-    case bookmarked
-}
-
-enum LocalTimeSetCellType {
-    case regular(TimeSetCollectionViewCellReactor)
-    case empty
-    
-    var item: TimeSetCollectionViewCellReactor? {
-        switch self {
-        case let .regular(reactor):
-            return reactor
             
-        default:
-            return nil
+        case .bookmarked:
+            return bookmarkedTimeSetCount > LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET
         }
     }
 }

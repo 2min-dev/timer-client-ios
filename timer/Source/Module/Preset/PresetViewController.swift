@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class PresetViewController: BaseHeaderViewController, View {
+class PresetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var presetView: PresetView { view as! PresetView }
     
@@ -60,11 +60,6 @@ class PresetViewController: BaseHeaderViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register supplimentary view
-        timeSetCollectionView.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
-        // Register cell
-        timeSetCollectionView.register(BookmaredTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: BookmaredTimeSetCollectionViewCell.name)
-        
         // Set layout delegate
         if let layout = timeSetCollectionView.collectionViewLayout as? JSCollectionViewLayout {
             layout.delegate = self
@@ -74,6 +69,10 @@ class PresetViewController: BaseHeaderViewController, View {
     // MARK: - bine
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
@@ -86,18 +85,19 @@ class PresetViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
-            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { ($0, $1) })
+            .withLatestFrom(reactor.state.compactMap { $0.sections.value }, resultSelector: { ($0, $1) })
             .subscribe(onNext: { [weak self] in
                 let timeSetItem = $1[$0.section].items[$0.item].timeSetItem
-                _ = self?.coordinator.present(for: .timeSetDetail(timeSetItem))
+                self?.coordinator.present(for: .timeSetDetail(timeSetItem), animated: true)
             })
             .disposed(by: disposeBag)
         
         // MARK: state
         // Preset section
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
@@ -118,15 +118,13 @@ class PresetViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            coordinator.present(for: .setting, animated: true)
             
         default:
             break

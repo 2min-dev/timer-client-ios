@@ -32,8 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         
         // Present intro view
-        let appCoordinator: AppCoordinator = AppCoordinator(provider: provider, window: window!)
-        appCoordinator.present(for: .intro)
+        let appCoordinator: AppCoordinator = AppCoordinator(window: window!, provider: provider)
+        appCoordinator.present(for: .intro, animated: true)
         
         return true
     }
@@ -43,7 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         provider.appService.setBackgroundDate(Date())
         
         // Store current running time set data into user defaults
-        guard let timeSet = provider.timeSetService.storeTimeSet() else { return }
+        guard let timeSet = provider.timeSetService.runningTimeSet?.timeSet,
+            timeSet.state == .run else { return }
+        provider.timeSetService.storeTimeSet()
         timeSet.pause()
         
         // Register time set notification
@@ -55,8 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let backgroundDate = provider.appService.getBackgroundDate() else { return }
         let passedTime = Date().timeIntervalSince1970 - backgroundDate.timeIntervalSince1970
         
-        guard let timeSet = provider.timeSetService.runningTimeSet?.timeSet,
-            provider.appService.getRunningTimeSet() != nil else { return }
+        guard let timeSet = provider.timeSetService.restoreTimeSet() else { return }
         
         // Consume the passed time and restart the time set
         timeSet.consume(time: passedTime)
@@ -78,9 +79,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // a schema version lower than the one set above
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
-                    // TODO: migrate from scheme version 0
-                    // * TimeSetItem
-                    
                     // Migrate history model
                     migration.enumerateObjects(ofType: History.className()) { oldObject, newObject in
                         guard let oldObject = oldObject, let newObject = newObject else { return }

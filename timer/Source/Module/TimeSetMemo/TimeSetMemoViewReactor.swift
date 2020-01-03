@@ -61,4 +61,8 @@ class TimeSetMemoViewReactor: Reactor {
         history.memo = memo
         return .just(.setMemo(memo))
     }
+    
+    deinit {
+        Logger.verbose()
+    }
 }

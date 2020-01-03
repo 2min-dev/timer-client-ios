@@ -48,13 +48,8 @@ class TimeSetDetailViewReactor: Reactor {
         /// Current selected timer
         var timer: TimerItem
         
-        /// Section datasource to make sections
-        let sectionDataSource: TimerBadgeDataSource
-        
         /// The timer list badge sections
-        var sections: [TimerBadgeSectionModel] {
-            sectionDataSource.makeSections()
-        }
+        var sections: RevisionValue<[TimerBadgeSectionModel]>
         
         /// Current selected timer index
         var selectedIndex: Int
@@ -75,20 +70,22 @@ class TimeSetDetailViewReactor: Reactor {
     
     var timeSetItem: TimeSetItem
     
+    private var dataSource: TimerBadgeSectionDataSource
+    
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem, canSave: Bool) {
         self.timeSetService = timeSetService
         self.timeSetItem = timeSetItem
         
         // Create seciont datasource
-        let dataSource = TimerBadgeDataSource(timers: timeSetItem.timers.toArray(), index: 0)
+        dataSource = TimerBadgeSectionDataSource(regulars: timeSetItem.timers.toArray(), index: 0)
         
         initialState = State(
             isBookmark: timeSetItem.isBookmark,
             title: timeSetItem.title,
             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
             timer: timeSetItem.timers.first ?? TimerItem(),
-            sectionDataSource: dataSource,
+            sections: RevisionValue(dataSource.makeSections()),
             selectedIndex: 0,
             canTimeSetSave: canSave,
             didTimeSetSaved: RevisionValue(nil),
@@ -124,9 +121,6 @@ class TimeSetDetailViewReactor: Reactor {
             return state
             
         case let .setSelectedIndex(at: index):
-            let section: Int = TimerBadgeSectionType.regular.rawValue
-            guard index >= 0 && index < state.sections[section].items.count else { return state }
-            
             state.selectedIndex = index
             return state
             
@@ -154,9 +148,9 @@ class TimeSetDetailViewReactor: Reactor {
         
         // Update selected timer state
         if index != previousIndex {
-            state.sectionDataSource.regulars[previousIndex].action.onNext(.select(false))
+            dataSource.setSelected(false, at: previousIndex)
         }
-        state.sectionDataSource.regulars[index].action.onNext(.select(true))
+        dataSource.setSelected(true, at: index)
         
         let setSelectedIndex: Observable<Mutation> = .just(.setSelectedIndex(at: index))
         let setTimer: Observable<Mutation> = .just(.setTimer(timeSetItem.timers[index]))

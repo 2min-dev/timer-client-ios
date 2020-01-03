@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxDataSources
 import ReactorKit
 
 class HistoryListViewReactor: Reactor {
@@ -18,28 +19,25 @@ class HistoryListViewReactor: Reactor {
     enum Mutation {
         /// Set menu sections
         case setSections([HistorySectionModel])
-        
-        /// Set should section reload `true`
-        case sectionReload
     }
     
     struct State {
         /// History sections
-        var sections: [HistorySectionModel]
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
+        var sections: RevisionValue<[HistorySectionModel]>
     }
     
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
     
+    private var dataSource: HistoryListSectionDataSource
+    
     // MARK: - constructor
     init(timeSetService: TimeSetServiceProtocol) {
         self.timeSetService = timeSetService
-        initialState = State(sections: [],
-                             shouldSectionReload: true)
+        dataSource = HistoryListSectionDataSource()
+        
+        initialState = State(sections: RevisionValue(dataSource.makeSections()))
     }
     
     // MARK: - mutation
@@ -53,15 +51,10 @@ class HistoryListViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
         case let .setSections(sections):
-            state.sections = sections
-            return state
-            
-        case .sectionReload:
-            state.shouldSectionReload = true
+            state.sections = state.sections.next(sections)
             return state
         }
     }
@@ -69,17 +62,33 @@ class HistoryListViewReactor: Reactor {
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
         return timeSetService.fetchHistories().asObservable()
-            .flatMap { histories -> Observable<Mutation> in
-                let items = histories.compactMap { HistoryListCollectionViewCellReactor(history: $0) }
-                
-                let setSections: Observable<Mutation> = .just(.setSections([HistorySectionModel(model: Void(), items: items)]))
-                let sectionReload: Observable<Mutation> = .just(.sectionReload)
-                
-                return .concat(setSections, sectionReload)
-        }
+            .map {
+                self.dataSource.setItems($0)
+                return .setSections(self.dataSource.makeSections())
+            }
     }
     
     deinit {
         Logger.verbose()
+    }
+}
+
+// MARK: - setting datasource
+typealias HistorySectionModel = SectionModel<Void, HistoryListCollectionViewCellReactor>
+
+typealias HistoryCellType = HistoryListCollectionViewCellReactor
+
+struct HistoryListSectionDataSource {
+    // MARK: - section
+    var historySection: [HistoryCellType] = []
+    
+    // MARK: - public method
+    mutating func setItems(_ itmes: [History]) {
+        historySection = itmes
+            .compactMap { HistoryListCollectionViewCellReactor(history: $0) }
+    }
+    
+    func makeSections() -> [HistorySectionModel] {
+        return [HistorySectionModel(model: Void(), items: historySection)]
     }
 }

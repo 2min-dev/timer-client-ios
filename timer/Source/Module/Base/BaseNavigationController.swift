@@ -1,5 +1,5 @@
 //
-//  BaseNavicationController.swift
+//  BaseNavigationController.swift
 //  timer
 //
 //  Created by Jeong Jin Eun on 09/04/2019.
@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class BaseNavicationController: UINavigationController {
+class BaseNavigationController: UINavigationController {
     // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,7 @@ class BaseNavicationController: UINavigationController {
 }
 
 // MARK: - extension
-extension BaseNavicationController: UIGestureRecognizerDelegate {
+extension BaseNavigationController: UIGestureRecognizerDelegate {
     // when a gesture recognizer attempts to transition out of the UIGestureRecognizer.State.possible state
     // Returning false causes the gesture recognizer to transition to the UIGestureRecognizer.State.failed state.
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {

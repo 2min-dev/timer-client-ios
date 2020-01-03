@@ -8,48 +8,54 @@
 
 import UIKit
 
-class NoticeListViewCoordinator: CoordinatorProtocol {
+class NoticeListViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
+        case dismiss
         case noticeDetail(Notice)
     }
     
     // MARK: - properties
-    weak var viewController: UIViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
     // MARK: - presentation
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
+            
         case .noticeDetail(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case let .noticeDetail(notice):
-            let coordinator = NoticeDetailViewCoordinator(provider: provider)
-            let reactor = NoticeDetailViewReactor(networkService: provider.networkService, notice: notice)
-            let viewController = NoticeDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = NoticeDetailViewBuilder.Dependency(provider: provider, notice: notice)
+            return NoticeDetailViewBuilder(with: dependency).build()
         }
     }
     
-    // MARK: - private method
-    // MARK: - public method
+    deinit {
+        Logger.verbose()
+    }
 }

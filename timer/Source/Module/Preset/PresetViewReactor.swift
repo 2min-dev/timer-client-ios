@@ -10,20 +10,6 @@ import RxSwift
 import ReactorKit
 import RxDataSources
 
-// MARK: - local time set datasource
-typealias PresetSectionModel = SectionModel<Void, TimeSetCollectionViewCellReactor>
-
-class PresetDataSource {
-    var items: [TimeSetItem]?
-    
-    func makeSections() -> [PresetSectionModel] {
-        guard let items = items else { return [] }
-        
-        let reactors = items.map { TimeSetCollectionViewCellReactor(timeSetItem: $0) }
-        return [PresetSectionModel(model: Void(), items: reactors)]
-    }
-}
-
 class PresetViewReactor: Reactor {
     enum Action {
         /// Fetch preset list from server
@@ -31,49 +17,42 @@ class PresetViewReactor: Reactor {
     }
     
     enum Mutation {
+        /// Set preset sections
+        case setSections([PresetSectionModel]?)
+        
         /// Set loading flag
         case setLoading(Bool)
         
         /// Set error
         case setError(Error)
-        
-        /// Set should section reload `true`
-        case sectionReload
     }
     
     struct State {
-        /// Data source of preset list
-        var dataSource: PresetDataSource
-        
         /// The section list of preset list
-        var sections: [PresetSectionModel] {
-            dataSource.makeSections()
-        }
+        var sections: RevisionValue<[PresetSectionModel]?>
         
         /// Is loading to process
         var isLoading: Bool
         
         /// Any error state
         var error: RevisionValue<Error?>
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
     }
     
     // MARK: - properties
     var initialState: State
-    
     private let networkService: NetworkServiceProtocol
+
+    private var dataSource: PresetSectionDataSource
     
     // MARK: - constructor
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
+        dataSource = PresetSectionDataSource()
         
         initialState = State(
-            dataSource: PresetDataSource(),
+            sections: RevisionValue(dataSource.makeSections()),
             isLoading: false,
-            error: RevisionValue(nil),
-            shouldSectionReload: true
+            error: RevisionValue(nil)
         )
     }
     
@@ -88,9 +67,12 @@ class PresetViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
+        case let .setSections(sections):
+            state.sections = state.sections.next(sections)
+            return state
+            
         case let .setLoading(isLoading):
             state.isLoading = isLoading
             return state
@@ -98,25 +80,23 @@ class PresetViewReactor: Reactor {
         case let .setError(error):
             state.error = state.error.next(error)
             return state
-            
-        case .sectionReload:
-            state.shouldSectionReload = true
-            return state
         }
     }
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        let state = currentState
         // Request only preset never fetched
-        guard state.dataSource.items == nil else { return .empty() }
+        guard dataSource.presetSection == nil else { return .empty() }
         
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
         // Request preset list from server
         let requestPresets: Observable<Mutation> = networkService.requestPresets().asObservable()
-            .do(onNext: { state.dataSource.items = $0 })    // Set preset list to data source
-            .map { _ in .sectionReload }                    // Section reload
-            .catchError { .just(.setError($0)) }            // Set error when any error occured
+            .map {
+                self.dataSource.setItems($0)
+                return .setSections(self.dataSource.makeSections())
+            }
+            // Set error when any error occured
+            .catchError { .just(.setError($0)) }
         let endLoading: Observable<Mutation> = .just(.setLoading(false))
         
         return .concat(startLoading, requestPresets, endLoading)
@@ -124,5 +104,25 @@ class PresetViewReactor: Reactor {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+// MARK: - preste datasource
+typealias PresetSectionModel = SectionModel<Void, TimeSetCollectionViewCellReactor>
+
+typealias PresetCellType = TimeSetCollectionViewCellReactor
+
+struct PresetSectionDataSource {
+    // MARK: - section
+    private(set) var presetSection: [PresetCellType]?
+    
+    // MARK: - public method
+    mutating func setItems(_ items: [TimeSetItem]) {
+        self.presetSection = items.map { TimeSetCollectionViewCellReactor(timeSetItem: $0) }
+    }
+    
+    func makeSections() -> [PresetSectionModel]? {
+        guard let items = presetSection else { return nil }
+        return [PresetSectionModel(model: Void(), items: items)]
     }
 }

@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import AVFoundation
 
-class AlarmSettingViewController: BaseHeaderViewController, View {
+class AlarmSettingViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var alarmSettingView: AlarmSettingView { return view as! AlarmSettingView }
     
@@ -64,15 +64,13 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
         view = AlarmSettingView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register cell
-        alarmSettingTableView.register(AlarmSettingTableViewCell.self, forCellReuseIdentifier: AlarmSettingTableViewCell.name)
-    }
-    
     // MARK: - bine
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         alarmSettingTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
@@ -80,19 +78,21 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
     func bind(reactor: AlarmSettingViewReactor) {
         // MARK: action
         rx.viewDidLoad
-            .map { Reactor.Action.load }
+            .map { .load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         alarmSettingTableView.rx.itemSelected
-            .map { Reactor.Action.select($0.item) }
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .select($0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: alarmSettingTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
@@ -102,6 +102,18 @@ class AlarmSettingViewController: BaseHeaderViewController, View {
             .map { IndexPath(item: $0, section: 0) }
             .subscribe(onNext: { [weak self] in self?.alarmSettingTableView.selectRow(at: $0, animated: true, scrollPosition: .none) })
             .disposed(by: disposeBag)
+    }
+    
+    // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
     }
     
     // MARK: - private method
@@ -149,6 +161,3 @@ extension AlarmSettingViewController: AVAudioPlayerDelegate {
         reactor?.action.onNext(.stop)
     }
 }
-
-// MARK: - alarm setting datasource
-typealias AlarmSettingSectionModel = SectionModel<Void, AlarmSettingTableViewCellReactor>

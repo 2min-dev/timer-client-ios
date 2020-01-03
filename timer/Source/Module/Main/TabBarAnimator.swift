@@ -32,36 +32,37 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     // This method added upper iOS 10+ for backward compatibility. If this method was implemented, environment call method instead of animateTransition(using:)
     func interruptibleAnimator(using transitionContext: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
         // Get from, to view controller of transition
-        guard let fromVC = transitionContext.viewController(forKey: .from) else { return UIViewPropertyAnimator() }
-        guard let toVC = transitionContext.viewController(forKey: .to) else { return UIViewPropertyAnimator() }
-        
-        // Add view
-        transitionContext.containerView.addSubview(toVC.view)
+        guard let fromViewController = transitionContext.viewController(forKey: .from),
+            let toViewController = transitionContext.viewController(forKey: .to) else {
+                transitionContext.completeTransition(false)
+                return UIViewPropertyAnimator()
+        }
         
         // Get animation frame
-        let frame = fromVC.view.frame
+        let frame = fromViewController.view.frame
         
-        var fromVCEndFrame = frame
-        fromVCEndFrame.origin.x = toIndex > fromIndex ? frame.origin.x - frame.size.width : frame.origin.x + frame.size.width
+        var fromViewEndFrame = frame
+        fromViewEndFrame.origin.x = toIndex > fromIndex ? frame.origin.x - frame.size.width : frame.origin.x + frame.size.width
         
-        var toVCStartFrame = frame
-        toVCStartFrame.origin.x = toIndex > fromIndex ? frame.origin.x + frame.size.width : frame.origin.x - frame.size.width
+        var toViewStartFrame = frame
+        toViewStartFrame.origin.x = toIndex > fromIndex ? frame.origin.x + frame.size.width : frame.origin.x - frame.size.width
         
-        // Set init frame
-        toVC.view.frame = toVCStartFrame
+        // Add view & set init frame
+        transitionContext.containerView.addSubview(toViewController.view)
+        toViewController.view.frame = toViewStartFrame
         
         // Create animator
-        let animator = UIViewPropertyAnimator(duration: transitionDuration(using: transitionContext),
-                                              controlPoint1: CGPoint(x: 0.65, y: 0.0),
-                                              controlPoint2: CGPoint(x: 0.35, y: 1.0)) {
-            toVC.view.frame = frame
-            fromVC.view.frame = fromVCEndFrame
+        let animator = UIViewPropertyAnimator(
+            duration: transitionDuration(using: transitionContext),
+            controlPoint1: CGPoint(x: 0.65, y: 0.0),
+            controlPoint2: CGPoint(x: 0.35, y: 1.0)
+        ) {
+            toViewController.view.frame = frame
+            fromViewController.view.frame = fromViewEndFrame
         }
         
         // Add complete handler
-        animator.addCompletion { _ in
-            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-        }
+        animator.addCompletion { transitionContext.completeTransition($0 == .end) }
     
         return animator
     }
@@ -69,9 +70,8 @@ class TabBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     // Animation to perform of transition
     // For keep contract of protocol, implement this method. Just can create animator using interruptibleAnimator(using:) and start it.
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        let animator = interruptibleAnimator(using: transitionContext)
         // Start transition animation
-        animator.startAnimation()
+        interruptibleAnimator(using: transitionContext).startAnimation()
     }
     
     // Send delegate message when transition animation ended

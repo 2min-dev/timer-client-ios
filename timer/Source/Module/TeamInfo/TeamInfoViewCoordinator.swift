@@ -8,27 +8,45 @@
 
 import UIKit
 
-/// Route from app info view
-class TeamInfoViewCoordinator: CoordinatorProtocol {
+class TeamInfoViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
-        case empty
+        case dismiss
     }
     
 	// MARK: - properties
-	weak var viewController: TeamInfoViewController!
+	unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
 	let provider: ServiceProviderProtocol
 
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
 		self.provider = provider
 	}
 
-	func present(for route: Route) -> UIViewController? {
-        return get(for: route)
+    // MARK: - presentation
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, _)? = get(for: route) else { return nil }
+        let presentingViewController = controller
+        
+        switch route {
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
+        }
+        
+        return controller
 	}
     
-    func get(for route: Route) -> UIViewController? {
-        return nil
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
+        switch route {
+        case .dismiss:
+            return (viewController, self)
+        }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 } 

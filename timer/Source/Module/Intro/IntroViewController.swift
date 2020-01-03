@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class IntroViewController: BaseViewController, View {
+class IntroViewController: BaseViewController, ViewControllable, View {
     // MARK: - view properties
     private var introView: IntroView { return view as! IntroView }
     
@@ -53,6 +53,7 @@ class IntroViewController: BaseViewController, View {
         reactor.state
             .map { $0.introState }
             .distinctUntilChanged()
+            .compactMap { $0.value }
             .subscribe(onNext: { [weak self] in self?.presentByState($0) })
             .disposed(by: disposeBag)
     }
@@ -61,13 +62,10 @@ class IntroViewController: BaseViewController, View {
     private func presentByState(_ state: IntroViewReactor.IntroState) {
         switch state {
         case .done:
-            _ = coordinator.present(for: .main)
+            _ = coordinator.present(for: .main, animated: true)
             
         case .running:
-            _ = coordinator.present(for: .timeSetProcess)
-            
-        case .none:
-            break
+            _ = coordinator.present(for: .timeSetProcess, animated: true)
         }
     }
     

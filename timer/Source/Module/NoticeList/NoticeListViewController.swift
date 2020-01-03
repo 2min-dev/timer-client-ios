@@ -11,7 +11,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-class NoticeListViewController: BaseHeaderViewController, View {
+class NoticeListViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var noticeListView: NoticeListView { return view as! NoticeListView }
     
@@ -49,15 +49,13 @@ class NoticeListViewController: BaseHeaderViewController, View {
         view = NoticeListView()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register cell
-        noticeTableView.register(NoticeListTableViewCell.self, forCellReuseIdentifier: NoticeListTableViewCell.name)
-    }
-    
     // MARK: - bine
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         noticeTableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
@@ -71,14 +69,15 @@ class NoticeListViewController: BaseHeaderViewController, View {
         
         noticeTableView.rx.itemSelected
             .do(onNext: { [weak self] in self?.noticeTableView.deselectRow(at: $0, animated: true) })
-            .withLatestFrom(reactor.state.map { $0.sections }, resultSelector: { $1[$0.section].items[$0.row] })
-            .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .noticeDetail($0)) })
+            .withLatestFrom(reactor.state.compactMap { $0.sections.value }) { $1[$0.section].items[$0.row] }
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .noticeDetail($0), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
             .do(onNext: { [weak self] in self?.showNoticeEmptyView(isEmpty: $0.isEmpty || $0[0].items.isEmpty) })
             .bind(to: noticeTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
@@ -91,6 +90,17 @@ class NoticeListViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: Header.Action) {
+        switch action {
+        case .back:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Show notice empty view in table view if notice is empty
     private func showNoticeEmptyView(isEmpty: Bool) {
@@ -108,6 +118,3 @@ class NoticeListViewController: BaseHeaderViewController, View {
         Logger.verbose()
     }
 }
-
-// MARK: - countdown setting datasource
-typealias NoticeListSectionModel = SectionModel<Void, Notice>

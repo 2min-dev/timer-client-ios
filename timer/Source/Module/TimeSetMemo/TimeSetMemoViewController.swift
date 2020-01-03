@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TimeSetMemoViewController: BaseHeaderViewController, View {
+class TimeSetMemoViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - constants
     private static let MAX_MEMO_LENGTH: Int = 1000
     
@@ -50,6 +50,10 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
     
     override func bind() {
         super.bind()
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
         
         memoTextView.rx.text
             .map { !$0!.isEmpty }
@@ -115,6 +119,17 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
     }
     
     // MARK: - action method
+    /// Handle header button tap action according to button type
+    func handleHeaderAction(_ action: CommonHeader.Action) {
+        switch action {
+        case .close:
+            coordinator.present(for: .dismiss, animated: true)
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: - state method
     /// Get memo length attributed string
     private func getMemoLengthAttributedString(length: Int, isExceeded: Bool) -> NSAttributedString {
@@ -136,5 +151,11 @@ class TimeSetMemoViewController: BaseHeaderViewController, View {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+extension Reactive where Base: TimeSetMemoViewController {
+    var close: ControlEvent<Void> {
+        ControlEvent(events: base.headerView.rx.tap.filter { $0 == .close }.map { _ in })
     }
 }

@@ -9,9 +9,10 @@
 import UIKit
 
 /// Route from setting view
-class SettingViewCoordinator: CoordinatorProtocol {
+class SettingViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
+        case dismiss
         case noticeList
         case alarmSetting
         case countdownSetting
@@ -20,85 +21,67 @@ class SettingViewCoordinator: CoordinatorProtocol {
     }
     
     // MARK: - properties
-    weak var viewController: SettingViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    // MARK: - presentation
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
+        case .dismiss:
+            dismiss?(presentingViewController, animated)
+            
         case .noticeList,
              .alarmSetting,
              .countdownSetting,
              .teamInfo,
              .license:
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
+        case .dismiss:
+            return (viewController, self)
+            
         case .noticeList:
-            let coordinator = NoticeListViewCoordinator(provider: provider)
-            let reactor = NoticeListViewReactor(networkService: provider.networkService)
-            let viewController = NoticeListViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = NoticeListViewBuilder.Dependency(provider: provider)
+            return NoticeListViewBuilder(with: dependency).build()
             
         case .alarmSetting:
-            let coordinator = AlarmSettingViewCoordinator(provider: provider)
-            let reactor = AlarmSettingViewReactor(appService: provider.appService)
-            let viewController = AlarmSettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = AlarmSettingViewBuilder.Dependency(provider: provider)
+            return AlarmSettingViewBuilder(with: dependency).build()
             
         case .countdownSetting:
-            let coordinator = CountdownSettingViewCoordinator(provider: provider)
-            let reactor = CountdownSettingViewReactor(appService: provider.appService)
-            let viewController = CountdownSettingViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = CountdownSettingViewBuilder.Dependency(provider: provider)
+            return CountdownSettingViewBuilder(with: dependency).build()
             
         case .teamInfo:
-            let coordinator = TeamInfoViewCoordinator(provider: provider)
-            let reactor = TeamInfoViewReactor()
-            let viewController = TeamInfoViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = TeamInfoViewBuilder.Dependency(provider: provider)
+            return TeamInfoViewBuilder(with: dependency).build()
             
         case .license:
-            let coordinator = OpenSourceLicenseViewCoordinator(provider: provider)
-            let reactor = OpenSourceLicenseViewReactor()
-            let viewController = OpenSourceLicenseViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = OpenSourceLicenseViewBuilder.Dependency(provider: provider)
+            return OpenSourceLicenseViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

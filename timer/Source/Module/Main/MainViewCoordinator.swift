@@ -9,7 +9,7 @@
 import UIKit
 
 /// Route from main view (tab bar)
-class MainViewCoordinator: CoordinatorProtocol {
+class MainViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
         case productivity
@@ -18,73 +18,56 @@ class MainViewCoordinator: CoordinatorProtocol {
         case historyDetail(History)
     }
     
-    weak var viewController: MainViewController!
+    unowned var viewController: UIViewController!
+    var dismiss: ((UIViewController, Bool) -> Void)?
+    
     let provider: ServiceProviderProtocol
     
     // MARK: - constructor
-    required init(provider: ServiceProviderProtocol) {
+    init(provider: ServiceProviderProtocol) {
         self.provider = provider
     }
     
-    func present(for route: Route) -> UIViewController? {
-        guard let viewController = get(for: route) else { return nil }
+    // MARK: - presentation
+    @discardableResult
+    func present(for route: Route, animated: Bool) -> UIViewController? {
+        guard case (let controller, var coordinator)? = get(for: route) else { return nil }
+        let presentingViewController = controller
         
         switch route {
         case .historyDetail(_):
-            self.viewController.navigationController?.pushViewController(viewController, animated: true)
+            // Set dismiss handler
+            coordinator.dismiss = popViewController
+            viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
             
         default:
             break
         }
         
-        return viewController
+        return controller
     }
     
-    func get(for route: Route) -> UIViewController? {
+    func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case .productivity:
-            let coordinator = ProductivityViewCoordinator(provider: provider)
-            let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
-            let viewController = ProductivityViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = ProductivityViewBuilder.Dependency(provider: provider)
+            return ProductivityViewBuilder(with: dependency).build()
             
         case .local:
-            let coordinator = LocalTimeSetViewCoordinator(provider: provider)
-            let reactor = LocalTimeSetViewReactor(timeSetService: provider.timeSetService)
-            let viewController = LocalTimeSetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = LocalTimeSetViewBuilder.Dependency(provider: provider)
+            return LocalTimeSetViewBuilder(with: dependency).build()
             
         case .preset:
-            let coordinator = PresetViewCoordinator(provider: provider)
-            let reactor = PresetViewReactor(networkService: provider.networkService)
-            let viewController = PresetViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = PresetViewBuilder.Dependency(provider: provider)
+            return PresetViewBuilder(with: dependency).build()
             
         case let .historyDetail(history):
-            let coordinator = HistoryDetailViewCoordinator(provider: provider)
-            let reactor = HistoryDetailViewReactor(timeSetService: provider.timeSetService, history: history)
-            let viewController = HistoryDetailViewController(coordinator: coordinator)
-            
-            // DI
-            coordinator.viewController = viewController
-            viewController.reactor = reactor
-            
-            return viewController
+            let dependency = HistoryDetailViewBuilder.Dependency(provider: provider, history: history)
+            return HistoryDetailViewBuilder(with: dependency).build()
         }
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

@@ -11,7 +11,6 @@ import ReactorKit
 
 class IntroViewReactor: Reactor {
     enum IntroState {
-        case none
         case done
         case running
     }
@@ -25,7 +24,7 @@ class IntroViewReactor: Reactor {
     }
     
     struct State {
-        var introState: IntroState
+        var introState: RevisionValue<IntroState?>
     }
     
     // MARK: properties
@@ -36,7 +35,7 @@ class IntroViewReactor: Reactor {
     init(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol) {
         self.appService = appService
         self.timeSetService = timeSetService
-        initialState = State(introState: .none)
+        initialState = State(introState: RevisionValue(nil))
     }
     
     // MARK: - mutate
@@ -52,7 +51,7 @@ class IntroViewReactor: Reactor {
         var state = state
         switch mutation {
         case let .setIntroState(introState):
-            state.introState = introState
+            state.introState = state.introState.next(introState)
             return state
         }
     }
@@ -78,5 +77,9 @@ class IntroViewReactor: Reactor {
         }
         
         return .just(.setIntroState(.done))
+    }
+    
+    deinit {
+        Logger.verbose()
     }
 }

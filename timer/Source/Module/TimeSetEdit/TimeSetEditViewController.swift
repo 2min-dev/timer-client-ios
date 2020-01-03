@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class TimeSetEditViewController: BaseHeaderViewController, View {
+class TimeSetEditViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var timeSetEditView: TimeSetEditView { return view as! TimeSetEditView }
     
@@ -92,6 +92,10 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
 
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         canTimeSetStart
             .distinctUntilChanged()
             .bind(to: confirmButton.rx.isEnabled)
@@ -237,8 +241,9 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         
         // Timer badge
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
@@ -251,8 +256,11 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldSave }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
+            .map { $0.shouldSave }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // Scroll to selected badge when timer option view visible
@@ -266,8 +274,9 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
         reactor.state
             .map { $0.shouldDismiss }
             .distinctUntilChanged()
+            .compactMap { $0.value }
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home) })
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .home, animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -290,7 +299,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     
     // MARK: - action method
     /// - warning: Don't call `super.handleHeaderAction()` to override default action
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         
         switch action {
@@ -346,7 +355,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
     private func selectBadge(at indexPath: IndexPath) -> TimeSetEditViewReactor.Action? {
         guard let reactor = reactor else { return nil }
         
-        let cellType = reactor.currentState.sections[indexPath.section].items[indexPath.item]
+        let cellType = reactor.currentState.sections.value[indexPath.section].items[indexPath.item]
         switch cellType {
         case .regular(_):
             return .selectTimer(at: indexPath.item)
@@ -357,7 +366,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
                 return .addTimer
                 
             case .repeat:
-                return .toggleRepeat
+                return nil
             }
         }
     }
@@ -387,8 +396,7 @@ class TimeSetEditViewController: BaseHeaderViewController, View {
                                  message: "alert_warning_time_set_edit_cancel_description".localized)
             .addAction(title: "alert_button_cancel".localized, style: .cancel)
             .addAction(title: "alert_button_yes".localized, style: .destructive, handler: { _ in
-                self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-                self.dismissOrPopViewController(animated: true)
+                self.coordinator.present(for: .dismiss, animated: true)
             })
             .build()
         // Present warning alert view controller

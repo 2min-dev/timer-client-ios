@@ -63,16 +63,8 @@ class HistoryDetailViewReactor: Reactor {
         /// Overtime of the time set
         let overtime: TimeInterval
         
-        /// Section datasource to make sections
-        let sectionDataSource: TimerBadgeDataSource
-        
         /// The timer list badge sections
-        var sections: [TimerBadgeSectionModel] {
-            sectionDataSource.makeSections()
-        }
-        
-        /// Need to reload section
-        var shouldSectionReload: Bool
+        var sections: RevisionValue<[TimerBadgeSectionModel]>
         
         /// Flag that represent current time set can save
         var canTimeSetSave: Bool
@@ -99,12 +91,15 @@ class HistoryDetailViewReactor: Reactor {
         }
     }
     
+    private var dataSource: TimerBadgeSectionDataSource
+    
     // MARK: - constructor
     init?(timeSetService: TimeSetServiceProtocol, history: History) {
         guard let item = history.item, let startDate = history.startDate, let endDate = history.endDate else { return nil }
         
         self.timeSetService = timeSetService
         self.history = history
+        dataSource = TimerBadgeSectionDataSource(regulars: item.timers.toArray())
         
         initialState = State(
             title: item.title,
@@ -121,8 +116,7 @@ class HistoryDetailViewReactor: Reactor {
                 .map { $0.element }
                 .reduce(0) { $0 + ($1.end - $1.current) },
             overtime: item.overtimer?.current ?? 0,
-            sectionDataSource: TimerBadgeDataSource(timers: item.timers.toArray()),
-            shouldSectionReload: true,
+            sections: RevisionValue(dataSource.makeSections()),
             canTimeSetSave: true,
             didTimeSetSaved: RevisionValue(nil)
         )
@@ -145,7 +139,6 @@ class HistoryDetailViewReactor: Reactor {
     // MARK: - reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
         case let .setMemo(memo):

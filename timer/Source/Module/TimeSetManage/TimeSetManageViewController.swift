@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class TimeSetManageViewController: BaseHeaderViewController, View {
+class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var timeSetManageView: TimeSetManageView { return view as! TimeSetManageView }
     
@@ -61,7 +61,8 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
         guard let `self` = self else { return }
         
         Observable.just((sourceIndexPath, destinationIndexPath))
-            .map { Reactor.Action.moveTimeSet(at: $0, to: $1) }
+            .do(onNext: { _ in UIImpactFeedbackGenerator(style: .light).impactOccurred() })
+            .map { .moveTimeSet(at: $0, to: $1) }
             .subscribe(onNext: { self.reactor?.action.onNext($0) })
             .disposed(by: self.disposeBag)
     })
@@ -86,13 +87,6 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register supplimentary view
-        timeSetCollectionView.register(TimeSetManageHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetManageHeaderCollectionReusableView.name)
-        timeSetCollectionView.register(TimeSetManageSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetManageSectionCollectionReusableView.name)
-        
-        // Register cell
-        timeSetCollectionView.register(TimeSetManageCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetManageCollectionViewCell.name)
-        
         // Add pan gesture recognizer
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler(gesture:)))
         panGesture.delegate = self
@@ -111,6 +105,10 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
     override func bind() {
         super.bind()
         
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
+            .disposed(by: disposeBag)
+        
         timeSetCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -118,7 +116,7 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
         // MARK: action
         rx.viewWillAppear
             .take(1)
-            .map { Reactor.Action.viewWillAppear }
+            .map { .load }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -130,28 +128,32 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
             .bind(to: headerView.rx.title)
             .disposed(by: disposeBag)
         
+        // Sections
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
+        // Applied changes
         reactor.state
-            .map { $0.shouldDismiss }
+            .map { $0.applied }
             .distinctUntilChanged()
+            .map { $0.value }
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in self?.dismissOrPopViewController(animated: true) })
+            .subscribe(onNext: { [weak self] _ in self?.coordinator.present(for: .dismiss, animated: true) })
             .disposed(by: disposeBag)
     }
     
     // MARK: - action method
-    override func handleHeaderAction(_ action: ConfirmHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: ConfirmHeader.Action) {
         switch action {
+        case .cancel:
+            coordinator.present(for: .dismiss, animated: true)
+            
         case .confirm:
-            guard let reactor = reactor else { return }
-            reactor.action.onNext(.apply)
+            reactor?.action.onNext(.apply)
             
         default:
             break
@@ -174,6 +176,8 @@ class TimeSetManageViewController: BaseHeaderViewController, View {
     @objc private func panHandler(gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .began:
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            
             let location = gesture.location(in: timeSetCollectionView.superview)
             timeSetCollectionView.beginInteractiveWithLocation(location)
             
@@ -238,14 +242,9 @@ extension TimeSetManageViewController: JSCollectionViewDelegateLayout {
     }
 }
 
-// MARK: - time set manage datasource
-typealias TimeSetManageSectionModel = AnimatableSectionModel<TimeSetManageSectionType, TimeSetManageCollectionViewCellReactor>
-
-enum TimeSetManageSectionType: Int, IdentifiableType {
-    case normal
-    case removed
-    
-    var identity: Int {
-        return rawValue
+extension Reactive where Base: TimeSetManageViewController {
+    var applied: ControlEvent<Void> {
+        guard let reactor = base.reactor else { return ControlEvent(events: Observable.empty()) }
+        return ControlEvent(events: reactor.state.map { $0.applied }.distinctUntilChanged().map { _ in })
     }
 }

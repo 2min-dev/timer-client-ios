@@ -21,6 +21,10 @@ class AlarmSettingView: UIView {
         view.backgroundColor = Constants.Color.clear
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
+        
+        // Register cell
+        view.register(AlarmSettingTableViewCell.self, forCellReuseIdentifier: AlarmSettingTableViewCell.name)
+        
         return view
     }()
     

@@ -12,7 +12,7 @@ import ReactorKit
 import RxDataSources
 import JSReorderableCollectionView
 
-class ProductivityViewController: BaseHeaderViewController, View {
+class ProductivityViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
     private var productivityView: ProductivityView { return view as! ProductivityView }
     
@@ -113,6 +113,10 @@ class ProductivityViewController: BaseHeaderViewController, View {
             }
             .withLatestFrom(canTimeSetStart)
             .subscribe(onNext: { [weak self] in self?.showFooterView(isShow: $0) })
+            .disposed(by: disposeBag)
+        
+        headerView.rx.tap
+            .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
             .disposed(by: disposeBag)
         
         canTimeSetStart
@@ -254,8 +258,9 @@ class ProductivityViewController: BaseHeaderViewController, View {
         
         // Timer badge
         reactor.state
-            .filter { $0.shouldSectionReload }
             .map { $0.sections }
+            .distinctUntilChanged()
+            .map { $0.value }
             .bind(to: timerBadgeCollectionView.rx.items(dataSource: timerBadgeCollectionView._dataSource))
             .disposed(by: disposeBag)
         
@@ -268,13 +273,19 @@ class ProductivityViewController: BaseHeaderViewController, View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldSave }
-            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem)) })
+            .map { $0.shouldSave }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetSave(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         reactor.state
-            .filter { $0.shouldStart }
-            .do(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem)) })
+            .map { $0.shouldStart }
+            .distinctUntilChanged()
+            .compactMap { $0.value }
+            .filter { $0 }
+            .do(onNext: { [weak self] _ in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem), animated: true) })
             .observeOn(MainScheduler.asyncInstance)
             .map { _ in Reactor.Action.clearTimeSet }
             .bind(to: reactor.action)
@@ -306,15 +317,13 @@ class ProductivityViewController: BaseHeaderViewController, View {
     }
 
     // MARK: - action method
-    override func handleHeaderAction(_ action: CommonHeader.Action) {
-        super.handleHeaderAction(action)
-        
+    func handleHeaderAction(_ action: CommonHeader.Action) {
         switch action {
         case .history:
-            _ = coordinator.present(for: .history)
+            _ = coordinator.present(for: .history, animated: true)
             
         case .setting:
-            _ = coordinator.present(for: .setting)
+            _ = coordinator.present(for: .setting, animated: true)
             
         default:
             break
@@ -362,7 +371,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
     private func selectBadge(at indexPath: IndexPath) -> TimeSetEditViewReactor.Action? {
         guard let reactor = reactor else { return nil }
         
-        let cellType = reactor.currentState.sections[indexPath.section].items[indexPath.item]
+        let cellType = reactor.currentState.sections.value[indexPath.section].items[indexPath.item]
         switch cellType {
         case .regular(_):
             return .selectTimer(at: indexPath.item)
@@ -373,7 +382,7 @@ class ProductivityViewController: BaseHeaderViewController, View {
                 return .addTimer
                 
             case .repeat:
-                return .toggleRepeat
+                return nil
             }
         }
     }
