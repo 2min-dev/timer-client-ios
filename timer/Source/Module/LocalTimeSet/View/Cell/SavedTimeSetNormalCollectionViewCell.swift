@@ -1,5 +1,5 @@
 //
-//  BookmaredTimeSetCollectionViewCell.swift
+//  SavedTimeSetNormalCollectionViewCell.swift
 //  timer
 //
 //  Created by JSilver on 06/09/2019.
@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class BookmaredTimeSetCollectionViewCell: UICollectionViewCell, View {
+class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
