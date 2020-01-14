@@ -10,11 +10,7 @@ import UIKit
 
 class TimeSetDetailView: UIView {
     // MARK: - view properties
-    let headerView: CommonHeader = {
-        let view = CommonHeader()
-        view.additionalButtons = [.bookmark]
-        return view
-    }()
+    let headerView: CommonHeader = CommonHeader()
     
     let titleLabel: UILabel = {
         let view = UILabel()

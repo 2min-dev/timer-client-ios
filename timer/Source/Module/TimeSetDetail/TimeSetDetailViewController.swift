@@ -93,22 +93,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
             .disposed(by: disposeBag)
         
         // MARK: state
-        // Bookmark
-        let isBookmark = reactor.state
-            .map { $0.isBookmark }
-            .distinctUntilChanged()
-            .share()
-        
-        isBookmark
-            .filter { [weak self] _ in self?.headerView.buttons[.bookmark] != nil }
-            .bind(to: headerView.buttons[.bookmark]!.rx.isSelected)
-            .disposed(by: disposeBag)
-        
-        isBookmark
-            .skipUntil(rx.viewDidAppear)
-            .subscribe(onNext: { Toast(content: $0 ? "toast_time_set_add_bookmark_title".localized : "toast_time_set_remove_bookmark_title".localized).show(animated: true, withDuration: 3) })
-            .disposed(by: disposeBag)
-        
         // Title
         reactor.state
             .map { $0.title }
@@ -200,9 +184,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
         case .back:
             coordinator.present(for: .dismiss, animated: true)
             
-        case .bookmark:
-            reactor?.action.onNext(.toggleBookmark)
-            
         default:
             break
         }
@@ -210,7 +191,6 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
     
     /// Update layout by time set can save
     private func updateLayout(timeSet canSave: Bool) {
-        headerView.additionalButtons = canSave ? [] : [.bookmark]
         footerView.buttons = canSave ? [saveButton, startButton] : [editButton, startButton]
     }
     

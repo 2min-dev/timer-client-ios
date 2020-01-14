@@ -181,8 +181,6 @@
 // MARK: - Toast
 "toast_alarm_all_apply_title" = "All timer alarm set [%@]!";
 "toast_time_set_timer_selected_title" = "Timeset will be start from selected timer!";
-"toast_time_set_add_bookmark_title" = "Timeset added to your bookmarks!";
-"toast_time_set_remove_bookmark_title" = "Timeset removed from your bookmarks!";
 "toast_time_set_end_cancel_title" = "Timeset canceled. Move to check result!";
 "toast_time_set_end_overtime_title" = "Try to write memo that why timeset record overtime!";
 "toast_time_set_saved_title" = "Timeset saved! Press 'Edit' to edit saved timeset.";
