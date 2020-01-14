@@ -12,6 +12,7 @@ class AllTimeSetView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
+        view.title = "saved_time_set_title".localized
         return view
     }()
     
@@ -31,7 +32,6 @@ class AllTimeSetView: UIView {
         // Register cell
         view.register(SavedTimeSetHighlightCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name)
         view.register(SavedTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetCollectionViewCell.name)
-        view.register(BookmaredTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: BookmaredTimeSetCollectionViewCell.name)
         
         return view
     }()

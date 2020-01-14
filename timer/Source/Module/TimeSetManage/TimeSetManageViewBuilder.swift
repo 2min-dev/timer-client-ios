@@ -11,7 +11,6 @@ import UIKit
 class TimeSetManageViewBuilder: Builder {
     struct Dependency {
         let provider: ServiceProviderProtocol
-        let type: TimeSetManageViewReactor.TimeSetType
     }
     
     var dependency: Dependency
@@ -24,7 +23,7 @@ class TimeSetManageViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = TimeSetManageViewCoordinator(provider: provider)
-        let reactor = TimeSetManageViewReactor(timeSetService: provider.timeSetService, type: dependency.type)
+        let reactor = TimeSetManageViewReactor(timeSetService: provider.timeSetService)
         let viewController = TimeSetManageViewController(coordinator: coordinator)
         
         // DI

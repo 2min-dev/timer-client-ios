@@ -26,27 +26,18 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<AllTimeSetSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, cellReactor -> UICollectionViewCell in
         guard let reactor = self?.reactor else { return UICollectionViewCell() }
 
-        let type = reactor.currentState.type
-        if type == .saved {
-            // Saved time set
-            if indexPath.row > 0 {
-                // Highlight time set
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { return UICollectionViewCell() }
-                cell.reactor = cellReactor
-                return cell
-            } else {
-                // Normal time set
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { return UICollectionViewCell() }
-                cell.reactor = cellReactor
-                return cell
-            }
+        // Saved time set
+        if indexPath.row > 0 {
+            // Highlight time set
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetCollectionViewCell`.") }
+            cell.reactor = cellReactor
+            return cell
         } else {
-            // Bookmared time set
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmaredTimeSetCollectionViewCell.name, for: indexPath) as? BookmaredTimeSetCollectionViewCell else { return UICollectionViewCell() }
+            // Normal time set
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetHighlightCollectionViewCell`.")}
             cell.reactor = cellReactor
             return cell
         }
-        
     }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
         switch kind {
         case JSCollectionViewLayout.Element.header.kind:
@@ -60,26 +51,17 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             // Section header
             guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView,
                 let reactor = self?.reactor else {
-                return UICollectionReusableView()
+                fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionCollectionReusableView`.")
             }
 
-            // Set view type
+            // Set header type & title
             supplementaryView.type = .title
-            
-            let type = reactor.currentState.type
-            // Set header text
-            if type == .saved {
-                // Saved time set
-                supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
-            } else {
-                // Bookmarked time set
-                supplementaryView.titleLabel.text = "local_bookmarked_time_set_section_title".localized
-            }
+            supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
             
             return supplementaryView
             
         default:
-            return UICollectionReusableView()
+            fatalError("Unregistered supplementary kind requested.")
         }
     })
     
@@ -132,13 +114,6 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         // MARK: state
-        // Title
-        reactor.state
-            .map { $0.type }
-            .map { [weak self] in self?.getHeaderTitleByType($0) ?? "" }
-            .bind(to: headerView.rx.title)
-            .disposed(by: disposeBag)
-        
         reactor.state
             .map { $0.sections }
             .distinctUntilChanged()
@@ -159,18 +134,6 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
         }
     }
     
-    // MARK: - state method
-    /// Get header title by type
-    private func getHeaderTitleByType(_ type: AllTimeSetViewReactor.TimeSetType) -> String {
-        switch type {
-        case .saved:
-            return "saved_time_set_title".localized
-            
-        case .bookmarked:
-            return "bookmarked_time_set_title".localized
-        }
-    }
-    
     deinit {
         Logger.verbose()
     }
@@ -178,21 +141,14 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
 
 extension AllTimeSetViewController: JSCollectionViewDelegateLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout, let reactor = reactor else { return .zero }
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
         
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 0)
+        var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 140.adjust())
         
-        if reactor.currentState.type == .saved {
-            // Saved time set
-            size.height = 140.adjust()
-            if indexPath.row > 0 {
-                // Set width that half of collection view width except first time set
-                size.width = (size.width - layout.minimumInteritemSpacing) / 2
-            }
-        } else {
-            // Bookmarked time set
-            size.height = 90.adjust()
+        if indexPath.row > 0 {
+            // Set width that half of collection view width except first time set
+            size.width = (size.width - layout.minimumInteritemSpacing) / 2
         }
         
         return size

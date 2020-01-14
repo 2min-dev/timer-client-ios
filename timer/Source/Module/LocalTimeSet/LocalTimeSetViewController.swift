@@ -28,24 +28,20 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
         
         switch cellType {
         case let .regular(reactor):
-            if sectionType == .saved {
+            switch sectionType {
+            case .saved:
                 // Saved time set
                 if indexPath.row > 0 {
                     // Highlight time set
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { return UICollectionViewCell() }
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetCollectionViewCell`.") }
                     cell.reactor = reactor
                     return cell
                 } else {
                     // Normal time set
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { return UICollectionViewCell() }
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetHighlightCollectionViewCell`.") }
                     cell.reactor = reactor
                     return cell
                 }
-            } else {
-                // Bookmared time set
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmaredTimeSetCollectionViewCell.name, for: indexPath) as? BookmaredTimeSetCollectionViewCell else { return UICollectionViewCell() }
-                cell.reactor = reactor
-                return cell
             }
             
         case .empty:
@@ -59,13 +55,13 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
         case JSCollectionViewLayout.Element.header.kind:
             // Global header
             guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name, for: indexPath) as? TimeSetHeaderCollectionReusableView else {
-                return UICollectionReusableView()
+                fatalError("Can't dequeue reusable supplementary view type of `TimeSetHeaderCollectionReusableView`.")
             }
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
             // Section header
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView  else { return UICollectionReusableView() }
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView  else { fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionCollectionReusableView`.") }
             
             let sectionType = dataSource.sectionModels[indexPath.section].model
             // Set view type
@@ -80,7 +76,8 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             }
             
             // Set header text
-            if sectionType == .saved {
+            switch sectionType {
+            case .saved:
                 // Saved time set
                 supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_management_title".localized
@@ -88,21 +85,8 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
                 // Present to saved time set manage
                 supplementaryView.rx.tap
                     .subscribe(onNext: { [weak self] in
-                        guard let viewController = self?.coordinator.present(for: .timeSetManage(.saved), animated: true) as? TimeSetManageViewController else { return }
+                        guard let viewController = self?.coordinator.present(for: .timeSetManage, animated: true) as? TimeSetManageViewController else { return }
                         self?.bind(manage: viewController)
-                    })
-                    .disposed(by: supplementaryView.disposeBag)
-            } else {
-                // Bookmarked time set
-                supplementaryView.titleLabel.text = "local_bookmarked_time_set_section_title".localized
-                supplementaryView.additionalTitleLabel.text = "local_bookmarked_time_set_management_title".localized
-                
-                // Present to bookmarked time set manage
-                supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in
-                        guard let viewController = self?.coordinator.present(for: .timeSetManage(.bookmarked), animated: true) as? TimeSetManageViewController else { return }
-                        self?.bind(manage: viewController)
-                        
                     })
                     .disposed(by: supplementaryView.disposeBag)
             }
@@ -110,34 +94,28 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionFooter.kind:
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else { return UICollectionReusableView() }
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else { fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionCollectionReusableView`.") }
             
             let sectionType = dataSource.sectionModels[indexPath.section].model
             // Set view type footer
             supplementaryView.type = .footer
             
-            if sectionType == .saved {
+            // Set footer text
+            switch sectionType {
+            case .saved:
                 // Saved time set
                 supplementaryView.additionalTitleLabel.text = "local_saved_time_set_all_show_title".localized
                 
                 // Present to all saved time set
                 supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .allTimeSet(.saved), animated: true) })
-                    .disposed(by: supplementaryView.disposeBag)
-            } else {
-                // Bookmarked time set
-                supplementaryView.additionalTitleLabel.text = "local_bookmarked_time_set_all_show_title".localized
-                
-                // Present to all bookmarked time set
-                supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .allTimeSet(.bookmarked), animated: true) })
+                    .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .allTimeSet, animated: true) })
                     .disposed(by: supplementaryView.disposeBag)
             }
             
             return supplementaryView
             
         default:
-            return UICollectionReusableView()
+            fatalError("Unregistered supplementary kind requested.")
         }
     })
     
@@ -253,9 +231,6 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
                 // Set width that half of collection view width except first time set
                 size.width = (size.width - layout.minimumInteritemSpacing) / 2
             }
-        case .bookmarked:
-            // Bookmarked time set
-            size.height = 90.adjust()
         }
         
         return size
@@ -299,14 +274,10 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
         
         let sectionType = reactor.currentState.sections.value[section].model
         let savedTimeSetCount = reactor.currentState.savedTimeSetCount
-        let bookmarkedTimeSetCount = reactor.currentState.bookmarkedTimeSetCount
         
         switch sectionType {
         case .saved:
             return savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET
-            
-        case .bookmarked:
-            return bookmarkedTimeSetCount > LocalTimeSetViewReactor.MAX_BOOKMARKED_TIME_SET
         }
     }
 }
