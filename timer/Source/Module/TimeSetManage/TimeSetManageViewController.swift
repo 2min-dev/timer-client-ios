@@ -245,6 +245,12 @@ extension TimeSetManageViewController: JSCollectionViewDelegateLayout {
 extension Reactive where Base: TimeSetManageViewController {
     var applied: ControlEvent<Void> {
         guard let reactor = base.reactor else { return ControlEvent(events: Observable.empty()) }
-        return ControlEvent(events: reactor.state.map { $0.applied }.distinctUntilChanged().map { _ in })
+        let source =  reactor.state
+            .map { $0.applied }
+            .distinctUntilChanged()
+            .filter { $0.value }
+            .map { _ in }
+        
+        return ControlEvent(events: source)
     }
 }

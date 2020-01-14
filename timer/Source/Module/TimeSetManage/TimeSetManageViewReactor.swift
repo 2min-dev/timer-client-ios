@@ -134,11 +134,9 @@ class TimeSetManageViewReactor: Reactor {
     
     private func actionApply() -> Observable<Mutation> {
         let state = currentState
-        let sections = state.sections.value
-        guard sections.count == TimeSetManageSectionType.allCases.count else { return .empty() }
         
-        let updateTimeSets = sections[0].items.map { $0.timeSetItem }
-        let removeTimeSetIds = sections[1].items.compactMap { $0.timeSetItem.id }
+        let updateTimeSets = dataSource.savedTimeSetSection.map { $0.timeSetItem }
+        let removeTimeSetIds = dataSource.removedTimeSetSection.compactMap { $0.timeSetItem.id }
         
         // Set reordered sorting key
         updateTimeSets.enumerated().forEach {
@@ -175,8 +173,8 @@ typealias TimeSetManageCellType = TimeSetManageCollectionViewCellReactor
 
 struct TimeSetManageSectionDataSource {
     // MARK: - section
-    private var savedTimeSetSection: [TimeSetManageCellType] = []
-    private var removedTimeSetSection: [TimeSetManageCellType] = []
+    private(set) var savedTimeSetSection: [TimeSetManageCellType] = []
+    private(set) var removedTimeSetSection: [TimeSetManageCellType] = []
     
     // MARK: - public method
     mutating func setItems(_ items: [TimeSetItem], type: TimeSetManageViewReactor.TimeSetType) {
