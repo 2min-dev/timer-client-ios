@@ -28,6 +28,8 @@
 		F306022A2379812300A9C866 /* MainViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30602292379812300A9C866 /* MainViewReactor.swift */; };
 		F3060F92230D19FE002A2E0E /* TimeSetEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */; };
 		F3060F95230E9B12002A2E0E /* TimeSetEndViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */; };
+		F307165E23CEED61001AEC96 /* RealmServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307165D23CEED61001AEC96 /* RealmServiceTests.swift */; };
+		F307166023CEEE0E001AEC96 /* Collector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307165F23CEEE0E001AEC96 /* Collector.swift */; };
 		F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */; };
 		F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97722E9883100C280A0 /* TimerOptionView.swift */; };
 		F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */ = {isa = PBXBuildFile; fileRef = F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */; };
@@ -294,6 +296,8 @@
 		F30602292379812300A9C866 /* MainViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewReactor.swift; sourceTree = "<group>"; };
 		F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndView.swift; sourceTree = "<group>"; };
 		F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewReactor.swift; sourceTree = "<group>"; };
+		F307165D23CEED61001AEC96 /* RealmServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmServiceTests.swift; sourceTree = "<group>"; };
+		F307165F23CEEE0E001AEC96 /* Collector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collector.swift; sourceTree = "<group>"; };
 		F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionViewReactor.swift; sourceTree = "<group>"; };
 		F309F97722E9883100C280A0 /* TimerOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionView.swift; sourceTree = "<group>"; };
 		F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OPENSOURCE.html; sourceTree = "<group>"; };
@@ -636,6 +640,8 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F307165F23CEEE0E001AEC96 /* Collector.swift */,
+				F307165D23CEED61001AEC96 /* RealmServiceTests.swift */,
 				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
 				F3E1FC152387C88F008FB3AB /* VersionTests.swift */,
 				F31684242382838600EF1510 /* timerTests.swift */,
@@ -1561,6 +1567,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F307165E23CEED61001AEC96 /* RealmServiceTests.swift in Sources */,
+				F307166023CEEE0E001AEC96 /* Collector.swift in Sources */,
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
 				F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */,
