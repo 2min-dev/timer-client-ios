@@ -11,11 +11,6 @@ import ReactorKit
 import RxDataSources
 
 class TimeSetManageViewReactor: Reactor {
-    enum TimeSetType: Int {
-        case saved
-        case bookmarked
-    }
-    
     enum Action {
         /// Load time set list from database
         case load
@@ -39,9 +34,6 @@ class TimeSetManageViewReactor: Reactor {
     }
     
     struct State {
-        /// Title of header
-        let type: TimeSetType
-        
         /// The section list of time set list
         var sections: RevisionValue<[TimeSetManageSectionModel]>
         
@@ -56,12 +48,11 @@ class TimeSetManageViewReactor: Reactor {
     private var dataSource: TimeSetManageSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
+    init(timeSetService: TimeSetServiceProtocol) {
         self.timeSetService = timeSetService
         dataSource = TimeSetManageSectionDataSource()
         
         initialState = State(
-            type: type,
             sections: RevisionValue(dataSource.makeSections()),
             applied: RevisionValue(false)
         )
@@ -102,10 +93,8 @@ class TimeSetManageViewReactor: Reactor {
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
         return timeSetService.fetchTimeSets().asObservable()
-            .map {
-                self.dataSource.setItems($0, type: self.currentState.type)
-                return .setSections(self.dataSource.makeSections())
-            }
+            .do(onNext: { self.dataSource.setItems($0) })
+            .map { _ in .setSections(self.dataSource.makeSections()) }
     }
     
     private func actionEditTimeSet(at indexPath: IndexPath) -> Observable<Mutation> {
@@ -133,21 +122,11 @@ class TimeSetManageViewReactor: Reactor {
     }
     
     private func actionApply() -> Observable<Mutation> {
-        let state = currentState
-        
         let updateTimeSets = dataSource.savedTimeSetSection.map { $0.timeSetItem }
         let removeTimeSetIds = dataSource.removedTimeSetSection.compactMap { $0.timeSetItem.id }
         
         // Set reordered sorting key
-        updateTimeSets.enumerated().forEach {
-            switch state.type {
-            case .saved:
-                $0.element.sortingKey = $0.offset
-                
-            case .bookmarked:
-                $0.element.bookmarkSortingKey = $0.offset
-            }
-        }
+        updateTimeSets.enumerated().forEach { $0.element.sortingKey = $0.offset }
         
         return timeSetService.removeTimeSets(ids: removeTimeSetIds).asObservable()
             .flatMap { _ in self.timeSetService.updateTimeSets(items: updateTimeSets) }
@@ -177,10 +156,9 @@ struct TimeSetManageSectionDataSource {
     private(set) var removedTimeSetSection: [TimeSetManageCellType] = []
     
     // MARK: - public method
-    mutating func setItems(_ items: [TimeSetItem], type: TimeSetManageViewReactor.TimeSetType) {
+    mutating func setItems(_ items: [TimeSetItem]) {
         savedTimeSetSection = items
-            .filter { type == .saved || (type == .bookmarked && $0.isBookmark) }
-            .sorted(by: { type == .saved ? $0.sortingKey < $1.sortingKey : $0.bookmarkSortingKey < $1.bookmarkSortingKey })
+            .sorted(by: { $0.sortingKey < $1.sortingKey })
             .map { TimeSetManageCollectionViewCellReactor(timeSetItem: $0) }
     }
     

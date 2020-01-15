@@ -23,7 +23,7 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
     // MARK: - properties
     // Time set datasource
     private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<TimeSetManageSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, reactor -> UICollectionViewCell in
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetManageCollectionViewCell.name, for: indexPath) as? TimeSetManageCollectionViewCell else { return UICollectionViewCell() }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetManageCollectionViewCell.name, for: indexPath) as? TimeSetManageCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `TimeSetManageCollectionViewCell`.") }
             // Inject cell reactor
             cell.reactor = reactor
             
@@ -42,20 +42,20 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
         case JSCollectionViewLayout.Element.header.kind:
             // Global header
             guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetManageHeaderCollectionReusableView.name, for: indexPath) as? TimeSetManageHeaderCollectionReusableView else {
-                return UICollectionReusableView()
+                fatalError("Can't dequeue reusable supplementary view type of `TimeSetManageHeaderCollectionReusableView`.")
             }
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
             // Section header
             guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetManageSectionCollectionReusableView.name, for: indexPath) as? TimeSetManageSectionCollectionReusableView else {
-                return UICollectionReusableView()
+                fatalError("Can't dequeue reusable supplementary view type of `TimeSetManageSectionCollectionReusableView`.")
             }
             
             return supplementaryView
             
         default:
-            return UICollectionReusableView()
+            fatalError("Unregistered supplementary kind requested.")
         }
     }, moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
         guard let `self` = self else { return }
@@ -121,13 +121,6 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
             .disposed(by: disposeBag)
         
         // MARK: state
-        // Title
-        reactor.state
-            .map { $0.type }
-            .map { [weak self] in self?.getHeaderTitleByType($0) ?? "" }
-            .bind(to: headerView.rx.title)
-            .disposed(by: disposeBag)
-        
         // Sections
         reactor.state
             .map { $0.sections }
@@ -157,18 +150,6 @@ class TimeSetManageViewController: BaseHeaderViewController, ViewControllable, V
             
         default:
             break
-        }
-    }
-    
-    // MARK: - state method
-    /// Get header title by type
-    private func getHeaderTitleByType(_ type: TimeSetManageViewReactor.TimeSetType) -> String {
-        switch type {
-        case .saved:
-            return "saved_time_set_management_title".localized
-            
-        case .bookmarked:
-            return "bookmarked_time_set_management_title".localized
         }
     }
     

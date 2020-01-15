@@ -11,11 +11,6 @@ import RxDataSources
 import ReactorKit
 
 class AllTimeSetViewReactor: Reactor {
-    enum TimeSetType: Int {
-        case saved
-        case bookmarked
-    }
-    
     enum Action {
         /// Load time set list from database
         case load
@@ -27,9 +22,6 @@ class AllTimeSetViewReactor: Reactor {
     }
     
     struct State {
-        /// Title of header
-        let type: TimeSetType
-        
         /// The section list of time set list
         var sections: RevisionValue<[AllTimeSetSectionModel]>
     }
@@ -41,14 +33,11 @@ class AllTimeSetViewReactor: Reactor {
     private var dataSource: AllTimeSetSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
+    init(timeSetService: TimeSetServiceProtocol) {
         self.timeSetService = timeSetService
         dataSource = AllTimeSetSectionDataSource()
         
-        initialState = State(
-            type: type,
-            sections: RevisionValue(dataSource.makeSections())
-        )
+        initialState = State(sections: RevisionValue(dataSource.makeSections()))
     }
     
     // MARK: - mutation
@@ -73,10 +62,8 @@ class AllTimeSetViewReactor: Reactor {
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
         return timeSetService.fetchTimeSets().asObservable()
-            .map {
-                self.dataSource.setItems($0, type: self.currentState.type)
-                return .setSections(self.dataSource.makeSections())
-            }
+            .do(onNext: { self.dataSource.setItems($0) })
+            .map { _ in .setSections(self.dataSource.makeSections()) }
     }
     
     deinit {
@@ -94,10 +81,9 @@ struct AllTimeSetSectionDataSource {
     var timeSetSection: [AllTimeSetCellType] = []
     
     // MARK: - public method
-    mutating func setItems(_ items: [TimeSetItem], type: AllTimeSetViewReactor.TimeSetType) {
+    mutating func setItems(_ items: [TimeSetItem]) {
         timeSetSection = items
-            .filter { type == .saved || (type == .bookmarked && $0.isBookmark) }
-            .sorted(by: { type == .saved ? $0.sortingKey < $1.sortingKey : $0.bookmarkSortingKey < $1.bookmarkSortingKey })
+            .sorted(by: { $0.sortingKey < $1.sortingKey })
             .map { TimeSetCollectionViewCellReactor(timeSetItem: $0) }
     }
     

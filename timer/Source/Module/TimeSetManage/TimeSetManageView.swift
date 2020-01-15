@@ -13,6 +13,7 @@ class TimeSetManageView: UIView {
     // MARK: - view properties
     let headerView: ConfirmHeader = {
         let view = ConfirmHeader()
+        view.title = "saved_time_set_management_title".localized
         return view
     }()
     
