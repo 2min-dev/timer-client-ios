@@ -28,8 +28,10 @@
 		F306022A2379812300A9C866 /* MainViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30602292379812300A9C866 /* MainViewReactor.swift */; };
 		F3060F92230D19FE002A2E0E /* TimeSetEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */; };
 		F3060F95230E9B12002A2E0E /* TimeSetEndViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */; };
-		F307165E23CEED61001AEC96 /* RealmServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307165D23CEED61001AEC96 /* RealmServiceTests.swift */; };
 		F307166023CEEE0E001AEC96 /* Collector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307165F23CEEE0E001AEC96 /* Collector.swift */; };
+		F307166223CF6D32001AEC96 /* Array+range.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166123CF6D32001AEC96 /* Array+range.swift */; };
+		F307166423CF6DD0001AEC96 /* ArrayExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */; };
+		F307166623D02DEB001AEC96 /* PaginationParam.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166523D02DEB001AEC96 /* PaginationParam.swift */; };
 		F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */; };
 		F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97722E9883100C280A0 /* TimerOptionView.swift */; };
 		F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */ = {isa = PBXBuildFile; fileRef = F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */; };
@@ -296,8 +298,10 @@
 		F30602292379812300A9C866 /* MainViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewReactor.swift; sourceTree = "<group>"; };
 		F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndView.swift; sourceTree = "<group>"; };
 		F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewReactor.swift; sourceTree = "<group>"; };
-		F307165D23CEED61001AEC96 /* RealmServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmServiceTests.swift; sourceTree = "<group>"; };
 		F307165F23CEEE0E001AEC96 /* Collector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collector.swift; sourceTree = "<group>"; };
+		F307166123CF6D32001AEC96 /* Array+range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+range.swift"; sourceTree = "<group>"; };
+		F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionTests.swift; sourceTree = "<group>"; };
+		F307166523D02DEB001AEC96 /* PaginationParam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationParam.swift; sourceTree = "<group>"; };
 		F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionViewReactor.swift; sourceTree = "<group>"; };
 		F309F97722E9883100C280A0 /* TimerOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionView.swift; sourceTree = "<group>"; };
 		F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OPENSOURCE.html; sourceTree = "<group>"; };
@@ -640,8 +644,8 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */,
 				F307165F23CEEE0E001AEC96 /* Collector.swift */,
-				F307165D23CEED61001AEC96 /* RealmServiceTests.swift */,
 				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
 				F3E1FC152387C88F008FB3AB /* VersionTests.swift */,
 				F31684242382838600EF1510 /* timerTests.swift */,
@@ -1016,7 +1020,6 @@
 		F3C126FE23000BEA006D736A /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
 				F37041C8226B65550012EA16 /* TimerItem.swift */,
 				F33CFA2723675B7A00C4032A /* StopWatchItem.swift */,
 				F373CCD52265FA33007ECCA0 /* JSTimer.swift */,
@@ -1029,6 +1032,7 @@
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 				F3E1FBF82387B3B3008FB3AB /* Version.swift */,
 				F3C2D0062393AA58004D2219 /* RevisionValue.swift */,
+				F307166523D02DEB001AEC96 /* PaginationParam.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1045,6 +1049,7 @@
 		F3C24CE2232FD99200D7492C /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
+				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
 				F33CFA2323675B2300C4032A /* Recordable.swift */,
 				F33CFA2523675B3700C4032A /* Alertable.swift */,
 			);
@@ -1173,6 +1178,7 @@
 			children = (
 				F379A712231CF6EE007E69A0 /* NSObject+name.swift */,
 				F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */,
+				F307166123CF6D32001AEC96 /* Array+range.swift */,
 				F3D1F7B7225CC357006DC162 /* String+regex.swift */,
 				F3F800B5226A0D0F003D1D88 /* String+localized.swift */,
 				F35169822386863B00EFE74C /* String+encoding.swift */,
@@ -1567,11 +1573,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F307165E23CEED61001AEC96 /* RealmServiceTests.swift in Sources */,
 				F307166023CEEE0E001AEC96 /* Collector.swift in Sources */,
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
 				F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */,
+				F307166423CF6DD0001AEC96 /* ArrayExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1649,6 +1655,7 @@
 				F38702B922F970E80099241C /* TimeSetDetailViewController.swift in Sources */,
 				F3C81BE023351C3800105549 /* Header.swift in Sources */,
 				F37CA0AF23A8F13500A8990F /* PresetViewBuilder.swift in Sources */,
+				F307166623D02DEB001AEC96 /* PaginationParam.swift in Sources */,
 				F3C0DFA1233369CE00E49425 /* NoticeListViewReactor.swift in Sources */,
 				F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
@@ -1718,6 +1725,7 @@
 				F303F26D225CCAE400A11FAF /* LocalTimeSetViewReactor.swift in Sources */,
 				F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */,
 				F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */,
+				F307166223CF6D32001AEC96 /* Array+range.swift in Sources */,
 				F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */,
 				F3ADF4352312945600FA9277 /* TimeSetMemoViewCoordinator.swift in Sources */,
 				F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */,

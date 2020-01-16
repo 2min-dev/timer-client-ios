@@ -11,81 +11,48 @@ import RealmSwift
 
 class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - time set operate
-    /// Fetch all time set list
-    /// - returns: A observable that emit all time set item list
     func fetchTimeSets() -> Single<[TimeSetItem]> {
         return fetch(with: { $0.id?.range(regex: "^[0-9]") != nil })
     }
     
-    /// Create a time set
-    /// - parameters:
-    ///   - item: data of the time set
-    /// - returns: A observable that emit a created time set item
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         return create(item)
     }
     
-    /// Remove the time set
-    /// - parameters:
-    ///   - id: Identifier of the time set to remove
-    /// - returns: A observable that emit a removed time set item
     func removeTimeSet(id: String) -> Single<TimeSetItem> {
         return remove(key: id)
     }
     
-    /// Remove time set list
-    /// - parameters:
-    ///   - ids: Identifier list of the time set list to remove
-    /// - returns: A observable that emit all removed time set item list
     func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]> {
         return remove(keys: ids)
     }
     
-    /// Update the time set
-    /// - parameters:
-    ///   - item: data of the time set
-    /// - returns: A observable that emit a updated time set item
     func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         return update(item)
     }
     
-    /// Update time set list
-    /// - parameters:
-    ///   - items: data list of the time set
-    /// - returns: A observable that emit all updated time set item list
     func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]> {
         return update(list: items)
     }
     
-    /// Fetch all hisotry list
-    /// - returns: A observable that emit all history list
-    func fetchHistories() -> Single<[History]> {
-        return fetch {
+    func fetchHistories(pagination: PaginationParam?) -> Single<[History]> {
+        return fetch(by: {
             guard let lhs = $0.startDate, let rhs = $1.startDate else { return true }
             return lhs > rhs
-        }
+        }, pagination: pagination)
     }
     
-    /// Create a history
-    /// - parameters:
-    ///   - history: data of the history
-    /// - returns: A observable that emit a created history
     func createHistory(_ history: History) -> Single<History> {
         guard history.id > 0 else { return .error(DatabaseError.wrongData) }
         return create(history)
     }
     
-    /// Update the history
-    /// - parameters:
-    ///   - history: data of the history
-    /// - returns: A observable that emit a updated hisotry
     func updateHistory(_ history: History) -> Single<History> {
         guard history.id > 0 else { return .error(DatabaseError.wrongData) }
         return update(history)
     }
     
     // MARK: - database operate
-    /// Clear all data from database
     func clear() {
         guard let realm = try? Realm() else { return }
         try? realm.write {
@@ -96,7 +63,11 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - private method
     /// Fetch object list from `realm`
     /// - returns: `Single` observable wrap created object list, not realm object (copied)
-    private func fetch<T>(with filter: @escaping (T) -> Bool = { _ in true }, by sorted: @escaping (T, T) -> Bool = { _, _ in true }) -> Single<[T]> where T: Object & NSCopying {
+    private func fetch<T>(
+        with filter: @escaping (T) -> Bool = { _ in true },
+        by sorted: @escaping (T, T) -> Bool = { _, _ in true },
+        pagination: PaginationParam? = nil
+    ) -> Single<[T]> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
@@ -108,7 +79,15 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let realm = try self.open()
 
                         // Transaction
-                        let objects = realm.objects(T.self).filter(filter).sorted(by: sorted)
+                        var objects = realm.objects(T.self)
+                            .filter(filter)
+                            .sorted(by: sorted)
+                        
+                        if let pagination = pagination {
+                            // Pagiate if pagination info isn't `nil`
+                            objects = objects.range(pagination.range)
+                        }
+                        
                         Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
                         
                         // Copy time set from realm object & Emit copied object

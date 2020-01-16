@@ -245,7 +245,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - history
     func fetchHistories() -> Single<[History]> {
-        return provider.databaseService.fetchHistories()
+        return provider.databaseService.fetchHistories(pagination: nil)
     }
     
     func createHistory(_ history: History) -> Single<History> {
