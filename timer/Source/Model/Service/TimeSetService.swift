@@ -37,10 +37,10 @@ protocol TimeSetServiceProtocol {
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
     /// Remove the time set
-    func removeTimeSet(id: String) -> Single<TimeSetItem>
+    func removeTimeSet(id: Int) -> Single<TimeSetItem>
     
     /// Remove time set list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]>
+    func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]>
     
     /// Update the time set
     func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
@@ -112,13 +112,13 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - private method
     /// Generate time set id
-    private func generateTimeSetId(type: TimeSetType) -> String {
+    private func generateTimeSetId(type: TimeSetType) -> Int {
         // Get last time set identifier
         let id = provider.userDefaultService.integer(.timeSetId)
         // Increase last time set identifier
         provider.userDefaultService.set(id + 1, key: .timeSetId)
         
-        return "\(type.prefix)\(id)"
+        return id
     }
     
     // MARK: - public method
@@ -158,7 +158,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.created) })
     }
     
-    func removeTimeSet(id: String) -> Single<TimeSetItem> {
+    func removeTimeSet(id: Int) -> Single<TimeSetItem> {
         return fetchTimeSets()
             .flatMap { timeSets in
                 // Convert mutable array
@@ -177,7 +177,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
         .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
     
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]> {
+    func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]> {
         return self.provider.databaseService.removeTimeSets(ids: ids)
             .flatMap { removedTimeSets -> Single<[TimeSetItem]> in
                 return self.provider.databaseService.fetchTimeSets()
@@ -196,7 +196,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
             .flatMap { timeSets in
                 // Convert mutable array
                 var timeSets = timeSets
-                guard let id = item.id, let index = timeSets.firstIndex(where: { $0.id == id }) else { return .error(TimeSetError.notFound) }
+                guard let index = timeSets.firstIndex(where: { $0.id == item.id }) else { return .error(TimeSetError.notFound) }
                 
                 return self.provider.databaseService.updateTimeSet(item: item)
                     .do(onSuccess: {

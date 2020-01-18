@@ -24,13 +24,13 @@ protocol DatabaseServiceProtocol {
     /// - parameters:
     ///   - id: Identifier of the time set to remove
     /// - returns: A observable that emit a removed time set item
-    func removeTimeSet(id: String) -> Single<TimeSetItem>
+    func removeTimeSet(id: Int) -> Single<TimeSetItem>
     
     /// Remove time set list
     /// - parameters:
     ///   - ids: Identifier list of the time set list to remove
     /// - returns: A observable that emit all removed time set item list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]>
+    func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]>
     
     /// Update the time set
     /// - parameters:

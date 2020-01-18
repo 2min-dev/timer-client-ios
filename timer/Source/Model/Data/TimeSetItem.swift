@@ -13,36 +13,36 @@ import RealmSwift
 class TimeSetItem: Object, NSCopying, Codable {
     // MARK: - properties
     // Default information of the time set
-    @objc dynamic var id: String?                       // Identifier of the time set
+    @objc dynamic var id: Int = -1                      // Identifier of the time set
     @objc dynamic var title: String = ""                // Name of the timer set
     @objc dynamic var isRepeat: Bool = false            // Is repeat of the time set
-    @objc dynamic var isBookmark: Bool = false          // Is bookmark of the time set
     
     var timers: List<TimerItem> = List()                // Timer item list of the timer set
     @objc dynamic var overtimer: StopwatchItem?         // Timer item about overtime record of time set
     
     // Sorting key
     @objc dynamic var sortingKey: Int = Int.max         // Sorting key of time set
-    @objc dynamic var bookmarkSortingKey: Int = Int.max // Sorting key of bookmarked time set
+    
+    @objc dynamic var isUsed: Bool = false              // Flag to distinguish types
     
     // MARK: - constructor
-    convenience init(id: String?,
-                     title: String,
-                     isBookmark: Bool,
-                     isRepeat: Bool,
-                     timers: List<TimerItem>,
-                     overtimer: StopwatchItem?,
-                     sortingKey: Int,
-                     bookmarkSortingKey: Int) {
+    convenience init(
+        id: Int,
+        title: String,
+        isRepeat: Bool,
+        timers: List<TimerItem>,
+        overtimer: StopwatchItem?,
+        sortingKey: Int,
+        isRun: Bool
+    ) {
         self.init()
         self.id = id
         self.title = title
-        self.isBookmark = isBookmark
         self.isRepeat = isRepeat
         self.timers = timers
         self.overtimer = overtimer
         self.sortingKey = sortingKey
-        self.bookmarkSortingKey = bookmarkSortingKey
+        self.isUsed = isRun
     }
     
     // MARK: - decodable
@@ -50,14 +50,13 @@ class TimeSetItem: Object, NSCopying, Codable {
         self.init()
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try? container.decode(String.self, forKey: .id)
+        id = (try? container.decode(Int.self, forKey: .id)) ?? -1
         title = try container.decode(String.self, forKey: .title)
         isRepeat = try container.decode(Bool.self, forKey: .isRepeat)
-        isBookmark = (try? container.decode(Bool.self, forKey: .isBookmark)) ?? false
         timers = try container.decode([TimerItem].self, forKey: .timers).toList()
         overtimer = try? container.decode(StopwatchItem.self, forKey: .overtimer)
         sortingKey = (try? container.decode(Int.self, forKey: .sortingKey)) ?? Int.max
-        bookmarkSortingKey = (try? container.decode(Int.self, forKey: .bookmarkSortingKey)) ?? Int.max
+        isUsed = (try? container.decode(Bool.self, forKey: .isUsed)) ?? false
     }
     
     // MARK: - realm method
@@ -70,14 +69,15 @@ class TimeSetItem: Object, NSCopying, Codable {
         let timers: List<TimerItem> = List()
         timers.append(objectsIn: self.timers.compactMap { $0.copy() as? TimerItem })
         
-        return TimeSetItem(id: id,
-                           title: title,
-                           isBookmark: isBookmark,
-                           isRepeat: isRepeat,
-                           timers: timers,
-                           overtimer: overtimer?.copy() as? StopwatchItem,
-                           sortingKey: sortingKey,
-                           bookmarkSortingKey: bookmarkSortingKey)
+        return TimeSetItem(
+            id: id,
+            title: title,
+            isRepeat: isRepeat,
+            timers: timers,
+            overtimer: overtimer?.copy() as? StopwatchItem,
+            sortingKey: sortingKey,
+            isRun: isUsed
+        )
     }
     
     func reset() {

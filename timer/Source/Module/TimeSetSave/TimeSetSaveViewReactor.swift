@@ -195,7 +195,7 @@ class TimeSetSaveViewReactor: Reactor {
             timeSetItem.title = currentState.hint
         }
         
-        if timeSetItem.id == nil {
+        if timeSetItem.id < 0 {
             // Create time set
             return timeSetService.createTimeSet(item: timeSetItem).asObservable()
                 .flatMap { Observable<Mutation>.just(.setSavedTimeSet(item: $0))}

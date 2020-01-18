@@ -23,7 +23,8 @@ import RealmSwift
     
     // MARK: - properties
     @objc dynamic private(set) var id: Int = -1                         // Identifier
-    @objc dynamic var item: TimeSetItem?                                // Origin time set info of history
+    @objc dynamic var item: TimeSetItem?                                // Performed time set info of history (Non-Optional)
+    @objc dynamic var origin: TimeSetItem?                              // Origin time set info of item (Optional)
     
     @objc dynamic var startDate: Date? {                                // Executed dates
         didSet { id = Int(startDate?.timeIntervalSince1970 ?? -1) }

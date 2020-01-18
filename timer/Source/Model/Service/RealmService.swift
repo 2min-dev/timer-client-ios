@@ -12,18 +12,18 @@ import RealmSwift
 class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - time set operate
     func fetchTimeSets() -> Single<[TimeSetItem]> {
-        return fetch(with: { $0.id?.range(regex: "^[0-9]") != nil })
+        return fetch(with: { !$0.isUsed })
     }
     
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         return create(item)
     }
     
-    func removeTimeSet(id: String) -> Single<TimeSetItem> {
+    func removeTimeSet(id: Int) -> Single<TimeSetItem> {
         return remove(key: id)
     }
     
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]> {
+    func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]> {
         return remove(keys: ids)
     }
     
@@ -148,7 +148,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     /// - parameters:
     ///   - key: Identifier of the object to remove
     /// - returns: `Single` observable wrap removed object, not realm object (copied)
-    private func remove<T>(key: String) -> Single<T> where T: Object & NSCopying {
+    private func remove<Key, T>(key: Key) -> Single<T> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {

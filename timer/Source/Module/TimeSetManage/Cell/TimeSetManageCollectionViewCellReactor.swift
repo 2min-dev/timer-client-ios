@@ -35,7 +35,7 @@ class TimeSetManageCollectionViewCellReactor: Reactor, IdentifiableType {
     // MARK: - properties
     var initialState: State
     var timeSetItem: TimeSetItem
-    var identity: String?
+    var identity: Int
     
     // MARK: - constructor
     init(timeSetItem: TimeSetItem) {
