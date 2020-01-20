@@ -37,13 +37,13 @@ class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
         case .dismiss:
             dismiss?(presentingViewController, animated)
             
-        case .timeSetProcess(_):
+        case .timeSetProcess:
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
             // Set dismiss handler
             coordinator.dismiss = popViewController
             viewController.navigationController?.setViewControllers([mainViewController, presentingViewController], animated: animated)
             
-        case .timeSetEdit(_):
+        case .timeSetEdit:
             // Set dismiss handler
             coordinator.dismiss = popViewController
             self.viewController.navigationController?.pushViewController(presentingViewController, animated: animated)
@@ -62,7 +62,7 @@ class HistoryDetailViewCoordinator: ViewCoordinator, ServiceContainer {
             return TimeSetEditViewBuilder(with: dependency).build()
             
         case let .timeSetProcess(timeSetItem):
-            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
+            let dependency = TimeSetProcessViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: !timeSetItem.isSaved)
             return TimeSetProcessViewBuilder(with: dependency).build()
         }
     }

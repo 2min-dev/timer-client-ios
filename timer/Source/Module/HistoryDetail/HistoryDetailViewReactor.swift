@@ -78,27 +78,29 @@ class HistoryDetailViewReactor: Reactor {
     private let timeSetService: TimeSetServiceProtocol
     
     private let history: History
-    
-    private var savedTimeSetItem: TimeSetItem?
-    var timeSetItem: TimeSetItem? {
-        if let timeSet = savedTimeSetItem {
-            return timeSet
-        } else {
-            guard let copiedObject = history.item?.copy() as? TimeSetItem else { return nil }
-            copiedObject.reset()
-            
-            return copiedObject
-        }
-    }
+    var timeSetItem: TimeSetItem
     
     private var dataSource: TimerBadgeSectionDataSource
     
     // MARK: - constructor
-    init?(timeSetService: TimeSetServiceProtocol, history: History) {
-        guard let item = history.item, let startDate = history.startDate, let endDate = history.endDate else { return nil }
+    init?(timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
+        // Check required properties of history
+        guard let item = history.item,
+            let startDate = history.startDate,
+            let endDate = history.endDate else {
+                Logger.error("history object not fulfill required properties", tag: "HISTORY DETAIL")
+                return nil
+        }
+        
+        // Copy & reset history's item to rollback to use
+        guard let timeSetItem = history.item?.copy() as? TimeSetItem else { return nil }
+        timeSetItem.reset()
+        timeSetItem.isSaved = history.originId > 0
         
         self.timeSetService = timeSetService
         self.history = history
+        
+        self.timeSetItem = timeSetItem
         dataSource = TimerBadgeSectionDataSource(regulars: item.timers.toArray())
         
         initialState = State(
@@ -117,7 +119,7 @@ class HistoryDetailViewReactor: Reactor {
                 .reduce(0) { $0 + ($1.end - $1.current) },
             overtime: item.overtimer?.current ?? 0,
             sections: RevisionValue(dataSource.makeSections()),
-            canTimeSetSave: true,
+            canTimeSetSave: canSave,
             didTimeSetSaved: RevisionValue(nil)
         )
     }
@@ -165,10 +167,14 @@ class HistoryDetailViewReactor: Reactor {
     }
     
     private func actionSaveTimeSet() -> Observable<Mutation> {
-        guard let timeSetItem = timeSetItem else { return .empty() }
         // Create the time set
-        return timeSetService.createTimeSet(item: timeSetItem).asObservable()
-            .do(onNext: { self.savedTimeSetItem = $0 })
+        timeSetService.createTimeSet(item: timeSetItem)
+            .do(onSuccess: {
+                self.timeSetItem = $0
+                self.history.originId = $0.id
+            })
+            .flatMap { _ in self.timeSetService.updateHistory(self.history) }
+            .asObservable()
             .map { _ in .save }
     }
     
