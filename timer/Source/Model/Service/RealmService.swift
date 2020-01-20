@@ -42,14 +42,24 @@ class RealmService: BaseService, DatabaseServiceProtocol {
         }, pagination: pagination)
     }
     
+    func fetchHistories(origin id: Int) -> Single<[History]> {
+        return fetch(with: { $0.originId == id })
+    }
+    
+    func fetchHistories(origin ids: [Int]) -> Single<[History]> {
+        return fetch(with: { ids.contains($0.originId) })
+    }
+    
     func createHistory(_ history: History) -> Single<History> {
-        guard history.id > 0 else { return .error(DatabaseError.wrongData) }
         return create(history)
     }
     
     func updateHistory(_ history: History) -> Single<History> {
-        guard history.id > 0 else { return .error(DatabaseError.wrongData) }
         return update(history)
+    }
+    
+    func updateHistories(_ histories: [History]) -> Single<[History]> {
+        return update(list: histories)
     }
     
     // MARK: - database operate

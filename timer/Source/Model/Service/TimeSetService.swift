@@ -67,21 +67,6 @@ protocol TimeSetServiceProtocol {
 
 /// A service class that manage the application's timers
 class TimeSetService: BaseService, TimeSetServiceProtocol {
-    enum TimeSetType {
-        case normal
-        case history
-        
-        var prefix: String {
-            switch self {
-            case .normal:
-                return ""
-                
-            case .history:
-                return "H"
-            }
-        }
-    }
-    
     // MARK: - global state event
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
@@ -112,7 +97,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - private method
     /// Generate time set id
-    private func generateTimeSetId(type: TimeSetType) -> Int {
+    private func generateTimeSetId() -> Int {
         // Get last time set identifier
         let id = provider.userDefaultService.integer(.timeSetId)
         // Increase last time set identifier
@@ -138,7 +123,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         // Set time set id
-        item.id = generateTimeSetId(type: .normal)
+        item.id = generateTimeSetId()
         
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -159,36 +144,47 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     }
     
     func removeTimeSet(id: Int) -> Single<TimeSetItem> {
-        return fetchTimeSets()
-            .flatMap { timeSets in
-                // Convert mutable array
-                var timeSets = timeSets
+        fetchTimeSets()
+            .flatMap {
+                var timeSets = $0
                 guard let index = timeSets.firstIndex(where: { $0.id == id }) else { return .error(TimeSetError.notFound) }
                 
-                return self.provider.databaseService.removeTimeSet(id: id)
+                return self.provider.databaseService.fetchHistories(origin: id)
+                    .flatMap { histories -> Single<[History]> in
+                        // Set to init origin id that referenced in history
+                        histories.forEach { $0.originId = -1 }
+                        return self.provider.databaseService.updateHistories(histories)
+                    }
+                    .flatMap { _ in self.provider.databaseService.removeTimeSet(id: id) }
                     .do(onSuccess: { _ in
-                        // Remove time set
+                        // Remove time set and reassign to self
                         timeSets.remove(at: index)
                         self.timeSets = timeSets
                         
                         Logger.info("the time set removed.", tag: "SERVICE")
                     })
-        }
-        .do(onSuccess: { _ in self.event.onNext(.removed) })
+            }
+            .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
     
     func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]> {
-        return self.provider.databaseService.removeTimeSets(ids: ids)
+        provider.databaseService.fetchHistories(origin: ids)
+            .flatMap { histories -> Single<[History]> in
+                // Set to init origin id that referenced in history
+                histories.forEach { $0.originId = -1 }
+                return self.provider.databaseService.updateHistories(histories)
+            }
+            .flatMap { _ in self.provider.databaseService.removeTimeSets(ids: ids) }
             .flatMap { removedTimeSets -> Single<[TimeSetItem]> in
-                return self.provider.databaseService.fetchTimeSets()
+                self.provider.databaseService.fetchTimeSets()
                     .do(onSuccess: {
                         // Update time set list
                         self.timeSets = $0
                         Logger.info("time set list removed.", tag: "SERVICE")
                     })
                     .flatMap { _ in .just(removedTimeSets)}
-        }
-        .do(onSuccess: { _ in self.event.onNext(.removed) })
+            }
+            .do(onSuccess: { _ in self.event.onNext(.removed) })
     }
     
     func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
@@ -250,7 +246,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func createHistory(_ history: History) -> Single<History> {
         // Set time set id of history
-        history.item?.id = generateTimeSetId(type: .history)
+        history.item?.id = generateTimeSetId()
         
         return provider.databaseService.createHistory(history)
             .do(onSuccess: { _ in Logger.info("a history created.", tag: "SERVICE") })

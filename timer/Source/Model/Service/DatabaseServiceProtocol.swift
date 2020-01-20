@@ -48,6 +48,18 @@ protocol DatabaseServiceProtocol {
     /// - returns: A observable that emit all history list
     func fetchHistories(pagination: PaginationParam?) -> Single<[History]>
     
+    /// Fetch history list that refer origin time set item id
+    /// - parameters:
+    ///   - id: Identifier of original time set item of history
+    /// - returns: A observable that emit all history list that refer origin time set item id
+    func fetchHistories(origin id: Int) -> Single<[History]>
+    
+    /// Fetch history list that refer origin time set item id
+    /// - parameters:
+    ///   - ids: Identifier list of original time set item of history
+    /// - returns: A observable that emit all history list that refer origin time set item id
+    func fetchHistories(origin ids: [Int]) -> Single<[History]>
+    
     /// Create a history
     /// - parameters:
     ///   - history: data of the history
@@ -60,11 +72,11 @@ protocol DatabaseServiceProtocol {
     /// - returns: A observable that emit a updated hisotry
     func updateHistory(_ history: History) -> Single<History>
     
-    /// Fetch recently used time set list
+    /// Update history list
     /// - parameters:
-    ///   - count: how many get time sets from recent
-    /// - returns: A observable that emit saved time set list that used from recent
-//    func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]>
+    ///   - histories: data list of the history
+    /// - returns: A observable that emit all updated history list
+    func updateHistories(_ histories: [History]) -> Single<[History]>
     
     // MARK: - database operate
     /// Clear database
