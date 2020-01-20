@@ -12,7 +12,7 @@ import RealmSwift
 class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - time set operate
     func fetchTimeSets() -> Single<[TimeSetItem]> {
-        return fetch(with: { !$0.isUsed })
+        return fetch(with: { $0.isSaved })
     }
     
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {

@@ -101,9 +101,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     migration.enumerateObjects(ofType: TimeSetItem.className()) { oldObject, newObject in
                         guard let oldObject = oldObject, let newObject = newObject else { return }
                         
-                        if let id = oldObject["id"] as? String, id.contains("H") {
+                        if let id = oldObject["id"] as? String, !id.contains("H") {
                             // Set historical time set object
-                            newObject["isUsed"] = true
+                            newObject["isSaved"] = true
                         }
                         
                         // Realloc id of time set item (String -> Int)

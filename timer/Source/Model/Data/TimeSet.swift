@@ -77,7 +77,6 @@ class TimeSet: EventStreamProtocol {
     // MARK: - constructor
     init(item: TimeSetItem, history: History, index: Int) {
         self.item = item
-        self.item.isUsed = true // Set time set item used flag to `true`
         
         self.history = history
         self.history.endIndex = index // Set end index of history

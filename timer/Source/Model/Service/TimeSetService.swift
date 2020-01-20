@@ -124,6 +124,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         // Set time set id
         item.id = generateTimeSetId()
+        item.isSaved = true
         
         return fetchTimeSets()
             .flatMap { timeSets in
@@ -247,6 +248,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     func createHistory(_ history: History) -> Single<History> {
         // Set time set id of history
         history.item?.id = generateTimeSetId()
+        history.item?.isSaved = false
         
         return provider.databaseService.createHistory(history)
             .do(onSuccess: { _ in Logger.info("a history created.", tag: "SERVICE") })

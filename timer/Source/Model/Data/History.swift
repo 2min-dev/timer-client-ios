@@ -46,7 +46,7 @@ import RealmSwift
     convenience init(item: TimeSetItem) {
         self.init()
         self.item = item
-        self.originId = item.id
+        self.originId = item.isSaved ? item.id : -1
     }
     
     private convenience init(

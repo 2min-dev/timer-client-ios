@@ -23,7 +23,7 @@ class TimeSetItem: Object, NSCopying, Codable {
     // Sorting key
     @objc dynamic var sortingKey: Int = Int.max         // Sorting key of time set
     
-    @objc dynamic var isUsed: Bool = false              // Flag to distinguish types
+    @objc dynamic var isSaved: Bool = false             // Flag to distinguish types
     
     // MARK: - constructor
     convenience init(
@@ -33,7 +33,7 @@ class TimeSetItem: Object, NSCopying, Codable {
         timers: List<TimerItem>,
         overtimer: StopwatchItem?,
         sortingKey: Int,
-        isRun: Bool
+        isSaved: Bool
     ) {
         self.init()
         self.id = id
@@ -42,7 +42,7 @@ class TimeSetItem: Object, NSCopying, Codable {
         self.timers = timers
         self.overtimer = overtimer
         self.sortingKey = sortingKey
-        self.isUsed = isRun
+        self.isSaved = isSaved
     }
     
     // MARK: - decodable
@@ -56,7 +56,7 @@ class TimeSetItem: Object, NSCopying, Codable {
         timers = try container.decode([TimerItem].self, forKey: .timers).toList()
         overtimer = try? container.decode(StopwatchItem.self, forKey: .overtimer)
         sortingKey = (try? container.decode(Int.self, forKey: .sortingKey)) ?? Int.max
-        isUsed = (try? container.decode(Bool.self, forKey: .isUsed)) ?? false
+        isSaved = (try? container.decode(Bool.self, forKey: .isSaved)) ?? false
     }
     
     // MARK: - realm method
@@ -76,7 +76,7 @@ class TimeSetItem: Object, NSCopying, Codable {
             timers: timers,
             overtimer: overtimer?.copy() as? StopwatchItem,
             sortingKey: sortingKey,
-            isRun: isUsed
+            isSaved: isSaved
         )
     }
     
