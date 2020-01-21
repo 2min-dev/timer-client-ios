@@ -26,6 +26,13 @@ extension Results {
     func toArray() -> [Element] {
         return Array(self)
     }
+    
+    func range(_ range: Range<Int>) -> [Element] {
+        Range(uncheckedBounds: (
+            lower: Swift.max(range.lowerBound, 0),
+            upper: Swift.min(range.upperBound, count))
+        ).map { self[$0] }
+    }
 }
 
 extension LazyFilterSequence {

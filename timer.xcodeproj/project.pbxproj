@@ -31,7 +31,7 @@
 		F307166023CEEE0E001AEC96 /* Collector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307165F23CEEE0E001AEC96 /* Collector.swift */; };
 		F307166223CF6D32001AEC96 /* Array+range.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166123CF6D32001AEC96 /* Array+range.swift */; };
 		F307166423CF6DD0001AEC96 /* ArrayExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */; };
-		F307166623D02DEB001AEC96 /* PaginationParam.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166523D02DEB001AEC96 /* PaginationParam.swift */; };
+		F307166623D02DEB001AEC96 /* QueryParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166523D02DEB001AEC96 /* QueryParams.swift */; };
 		F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */; };
 		F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97722E9883100C280A0 /* TimerOptionView.swift */; };
 		F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */ = {isa = PBXBuildFile; fileRef = F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */; };
@@ -67,6 +67,7 @@
 		F35CE4092360BCD800F8BC31 /* RunningTimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35CE4082360BCD800F8BC31 /* RunningTimeSet.swift */; };
 		F35E05FF22FF023D00A66ED9 /* TimeKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */; };
 		F3606A5A2349D51F00E09A2C /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3606A592349D51F00E09A2C /* RoundButton.swift */; };
+		F36B26E223D6D23B008CABBA /* RealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36B26E123D6D23B008CABBA /* RealmTests.swift */; };
 		F37041C9226B65550012EA16 /* TimerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerItem.swift */; };
 		F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimeSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimeSetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimeSetItem.swift */; };
@@ -301,7 +302,7 @@
 		F307165F23CEEE0E001AEC96 /* Collector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collector.swift; sourceTree = "<group>"; };
 		F307166123CF6D32001AEC96 /* Array+range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+range.swift"; sourceTree = "<group>"; };
 		F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionTests.swift; sourceTree = "<group>"; };
-		F307166523D02DEB001AEC96 /* PaginationParam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationParam.swift; sourceTree = "<group>"; };
+		F307166523D02DEB001AEC96 /* QueryParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryParams.swift; sourceTree = "<group>"; };
 		F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionViewReactor.swift; sourceTree = "<group>"; };
 		F309F97722E9883100C280A0 /* TimerOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionView.swift; sourceTree = "<group>"; };
 		F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OPENSOURCE.html; sourceTree = "<group>"; };
@@ -341,6 +342,7 @@
 		F35CE4082360BCD800F8BC31 /* RunningTimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningTimeSet.swift; sourceTree = "<group>"; };
 		F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeKeyPad.swift; sourceTree = "<group>"; };
 		F3606A592349D51F00E09A2C /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		F36B26E123D6D23B008CABBA /* RealmTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmTests.swift; sourceTree = "<group>"; };
 		F37041C8226B65550012EA16 /* TimerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerItem.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimeSetItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetItem.swift; sourceTree = "<group>"; };
@@ -644,6 +646,7 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F36B26E123D6D23B008CABBA /* RealmTests.swift */,
 				F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */,
 				F307165F23CEEE0E001AEC96 /* Collector.swift */,
 				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
@@ -1032,7 +1035,7 @@
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 				F3E1FBF82387B3B3008FB3AB /* Version.swift */,
 				F3C2D0062393AA58004D2219 /* RevisionValue.swift */,
-				F307166523D02DEB001AEC96 /* PaginationParam.swift */,
+				F307166523D02DEB001AEC96 /* QueryParams.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1576,6 +1579,7 @@
 				F307166023CEEE0E001AEC96 /* Collector.swift in Sources */,
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
+				F36B26E223D6D23B008CABBA /* RealmTests.swift in Sources */,
 				F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */,
 				F307166423CF6DD0001AEC96 /* ArrayExtensionTests.swift in Sources */,
 			);
@@ -1655,7 +1659,7 @@
 				F38702B922F970E80099241C /* TimeSetDetailViewController.swift in Sources */,
 				F3C81BE023351C3800105549 /* Header.swift in Sources */,
 				F37CA0AF23A8F13500A8990F /* PresetViewBuilder.swift in Sources */,
-				F307166623D02DEB001AEC96 /* PaginationParam.swift in Sources */,
+				F307166623D02DEB001AEC96 /* QueryParams.swift in Sources */,
 				F3C0DFA1233369CE00E49425 /* NoticeListViewReactor.swift in Sources */,
 				F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,

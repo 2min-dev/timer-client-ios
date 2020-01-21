@@ -1,5 +1,5 @@
 //
-//  PaginationParam.swift
+//  QueryParams.swift
 //  timer
 //
 //  Created by JSilver on 2020/01/16.
@@ -15,5 +15,15 @@ struct PaginationParam {
     init(count: Int, page: Int = 1) {
         self.count = max(count, 0)
         self.page = max(page, 1)
+    }
+}
+
+struct SortingParam {
+    let keyPath: String
+    let accending: Bool
+    
+    init(keyPath: String, accending: Bool = false) {
+        self.keyPath = keyPath
+        self.accending = accending
     }
 }
