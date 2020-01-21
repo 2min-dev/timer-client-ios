@@ -120,10 +120,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
             .disposed(by: disposeBag)
         
         startButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let timeSetItem = reactor.timeSetItem else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem), animated: true)
-            })
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
