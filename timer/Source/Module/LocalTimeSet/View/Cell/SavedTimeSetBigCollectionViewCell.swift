@@ -1,5 +1,5 @@
 //
-//  SavedTimeSetNormalCollectionViewCell.swift
+//  SavedTimeSetBigCollectionViewCell.swift
 //  timer
 //
 //  Created by JSilver on 06/09/2019.
@@ -10,12 +10,12 @@ import UIKit
 import RxSwift
 import ReactorKit
 
-class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
+class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
+        view.textColor = Constants.Color.white
         return view
     }()
     
@@ -24,20 +24,20 @@ class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = Constants.Color.gallery
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = Constants.Color.white
         return view
     }()
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_timer")
+        view.image = UIImage(named: "icon_timer_white")
         return view
     }()
     
@@ -46,7 +46,7 @@ class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = Constants.Color.gallery
         return view
     }()
     
@@ -60,20 +60,20 @@ class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
         // Set constraint of subviews
         addAutolayoutSubviews([timeLabel, endOfTimeSetLabel, titleLabel, timerIconImageView, timerCountLabel])
         timeLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(20.adjust())
-            make.leading.equalToSuperview().inset(11.adjust())
+            make.top.equalToSuperview().inset(30.adjust())
+            make.leading.equalToSuperview().inset(20.adjust())
             make.trailing.equalTo(endOfTimeSetLabel.snp.leading).inset(-10.adjust())
         }
         
         endOfTimeSetLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(9.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust())
             make.centerY.equalTo(timeLabel)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(11.adjust())
+            make.leading.equalToSuperview().inset(20.adjust())
             make.trailing.equalTo(timerIconImageView.snp.leading)
-            make.bottom.equalToSuperview().inset(20.adjust())
+            make.bottom.equalToSuperview().inset(30.adjust())
         }
         
         timerIconImageView.snp.makeConstraints { make in
@@ -84,7 +84,7 @@ class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
         }
         
         timerCountLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(9.adjust())
+            make.trailing.equalToSuperview().inset(20.adjust())
             make.centerY.equalTo(titleLabel).offset(1)
         }
         
@@ -140,12 +140,8 @@ class SavedTimeSetNormalCollectionViewCell: UICollectionViewCell, View {
     
     // MARK: - private method
     private func initLayout() {
-        backgroundColor = Constants.Color.white
-        
+        backgroundColor = Constants.Color.carnation
+        layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
         layer.cornerRadius = 20.adjust()
-        
-        layer.borderColor = Constants.Color.gallery.cgColor
-        layer.borderWidth = 1
-        layer.shadow(alpha: 0.02, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
     }
 }

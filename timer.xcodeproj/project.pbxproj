@@ -205,9 +205,9 @@
 		F3D49924227F273E00AC4B2B /* NumberKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */; };
 		F3D8EDFF234B7F06003CAF08 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D8EDFE234B7F06003CAF08 /* Alarm.swift */; };
 		F3DAF59E2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DAF59D2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift */; };
-		F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */; };
+		F3DD7AD223216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD123216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift */; };
 		F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */; };
-		F3DD7AD623216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift */; };
+		F3DD7AD623216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */; };
 		F3DD7AD8232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */; };
 		F3DD937B233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */; };
 		F3E1FBF92387B3B3008FB3AB /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FBF82387B3B3008FB3AB /* Version.swift */; };
@@ -483,9 +483,9 @@
 		F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberKeyPad.swift; sourceTree = "<group>"; };
 		F3D8EDFE234B7F06003CAF08 /* Alarm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alarm.swift; sourceTree = "<group>"; };
 		F3DAF59D2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageSectionCollectionReusableView.swift; sourceTree = "<group>"; };
-		F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetHighlightCollectionViewCell.swift; sourceTree = "<group>"; };
+		F3DD7AD123216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetBigCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetCollectionViewCell.swift; sourceTree = "<group>"; };
-		F3DD7AD523216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetNormalCollectionViewCell.swift; sourceTree = "<group>"; };
+		F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetSmallCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionCollectionReusableView.swift; sourceTree = "<group>"; };
 		F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCellReactor.swift; sourceTree = "<group>"; };
 		F3E1FBF82387B3B3008FB3AB /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
@@ -1229,8 +1229,8 @@
 			isa = PBXGroup;
 			children = (
 				F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */,
-				F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */,
-				F3DD7AD523216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift */,
+				F3DD7AD123216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift */,
+				F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */,
 				F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */,
 				F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */,
 				F3756F232322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift */,
@@ -1598,7 +1598,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */,
+				F3DD7AD223216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift in Sources */,
 				F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */,
 				F39B4B3C2356BCAD00E6370A /* AppVersion.swift in Sources */,
 				F37CA0C523A8FBA200A8990F /* SettingViewBuilder.swift in Sources */,
@@ -1673,7 +1673,7 @@
 				F38C37A323253C55000A0596 /* TimeSetInduceCollectionViewCell.swift in Sources */,
 				F39BFF8D2355F9EA0057816B /* History.swift in Sources */,
 				F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */,
-				F3DD7AD623216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift in Sources */,
+				F3DD7AD623216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift in Sources */,
 				F3F5F876233155E8003271B3 /* AllTimeSetViewController.swift in Sources */,
 				F3C0DFA0233369CE00E49425 /* NoticeListViewCoordinator.swift in Sources */,
 				F3ADF6832300672800F0FC67 /* TimeSetProcessViewCoordinator.swift in Sources */,

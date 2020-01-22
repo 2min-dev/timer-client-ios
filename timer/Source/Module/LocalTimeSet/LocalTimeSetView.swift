@@ -34,8 +34,8 @@ class LocalTimeSetView: UIView {
         view.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionFooter.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
         // Register cell
         view.register(TimeSetInduceCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetInduceCollectionViewCell.name)
-        view.register(SavedTimeSetHighlightCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name)
-        view.register(SavedTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetCollectionViewCell.name)
+        view.register(SavedTimeSetBigCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetBigCollectionViewCell.name)
+        view.register(SavedTimeSetSmallCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name)
         
         return view
     }()

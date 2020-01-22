@@ -29,7 +29,7 @@ class PresetView: UIView {
         // Register supplimentary view
         view.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
         // Register cell
-        view.register(SavedTimeSetNormalCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetNormalCollectionViewCell.name)
+        view.register(SavedTimeSetSmallCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name)
         
         return view
     }()

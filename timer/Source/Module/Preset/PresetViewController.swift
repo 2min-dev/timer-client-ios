@@ -26,7 +26,7 @@ class PresetViewController: BaseHeaderViewController, ViewControllable, View {
     
     // Time set datasource
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<PresetSectionModel>(configureCell: { dataSource, collectionView, indexPath, reactor -> UICollectionViewCell in
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetNormalCollectionViewCell.name, for: indexPath) as? SavedTimeSetNormalCollectionViewCell else { fatalError() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError() }
         cell.reactor = reactor
         return cell
     }, configureSupplementaryView: { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in

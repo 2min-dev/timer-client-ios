@@ -64,11 +64,11 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         case .productivity:
             return (viewController, self)
             
-        case let .timeSetManage:
+        case .timeSetManage:
             let dependency = TimeSetManageViewBuilder.Dependency(provider: provider)
             return TimeSetManageViewBuilder(with: dependency).build()
             
-        case let .allTimeSet:
+        case .allTimeSet:
             let dependency = AllTimeSetViewBuilder.Dependency(provider: provider)
             return AllTimeSetViewBuilder(with: dependency).build()
             
