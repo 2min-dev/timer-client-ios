@@ -49,14 +49,13 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
             // Section header
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView,
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionHeaderCollectionReusableView.name, for: indexPath) as? TimeSetSectionHeaderCollectionReusableView,
                 let reactor = self?.reactor else {
                 fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionCollectionReusableView`.")
             }
 
             // Set header type & title
-            supplementaryView.type = .title
-            supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
+            supplementaryView.title = "local_saved_time_set_section_title".localized
             
             return supplementaryView
             

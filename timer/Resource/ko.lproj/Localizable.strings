@@ -47,7 +47,7 @@
 "time_set_edit_title" = "타임셋 편집";
 "time_set_memo_title" = "메모 입력";
 "time_set_end_title" = "타임셋 종료";
-"local_time_set_title" = "마이 타임셋";
+"local_time_set_title" = "마이";
 "saved_time_set_title" = "저장된 타임셋 모두보기";
 "saved_time_set_management_title" = "저장한 타임셋 관리";
 "preset_title" = "프리셋";
@@ -65,8 +65,8 @@
 
 // MARK: - local time set
 "local_header_title" = "주로 쓰는 타임셋을 모아보세요,\n시간을 관리하는 데 도움이 될 거에요 :)";
+"local_management_title" = "관리";
 "local_saved_time_set_section_title" = "저장한 타임셋";
-"local_saved_time_set_management_title" = "저장한 타임셋 관리";
 "local_saved_time_set_all_show_title" = "저장한 타임셋 모두보기";
 "local_recently_used_time_set_section_title" = "최근 이용한 타임셋";
 "time_set_induce_title" = "타임셋을 추가해보세요!";

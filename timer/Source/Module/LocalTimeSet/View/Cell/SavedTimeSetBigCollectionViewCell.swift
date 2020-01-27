@@ -11,11 +11,56 @@ import RxSwift
 import ReactorKit
 
 class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
+    enum CellType {
+        case normal
+        case highlight
+        
+        var backgroundColor: UIColor {
+            switch self {
+            case .normal:
+                return Constants.Color.white
+                
+            case .highlight:
+                return Constants.Color.carnation
+            }
+        }
+        
+        var titleColor: UIColor {
+            switch self {
+            case .normal:
+                return Constants.Color.codGray
+                
+            case .highlight:
+                return Constants.Color.white
+            }
+        }
+        
+        var subtitleColor: UIColor {
+            switch self {
+            case .normal:
+                return Constants.Color.doveGray
+                
+            case .highlight:
+                return Constants.Color.gallery
+            }
+        }
+        
+        var timerIconImage: UIImage? {
+            switch self {
+            case .normal:
+                return UIImage(named: "icon_timer")
+                
+            case .highlight:
+                return UIImage(named: "icon_timer_white")
+            }
+        }
+    }
+    
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(24.adjust())
-        view.textColor = Constants.Color.white
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
@@ -24,14 +69,14 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.gallery
+        view.textColor = Constants.Color.doveGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.white
+        view.textColor = Constants.Color.codGray
         return view
     }()
     
@@ -46,49 +91,21 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.gallery
+        view.textColor = Constants.Color.doveGray
         return view
     }()
     
     // MARK: - properties
+    var type: CellType = .normal {
+        didSet { setCellType(type) }
+    }
+    
     var disposeBag = DisposeBag()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        // Set constraint of subviews
-        addAutolayoutSubviews([timeLabel, endOfTimeSetLabel, titleLabel, timerIconImageView, timerCountLabel])
-        timeLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(30.adjust())
-            make.leading.equalToSuperview().inset(20.adjust())
-            make.trailing.equalTo(endOfTimeSetLabel.snp.leading).inset(-10.adjust())
-        }
-        
-        endOfTimeSetLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(20.adjust())
-            make.centerY.equalTo(timeLabel)
-        }
-        
-        titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(20.adjust())
-            make.trailing.equalTo(timerIconImageView.snp.leading)
-            make.bottom.equalToSuperview().inset(30.adjust())
-        }
-        
-        timerIconImageView.snp.makeConstraints { make in
-            make.trailing.equalTo(timerCountLabel.snp.leading).offset(4.adjust())
-            make.centerY.equalTo(titleLabel)
-            make.width.equalTo(36.adjust())
-            make.height.equalTo(timerIconImageView.snp.width)
-        }
-        
-        timerCountLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(20.adjust())
-            make.centerY.equalTo(titleLabel).offset(1)
-        }
-        
-        initLayout()
+        setUpLayout()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -139,9 +156,53 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
     }
     
     // MARK: - private method
-    private func initLayout() {
-        backgroundColor = Constants.Color.carnation
+    private func setUpLayout() {
         layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
+        layer.borderColor = Constants.Color.gallery.cgColor
         layer.cornerRadius = 20.adjust()
+        setCellType(type)
+        
+        // Set constraint of subviews
+        addAutolayoutSubviews([timeLabel, endOfTimeSetLabel, titleLabel, timerIconImageView, timerCountLabel])
+        timeLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(30.adjust())
+            make.leading.equalToSuperview().inset(20.adjust())
+            make.trailing.equalTo(endOfTimeSetLabel.snp.leading).inset(-10.adjust())
+        }
+        
+        endOfTimeSetLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20.adjust())
+            make.centerY.equalTo(timeLabel)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20.adjust())
+            make.trailing.equalTo(timerIconImageView.snp.leading)
+            make.bottom.equalToSuperview().inset(30.adjust())
+        }
+        
+        timerIconImageView.snp.makeConstraints { make in
+            make.trailing.equalTo(timerCountLabel.snp.leading).offset(4.adjust())
+            make.centerY.equalTo(titleLabel)
+            make.width.equalTo(36.adjust())
+            make.height.equalTo(timerIconImageView.snp.width)
+        }
+        
+        timerCountLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20.adjust())
+            make.centerY.equalTo(titleLabel).offset(1)
+        }
+    }
+    
+    private func setCellType(_ type: CellType) {
+        backgroundColor = type.backgroundColor
+        layer.borderWidth = type == .normal ? 1 : 0
+        
+        timeLabel.textColor = type.titleColor
+        titleLabel.textColor = type.titleColor
+        endOfTimeSetLabel.textColor = type.subtitleColor
+        timerCountLabel.textColor = type.subtitleColor
+        
+        timerIconImageView.image = type.timerIconImage
     }
 }

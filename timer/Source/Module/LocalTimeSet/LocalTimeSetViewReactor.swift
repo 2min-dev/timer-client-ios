@@ -12,7 +12,7 @@ import ReactorKit
 
 class LocalTimeSetViewReactor: Reactor {
     // MARK: - constants
-    static let MAX_SAVED_TIME_SET = 9
+    static let MAX_SAVED_TIME_SET = 10
     
     enum Action {
         /// Fetch local stored time set list
@@ -105,6 +105,7 @@ enum LocalTimeSetSectionType {
 
 enum LocalTimeSetCellType {
     case regular(TimeSetCollectionViewCellReactor)
+    case all
     case empty
     
     var item: TimeSetCollectionViewCellReactor? {
@@ -128,18 +129,24 @@ struct LocalTimeSetDataSource {
     
     // MARK: - public method
     mutating func setItems(_ items: [TimeSetItem]) {
-        // Classify items by section
-        let savedTimeSetItems = items
-        
         // Store all count of section
-        savedTimeSetCount = savedTimeSetItems.count
+        savedTimeSetCount = items.count
         
-        // Make section data
-        savedTimeSetSection = savedTimeSetItems
-            .sorted(by: { $0.sortingKey < $1.sortingKey })
-            .enumerated()
-            .filter { $0.offset < LocalTimeSetViewReactor.MAX_SAVED_TIME_SET }
-            .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0.element)) }
+        if savedTimeSetCount == 0 {
+            savedTimeSetSection = [.empty]
+        } else {
+            // Make section data
+            savedTimeSetSection = items
+                .sorted(by: { $0.sortingKey < $1.sortingKey })
+                .range(0 ..< LocalTimeSetViewReactor.MAX_SAVED_TIME_SET)
+                .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
+            
+            if savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET {
+                // Add all time set cell type if item's count exceed MAX_SAVED_TIME_SET
+                savedTimeSetSection.append(.all)
+            }
+        }
+        
     }
     
     mutating func setRecentlyUsed(timeSets: [TimeSetItem]) {
@@ -151,7 +158,7 @@ struct LocalTimeSetDataSource {
         // Make section model
         let savedTimeSetSection = LocalTimeSetSectionModel(
             model: .saved,
-            items: savedTimeSetCount == 0 ? [.empty] : self.savedTimeSetSection
+            items: self.savedTimeSetSection
         )
         
         let recentlyUsedTimeSetSection = LocalTimeSetSectionModel(
