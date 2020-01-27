@@ -32,12 +32,12 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             case .saved:
                 // Saved time set
                 if indexPath.item > 2 {
-                    // Highlight time set
+                    // Small time set cell
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetSmallCollectionViewCell`.") }
                     cell.reactor = reactor
                     return cell
                 } else {
-                    // Normal time set
+                    // Big time set cell
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetBigCollectionViewCell.name, for: indexPath) as? SavedTimeSetBigCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetBigCollectionViewCell`.") }
                     cell.reactor = reactor
                     cell.type = indexPath.item == 0 ? .highlight : .normal

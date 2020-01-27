@@ -26,16 +26,17 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<AllTimeSetSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, cellReactor -> UICollectionViewCell in
         guard let reactor = self?.reactor else { return UICollectionViewCell() }
 
-        // Saved time set
-        if indexPath.row > 0 {
-            // Highlight time set
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetCollectionViewCell`.") }
+        if indexPath.row > 2 {
+            // Small time set cell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetSmallCollectionViewCell`.") }
             cell.reactor = cellReactor
             return cell
         } else {
-            // Normal time set
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetBigCollectionViewCell.name, for: indexPath) as? SavedTimeSetBigCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetHighlightCollectionViewCell`.")}
+            // Big time set cell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetBigCollectionViewCell.name, for: indexPath) as? SavedTimeSetBigCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetBigCollectionViewCell`.")}
             cell.reactor = cellReactor
+            cell.type = indexPath.item == 0 ? .highlight : .normal
+            
             return cell
         }
     }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
@@ -140,17 +141,14 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
 
 extension AllTimeSetViewController: JSCollectionViewDelegateLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
-        
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 140.adjust())
+        let width = collectionView.bounds.width - horizontalInset
         
-        if indexPath.row > 0 {
-            // Set width that half of collection view width except first time set
-            size.width = (size.width - layout.minimumInteritemSpacing) / 2
+        if indexPath.row > 2 {
+            return CGSize(width: width, height: 90.adjust())
+        } else {
+            return CGSize(width: width, height: 140.adjust())
         }
-        
-        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -159,11 +157,11 @@ extension AllTimeSetViewController: JSCollectionViewDelegateLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 79.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
     }
     
     func referenceSizeForHeader(in collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 87.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 57.adjust())
     }
 }
