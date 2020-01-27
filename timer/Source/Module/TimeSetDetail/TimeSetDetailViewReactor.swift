@@ -49,10 +49,7 @@ class TimeSetDetailViewReactor: Reactor {
         var canTimeSetSave: Bool
         
         /// Flag that time set is saved
-        var didTimeSetSaved: RevisionValue<Bool?>
-        
-        /// Need section reload
-        var shouldSectionReload: Bool
+        var didTimeSetSaved: RevisionValue<Bool>
     }
     
     // MARK: - properties
@@ -78,8 +75,7 @@ class TimeSetDetailViewReactor: Reactor {
             sections: RevisionValue(dataSource.makeSections()),
             selectedIndex: 0,
             canTimeSetSave: canSave,
-            didTimeSetSaved: RevisionValue(nil),
-            shouldSectionReload: true
+            didTimeSetSaved: RevisionValue(false)
         )
     }
     
@@ -96,7 +92,6 @@ class TimeSetDetailViewReactor: Reactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
         case let .setTimer(timer):
@@ -134,9 +129,12 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     private func actionSaveTimeSet() -> Observable<Mutation> {
+        guard let timeSetItem = timeSetItem.copy() as? TimeSetItem else { return .empty() }
+        
         // Create the time set
-        return timeSetService.createTimeSet(item: timeSetItem).asObservable()
-            .do(onNext: { self.timeSetItem = $0 })
+        return timeSetService.createTimeSet(item: timeSetItem)
+            .do(onSuccess: { self.timeSetItem = $0 })
+            .asObservable()
             .map { _ in .save }
     }
     

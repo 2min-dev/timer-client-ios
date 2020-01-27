@@ -11,6 +11,10 @@ import RealmSwift
 
 class RealmService: BaseService, DatabaseServiceProtocol {
     // MARK: - time set operate
+    func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
+        fetch(key: id)
+    }
+    
     func fetchTimeSets() -> Single<[TimeSetItem]> {
         fetch(filter: NSPredicate(format: "isSaved = true"))
     }

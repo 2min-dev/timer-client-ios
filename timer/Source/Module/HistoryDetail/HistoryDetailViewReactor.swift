@@ -19,14 +19,20 @@ class HistoryDetailViewReactor: Reactor {
         
         /// Save the time set
         case saveTimeSet
+        
+        /// Start the time set
+        case startTimeSet
     }
     
     enum Mutation {
         /// Set memo of the time set
         case setMemo(String)
         
-        /// Set did time set saved `true`
+        /// Set did time set saved flag to `true`
         case save
+        
+        /// Set can start time set flag to `true`
+        case start
     }
     
     struct State {
@@ -69,8 +75,11 @@ class HistoryDetailViewReactor: Reactor {
         /// Flag that represent current time set can save
         var canTimeSetSave: Bool
         
-        /// Flag that time set is saved
-        var didTimeSetSaved: RevisionValue<Bool?>
+        /// Flag that represent time set saved
+        var didTimeSetSaved: RevisionValue<Bool>
+        
+        /// Flag that time set ready to start
+        var canStartTimeSet: RevisionValue<Bool>
     }
     
     // MARK: - properties
@@ -92,15 +101,13 @@ class HistoryDetailViewReactor: Reactor {
                 return nil
         }
         
-        // Copy & reset history's item to rollback to use
-        guard let timeSetItem = history.item?.copy() as? TimeSetItem else { return nil }
+        guard let timeSetItem = item.copy() as? TimeSetItem else { return nil }
         timeSetItem.reset()
-        timeSetItem.isSaved = history.originId > 0
         
         self.timeSetService = timeSetService
         self.history = history
-        
         self.timeSetItem = timeSetItem
+        
         dataSource = TimerBadgeSectionDataSource(regulars: item.timers.toArray())
         
         initialState = State(
@@ -120,7 +127,8 @@ class HistoryDetailViewReactor: Reactor {
             overtime: item.overtimer?.current ?? 0,
             sections: RevisionValue(dataSource.makeSections()),
             canTimeSetSave: canSave,
-            didTimeSetSaved: RevisionValue(nil)
+            didTimeSetSaved: RevisionValue(false),
+            canStartTimeSet: RevisionValue(false)
         )
     }
     
@@ -135,6 +143,9 @@ class HistoryDetailViewReactor: Reactor {
             
         case .saveTimeSet:
             return actionSaveTimeSet()
+            
+        case .startTimeSet:
+            return actionStartTimeSet()
         }
     }
     
@@ -150,6 +161,10 @@ class HistoryDetailViewReactor: Reactor {
         case .save:
             state.canTimeSetSave = false
             state.didTimeSetSaved = state.didTimeSetSaved.next(true)
+            return state
+            
+        case .start:
+            state.canStartTimeSet = state.canStartTimeSet.next(true)
             return state
         }
     }
@@ -170,12 +185,25 @@ class HistoryDetailViewReactor: Reactor {
         // Create the time set
         timeSetService.createTimeSet(item: timeSetItem)
             .do(onSuccess: {
-                self.timeSetItem = $0
                 self.history.originId = $0.id
+                self.timeSetItem = $0
             })
             .flatMap { _ in self.timeSetService.updateHistory(self.history) }
             .asObservable()
             .map { _ in .save }
+    }
+    
+    private func actionStartTimeSet() -> Observable<Mutation> {
+        if history.originId < 0 {
+            // Non-saved time set
+            return .just(.start)
+        } else {
+            // Saved time set
+            return timeSetService.fetchTimeSet(id: history.originId)
+                .do(onSuccess: { self.timeSetItem = $0 })
+                .asObservable()
+                .map { _ in .start }
+        }
     }
     
     deinit {

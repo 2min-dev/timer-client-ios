@@ -30,6 +30,9 @@ protocol TimeSetServiceProtocol {
     var runningTimeSet: RunningTimeSet? { get set }
     
     // MARK: - time set
+    /// Fetch a time set item from id
+    func fetchTimeSet(id: Int) -> Single<TimeSetItem>
+    
     /// Fetch all time set item list
     func fetchTimeSets() -> Single<[TimeSetItem]>
     
@@ -111,6 +114,10 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     // MARK: - public method
     // MARK: - time set
+    func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
+        provider.databaseService.fetchTimeSet(id: id)
+    }
+    
     func fetchTimeSets() -> Single<[TimeSetItem]> {
         Logger.info("fetch time set list", tag: "SERVICE")
         

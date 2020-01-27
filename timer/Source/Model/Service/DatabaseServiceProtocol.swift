@@ -10,6 +10,12 @@ import RxSwift
 
 protocol DatabaseServiceProtocol {
     // MARK: - time set operate
+    /// Fetch a time set item
+    /// - parameters:
+    ///   - id: Identifier of time set item to fetch
+    /// - returns: A observable that emit a time set item
+    func fetchTimeSet(id: Int) -> Single<TimeSetItem>
+    
     /// Fetch all time set list
     /// - returns: A observable that emit all time set item list
     func fetchTimeSets() -> Single<[TimeSetItem]>
