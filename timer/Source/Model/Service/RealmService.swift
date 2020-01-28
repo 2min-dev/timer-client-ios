@@ -20,14 +20,47 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     }
     
     func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]> {
+        // Fetch recent history list that refer saved time set and distinct refering origin id
         let recentUsedHistories: Single<[History]> = fetch(
             filter: NSPredicate(format: "originId > 0"),
             sorted: SortingParam(keyPath: "startDate"),
             distinct: "originId",
             pagination: PaginationParam(count: count)
         )
+        
         return recentUsedHistories.flatMap {
-            Single.zip($0.map { $0.originId }.map { id -> Single<TimeSetItem> in self.fetch(key: id) })
+            // Fetch time set item list from id
+            Single.zip(
+                $0.map { $0.originId }
+                    .map { id -> Single<TimeSetItem> in self.fetch(key: id) }
+            )
+        }
+    }
+    
+    func fetchFrequentlyUsedTimeSets(count: Int, from date: Date) -> Single<[TimeSetItem]> {
+        // Fetch recent history list that refer saved time set and started after `date`
+        let recentUsedHistories: Single<[History]> = fetch(filter: NSPredicate(format: "originId > 0 AND startDate >= %@", date as NSDate))
+        
+        return recentUsedHistories.flatMap {
+            // Calculate using count of each time set
+            var usingCountDictionary: [Int: Int] = [:]
+            $0.map { $0.originId }
+                .forEach {
+                    if let count = usingCountDictionary[$0] {
+                        usingCountDictionary[$0] = count + 1
+                    } else {
+                        usingCountDictionary[$0] = 1
+                    }
+                }
+            
+            // Fetch time set item that used more than 3 times
+            return Single.zip(
+                usingCountDictionary.filter { $1 >= 3 }
+                    .sorted(by: { $0.value > $1.value })
+                    .range(0 ..< count)
+                    .map { $0.key }
+                    .map { id -> Single<TimeSetItem> in self.fetch(key: id) }
+            )
         }
     }
     

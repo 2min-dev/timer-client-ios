@@ -26,6 +26,13 @@ protocol DatabaseServiceProtocol {
     /// - returns: A observable that emit n (count) recently used time set list
     func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]>
     
+    /// Fetch frequently used time set list
+    /// - parameters:
+    ///   - count: How many get results from the latest
+    ///   - date: Base date to get results
+    /// - returns: A observable that emit n (count) frequently used time set list
+    func fetchFrequentlyUsedTimeSets(count: Int, from date: Date) -> Single<[TimeSetItem]>
+    
     /// Create a time set
     /// - parameters:
     ///   - item: data of the time set
