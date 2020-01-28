@@ -20,7 +20,7 @@ class LocalTimeSetView: UIView {
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 30.adjust(), right: 0)
+        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 20.adjust(), right: 0)
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
