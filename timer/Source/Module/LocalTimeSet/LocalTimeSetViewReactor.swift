@@ -12,7 +12,7 @@ import ReactorKit
 
 class LocalTimeSetViewReactor: Reactor {
     // MARK: - constants
-    static let MAX_SAVED_TIME_SET = 9
+    static let MAX_SAVED_TIME_SET = 10
     
     enum Action {
         /// Fetch local stored time set list
@@ -77,10 +77,21 @@ class LocalTimeSetViewReactor: Reactor {
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        return timeSetService.fetchTimeSets().asObservable()
-            .flatMap { timeSets -> Observable<Mutation> in
-                self.dataSource.setItems(timeSets)
-                    
+        guard let date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) else { return .empty() }
+        
+        return Single.zip(
+            timeSetService.fetchTimeSets()
+                .catchErrorJustReturn([])
+                .do(onSuccess: { self.dataSource.setItems($0) }),
+            timeSetService.fetchFrequentlyUsedTimeSets(count: 3, from: date)
+                .catchErrorJustReturn([])
+                .do(onSuccess: { self.dataSource.setFrequentlyUsed(timeSets: $0) }),
+            timeSetService.fetchRecentlyUsedTimeSets(count: 3)
+                .catchErrorJustReturn([])
+                .do(onSuccess: { self.dataSource.setRecentlyUsed(timeSets: $0) })
+            )
+            .asObservable()
+            .flatMap { _ -> Observable<Mutation> in
                 let setSections: Observable<Mutation> = .just(.setSections(self.dataSource.makeSecitons()))
                 let setSavedTimeSetCount: Observable<Mutation> = .just(.setSavedTimeSetCount(self.dataSource.savedTimeSetCount))
                 
@@ -98,10 +109,13 @@ typealias LocalTimeSetSectionModel = SectionModel<LocalTimeSetSectionType, Local
 
 enum LocalTimeSetSectionType {
     case saved
+    case frequentlyUsed
+    case recentlyUsed
 }
 
 enum LocalTimeSetCellType {
     case regular(TimeSetCollectionViewCellReactor)
+    case all
     case empty
     
     var item: TimeSetCollectionViewCellReactor? {
@@ -118,33 +132,61 @@ enum LocalTimeSetCellType {
 struct LocalTimeSetDataSource {
     // MARK: - section
     private var savedTimeSetSection: [LocalTimeSetCellType] = []
+    private var frequentlyUsedTimeSetSection: [LocalTimeSetCellType] = []
+    private var recentlyUsedTimeSetSection: [LocalTimeSetCellType] = []
     
     // MARK: - property
     private(set) var savedTimeSetCount: Int = 0
     
     // MARK: - public method
     mutating func setItems(_ items: [TimeSetItem]) {
-        // Classify items by section
-        let savedTimeSetItems = items
-        
         // Store all count of section
-        savedTimeSetCount = savedTimeSetItems.count
+        savedTimeSetCount = items.count
         
+        if savedTimeSetCount == 0 {
+            savedTimeSetSection = [.empty]
+        } else {
+            // Make section data
+            savedTimeSetSection = items
+                .sorted(by: { $0.sortingKey < $1.sortingKey })
+                .range(0 ..< LocalTimeSetViewReactor.MAX_SAVED_TIME_SET)
+                .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
+            
+            if savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET {
+                // Add all time set cell type if item's count exceed MAX_SAVED_TIME_SET
+                savedTimeSetSection.append(.all)
+            }
+        }
+        
+    }
+    
+    mutating func setFrequentlyUsed(timeSets: [TimeSetItem]) {
         // Make section data
-        savedTimeSetSection = savedTimeSetItems
-            .sorted(by: { $0.sortingKey < $1.sortingKey })
-            .enumerated()
-            .filter { $0.offset < LocalTimeSetViewReactor.MAX_SAVED_TIME_SET }
-            .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0.element)) }
+        frequentlyUsedTimeSetSection = timeSets.map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
+    }
+    
+    mutating func setRecentlyUsed(timeSets: [TimeSetItem]) {
+        // Make section data
+        recentlyUsedTimeSetSection = timeSets.map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
     }
     
     func makeSecitons() -> [LocalTimeSetSectionModel] {
         // Make section model
         let savedTimeSetSection = LocalTimeSetSectionModel(
             model: .saved,
-            items: savedTimeSetCount == 0 ? [.empty] : self.savedTimeSetSection
+            items: self.savedTimeSetSection
         )
         
-        return [savedTimeSetSection]
+        let frequentlyUsedTimeSetSection = LocalTimeSetSectionModel(
+            model: .frequentlyUsed,
+            items: self.frequentlyUsedTimeSetSection
+        )
+        
+        let recentlyUsedTimeSetSection = LocalTimeSetSectionModel(
+            model: .recentlyUsed,
+            items: self.recentlyUsedTimeSetSection
+        )
+        
+        return [savedTimeSetSection, frequentlyUsedTimeSetSection, recentlyUsedTimeSetSection].filter { $0.items.count > 0 }
     }
 }

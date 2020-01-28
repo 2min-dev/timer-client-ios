@@ -66,24 +66,35 @@ class NetworkService: BaseService, NetworkServiceProtocol {
 // MARK: - api provider
 struct ApiProvider<API: ApiType> {
     static func request<Model: Codable>(_ api: API) -> Single<Model> {
-        Logger.info("request api : \(api.url.absoluteString)", tag: "NETWORK")
+        Logger.info(
+            """
+            API Request - \(api)
+             🐶  URL: \(api.url.absoluteString)
+             🐱  METHOD: \(api.method)
+             🐭  PARAMETERS: \(api.parameters ?? [:])
+             🐹  HEADER: \(api.headers ?? [])
+            """,
+            tag: "NETWORK"
+        )
         
         return Single.create { emitter in
             AF.request(api.url, method: api.method, parameters: api.parameters, headers: api.headers)
-                .response { data in
-                    if let error = data.error {
-                        Logger.error(error.errorDescription ?? "network error occured!", tag: "NETWORK")
-                        emitter(.error(error))
+                .response { result in
+                    // Check network error
+                    if let error = result.error {
+                        Logger.error(error, tag: "NETWORK")
+                        emitter(.error(NetworkError.unknown))
+                        return
                     }
                     
                     // Unwrap response data
-                    guard let jsonData = data.data else {
+                    guard let data = result.data else {
                         emitter(.error(NetworkError.emptyData))
                         return
                     }
                     
                     // Parse json data to model object
-                    guard let model = JSONCodec.decode(jsonData, type: Model.self) else {
+                    guard let model = JSONCodec.decode(data, type: Model.self) else {
                         emitter(.error(NetworkError.parseError))
                         return
                     }

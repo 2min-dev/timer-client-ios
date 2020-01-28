@@ -32,7 +32,8 @@ class TimeSet: EventStreamProtocol {
     
     // MARK: - properties
     // Event stream of the time set
-    var event: PublishSubject<TimeSet.Event> = PublishSubject()
+    var event: PublishSubject<Event> = PublishSubject()
+    
     // The time set state
     var state: State = .stop {
         didSet {
@@ -40,24 +41,26 @@ class TimeSet: EventStreamProtocol {
             
             switch state {
             case .run:
-                // Set start date of time set to history
                 if history.startDate == nil {
+                    // Set start date of time set to history
                     history.startDate = Date()
                 }
                 
             case .end:
+                // Set end date of time set to history
                 history.endDate = Date()
                 
             default:
                 break
             }
             
+            // Emit state change event
             event.onNext(.stateChanged(state))
         }
     }
     
-    private(set) var item: TimeSetItem // The model data of the time set
-    private(set) var history: History // History data of the time set
+    let item: TimeSetItem // The model data of the time set
+    let history: History // History data of the time set
     
     private(set) var timer: JSTimer! {
         didSet { event.onNext(.timerChanged(timer, at: currentIndex)) }
@@ -74,10 +77,12 @@ class TimeSet: EventStreamProtocol {
     // MARK: - constructor
     init(item: TimeSetItem, history: History, index: Int) {
         self.item = item
+        
         self.history = history
+        self.history.endIndex = index // Set end index of history
+        
         currentIndex = index
         
-        history.endIndex = index // Set end index of history
         timer = createTimer(at: index) // Create timer at index
     }
     

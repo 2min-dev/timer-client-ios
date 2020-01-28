@@ -15,9 +15,11 @@ enum DatabaseError: Error {
 }
 
 enum NetworkError: Error {
-    case urlNotCorrect
+    case badRequest
     case emptyData
+    case missingRequiredPrameters
     case parseError
+    case unknown
 }
 
 enum TimeSetError: Error {

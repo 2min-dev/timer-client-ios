@@ -28,6 +28,10 @@
 		F306022A2379812300A9C866 /* MainViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30602292379812300A9C866 /* MainViewReactor.swift */; };
 		F3060F92230D19FE002A2E0E /* TimeSetEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */; };
 		F3060F95230E9B12002A2E0E /* TimeSetEndViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */; };
+		F307166023CEEE0E001AEC96 /* Collector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307165F23CEEE0E001AEC96 /* Collector.swift */; };
+		F307166223CF6D32001AEC96 /* Array+range.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166123CF6D32001AEC96 /* Array+range.swift */; };
+		F307166423CF6DD0001AEC96 /* ArrayExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */; };
+		F307166623D02DEB001AEC96 /* QueryParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F307166523D02DEB001AEC96 /* QueryParams.swift */; };
 		F309F97922E9883100C280A0 /* TimerOptionViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */; };
 		F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F309F97722E9883100C280A0 /* TimerOptionView.swift */; };
 		F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */ = {isa = PBXBuildFile; fileRef = F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */; };
@@ -63,6 +67,7 @@
 		F35CE4092360BCD800F8BC31 /* RunningTimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35CE4082360BCD800F8BC31 /* RunningTimeSet.swift */; };
 		F35E05FF22FF023D00A66ED9 /* TimeKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */; };
 		F3606A5A2349D51F00E09A2C /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3606A592349D51F00E09A2C /* RoundButton.swift */; };
+		F36B26E223D6D23B008CABBA /* RealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36B26E123D6D23B008CABBA /* RealmTests.swift */; };
 		F37041C9226B65550012EA16 /* TimerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041C8226B65550012EA16 /* TimerItem.swift */; };
 		F37041CB226B81B00012EA16 /* TimeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CA226B81B00012EA16 /* TimeSet.swift */; };
 		F37041CD226C35B80012EA16 /* TimeSetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37041CC226C35B80012EA16 /* TimeSetItem.swift */; };
@@ -180,6 +185,8 @@
 		F3CD208422FD95E20059E1BA /* TimeSetEditViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CD208022FD95E20059E1BA /* TimeSetEditViewReactor.swift */; };
 		F3CD208522FD95E20059E1BA /* TimeSetEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CD208122FD95E20059E1BA /* TimeSetEditViewController.swift */; };
 		F3CD208622FD95E20059E1BA /* TimeSetEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CD208222FD95E20059E1BA /* TimeSetEditView.swift */; };
+		F3CF614B23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF614A23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift */; };
+		F3CF614D23DE83BD0038FBDA /* NSAttributedString+string.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
 		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
@@ -200,10 +207,9 @@
 		F3D49924227F273E00AC4B2B /* NumberKeyPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */; };
 		F3D8EDFF234B7F06003CAF08 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D8EDFE234B7F06003CAF08 /* Alarm.swift */; };
 		F3DAF59E2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DAF59D2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift */; };
-		F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */; };
-		F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */; };
-		F3DD7AD623216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift */; };
-		F3DD7AD8232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */; };
+		F3DD7AD223216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD123216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift */; };
+		F3DD7AD623216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */; };
+		F3DD7AD8232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */; };
 		F3DD937B233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */; };
 		F3E1FBF92387B3B3008FB3AB /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FBF82387B3B3008FB3AB /* Version.swift */; };
 		F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FC152387C88F008FB3AB /* VersionTests.swift */; };
@@ -294,6 +300,10 @@
 		F30602292379812300A9C866 /* MainViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewReactor.swift; sourceTree = "<group>"; };
 		F3060F91230D19FE002A2E0E /* TimeSetEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndView.swift; sourceTree = "<group>"; };
 		F3060F94230E9B12002A2E0E /* TimeSetEndViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewReactor.swift; sourceTree = "<group>"; };
+		F307165F23CEEE0E001AEC96 /* Collector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collector.swift; sourceTree = "<group>"; };
+		F307166123CF6D32001AEC96 /* Array+range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+range.swift"; sourceTree = "<group>"; };
+		F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionTests.swift; sourceTree = "<group>"; };
+		F307166523D02DEB001AEC96 /* QueryParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryParams.swift; sourceTree = "<group>"; };
 		F309F97522E9883100C280A0 /* TimerOptionViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionViewReactor.swift; sourceTree = "<group>"; };
 		F309F97722E9883100C280A0 /* TimerOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionView.swift; sourceTree = "<group>"; };
 		F30B9CDB23326C2D003496A9 /* OPENSOURCE.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OPENSOURCE.html; sourceTree = "<group>"; };
@@ -333,6 +343,7 @@
 		F35CE4082360BCD800F8BC31 /* RunningTimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningTimeSet.swift; sourceTree = "<group>"; };
 		F35E05FE22FF023D00A66ED9 /* TimeKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeKeyPad.swift; sourceTree = "<group>"; };
 		F3606A592349D51F00E09A2C /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		F36B26E123D6D23B008CABBA /* RealmTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmTests.swift; sourceTree = "<group>"; };
 		F37041C8226B65550012EA16 /* TimerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerItem.swift; sourceTree = "<group>"; };
 		F37041CA226B81B00012EA16 /* TimeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSet.swift; sourceTree = "<group>"; };
 		F37041CC226C35B80012EA16 /* TimeSetItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetItem.swift; sourceTree = "<group>"; };
@@ -450,6 +461,8 @@
 		F3CD208022FD95E20059E1BA /* TimeSetEditViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditViewReactor.swift; sourceTree = "<group>"; };
 		F3CD208122FD95E20059E1BA /* TimeSetEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditViewController.swift; sourceTree = "<group>"; };
 		F3CD208222FD95E20059E1BA /* TimeSetEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEditView.swift; sourceTree = "<group>"; };
+		F3CF614A23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetAllCollectionViewCell.swift; sourceTree = "<group>"; };
+		F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+string.swift"; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -473,10 +486,9 @@
 		F3D49923227F273E00AC4B2B /* NumberKeyPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberKeyPad.swift; sourceTree = "<group>"; };
 		F3D8EDFE234B7F06003CAF08 /* Alarm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alarm.swift; sourceTree = "<group>"; };
 		F3DAF59D2328E17100FFECF4 /* TimeSetManageSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetManageSectionCollectionReusableView.swift; sourceTree = "<group>"; };
-		F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetHighlightCollectionViewCell.swift; sourceTree = "<group>"; };
-		F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetCollectionViewCell.swift; sourceTree = "<group>"; };
-		F3DD7AD523216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetNormalCollectionViewCell.swift; sourceTree = "<group>"; };
-		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionCollectionReusableView.swift; sourceTree = "<group>"; };
+		F3DD7AD123216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetBigCollectionViewCell.swift; sourceTree = "<group>"; };
+		F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetSmallCollectionViewCell.swift; sourceTree = "<group>"; };
+		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCellReactor.swift; sourceTree = "<group>"; };
 		F3E1FBF82387B3B3008FB3AB /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		F3E1FC152387C88F008FB3AB /* VersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionTests.swift; sourceTree = "<group>"; };
@@ -636,6 +648,9 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F36B26E123D6D23B008CABBA /* RealmTests.swift */,
+				F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */,
+				F307165F23CEEE0E001AEC96 /* Collector.swift */,
 				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
 				F3E1FC152387C88F008FB3AB /* VersionTests.swift */,
 				F31684242382838600EF1510 /* timerTests.swift */,
@@ -1010,7 +1025,6 @@
 		F3C126FE23000BEA006D736A /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
 				F37041C8226B65550012EA16 /* TimerItem.swift */,
 				F33CFA2723675B7A00C4032A /* StopWatchItem.swift */,
 				F373CCD52265FA33007ECCA0 /* JSTimer.swift */,
@@ -1023,6 +1037,7 @@
 				F3C0DFA423336E0000E49425 /* Notice.swift */,
 				F3E1FBF82387B3B3008FB3AB /* Version.swift */,
 				F3C2D0062393AA58004D2219 /* RevisionValue.swift */,
+				F307166523D02DEB001AEC96 /* QueryParams.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1039,6 +1054,7 @@
 		F3C24CE2232FD99200D7492C /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
+				F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */,
 				F33CFA2323675B2300C4032A /* Recordable.swift */,
 				F33CFA2523675B3700C4032A /* Alertable.swift */,
 			);
@@ -1167,9 +1183,11 @@
 			children = (
 				F379A712231CF6EE007E69A0 /* NSObject+name.swift */,
 				F3D1F7B6225CC357006DC162 /* Primitive+adjust.swift */,
+				F307166123CF6D32001AEC96 /* Array+range.swift */,
 				F3D1F7B7225CC357006DC162 /* String+regex.swift */,
 				F3F800B5226A0D0F003D1D88 /* String+localized.swift */,
 				F35169822386863B00EFE74C /* String+encoding.swift */,
+				F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */,
 				F3D1F7BA225CC357006DC162 /* UIColor+hex.swift */,
 				F3D1F7B9225CC357006DC162 /* UIView+autolayout.swift */,
 				F3790DDE238557850093D73E /* UIView+rx.swift */,
@@ -1214,10 +1232,10 @@
 			isa = PBXGroup;
 			children = (
 				F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */,
-				F3DD7AD123216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift */,
-				F3DD7AD523216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift */,
-				F3DD7AD323216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift */,
-				F3DD7AD7232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift */,
+				F3CF614A23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift */,
+				F3DD7AD123216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift */,
+				F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */,
+				F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */,
 				F3756F232322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift */,
 				F3124B2523267B8D00CB8B85 /* TimeSetCollectionViewCellReactor.swift */,
 			);
@@ -1561,9 +1579,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F307166023CEEE0E001AEC96 /* Collector.swift in Sources */,
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
+				F36B26E223D6D23B008CABBA /* RealmTests.swift in Sources */,
 				F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */,
+				F307166423CF6DD0001AEC96 /* ArrayExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1580,7 +1601,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3DD7AD223216278000E3BB9 /* SavedTimeSetHighlightCollectionViewCell.swift in Sources */,
+				F3DD7AD223216278000E3BB9 /* SavedTimeSetBigCollectionViewCell.swift in Sources */,
 				F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */,
 				F39B4B3C2356BCAD00E6370A /* AppVersion.swift in Sources */,
 				F37CA0C523A8FBA200A8990F /* SettingViewBuilder.swift in Sources */,
@@ -1641,6 +1662,7 @@
 				F38702B922F970E80099241C /* TimeSetDetailViewController.swift in Sources */,
 				F3C81BE023351C3800105549 /* Header.swift in Sources */,
 				F37CA0AF23A8F13500A8990F /* PresetViewBuilder.swift in Sources */,
+				F307166623D02DEB001AEC96 /* QueryParams.swift in Sources */,
 				F3C0DFA1233369CE00E49425 /* NoticeListViewReactor.swift in Sources */,
 				F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
@@ -1654,7 +1676,7 @@
 				F38C37A323253C55000A0596 /* TimeSetInduceCollectionViewCell.swift in Sources */,
 				F39BFF8D2355F9EA0057816B /* History.swift in Sources */,
 				F3ADF6862300672800F0FC67 /* TimeSetProcessView.swift in Sources */,
-				F3DD7AD623216293000E3BB9 /* SavedTimeSetNormalCollectionViewCell.swift in Sources */,
+				F3DD7AD623216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift in Sources */,
 				F3F5F876233155E8003271B3 /* AllTimeSetViewController.swift in Sources */,
 				F3C0DFA0233369CE00E49425 /* NoticeListViewCoordinator.swift in Sources */,
 				F3ADF6832300672800F0FC67 /* TimeSetProcessViewCoordinator.swift in Sources */,
@@ -1664,7 +1686,7 @@
 				F37CA0D123A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift in Sources */,
 				F316842D23837CFE00EF1510 /* AlarmSettingTableViewCellReactor.swift in Sources */,
 				F303F26B225CCADB00A11FAF /* LocalTimeSetViewController.swift in Sources */,
-				F3DD7AD8232162D7000E3BB9 /* TimeSetSectionCollectionReusableView.swift in Sources */,
+				F3DD7AD8232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift in Sources */,
 				F303F271225CCB6A00A11FAF /* LocalTimeSetViewCoordinator.swift in Sources */,
 				F37CA0A923A8EF3400A8990F /* MainViewBuilder.swift in Sources */,
 				F3F21F7123338A100000597B /* NoticeDetailView.swift in Sources */,
@@ -1710,7 +1732,7 @@
 				F303F26D225CCAE400A11FAF /* LocalTimeSetViewReactor.swift in Sources */,
 				F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */,
 				F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */,
-				F3DD7AD423216282000E3BB9 /* SavedTimeSetCollectionViewCell.swift in Sources */,
+				F307166223CF6D32001AEC96 /* Array+range.swift in Sources */,
 				F3ADF4352312945600FA9277 /* TimeSetMemoViewCoordinator.swift in Sources */,
 				F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */,
 				F3F541432327E07500D618D2 /* TimeSetManageCollectionViewCell.swift in Sources */,
@@ -1718,6 +1740,7 @@
 				F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */,
 				F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */,
 				F3C0DF8923333F9F00E49425 /* CountdownSettingViewReactor.swift in Sources */,
+				F3CF614D23DE83BD0038FBDA /* NSAttributedString+string.swift in Sources */,
 				F3D8EDFF234B7F06003CAF08 /* Alarm.swift in Sources */,
 				F37CA0B123A8F1AE00A8990F /* TimeSetManageViewBuilder.swift in Sources */,
 				F3D1F7BC225CC357006DC162 /* String+regex.swift in Sources */,
@@ -1760,6 +1783,7 @@
 				F3C0DF972333501F00E49425 /* AlarmSettingView.swift in Sources */,
 				F37CA0B723A8F3C600A8990F /* TimeSetSaveViewBuilder.swift in Sources */,
 				F3C0DF8E233342C800E49425 /* CountdownSettingTableViewCell.swift in Sources */,
+				F3CF614B23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift in Sources */,
 				F3A218FC23535FB5007ABE3F /* HistoryListView.swift in Sources */,
 				F3A23D7A2320D7DA003856AB /* Realm+convert.swift in Sources */,
 				F37CA0BB23A8F4DF00A8990F /* TimeSetProcessViewBuilder.swift in Sources */,

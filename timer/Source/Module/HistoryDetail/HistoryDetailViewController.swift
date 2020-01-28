@@ -120,10 +120,8 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
             .disposed(by: disposeBag)
         
         startButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let timeSetItem = reactor.timeSetItem else { return }
-                _ = self?.coordinator.present(for: .timeSetProcess(timeSetItem), animated: true)
-            })
+            .map { .startTimeSet }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -239,9 +237,17 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         reactor.state
             .map { $0.didTimeSetSaved }
             .distinctUntilChanged()
-            .compactMap { $0.value }
+            .map { $0.value }
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in self?.showTimeSetSavedToast() })
+            .subscribe(onNext: { [weak self] _ in self?.showTimeSetSavedToast(reactor.timeSetItem) })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.canStartTimeSet }
+            .distinctUntilChanged()
+            .map { $0.value }
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem), animated: true) })
             .disposed(by: disposeBag)
     }
     
@@ -316,8 +322,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
     }
     
     /// Sohw time set saved toast
-    private func showTimeSetSavedToast() {
-        guard let timeSetItem = reactor?.timeSetItem else { return }
+    private func showTimeSetSavedToast(_ timeSetItem: TimeSetItem) {
         Toast(content: "toast_time_set_saved_title".localized,
               task: ToastTask(title: "toast_task_edit_title".localized) { [weak self] in
                 _ = self?.coordinator.present(for: .timeSetEdit(timeSetItem), animated: true)

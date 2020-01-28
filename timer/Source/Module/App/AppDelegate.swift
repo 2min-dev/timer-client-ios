@@ -73,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func migrateRealm() {
         let config = Realm.Configuration(
             // Set the new schema version. This must be greater than the previously used
-            schemaVersion: 1,
+            schemaVersion: 2,
 
             // Set the block which will be called automatically when opening a Realm with
             // a schema version lower than the one set above
@@ -93,6 +93,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             return current > 0 && current < target + extra
                         } ?? timers.count - 1
                     }
+                }
+                
+                if oldSchemaVersion < 2 {
+                    // Migrate time set item model
+                    var id = 1
+                    migration.enumerateObjects(ofType: TimeSetItem.className()) { oldObject, newObject in
+                        guard let oldObject = oldObject, let newObject = newObject else { return }
+                        
+                        if let id = oldObject["id"] as? String, !id.contains("H") {
+                            // Set historical time set object
+                            newObject["isSaved"] = true
+                        }
+                        
+                        // Realloc id of time set item (String -> Int)
+                        newObject["id"] = id
+                        id += 1
+                    }
+                    // Set last time set id to user default
+                    self.provider.userDefaultService.set(id, key: .timeSetId)
                 }
             })
 

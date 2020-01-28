@@ -31,23 +31,42 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             switch sectionType {
             case .saved:
                 // Saved time set
-                if indexPath.row > 0 {
-                    // Highlight time set
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetCollectionViewCell.name, for: indexPath) as? SavedTimeSetCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetCollectionViewCell`.") }
+                if indexPath.item > 2 {
+                    // Small time set cell
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetSmallCollectionViewCell`.") }
                     cell.reactor = reactor
                     return cell
                 } else {
-                    // Normal time set
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name, for: indexPath) as? SavedTimeSetHighlightCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetHighlightCollectionViewCell`.") }
+                    // Big time set cell
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetBigCollectionViewCell.name, for: indexPath) as? SavedTimeSetBigCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetBigCollectionViewCell`.") }
                     cell.reactor = reactor
+                    cell.type = indexPath.item == 0 ? .highlight : .normal
+                    
                     return cell
                 }
+                
+            case .frequentlyUsed,
+                 .recentlyUsed:
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetSmallCollectionViewCell`.") }
+                cell.reactor = reactor
+                return cell
             }
             
         case .empty:
             // Induce time set create
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetInduceCollectionViewCell.name, for: indexPath)
             return cell
+            
+        case .all:
+            switch sectionType {
+            case .saved:
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeSetAllCollectionViewCell.name, for: indexPath) as? TimeSetAllCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `TimeSetAllCollectionViewCell`.") }
+                cell.title = "local_saved_time_set_all_show_title".localized
+                return cell
+                
+            default:
+                fatalError("Doesn't have cell type of all in section \(indexPath.section)")
+            }
         }
         
     }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
@@ -61,26 +80,27 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
             // Section header
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView  else { fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionCollectionReusableView`.") }
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionHeaderCollectionReusableView.name, for: indexPath) as? TimeSetSectionHeaderCollectionReusableView  else { fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionHeaderCollectionReusableView`.") }
             
-            let sectionType = dataSource.sectionModels[indexPath.section].model
-            // Set view type
-            let cellType = self?.reactor?.currentState.sections.value[indexPath.section].items.first
-            switch cellType {
-            case .regular(_):
-                supplementaryView.type = .header
-                
-            default:
-                // Set title header except regular type cell
-                supplementaryView.type = .title
-            }
+            let section = dataSource.sectionModels[indexPath.section]
+            let sectionType = section.model
             
             // Set header text
             switch sectionType {
             case .saved:
                 // Saved time set
-                supplementaryView.titleLabel.text = "local_saved_time_set_section_title".localized
-                supplementaryView.additionalTitleLabel.text = "local_saved_time_set_management_title".localized
+                supplementaryView.title = "local_saved_time_set_section_title".localized
+                
+                if let cellType = section.items.first {
+                    // Set additional button, if item exist
+                    switch cellType {
+                    case .regular:
+                        supplementaryView.additionalText = "local_management_title".localized
+                        
+                    default:
+                        break
+                    }
+                }
                 
                 // Present to saved time set manage
                 supplementaryView.rx.tap
@@ -89,27 +109,14 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
                         self?.bind(manage: viewController)
                     })
                     .disposed(by: supplementaryView.disposeBag)
-            }
-            
-            return supplementaryView
-            
-        case JSCollectionViewLayout.Element.sectionFooter.kind:
-            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name, for: indexPath) as? TimeSetSectionCollectionReusableView else { fatalError("Can't dequeue reusable supplementary view type of `TimeSetSectionCollectionReusableView`.") }
-            
-            let sectionType = dataSource.sectionModels[indexPath.section].model
-            // Set view type footer
-            supplementaryView.type = .footer
-            
-            // Set footer text
-            switch sectionType {
-            case .saved:
-                // Saved time set
-                supplementaryView.additionalTitleLabel.text = "local_saved_time_set_all_show_title".localized
                 
-                // Present to all saved time set
-                supplementaryView.rx.tap
-                    .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .allTimeSet, animated: true) })
-                    .disposed(by: supplementaryView.disposeBag)
+            case .frequentlyUsed:
+                // Frequently used time set
+                supplementaryView.title = "local_frequently_used_time_set_section_title".localized
+                
+            case .recentlyUsed:
+                // Recently used time set
+                supplementaryView.title = "local_recently_used_time_set_section_title".localized
             }
             
             return supplementaryView
@@ -207,6 +214,9 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             
         case .empty:
             coordinator.present(for: .productivity, animated: true)
+            
+        case .all:
+            coordinator.present(for: .allTimeSet, animated: true)
         }
     }
     
@@ -217,23 +227,35 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
 
 extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout,
-            let sectionType = reactor?.currentState.sections.value[indexPath.section].model else { return .zero }
-        
+        // Calculate cell width
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        var size = CGSize(width: collectionView.bounds.width - horizontalInset, height: 0)
+        let width = collectionView.bounds.width - horizontalInset
         
-        switch sectionType {
-        case .saved:
-            // Saved time set
-            size.height = 140.adjust()
-            if indexPath.row > 0 {
-                // Set width that half of collection view width except first time set
-                size.width = (size.width - layout.minimumInteritemSpacing) / 2
+        // Get item type
+        let section = dataSource.sectionModels[indexPath.section]
+        
+        let sectionType = section.model
+        let cellType = section.items[indexPath.item]
+        
+        switch cellType {
+        case .regular:
+            switch sectionType {
+            case .saved:
+                if indexPath.item <= 2 {
+                    return CGSize(width: width, height: 140.adjust())
+                }
+                fallthrough
+                
+            default:
+                return CGSize(width: width, height: 90.adjust())
             }
+            
+        case .empty:
+            return CGSize(width: width, height: 140.adjust())
+            
+        case .all:
+            return CGSize(width: width, height: 40.adjust())
         }
-        
-        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -241,43 +263,17 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard let cellType = reactor?.currentState.sections.value[section].items.first else { return .zero }
+        let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         
-        let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        switch cellType {
-        case .regular(_):
-            // Common header
-            return CGSize(width: collectionView.bounds.width - horizontalInset, height: 113.adjust())
-            
-        case .empty:
-            // Title header
-            return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 40.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
     }
     
     func referenceSizeForHeader(in collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 87.adjust())
+        return CGSize(width: collectionView.bounds.width - horizontalInset, height: 57.adjust())
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleHeaderInSection section: Int) -> Bool {
         !(reactor?.currentState.sections.value[section].items.isEmpty ?? false)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: JSCollectionViewLayout, visibleFooterInSection section: Int) -> Bool {
-        guard let reactor = reactor else { return false }
-        
-        let sectionType = reactor.currentState.sections.value[section].model
-        let savedTimeSetCount = reactor.currentState.savedTimeSetCount
-        
-        switch sectionType {
-        case .saved:
-            return savedTimeSetCount > LocalTimeSetViewReactor.MAX_SAVED_TIME_SET
-        }
     }
 }

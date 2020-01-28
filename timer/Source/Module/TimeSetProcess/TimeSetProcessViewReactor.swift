@@ -155,18 +155,16 @@ class TimeSetProcessViewReactor: Reactor {
         self.origin = origin
         self.timeSet = timeSet
         
+        // Get initial state
+        let index = timeSet.currentIndex
+        let timer = timeSet.item.timers[index]
+        let time = timer.end - timer.current
+        
         // Create countdown timer
         countdownTimer = JSTimer(item: TimerItem(target: TimeInterval(appService.getCountdown())))
-        
-        // Calculate remainted time
-        let index = timeSet.currentIndex
         remainedTime = timeSet.item.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.end }
-        
-        // Get initial state
-        let timer = timeSet.item.timers[index]
-        let time = timer.end - timer.current
         
         // Create seciont datasource
         dataSource = TimerBadgeSectionDataSource(regulars: timeSet.item.timers.toArray(), index: index)
@@ -220,6 +218,7 @@ class TimeSetProcessViewReactor: Reactor {
         startIndex: Int,
         canSave: Bool
     ) {
+        // Check start index
         guard (0 ..< timeSetItem.timers.count).contains(startIndex) else {
             Logger.error("can't start from \(startIndex) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
             return nil

@@ -443,8 +443,7 @@ class TimeSetEditViewReactor: Reactor {
     }
     
     private func actionDeleteTimeSet() -> Observable<Mutation> {
-        guard let id = timeSetItem.id else { return .empty() }
-        return timeSetService.removeTimeSet(id: id).asObservable()
+        return timeSetService.removeTimeSet(id: timeSetItem.id).asObservable()
             .flatMap { _ -> Observable<Mutation> in .just(.dismiss) }
     }
     
