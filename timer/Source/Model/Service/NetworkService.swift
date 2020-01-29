@@ -101,6 +101,8 @@ struct ApiProvider<API: ApiType> {
                         return
                     }
                     
+                    Logger.debug(String(bytes: data, encoding: .utf8) ?? "", tag: "NETWORK")
+                    
                     // Parse json data to model object
                     guard let model = JSONCodec.decode(data, type: Model.self) else {
                         emitter(.error(NetworkError.parseError))

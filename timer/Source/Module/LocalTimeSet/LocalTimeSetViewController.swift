@@ -264,7 +264,6 @@ extension LocalTimeSetViewController: JSCollectionViewDelegateLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
-        
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 63.adjust())
     }
     
