@@ -60,6 +60,7 @@
 		F33CFA2623675B3700C4032A /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2523675B3700C4032A /* Alertable.swift */; };
 		F33CFA2823675B7A00C4032A /* StopWatchItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2723675B7A00C4032A /* StopWatchItem.swift */; };
 		F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */; };
+		F34C541423E17E8700BB67FE /* PresetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */; };
 		F34CADE7236341EB007C2672 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34CADE6236341EB007C2672 /* NotificationService.swift */; };
 		F35169832386863B00EFE74C /* String+encoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35169822386863B00EFE74C /* String+encoding.swift */; };
 		F35203502280524300E05E2E /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352034F2280524300E05E2E /* UIViewController+rx.swift */; };
@@ -336,6 +337,7 @@
 		F33CFA2523675B3700C4032A /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		F33CFA2723675B7A00C4032A /* StopWatchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatchItem.swift; sourceTree = "<group>"; };
 		F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpensourceLicenseViewReactor.swift; sourceTree = "<group>"; };
+		F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetCollectionViewCell.swift; sourceTree = "<group>"; };
 		F34CADE6236341EB007C2672 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		F35169822386863B00EFE74C /* String+encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+encoding.swift"; sourceTree = "<group>"; };
 		F352034F2280524300E05E2E /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
@@ -707,6 +709,14 @@
 				F33C8BF3237D209400EF6B21 /* alarm_default_10x.mp3 */,
 			);
 			path = Default;
+			sourceTree = "<group>";
+		};
+		F34C541223E17E6600BB67FE /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		F35169842386DE1500EFE74C /* View */ = {
@@ -1088,6 +1098,7 @@
 		F3C2CFFD23924559004D2219 /* Preset */ = {
 			isa = PBXGroup;
 			children = (
+				F34C541223E17E6600BB67FE /* Cell */,
 				F3C2D0002392456C004D2219 /* PresetViewController.swift */,
 				F3C2D0012392456C004D2219 /* PresetView.swift */,
 				F3C2CFFF2392456C004D2219 /* PresetViewReactor.swift */,
@@ -1796,6 +1807,7 @@
 				F3D1F7C4225CC3D7006DC162 /* Logger.swift in Sources */,
 				F3C187542262052300B2C644 /* TeamInfoView.swift in Sources */,
 				F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */,
+				F34C541423E17E8700BB67FE /* PresetCollectionViewCell.swift in Sources */,
 				F3D1F7AC225CC21A006DC162 /* IntroViewController.swift in Sources */,
 				F37CA0AB23A8F00200A8990F /* ProductivityViewBuilder.swift in Sources */,
 				F3C0DFA3233369CE00E49425 /* NoticeListView.swift in Sources */,

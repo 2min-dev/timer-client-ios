@@ -73,6 +73,9 @@
 
 // MARK: - Preset
 "preset_header_title" = "Easily boost your time\nwith presets prepared by 2min!";
+"preset_hot_section_title" = "2min's Pick!";
+"preset_all_section_title" = "Time Presets";
+"preset_all_show_title" = "SHOW ALL TIME PRESETS";
 
 // MARK: - time set manage
 "time_set_manage_header_title" = "Set the timeset order to your liking";
