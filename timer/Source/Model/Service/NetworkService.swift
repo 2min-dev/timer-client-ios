@@ -15,6 +15,10 @@ protocol NetworkServiceProtocol {
     /// - end-point: **~/v1/app/version.json**
     func requestAppVersion() -> Single<AppVersion>
     
+    /// Request hot time set preset list
+    /// - end-point: **~/v1/timeset/preset/hot.json**
+    func requestHotPresets() -> Single<[TimeSetItem]>
+    
     /// Request time set preset list
     /// - end-point: **~/v1/timeset/preset/list.json**
     func requestPresets() -> Single<[TimeSetItem]>
@@ -47,19 +51,23 @@ class NetworkService: BaseService, NetworkServiceProtocol {
     }
     
     func requestAppVersion() -> Single<AppVersion> {
-        return ApiProvider<AppApi>.request(.version)
+        ApiProvider<AppApi>.request(.version)
+    }
+    
+    func requestHotPresets() -> Single<[TimeSetItem]> {
+        ApiProvider<TimeSetApi>.request(.hot)
     }
     
     func requestPresets() -> Single<[TimeSetItem]> {
-        return ApiProvider<TimeSetApi>.request(.list)
+        ApiProvider<TimeSetApi>.request(.list)
     }
     
     func requestNoticeList() -> Single<[Notice]> {
-        return ApiProvider<NoticeApi>.request(.list)
+        ApiProvider<NoticeApi>.request(.list)
     }
     
     func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail> {
-        return ApiProvider<NoticeApi>.request(.detail(id))
+        ApiProvider<NoticeApi>.request(.detail(id))
     }
 }
 
@@ -162,6 +170,7 @@ enum AppApi: ApiType {
 
 enum TimeSetApi: ApiType {
     // MARK: - api list
+    case hot
     case list
     
     // MARK: - protocol implement
@@ -170,7 +179,13 @@ enum TimeSetApi: ApiType {
     }
     
     var path: String {
-        "v1/timeset/preset/list/\("localizable_server_flag".localized).json"
+        switch self {
+        case .hot:
+            return "v1/timeset/preset/hot/\("localizable_server_flag".localized).json"
+            
+        case .list:
+            return "v1/timeset/preset/list/\("localizable_server_flag".localized).json"
+        }
     }
     
     var method: HTTPMethod {
