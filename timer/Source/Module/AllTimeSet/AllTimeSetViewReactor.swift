@@ -11,6 +11,11 @@ import RxDataSources
 import ReactorKit
 
 class AllTimeSetViewReactor: Reactor {
+    enum TimeSetType {
+        case saved
+        case preset
+    }
+    
     enum Action {
         /// Load time set list from database
         case load
@@ -22,6 +27,9 @@ class AllTimeSetViewReactor: Reactor {
     }
     
     struct State {
+        /// The type of time set
+        var type: TimeSetType
+        
         /// The section list of time set list
         var sections: RevisionValue<[AllTimeSetSectionModel]>
     }
@@ -29,15 +37,18 @@ class AllTimeSetViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
+    private let networkService: NetworkServiceProtocol
 
     private var dataSource: AllTimeSetSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol) {
+    init(timeSetService: TimeSetServiceProtocol, networkService: NetworkServiceProtocol, type: TimeSetType) {
         self.timeSetService = timeSetService
+        self.networkService = networkService
+        
         dataSource = AllTimeSetSectionDataSource()
         
-        initialState = State(sections: RevisionValue(dataSource.makeSections()))
+        initialState = State(type: type, sections: RevisionValue(dataSource.makeSections()))
     }
     
     // MARK: - mutation
@@ -61,9 +72,19 @@ class AllTimeSetViewReactor: Reactor {
     
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
-        return timeSetService.fetchTimeSets().asObservable()
-            .do(onNext: { self.dataSource.setItems($0) })
-            .map { _ in .setSections(self.dataSource.makeSections()) }
+        switch currentState.type {
+        case .saved:
+            return timeSetService.fetchTimeSets()
+                .do(onSuccess: { self.dataSource.setItems($0) })
+                .asObservable()
+                .map { _ in .setSections(self.dataSource.makeSections()) }
+            
+        case .preset:
+            return networkService.requestPresets()
+                .do(onSuccess: { self.dataSource.setItems($0) })
+                .asObservable()
+                .map { _ in .setSections(self.dataSource.makeSections()) }
+        }
     }
     
     deinit {

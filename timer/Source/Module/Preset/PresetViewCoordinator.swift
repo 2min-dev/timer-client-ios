@@ -12,6 +12,7 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case timeSetDetail(TimeSetItem)
+        case allTimeSet
         case history
         case setting
     }
@@ -34,7 +35,8 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
         let presentingViewController = controller
         
         switch route {
-        case .timeSetDetail(_),
+        case .timeSetDetail,
+             .allTimeSet,
              .history,
              .setting:
             // Set dismiss handler
@@ -50,6 +52,10 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
         case let .timeSetDetail(timeSetItem):
             let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
             return TimeSetDetailViewBuilder(with: dependency).build()
+            
+        case .allTimeSet:
+            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: .preset)
+            return AllTimeSetViewBuilder(with: dependency).build()
 
         case .history:
             let dependency = HistoryListViewBuilder.Dependency(provider: provider)

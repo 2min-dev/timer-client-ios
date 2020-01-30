@@ -59,7 +59,7 @@ class PresetViewController: BaseHeaderViewController, ViewControllable, View {
         case JSCollectionViewLayout.Element.header.kind:
             // Global header
             guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name, for: indexPath) as? TimeSetHeaderCollectionReusableView else { fatalError("can't dequeue reusable supplementray view type of `TimeSetHeaderCollectionReusableView`.") }
-            supplementaryView.titleLabel.text = "preset_header_title".localized
+            supplementaryView.title = "preset_header_title".localized
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:
@@ -167,8 +167,7 @@ class PresetViewController: BaseHeaderViewController, ViewControllable, View {
             coordinator.present(for: .timeSetDetail(reactor.timeSetItem), animated: true)
             
         case .all:
-            break
-//            coordinator.present(for: .allTimeSet, animated: true)
+            coordinator.present(for: .allTimeSet, animated: true)
         }
     }
     

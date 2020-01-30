@@ -75,6 +75,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
             guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name, for: indexPath) as? TimeSetHeaderCollectionReusableView else {
                 fatalError("Can't dequeue reusable supplementary view type of `TimeSetHeaderCollectionReusableView`.")
             }
+            supplementaryView.title = "local_header_title".localized
             return supplementaryView
             
         case JSCollectionViewLayout.Element.sectionHeader.kind:

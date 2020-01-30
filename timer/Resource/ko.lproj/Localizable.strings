@@ -48,9 +48,10 @@
 "time_set_memo_title" = "메모 입력";
 "time_set_end_title" = "타임셋 종료";
 "local_time_set_title" = "마이";
-"saved_time_set_title" = "저장된 타임셋 모두보기";
+"all_saved_time_set_title" = "저장된 타임셋 모두보기";
 "saved_time_set_management_title" = "저장한 타임셋 관리";
 "preset_title" = "프리셋";
+"all_preset_title" = "타임 프리셋 모두보기";
 "shared_time_set_title" = "공유 타임셋";
 "shared_time_set_more_title" = "공유 타임셋 더보기";
 "my_shared_time_set_title" = "내가 공유한 타임셋";

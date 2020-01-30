@@ -10,16 +10,14 @@ import UIKit
 
 class AllTimeSetView: UIView {
     // MARK: - view properties
-    let headerView: CommonHeader = {
-        let view = CommonHeader()
-        view.title = "saved_time_set_title".localized
-        return view
-    }()
+    let headerView: CommonHeader = CommonHeader()
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
         layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 30.adjust(), right: 0)
         layout.sectionInset.top = 10.adjust()
+        layout.minimumLineSpacing = 10.adjust()
+        layout.minimumInteritemSpacing = 5.adjust()
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
@@ -31,6 +29,7 @@ class AllTimeSetView: UIView {
         // Register cell
         view.register(SavedTimeSetBigCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetBigCollectionViewCell.name)
         view.register(SavedTimeSetSmallCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name)
+        view.register(PresetCollectionViewCell.self, forCellWithReuseIdentifier: PresetCollectionViewCell.name)
         
         return view
     }()
