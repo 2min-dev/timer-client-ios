@@ -13,8 +13,6 @@ enum AppEvent {
 }
 
 protocol AppServiceProtocol {
-    var event: PublishSubject<AppEvent> { get }
-    
     // Running time set
     func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?)
     func getRunningTimeSet() -> RunningTimeSet?
@@ -32,21 +30,20 @@ protocol AppServiceProtocol {
     func getCountdown() -> Int
 }
 
-class AppService: BaseService, AppServiceProtocol {
-    // MARK: global state event
-    var event: PublishSubject<AppEvent> = PublishSubject()
+class AppService: AppServiceProtocol {
+    // MARK: - properties
+    private var userDefaultService: UserDefaultServiceProtocol
     
-    // MARK: properties
-    
-    override init(provider: ServiceProviderProtocol) {
-        super.init(provider: provider)
+    // MARK: - constructor
+    init(userDefault: UserDefaultServiceProtocol) {
+        userDefaultService = userDefault
         
         registerUserDefaultDomain()
     }
     
     // MARK: - private method
     private func registerUserDefaultDomain() {
-        provider.userDefaultService.register(defaults: [
+        userDefaultService.register(defaults: [
             .timeSetId: 1,
             .countdown: 5,
             .alarm: 0
@@ -56,39 +53,39 @@ class AppService: BaseService, AppServiceProtocol {
     // MARK: - public method
     func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?) {
         guard let runningTimeSet = runningTimeSet, let data = JSONCodec.encode(runningTimeSet) else {
-            provider.userDefaultService.remove(key: .runningTimeSet)
+            userDefaultService.remove(key: .runningTimeSet)
             return
         }
         
-        provider.userDefaultService.set(data, key: .runningTimeSet)
+        userDefaultService.set(data, key: .runningTimeSet)
     }
     
     func getRunningTimeSet() -> RunningTimeSet? {
-        guard let data: Data = provider.userDefaultService.object(.runningTimeSet) else { return nil }
+        guard let data: Data = userDefaultService.object(.runningTimeSet) else { return nil }
         return JSONCodec.decode(data, type: RunningTimeSet.self)
     }
     
     func setBackgroundDate(_ date: Date) {
-        provider.userDefaultService.set(date, key: .backgroundDate)
+        userDefaultService.set(date, key: .backgroundDate)
     }
     
     func getBackgroundDate() -> Date? {
-        return provider.userDefaultService.object(.backgroundDate)
+        userDefaultService.object(.backgroundDate)
     }
     
     func setAlarm(_ alarm: Alarm) {
-        provider.userDefaultService.set(alarm.rawValue, key: .alarm)
+        userDefaultService.set(alarm.rawValue, key: .alarm)
     }
     
     func getAlarm() -> Alarm {
-        return Alarm(rawValue: provider.userDefaultService.integer(.alarm)) ?? .default
+        Alarm(rawValue: userDefaultService.integer(.alarm)) ?? .default
     }
     
     func setCountdown(_ countdown: Int) {
-        provider.userDefaultService.set(countdown, key: .countdown)
+        userDefaultService.set(countdown, key: .countdown)
     }
     
     func getCountdown() -> Int {
-        return provider.userDefaultService.integer(.countdown)
+        userDefaultService.integer(.countdown)
     }
 }

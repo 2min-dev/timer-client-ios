@@ -17,7 +17,7 @@ protocol NotificationServiceProtocol {
     func removeAllNotifications()
 }
 
-class NotificationService: BaseService, NotificationServiceProtocol {
+class NotificationService: NotificationServiceProtocol {
     
     func registerNotificationOfTimeSet(_ timeSet: TimeSet) {
         let timers = timeSet.item.timers

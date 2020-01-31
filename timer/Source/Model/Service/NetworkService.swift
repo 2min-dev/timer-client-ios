@@ -33,7 +33,7 @@ protocol NetworkServiceProtocol {
     func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail>
 }
 
-class NetworkService: BaseService, NetworkServiceProtocol {
+class NetworkService: NetworkServiceProtocol {
     // MARK: - server url
     enum Server {
         case github

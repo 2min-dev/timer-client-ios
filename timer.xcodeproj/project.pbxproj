@@ -143,7 +143,6 @@
 		F3ADF4362312945600FA9277 /* TimeSetMemoViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF4322312945600FA9277 /* TimeSetMemoViewReactor.swift */; };
 		F3ADF4372312945600FA9277 /* TimeSetMemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF4332312945600FA9277 /* TimeSetMemoViewController.swift */; };
 		F3ADF4382312945600FA9277 /* TimeSetMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF4342312945600FA9277 /* TimeSetMemoView.swift */; };
-		F3ADF67D230015CD00F0FC67 /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF67C230015CD00F0FC67 /* BaseService.swift */; };
 		F3ADF6832300672800F0FC67 /* TimeSetProcessViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */; };
 		F3ADF6842300672800F0FC67 /* TimeSetProcessViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */; };
 		F3ADF6852300672800F0FC67 /* TimeSetProcessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */; };
@@ -420,7 +419,6 @@
 		F3ADF4322312945600FA9277 /* TimeSetMemoViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetMemoViewReactor.swift; sourceTree = "<group>"; };
 		F3ADF4332312945600FA9277 /* TimeSetMemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetMemoViewController.swift; sourceTree = "<group>"; };
 		F3ADF4342312945600FA9277 /* TimeSetMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetMemoView.swift; sourceTree = "<group>"; };
-		F3ADF67C230015CD00F0FC67 /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		F3ADF67F2300672800F0FC67 /* TimeSetProcessViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewCoordinator.swift; sourceTree = "<group>"; };
 		F3ADF6802300672800F0FC67 /* TimeSetProcessViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewReactor.swift; sourceTree = "<group>"; };
 		F3ADF6812300672800F0FC67 /* TimeSetProcessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetProcessViewController.swift; sourceTree = "<group>"; };
@@ -1177,7 +1175,6 @@
 			isa = PBXGroup;
 			children = (
 				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
-				F3ADF67C230015CD00F0FC67 /* BaseService.swift */,
 				F3C18757226318DB00B2C644 /* AppService.swift */,
 				F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */,
 				F39B0B8E231F7D4900C2785A /* DatabaseServiceProtocol.swift */,
@@ -1630,7 +1627,6 @@
 				F3C18752226204F700B2C644 /* TeamInfoViewCoordinator.swift in Sources */,
 				F33CFA2823675B7A00C4032A /* StopWatchItem.swift in Sources */,
 				F37FF50B23536E07009F6156 /* HistoryListCollectionViewCell.swift in Sources */,
-				F3ADF67D230015CD00F0FC67 /* BaseService.swift in Sources */,
 				F3C0DFA2233369CE00E49425 /* NoticeListViewController.swift in Sources */,
 				F3ADF4362312945600FA9277 /* TimeSetMemoViewReactor.swift in Sources */,
 				F37CA0C323A8F9CC00A8990F /* HistoryDetailViewBuilder.swift in Sources */,

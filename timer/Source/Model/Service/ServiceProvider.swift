@@ -7,19 +7,21 @@
 //
 
 protocol ServiceProviderProtocol: class {
-    var appService: AppServiceProtocol { get }
     var notificationService: NotificationServiceProtocol { get }
     var userDefaultService: UserDefaultServiceProtocol { get }
     var databaseService: DatabaseServiceProtocol { get }
     var networkService: NetworkServiceProtocol { get }
+    
+    var appService: AppServiceProtocol { get }
     var timeSetService: TimeSetServiceProtocol { get }
 }
 
 class ServiceProvider: ServiceProviderProtocol {
-    lazy var appService: AppServiceProtocol = AppService(provider: self)
-    lazy var notificationService: NotificationServiceProtocol = NotificationService(provider: self)
-    lazy var userDefaultService: UserDefaultServiceProtocol = UserDefaultService(provider: self)
-    lazy var databaseService: DatabaseServiceProtocol = RealmService(provider: self)
-    lazy var networkService: NetworkServiceProtocol = NetworkService(provider: self)
-    lazy var timeSetService: TimeSetServiceProtocol = TimeSetService(provider: self)
+    lazy var notificationService: NotificationServiceProtocol = NotificationService()
+    lazy var userDefaultService: UserDefaultServiceProtocol = UserDefaultService()
+    lazy var databaseService: DatabaseServiceProtocol = RealmService()
+    lazy var networkService: NetworkServiceProtocol = NetworkService()
+    
+    lazy var appService: AppServiceProtocol = AppService(userDefault: userDefaultService)
+    lazy var timeSetService: TimeSetServiceProtocol = TimeSetService(database: databaseService, userDefault: userDefaultService, app: appService)
 }
