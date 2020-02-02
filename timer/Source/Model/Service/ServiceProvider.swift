@@ -22,6 +22,6 @@ class ServiceProvider: ServiceProviderProtocol {
     lazy var databaseService: DatabaseServiceProtocol = RealmService()
     lazy var networkService: NetworkServiceProtocol = NetworkService()
     
-    lazy var appService: AppServiceProtocol = AppService(userDefault: userDefaultService)
+    lazy var appService: AppServiceProtocol = AppService(userDefault: userDefaultService, network: networkService)
     lazy var timeSetService: TimeSetServiceProtocol = TimeSetService(database: databaseService, userDefault: userDefaultService, app: appService)
 }

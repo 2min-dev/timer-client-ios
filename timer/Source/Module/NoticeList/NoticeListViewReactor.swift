@@ -34,13 +34,13 @@ class NoticeListViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let networkService: NetworkServiceProtocol
+    private let appService: AppServiceProtocol
     
     private var dataSource: NoticeListSectionDataSource
     
     // MARK: - constructor
-    init(networkService: NetworkServiceProtocol) {
-        self.networkService = networkService
+    init(appService: AppServiceProtocol) {
+        self.appService = appService
         dataSource = NoticeListSectionDataSource()
         
         initialState = State(
@@ -77,11 +77,11 @@ class NoticeListViewReactor: Reactor {
         guard dataSource.noticeSection == nil else { return .empty() }
         
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
-        let requestNoticeList: Observable<Mutation> = networkService.requestNoticeList().asObservable()
-            .map {
-                self.dataSource.setItems($0)
-                return .setSections(self.dataSource.makeSections())
-            }
+        let requestNoticeList: Observable<Mutation> = appService.fetchNoticeList()
+            .catchErrorJustReturn([])
+            .do(onSuccess: { self.dataSource.setItems($0) })
+            .asObservable()
+            .map { _ in .setSections(self.dataSource.makeSections()) }
         let endLoading: Observable<Mutation> = .just(.setLoading(false))
         
         return .concat(startLoading, requestNoticeList, endLoading)

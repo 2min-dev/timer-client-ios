@@ -30,7 +30,7 @@ protocol NetworkServiceProtocol {
     /// Request notice detail with id
     /// - end-point: **~/v1/notice/detail/id.json**
     /// - parameter id: notice identifier
-    func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail>
+    func requestNoticeDetail(id: Int) -> Single<NoticeDetail>
 }
 
 class NetworkService: NetworkServiceProtocol {
@@ -66,7 +66,7 @@ class NetworkService: NetworkServiceProtocol {
         ApiProvider<NoticeApi>.request(.list)
     }
     
-    func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail> {
+    func requestNoticeDetail(id: Int) -> Single<NoticeDetail> {
         ApiProvider<NoticeApi>.request(.detail(id))
     }
 }

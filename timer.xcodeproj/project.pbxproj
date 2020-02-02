@@ -117,6 +117,7 @@
 		F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */; };
 		F3962B08234DB94B0054DF7A /* TimeSetEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3962B07234DB94B0054DF7A /* TimeSetEndViewController.swift */; };
 		F3962B0A234DB9950054DF7A /* TimeSetEndViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3962B09234DB9950054DF7A /* TimeSetEndViewCoordinator.swift */; };
+		F396856423E7107400C695FD /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F396856323E7107400C695FD /* HistoryService.swift */; };
 		F39B0B88231F71E200C2785A /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39B0B87231F71E200C2785A /* Error.swift */; };
 		F39B0B8D231F7D3B00C2785A /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39B0B8C231F7D3B00C2785A /* RealmService.swift */; };
 		F39B0B8F231F7D4900C2785A /* DatabaseServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39B0B8E231F7D4900C2785A /* DatabaseServiceProtocol.swift */; };
@@ -393,6 +394,7 @@
 		F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3962B07234DB94B0054DF7A /* TimeSetEndViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewController.swift; sourceTree = "<group>"; };
 		F3962B09234DB9950054DF7A /* TimeSetEndViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetEndViewCoordinator.swift; sourceTree = "<group>"; };
+		F396856323E7107400C695FD /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
 		F39B0B87231F71E200C2785A /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		F39B0B8C231F7D3B00C2785A /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		F39B0B8E231F7D4900C2785A /* DatabaseServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseServiceProtocol.swift; sourceTree = "<group>"; };
@@ -1174,14 +1176,15 @@
 		F3D1F7A2225CBCDC006DC162 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
-				F3C18757226318DB00B2C644 /* AppService.swift */,
-				F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */,
 				F39B0B8E231F7D4900C2785A /* DatabaseServiceProtocol.swift */,
+				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
+				F34CADE6236341EB007C2672 /* NotificationService.swift */,
+				F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */,
 				F39B0B8C231F7D3B00C2785A /* RealmService.swift */,
 				F32DFA4123569A61006FDA0F /* NetworkService.swift */,
+				F3C18757226318DB00B2C644 /* AppService.swift */,
 				F373CCD32265F995007ECCA0 /* TimeSetService.swift */,
-				F34CADE6236341EB007C2672 /* NotificationService.swift */,
+				F396856323E7107400C695FD /* HistoryService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1675,6 +1678,7 @@
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
 				F32DFA4223569A61006FDA0F /* NetworkService.swift in Sources */,
+				F396856423E7107400C695FD /* HistoryService.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* TeamInfoViewController.swift in Sources */,
 				F33C6AB62291678300FC461A /* CALayer+border.swift in Sources */,
 				F387AF3322F18215002ABDB6 /* TimeSetSaveView.swift in Sources */,

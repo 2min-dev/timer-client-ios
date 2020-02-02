@@ -8,10 +8,6 @@
 
 import RxSwift
 
-enum AppEvent {
-    
-}
-
 protocol AppServiceProtocol {
     // Running time set
     func setRunningTimeSet(_ runningTimeSet: RunningTimeSet?)
@@ -28,15 +24,21 @@ protocol AppServiceProtocol {
     // Countdown
     func setCountdown(_ countdown: Int)
     func getCountdown() -> Int
+    
+    // Notice
+    func fetchNoticeList() -> Single<[Notice]>
+    func fetchNoticeDetail(id: Int) -> Single<NoticeDetail>
 }
 
 class AppService: AppServiceProtocol {
     // MARK: - properties
     private var userDefaultService: UserDefaultServiceProtocol
+    private var networkService: NetworkServiceProtocol
     
     // MARK: - constructor
-    init(userDefault: UserDefaultServiceProtocol) {
+    init(userDefault: UserDefaultServiceProtocol, network: NetworkServiceProtocol) {
         userDefaultService = userDefault
+        networkService = network
         
         registerUserDefaultDomain()
     }
@@ -87,5 +89,13 @@ class AppService: AppServiceProtocol {
     
     func getCountdown() -> Int {
         userDefaultService.integer(.countdown)
+    }
+    
+    func fetchNoticeList() -> Single<[Notice]> {
+        networkService.requestNoticeList()
+    }
+    
+    func fetchNoticeDetail(id: Int) -> Single<NoticeDetail> {
+        networkService.requestNoticeDetail(id: id)
     }
 }
