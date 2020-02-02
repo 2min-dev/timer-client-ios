@@ -97,7 +97,8 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     }
     
     func createHistory(_ history: History) -> Single<History> {
-        create(history)
+        guard history.id > 0 && history.originId > 0 else { return .error(DatabaseError.invalidFormat) }
+        return create(history)
     }
     
     func updateHistory(_ history: History) -> Single<History> {

@@ -119,6 +119,7 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     // MARK: - time set
     func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
         provider.databaseService.fetchTimeSet(id: id)
+            .do(onSuccess: { $0.reset() })
     }
     
     func fetchTimeSets() -> Single<[TimeSetItem]> {
@@ -134,10 +135,12 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]> {
         provider.databaseService.fetchRecentlyUsedTimeSets(count: count)
+            .do(onSuccess: { $0.forEach { $0.reset() } })
     }
     
     func fetchFrequentlyUsedTimeSets(count: Int, from date: Date) -> Single<[TimeSetItem]> {
         provider.databaseService.fetchFrequentlyUsedTimeSets(count: count, from: date)
+            .do(onSuccess: { $0.forEach { $0.reset() } })
     }
     
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
@@ -159,17 +162,11 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func removeTimeSet(id: Int) -> Single<TimeSetItem> {
         fetchTimeSets()
-            .flatMap { timeSets -> Single<[History]> in
+            .flatMap {
                 // Check is time set exist
-                guard timeSets.firstIndex(where: { $0.id == id }) != nil else { return .error(TimeSetError.notFound) }
-                return self.provider.databaseService.fetchHistories(origin: id)
+                guard $0.firstIndex(where: { $0.id == id }) != nil else { return .error(TimeSetError.notFound) }
+                return self.provider.databaseService.removeTimeSet(id: id)
             }
-            .flatMap { histories -> Single<[History]> in
-                // Set to init origin id that referenced in history
-                histories.forEach { $0.originId = -1 }
-                return self.provider.databaseService.updateHistories(histories)
-            }
-            .flatMap { _ in self.provider.databaseService.removeTimeSet(id: id) }
             .flatMap { removedTimeSet in
                 self.provider.databaseService.fetchTimeSets()
                     .do(onSuccess: { self.timeSets = $0 })
@@ -182,14 +179,8 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     }
     
     func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]> {
-        provider.databaseService.fetchHistories(origin: ids)
-            .flatMap { histories -> Single<[History]> in
-                // Set to init origin id that referenced in history
-                histories.forEach { $0.originId = -1 }
-                return self.provider.databaseService.updateHistories(histories)
-            }
-            .flatMap { _ in self.provider.databaseService.removeTimeSets(ids: ids) }
-            .flatMap { removedTimeSets -> Single<[TimeSetItem]> in
+        self.provider.databaseService.removeTimeSets(ids: ids)
+            .flatMap { removedTimeSets in
                 self.provider.databaseService.fetchTimeSets()
                     .do(onSuccess: { self.timeSets = $0 })
                     .map { _ in removedTimeSets }
@@ -256,8 +247,15 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func createHistory(_ history: History) -> Single<History> {
         // Set time set id of history
-        history.item?.id = generateTimeSetId()
+        let timeSetId = generateTimeSetId()
+        
+        history.item?.id = timeSetId
         history.item?.isSaved = false
+        
+        if history.originId < 0 {
+            // Set history to refer time set itself
+            history.originId = timeSetId
+        }
         
         return provider.databaseService.createHistory(history)
             .do(onSuccess: { _ in Logger.info("a history created.", tag: "SERVICE") })
