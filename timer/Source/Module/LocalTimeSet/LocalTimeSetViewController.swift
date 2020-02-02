@@ -45,8 +45,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
                     return cell
                 }
                 
-            case .frequentlyUsed,
-                 .recentlyUsed:
+            case .recentlyUsed:
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetSmallCollectionViewCell`.") }
                 cell.reactor = reactor
                 return cell
@@ -110,10 +109,6 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
                     })
                     .disposed(by: supplementaryView.disposeBag)
                 
-            case .frequentlyUsed:
-                // Frequently used time set
-                supplementaryView.title = "local_frequently_used_time_set_section_title".localized
-                
             case .recentlyUsed:
                 // Recently used time set
                 supplementaryView.title = "local_recently_used_time_set_section_title".localized
@@ -163,15 +158,20 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
     
     func bind(reactor: LocalTimeSetViewReactor) {
         // MARK: action
-        Observable.merge(rx.viewDidLoad.asObservable(),
-                         rx.viewWillAppear.asObservable())
+        Observable.merge(
+            rx.viewDidLoad.asObservable(),
+            rx.viewWillAppear.asObservable()
+        )
             .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
-            .withLatestFrom(reactor.state.map { $0.sections.value }, resultSelector: { ($0, $1) })
-            .subscribe(onNext: { [weak self] in self?.timeSetSelected(cell: $1[$0.section].items[$0.item]) })
+            .compactMap { [weak self] in
+                guard let sectionModel = self?.dataSource.sectionModels[$0.section] else { return nil }
+                return (sectionModel.model, sectionModel.items[$0.item])
+            }
+            .subscribe(onNext: { [weak self] in self?.timeSetSelected(cell: $1, in: $0) })
             .disposed(by: disposeBag)
         
         // MARK: state
@@ -207,10 +207,10 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
     }
     
     /// Perform present by selected cell type
-    private func timeSetSelected(cell type: LocalTimeSetCellType) {
+    private func timeSetSelected(cell type: LocalTimeSetCellType, in section: LocalTimeSetSectionType) {
         switch type {
         case let .regular(reactor):
-            coordinator.present(for: .timeSetDetail(reactor.timeSetItem), animated: true)
+            coordinator.present(for: .timeSetDetail(reactor.timeSetItem, canSave: section != .saved), animated: true)
             
         case .empty:
             coordinator.present(for: .productivity, animated: true)

@@ -7,6 +7,7 @@
 //
 
 enum DatabaseError: Error {
+    case invalidFormat
     case initialize
     case transaction
     case notFound

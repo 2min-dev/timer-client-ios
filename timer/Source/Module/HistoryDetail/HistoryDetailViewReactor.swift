@@ -184,26 +184,16 @@ class HistoryDetailViewReactor: Reactor {
     private func actionSaveTimeSet() -> Observable<Mutation> {
         // Create the time set
         timeSetService.createTimeSet(item: timeSetItem)
-            .do(onSuccess: {
-                self.history.originId = $0.id
-                self.timeSetItem = $0
-            })
-            .flatMap { _ in self.timeSetService.updateHistory(self.history) }
             .asObservable()
             .map { _ in .save }
     }
     
     private func actionStartTimeSet() -> Observable<Mutation> {
-        if history.originId < 0 {
-            // Non-saved time set
-            return .just(.start)
-        } else {
-            // Saved time set
-            return timeSetService.fetchTimeSet(id: history.originId)
-                .do(onSuccess: { self.timeSetItem = $0 })
-                .asObservable()
-                .map { _ in .start }
-        }
+        // Fetch origin time set item from local database
+        timeSetService.fetchTimeSet(id: history.originId)
+            .do(onSuccess: { self.timeSetItem = $0 })
+            .asObservable()
+            .map { _ in .start }
     }
     
     deinit {
