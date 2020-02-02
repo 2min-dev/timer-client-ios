@@ -45,8 +45,7 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
                     return cell
                 }
                 
-            case .frequentlyUsed,
-                 .recentlyUsed:
+            case .recentlyUsed:
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name, for: indexPath) as? SavedTimeSetSmallCollectionViewCell else { fatalError("Can't dequeue reusable cell type of `SavedTimeSetSmallCollectionViewCell`.") }
                 cell.reactor = reactor
                 return cell
@@ -109,10 +108,6 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
                         self?.bind(manage: viewController)
                     })
                     .disposed(by: supplementaryView.disposeBag)
-                
-            case .frequentlyUsed:
-                // Frequently used time set
-                supplementaryView.title = "local_frequently_used_time_set_section_title".localized
                 
             case .recentlyUsed:
                 // Recently used time set

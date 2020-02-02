@@ -68,7 +68,6 @@
 "local_management_title" = "MANAGEMENT";
 "local_saved_time_set_section_title" = "SAVED TIMESET";
 "local_saved_time_set_all_show_title" = "SHOW ALL SAVED TIMESET";
-"local_frequently_used_time_set_section_title" = "FREQUENTLY USED TIMESET";
 "local_recently_used_time_set_section_title" = "RECENTLY USED TIMESET";
 "time_set_induce_title" = "Try add your timeset!";
 

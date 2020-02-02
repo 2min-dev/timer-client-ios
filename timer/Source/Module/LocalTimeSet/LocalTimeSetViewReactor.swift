@@ -77,15 +77,10 @@ class LocalTimeSetViewReactor: Reactor {
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        guard let date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) else { return .empty() }
-        
-        return Single.zip(
+        Single.zip(
             timeSetService.fetchTimeSets()
                 .catchErrorJustReturn([])
                 .do(onSuccess: { self.dataSource.setItems($0) }),
-            timeSetService.fetchFrequentlyUsedTimeSets(count: 3, from: date)
-                .catchErrorJustReturn([])
-                .do(onSuccess: { self.dataSource.setFrequentlyUsed(timeSets: $0) }),
             timeSetService.fetchRecentlyUsedTimeSets(count: 3)
                 .catchErrorJustReturn([])
                 .do(onSuccess: { self.dataSource.setRecentlyUsed(timeSets: $0) })
@@ -109,7 +104,6 @@ typealias LocalTimeSetSectionModel = SectionModel<LocalTimeSetSectionType, Local
 
 enum LocalTimeSetSectionType {
     case saved
-    case frequentlyUsed
     case recentlyUsed
 }
 
@@ -132,7 +126,6 @@ enum LocalTimeSetCellType {
 struct LocalTimeSetDataSource {
     // MARK: - section
     private var savedTimeSetSection: [LocalTimeSetCellType] = []
-    private var frequentlyUsedTimeSetSection: [LocalTimeSetCellType] = []
     private var recentlyUsedTimeSetSection: [LocalTimeSetCellType] = []
     
     // MARK: - property
@@ -160,11 +153,6 @@ struct LocalTimeSetDataSource {
         
     }
     
-    mutating func setFrequentlyUsed(timeSets: [TimeSetItem]) {
-        // Make section data
-        frequentlyUsedTimeSetSection = timeSets.map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
-    }
-    
     mutating func setRecentlyUsed(timeSets: [TimeSetItem]) {
         // Make section data
         recentlyUsedTimeSetSection = timeSets.map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
@@ -177,16 +165,11 @@ struct LocalTimeSetDataSource {
             items: self.savedTimeSetSection
         )
         
-        let frequentlyUsedTimeSetSection = LocalTimeSetSectionModel(
-            model: .frequentlyUsed,
-            items: self.frequentlyUsedTimeSetSection
-        )
-        
         let recentlyUsedTimeSetSection = LocalTimeSetSectionModel(
             model: .recentlyUsed,
             items: self.recentlyUsedTimeSetSection
         )
         
-        return [savedTimeSetSection, frequentlyUsedTimeSetSection, recentlyUsedTimeSetSection].filter { $0.items.count > 0 }
+        return [savedTimeSetSection, recentlyUsedTimeSetSection].filter { $0.items.count > 0 }
     }
 }

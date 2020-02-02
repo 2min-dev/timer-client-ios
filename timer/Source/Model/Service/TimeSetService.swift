@@ -39,9 +39,6 @@ protocol TimeSetServiceProtocol {
     /// Fetch recently used time set item list
     func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]>
     
-    /// Fetch frequently used time set item list
-    func fetchFrequentlyUsedTimeSets(count: Int, from date: Date) -> Single<[TimeSetItem]>
-    
     /// Create a time set
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
@@ -135,11 +132,6 @@ class TimeSetService: BaseService, TimeSetServiceProtocol {
     
     func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]> {
         provider.databaseService.fetchRecentlyUsedTimeSets(count: count)
-            .do(onSuccess: { $0.forEach { $0.reset() } })
-    }
-    
-    func fetchFrequentlyUsedTimeSets(count: Int, from date: Date) -> Single<[TimeSetItem]> {
-        provider.databaseService.fetchFrequentlyUsedTimeSets(count: count, from: date)
             .do(onSuccess: { $0.forEach { $0.reset() } })
     }
     
