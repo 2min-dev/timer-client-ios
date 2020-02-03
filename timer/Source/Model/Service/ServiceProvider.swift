@@ -14,6 +14,7 @@ protocol ServiceProviderProtocol: class {
     
     var appService: AppServiceProtocol { get }
     var timeSetService: TimeSetServiceProtocol { get }
+    var historyService: HistoryServiceProtocol { get }
 }
 
 class ServiceProvider: ServiceProviderProtocol {
@@ -24,4 +25,5 @@ class ServiceProvider: ServiceProviderProtocol {
     
     lazy var appService: AppServiceProtocol = AppService(userDefault: userDefaultService, network: networkService)
     lazy var timeSetService: TimeSetServiceProtocol = TimeSetService(database: databaseService, userDefault: userDefaultService, app: appService)
+    lazy var historyService: HistoryServiceProtocol = HistoryService(database: databaseService, timeSet: timeSetService)
 }

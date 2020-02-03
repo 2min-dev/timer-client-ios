@@ -30,6 +30,9 @@ protocol TimeSetServiceProtocol {
     var runningTimeSet: RunningTimeSet? { get set }
     
     // MARK: - time set
+    /// Generate time set id
+    func getTimeSetId() -> Int
+    
     /// Fetch a time set item from id
     func fetchTimeSet(id: Int) -> Single<TimeSetItem>
     
@@ -59,16 +62,6 @@ protocol TimeSetServiceProtocol {
     
     /// Restore and set current running time set from user defaults
     func restoreTimeSet() -> TimeSet?
-    
-    // MARK: - history
-    /// Fetch all history list
-    func fetchHistories() -> Single<[History]>
-    
-    /// Create a history
-    func createHistory(_ history: History) -> Single<History>
-    
-    /// Update a history
-    func updateHistory(_ history: History) -> Single<History>
 }
 
 /// A service class that manage the application's timers
@@ -112,9 +105,8 @@ class TimeSetService: TimeSetServiceProtocol {
         appService = app
     }
     
-    // MARK: - private method
-    /// Generate time set id
-    private func generateTimeSetId() -> Int {
+    // MARK: - public method
+    func getTimeSetId() -> Int {
         // Get last time set identifier
         let id = userDefaultService.integer(.timeSetId)
         // Increase last time set identifier
@@ -123,8 +115,6 @@ class TimeSetService: TimeSetServiceProtocol {
         return id
     }
     
-    // MARK: - public method
-    // MARK: - time set
     func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
         provider.databaseService.fetchTimeSet(id: id)
             .do(onSuccess: { $0.reset() })
@@ -148,7 +138,7 @@ class TimeSetService: TimeSetServiceProtocol {
     
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
         // Set time set id
-        item.id = generateTimeSetId()
+        item.id = getTimeSetId()
         item.isSaved = true
         
         return databaseService.createTimeSet(item: item)
@@ -241,31 +231,5 @@ class TimeSetService: TimeSetServiceProtocol {
         }
         
         return self.runningTimeSet?.timeSet
-    }
-    
-    // MARK: - history
-    func fetchHistories() -> Single<[History]> {
-        return databaseService.fetchHistories(pagination: nil)
-    }
-    
-    func createHistory(_ history: History) -> Single<History> {
-        // Set time set id of history
-        let timeSetId = generateTimeSetId()
-        
-        history.item?.id = timeSetId
-        history.item?.isSaved = false
-        
-        if history.originId < 0 {
-            // Set history to refer time set itself
-            history.originId = timeSetId
-        }
-        
-        return provider.databaseService.createHistory(history)
-            .do(onSuccess: { _ in Logger.info("a history created.", tag: "SERVICE") })
-    }
-    
-    func updateHistory(_ history: History) -> Single<History> {
-        return databaseService.updateHistory(history)
-            .do(onSuccess: { _ in Logger.info("the history updated.", tag: "SERVICE") })
     }
 }

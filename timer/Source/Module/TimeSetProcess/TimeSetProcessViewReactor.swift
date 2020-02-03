@@ -131,6 +131,7 @@ class TimeSetProcessViewReactor: Reactor {
     var initialState: State
     private let appService: AppServiceProtocol
     private var timeSetService: TimeSetServiceProtocol
+    private let historyService: HistoryServiceProtocol
     
     private var dataSource: TimerBadgeSectionDataSource
     
@@ -145,12 +146,14 @@ class TimeSetProcessViewReactor: Reactor {
     private init(
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
+        historyService: HistoryServiceProtocol,
         origin: TimeSetItem,
         timeSet: TimeSet,
         canSave: Bool
     ) {
         self.appService = appService
         self.timeSetService = timeSetService
+        self.historyService = historyService
 
         self.origin = origin
         self.timeSet = timeSet
@@ -191,7 +194,8 @@ class TimeSetProcessViewReactor: Reactor {
     
     convenience init?(
         appService: AppServiceProtocol,
-        timeSetService: TimeSetServiceProtocol
+        timeSetService: TimeSetServiceProtocol,
+        historyService: HistoryServiceProtocol
     ) {
         // Fetch running time set from time set service
         guard let runningTimeSet = timeSetService.runningTimeSet else {
@@ -202,6 +206,7 @@ class TimeSetProcessViewReactor: Reactor {
         self.init(
             appService: appService,
             timeSetService: timeSetService,
+            historyService: historyService,
             origin: runningTimeSet.origin,
             timeSet: runningTimeSet.timeSet,
             canSave: runningTimeSet.canSave
@@ -214,6 +219,7 @@ class TimeSetProcessViewReactor: Reactor {
     convenience init?(
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
+        historyService: HistoryServiceProtocol,
         timeSetItem: TimeSetItem,
         startIndex: Int,
         canSave: Bool
@@ -230,6 +236,7 @@ class TimeSetProcessViewReactor: Reactor {
         self.init(
             appService: appService,
             timeSetService: timeSetService,
+            historyService: historyService,
             origin: timeSetItem,
             timeSet: TimeSet(item: copiedItem, index: startIndex),
             canSave: canSave
@@ -522,10 +529,14 @@ class TimeSetProcessViewReactor: Reactor {
             switch timeSet.history.endState {
             case .normal,
                  .cancel:
-                _ = timeSetService.createHistory(timeSet.history).subscribe()
+                return historyService.createHistory(timeSet.history)
+                    .asObservable()
+                    .flatMap { _ in setTimeSetState }
                 
             case .overtime:
-                _ = timeSetService.updateHistory(timeSet.history).subscribe()
+                return historyService.updateHistory(timeSet.history)
+                    .asObservable()
+                    .flatMap { _ in setTimeSetState }
                 
             default:
                 break

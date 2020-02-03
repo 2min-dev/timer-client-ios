@@ -23,7 +23,7 @@ class HistoryListViewBuilder: Builder {
         let provider = dependency.provider
 
         let coordinator = HistoryListViewCoordinator(provider: provider)
-        let reactor = HistoryListViewReactor(timeSetService: provider.timeSetService)
+        let reactor = HistoryListViewReactor(historyService: provider.historyService)
         let viewController = HistoryListViewController(coordinator: coordinator)
         
         // DI

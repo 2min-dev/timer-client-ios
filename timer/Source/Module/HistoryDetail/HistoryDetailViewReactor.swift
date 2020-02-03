@@ -84,6 +84,7 @@ class HistoryDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let historyService: HistoryServiceProtocol
     private let timeSetService: TimeSetServiceProtocol
     
     private let history: History
@@ -92,7 +93,7 @@ class HistoryDetailViewReactor: Reactor {
     private var dataSource: TimerBadgeSectionDataSource
     
     // MARK: - constructor
-    init?(timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
+    init?(historyService: HistoryServiceProtocol, timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
         // Check required properties of history
         guard let item = history.item,
             let startDate = history.startDate,
@@ -104,6 +105,7 @@ class HistoryDetailViewReactor: Reactor {
         guard let timeSetItem = item.copy() as? TimeSetItem else { return nil }
         timeSetItem.reset()
         
+        self.historyService = historyService
         self.timeSetService = timeSetService
         self.history = history
         self.timeSetItem = timeSetItem
@@ -171,7 +173,8 @@ class HistoryDetailViewReactor: Reactor {
     
     // MARK: - action method
     private func actionSaveHistory() -> Observable<Mutation> {
-        return timeSetService.updateHistory(history).asObservable()
+        historyService.updateHistory(history)
+            .asObservable()
             .flatMap { _ -> Observable<Mutation> in .empty() }
     }
     

@@ -28,13 +28,13 @@ class HistoryListViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let timeSetService: TimeSetServiceProtocol
+    private let historyService: HistoryServiceProtocol
     
     private var dataSource: HistoryListSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol) {
-        self.timeSetService = timeSetService
+    init(historyService: HistoryServiceProtocol) {
+        self.historyService = historyService
         dataSource = HistoryListSectionDataSource()
         
         initialState = State(sections: RevisionValue(dataSource.makeSections()))
@@ -61,11 +61,10 @@ class HistoryListViewReactor: Reactor {
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        return timeSetService.fetchHistories().asObservable()
-            .map {
-                self.dataSource.setItems($0)
-                return .setSections(self.dataSource.makeSections())
-            }
+        historyService.fetchHistories()
+            .do(onSuccess: { self.dataSource.setItems($0) })
+            .asObservable()
+            .map { _ in .setSections(self.dataSource.makeSections()) }
     }
     
     deinit {
