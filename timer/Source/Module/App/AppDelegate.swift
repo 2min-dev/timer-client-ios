@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import AVFoundation
 import RealmSwift
 import Firebase
 
@@ -27,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
         // Initialize `Realm`
         migrateRealm()
+        // Set audio session category to play at the same time with other app's audio
+        try? AVAudioSession.sharedInstance().setCategory(.ambient)
         
         // Create new window
         window = UIWindow(frame: UIScreen.main.bounds)
