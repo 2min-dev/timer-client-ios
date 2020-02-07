@@ -23,7 +23,7 @@ class PresetViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = PresetViewCoordinator(provider: provider)
-        let reactor = PresetViewReactor(networkService: provider.networkService)
+        let reactor = PresetViewReactor(timeSetService: provider.timeSetService)
         let viewController = PresetViewController(coordinator: coordinator)
         
         // DI

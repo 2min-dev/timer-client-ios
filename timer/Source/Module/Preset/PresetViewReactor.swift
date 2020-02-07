@@ -37,13 +37,13 @@ class PresetViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let networkService: NetworkServiceProtocol
+    private let timeSetService: TimeSetServiceProtocol
 
     private var dataSource: PresetSectionDataSource
     
     // MARK: - constructor
-    init(networkService: NetworkServiceProtocol) {
-        self.networkService = networkService
+    init(timeSetService: TimeSetServiceProtocol) {
+        self.timeSetService = timeSetService
         dataSource = PresetSectionDataSource()
         
         initialState = State(
@@ -77,31 +77,23 @@ class PresetViewReactor: Reactor {
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        // Request only preset never fetched
-        guard dataSource.hotPresetSection == nil || dataSource.allPresetSection == nil else { return .empty() }
+        var fetchHotPresets: Single<[TimeSetItem]> = .just([])
+        if dataSource.hotPresetSection == nil {
+            fetchHotPresets = timeSetService.fetchHotPresets()
+                .do(onSuccess: { self.dataSource.setHotPresetItems($0) })
+                .catchErrorJustReturn([])
+        }
+        
+        var fetchAllPresets: Single<[TimeSetItem]> = .just([])
+        if timeSetService.presets == nil {
+            fetchAllPresets = timeSetService.fetchAllPresets()
+                .do(onSuccess: { self.dataSource.setAllPresetItems($0) })
+                .catchErrorJustReturn([])
+        }
         
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
-        let requestPresets: Observable<Mutation> = Observable.zip(
-            // Request hot preset list
-            dataSource.hotPresetSection != nil ? .empty() :
-                networkService.requestHotPresets()
-                    .do(onSuccess: { self.dataSource.setHotPresetItems($0) })
-                    .catchError {
-                        Logger.error($0)
-                        return .just([])
-                    }
-                    .asObservable(),
-            // Request all preset list
-            dataSource.allPresetSection != nil ? .empty() :
-                networkService.requestPresets()
-                    .do(onSuccess: { self.dataSource.setAllPresetItems($0) })
-                    .catchError {
-                        // Return empty array when error occured
-                        Logger.error($0)
-                        return .just([])
-                    }
-                    .asObservable()
-        )
+        let requestPresets: Observable<Mutation> = Single.zip(fetchHotPresets, fetchAllPresets)
+            .asObservable()
             .map { _, _ in .setSections(self.dataSource.makeSections()) }
         let endLoading: Observable<Mutation> = .just(.setLoading(false))
         
@@ -129,7 +121,7 @@ enum PresetCellType {
 struct PresetSectionDataSource {
     // MARK: - section
     private(set) var hotPresetSection: [PresetCellType]?
-    private(set) var allPresetSection: [PresetCellType]?
+    private var allPresetSection: [PresetCellType] = []
     
     // MARK: - public method
     mutating func setHotPresetItems(_ items: [TimeSetItem]) {
@@ -144,7 +136,7 @@ struct PresetSectionDataSource {
         
         if items.count > PresetViewReactor.MAX_PRESET {
             // Add all time set cell type if item's count exceed MAX_PRESET
-            allPresetSection?.append(.all)
+            allPresetSection.append(.all)
         }
     }
     
@@ -157,12 +149,7 @@ struct PresetSectionDataSource {
             hotPresetSection = PresetSectionModel(model: .hot, items: [])
         }
         
-        let allPresetSection: PresetSectionModel
-        if let allPresetItems = self.allPresetSection {
-            allPresetSection = PresetSectionModel(model: .all, items: allPresetItems)
-        } else {
-            allPresetSection = PresetSectionModel(model: .all, items: [])
-        }
+        let allPresetSection = PresetSectionModel(model: .all, items: self.allPresetSection)
         
         return [hotPresetSection, allPresetSection].filter { $0.items.count > 0 }
     }

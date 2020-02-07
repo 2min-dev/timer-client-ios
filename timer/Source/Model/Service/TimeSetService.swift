@@ -29,6 +29,8 @@ protocol TimeSetServiceProtocol {
     /// Current running time set
     var runningTimeSet: RunningTimeSet? { get set }
     
+    var presets: [TimeSetItem]? { get }
+    
     // MARK: - time set
     /// Generate time set id
     func getTimeSetId() -> Int
@@ -62,6 +64,13 @@ protocol TimeSetServiceProtocol {
     
     /// Restore and set current running time set from user defaults
     func restoreTimeSet() -> TimeSet?
+    
+    // MARK: - preset
+    /// Fetch all preset list
+    func fetchAllPresets() -> Single<[TimeSetItem]>
+    
+    /// Fetch hot preset list
+    func fetchHotPresets() -> Single<[TimeSetItem]>
 }
 
 /// A service class that manage the application's timers
@@ -70,6 +79,7 @@ class TimeSetService: TimeSetServiceProtocol {
     var event: PublishSubject<TimeSetEvent> = PublishSubject()
     
     // MARK: - properties
+    private var networkService: NetworkServiceProtocol
     private var databaseService: DatabaseServiceProtocol
     private var userDefaultService: UserDefaultServiceProtocol
     private var appService: AppServiceProtocol
@@ -96,10 +106,13 @@ class TimeSetService: TimeSetServiceProtocol {
         }
     }
     
-    var disposeBag: DisposeBag = DisposeBag()
+    private(set) var presets: [TimeSetItem]?
+    
+    private var disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(database: DatabaseServiceProtocol, userDefault: UserDefaultServiceProtocol, app: AppServiceProtocol) {
+    init(network: NetworkServiceProtocol, database: DatabaseServiceProtocol, userDefault: UserDefaultServiceProtocol, app: AppServiceProtocol) {
+        networkService = network
         databaseService = database
         userDefaultService = userDefault
         appService = app
@@ -231,5 +244,13 @@ class TimeSetService: TimeSetServiceProtocol {
         }
         
         return self.runningTimeSet?.timeSet
+    }
+    
+    func fetchAllPresets() -> Single<[TimeSetItem]> {
+        networkService.requestPresets()
+    }
+    
+    func fetchHotPresets() -> Single<[TimeSetItem]> {
+        networkService.requestHotPresets()
     }
 }

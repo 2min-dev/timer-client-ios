@@ -111,7 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         id += 1
                     }
                     // Set last time set id to user default
-                    self.provider.userDefaultService.set(id, key: .timeSetId)
+                    self.provider.appService.setTimeSetId(id)
                 }
             })
 

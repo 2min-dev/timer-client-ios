@@ -13,7 +13,7 @@ import RxSwift
 protocol NetworkServiceProtocol {
     /// Request app version
     /// - end-point: **~/v1/app/version.json**
-    func requestAppVersion() -> Single<AppVersion>
+    func requestAppVersion() -> Single<Version>
     
     /// Request hot time set preset list
     /// - end-point: **~/v1/timeset/preset/hot.json**
@@ -50,8 +50,12 @@ class NetworkService: NetworkServiceProtocol {
         }
     }
     
-    func requestAppVersion() -> Single<AppVersion> {
+    func requestAppVersion() -> Single<Version> {
         ApiProvider<AppApi>.request(.version)
+            .flatMap { (appVersion: AppVersion) -> Single<Version> in
+                guard let version = Version(appVersion.version) else { return .error(NetworkError.unknown) }
+                return .just(version)
+            }
     }
     
     func requestHotPresets() -> Single<[TimeSetItem]> {

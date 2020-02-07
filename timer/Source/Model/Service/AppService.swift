@@ -25,6 +25,12 @@ protocol AppServiceProtocol {
     func setCountdown(_ countdown: Int)
     func getCountdown() -> Int
     
+    // Version
+    func getVersion() -> Single<Version>
+    
+    // User Defaults
+    func setTimeSetId(_ id: Int)
+    
     // Notice
     func fetchNoticeList() -> Single<[Notice]>
     func fetchNoticeDetail(id: Int) -> Single<NoticeDetail>
@@ -89,6 +95,14 @@ class AppService: AppServiceProtocol {
     
     func getCountdown() -> Int {
         userDefaultService.integer(.countdown)
+    }
+    
+    func getVersion() -> Single<Version> {
+        networkService.requestAppVersion()
+    }
+    
+    func setTimeSetId(_ id: Int) {
+        userDefaultService.set(id, key: .timeSetId)
     }
     
     func fetchNoticeList() -> Single<[Notice]> {

@@ -38,16 +38,14 @@ class SettingViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     private let appService: AppServiceProtocol
-    private let networkService: NetworkServiceProtocol
     
     private var dataSource: SettingSectionDataSource
     
     private var disposeBag = DisposeBag()
     
     // MARK: - constructor
-    init(appService: AppServiceProtocol, networkService: NetworkServiceProtocol) {
+    init(appService: AppServiceProtocol) {
         self.appService = appService
-        self.networkService = networkService
         dataSource = SettingSectionDataSource()
         
         initialState = State(sections: RevisionValue(dataSource.makeSections()))
@@ -96,13 +94,14 @@ class SettingViewReactor: Reactor {
     }
     
     private func actionVersionCheck() -> Observable<Mutation> {
-        networkService.requestAppVersion().asObservable()
+        appService.getVersion()
             .map {
-                guard let app = Constants.appVersion, let appVersion = Version(app) else { return true }
-                guard let latestVersion = Version($0.version) else { return true }
                 // Return current app version is latest
-                return appVersion >= latestVersion
+                guard let app = Constants.appVersion, let appVersion = Version(app) else { return true }
+                return appVersion >= $0
             }
+            .catchErrorJustReturn(true)
+            .asObservable()
             .map { .setLatestVersion($0) }
     }
     
