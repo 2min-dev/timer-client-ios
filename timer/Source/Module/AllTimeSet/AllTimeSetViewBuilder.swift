@@ -24,7 +24,7 @@ class AllTimeSetViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = AllTimeSetViewCoordinator(provider: provider)
-        let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService, networkService: provider.networkService, type: dependency.type)
+        let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService, type: dependency.type)
         let viewController = AllTimeSetViewController(coordinator: coordinator)
         
         // DI

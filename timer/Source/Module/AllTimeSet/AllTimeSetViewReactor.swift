@@ -37,15 +37,12 @@ class AllTimeSetViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
-    private let networkService: NetworkServiceProtocol
 
     private var dataSource: AllTimeSetSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, networkService: NetworkServiceProtocol, type: TimeSetType) {
+    init(timeSetService: TimeSetServiceProtocol, type: TimeSetType) {
         self.timeSetService = timeSetService
-        self.networkService = networkService
-        
         dataSource = AllTimeSetSectionDataSource()
         
         initialState = State(type: type, sections: RevisionValue(dataSource.makeSections()))
@@ -80,7 +77,7 @@ class AllTimeSetViewReactor: Reactor {
                 .map { _ in .setSections(self.dataSource.makeSections()) }
             
         case .preset:
-            return networkService.requestPresets()
+            return timeSetService.fetchAllPresets()
                 .do(onSuccess: { self.dataSource.setItems($0) })
                 .asObservable()
                 .map { _ in .setSections(self.dataSource.makeSections()) }
@@ -99,7 +96,7 @@ typealias AllTimeSetCellType = TimeSetCollectionViewCellReactor
 
 struct AllTimeSetSectionDataSource {
     // MARK: - section
-    var timeSetSection: [AllTimeSetCellType] = []
+    private var timeSetSection: [AllTimeSetCellType]?
     
     // MARK: - public method
     mutating func setItems(_ items: [TimeSetItem]) {
@@ -109,6 +106,11 @@ struct AllTimeSetSectionDataSource {
     }
     
     func makeSections() -> [AllTimeSetSectionModel] {
-        return [AllTimeSetSectionModel(model: Void(), items: timeSetSection)]
+        var timeSetSection = AllTimeSetSectionModel(model: Void(), items: [])
+        if let timeSetItems = self.timeSetSection {
+            timeSetSection = AllTimeSetSectionModel(model: Void(), items: timeSetItems)
+        }
+        
+        return [timeSetSection].filter { $0.items.count > 0 }
     }
 }

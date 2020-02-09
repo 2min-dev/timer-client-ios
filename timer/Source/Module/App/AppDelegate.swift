@@ -14,15 +14,18 @@ import Firebase
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    
     private let provider: ServiceProviderProtocol = ServiceProvider()
+    private lazy var appService: AppServiceProtocol = provider.appService
+    private lazy var timeSetService: TimeSetServiceProtocol = provider.timeSetService
+    private lazy var notificationService: NotificationServiceProtocol = provider.notificationService
 
     // MARK: - lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Initialize `SwiftBeaver`
         Logger.initialize()
         // Firebase Analytics (only release)
-        #if DEBUG
-        #else
+        #if !DEBUG
         FirebaseApp.configure()
         #endif
         // Initialize `Realm`
@@ -40,24 +43,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Save current date when application did enter background state
-        provider.appService.setBackgroundDate(Date())
+        appService.setBackgroundDate(Date())
         
         // Store current running time set data into user defaults
-        guard let timeSet = provider.timeSetService.runningTimeSet?.timeSet,
+        guard let timeSet = timeSetService.runningTimeSet?.timeSet,
             timeSet.state == .run else { return }
-        provider.timeSetService.storeTimeSet()
+        timeSetService.storeTimeSet()
         timeSet.pause()
         
         // Register time set notification
-        provider.notificationService.registerNotificationOfTimeSet(timeSet)
+        notificationService.registerNotificationOfTimeSet(timeSet)
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Restore bakckground entry date and compare with current date
-        guard let backgroundDate = provider.appService.getBackgroundDate() else { return }
+        guard let backgroundDate = appService.getBackgroundDate() else { return }
         let passedTime = Date().timeIntervalSince1970 - backgroundDate.timeIntervalSince1970
         
-        guard let timeSet = provider.timeSetService.restoreTimeSet() else { return }
+        guard let timeSet = timeSetService.restoreTimeSet() else { return }
         
         // Consume the passed time and restart the time set
         timeSet.consume(time: passedTime)
@@ -66,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Remove all notifications when app state became active
-        provider.notificationService.removeAllNotifications()
+        notificationService.removeAllNotifications()
     }
     
     // MARK: - private method
@@ -111,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         id += 1
                     }
                     // Set last time set id to user default
-                    self.provider.appService.setTimeSetId(id)
+                    self.appService.setTimeSetId(id)
                 }
             })
 

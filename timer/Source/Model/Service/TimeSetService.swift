@@ -248,6 +248,7 @@ class TimeSetService: TimeSetServiceProtocol {
     
     func fetchAllPresets() -> Single<[TimeSetItem]> {
         networkService.requestPresets()
+            .do(onSuccess: { self.presets = $0 })
     }
     
     func fetchHotPresets() -> Single<[TimeSetItem]> {
