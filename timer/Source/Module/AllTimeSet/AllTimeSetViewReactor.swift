@@ -24,6 +24,9 @@ class AllTimeSetViewReactor: Reactor {
     enum Mutation {
         /// Set sections
         case setSections([AllTimeSetSectionModel])
+        
+        /// Set loading state
+        case setLoading(Bool)
     }
     
     struct State {
@@ -32,6 +35,9 @@ class AllTimeSetViewReactor: Reactor {
         
         /// The section list of time set list
         var sections: RevisionValue<[AllTimeSetSectionModel]>
+        
+        /// Is loading to process
+        var isLoading: Bool
     }
     
     // MARK: - properties
@@ -45,7 +51,11 @@ class AllTimeSetViewReactor: Reactor {
         self.timeSetService = timeSetService
         dataSource = AllTimeSetSectionDataSource()
         
-        initialState = State(type: type, sections: RevisionValue(dataSource.makeSections()))
+        initialState = State(
+            type: type,
+            sections: RevisionValue(dataSource.makeSections()),
+            isLoading: false
+        )
     }
     
     // MARK: - mutation
@@ -64,6 +74,10 @@ class AllTimeSetViewReactor: Reactor {
         case let .setSections(sections):
             state.sections = state.sections.next(sections)
             return state
+            
+        case let .setLoading(isLoading):
+            state.isLoading = isLoading
+            return state
         }
     }
     
@@ -77,10 +91,14 @@ class AllTimeSetViewReactor: Reactor {
                 .map { _ in .setSections(self.dataSource.makeSections()) }
             
         case .preset:
-            return timeSetService.fetchAllPresets()
+            let startLoading: Observable<Mutation> = .just(.setLoading(true))
+            let setSections: Observable<Mutation> = timeSetService.fetchAllPresets()
                 .do(onSuccess: { self.dataSource.setItems($0) })
                 .asObservable()
                 .map { _ in .setSections(self.dataSource.makeSections()) }
+            let stopLoading: Observable<Mutation> = .just(.setLoading(true))
+            
+            return .concat(startLoading, setSections, stopLoading)
         }
     }
     
@@ -96,7 +114,7 @@ typealias AllTimeSetCellType = TimeSetCollectionViewCellReactor
 
 struct AllTimeSetSectionDataSource {
     // MARK: - section
-    private var timeSetSection: [AllTimeSetCellType]?
+    private var timeSetSection: [AllTimeSetCellType] = []
     
     // MARK: - public method
     mutating func setItems(_ items: [TimeSetItem]) {
@@ -106,11 +124,7 @@ struct AllTimeSetSectionDataSource {
     }
     
     func makeSections() -> [AllTimeSetSectionModel] {
-        var timeSetSection = AllTimeSetSectionModel(model: Void(), items: [])
-        if let timeSetItems = self.timeSetSection {
-            timeSetSection = AllTimeSetSectionModel(model: Void(), items: timeSetItems)
-        }
-        
+        let timeSetSection = AllTimeSetSectionModel(model: Void(), items: self.timeSetSection)
         return [timeSetSection].filter { $0.items.count > 0 }
     }
 }

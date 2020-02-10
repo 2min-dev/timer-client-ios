@@ -13,11 +13,12 @@ import RxDataSources
 
 class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
-    private var allTimeSetView: AllTimeSetView { return view as! AllTimeSetView }
+    private var allTimeSetView: AllTimeSetView { view as! AllTimeSetView }
     
-    override var headerView: CommonHeader { return allTimeSetView.headerView }
+    override var headerView: CommonHeader { allTimeSetView.headerView }
     
-    private var timeSetCollectionView: UICollectionView { return allTimeSetView.timeSetCollectionView }
+    private var timeSetCollectionView: UICollectionView { allTimeSetView.timeSetCollectionView }
+    private var loadingView: CommonLoading { allTimeSetView.loadingView }
     
     // MARK: - properties
     var coordinator: AllTimeSetViewCoordinator
@@ -134,6 +135,7 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         // MARK: state
+        // Title
         reactor.state
             .map { $0.type }
             .distinctUntilChanged()
@@ -141,11 +143,19 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             .bind(to: headerView.rx.title)
             .disposed(by: disposeBag)
         
+        // Section
         reactor.state
             .map { $0.sections }
             .distinctUntilChanged()
             .map { $0.value }
             .bind(to: timeSetCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        // Loading
+        reactor.state
+            .map { $0.isLoading }
+            .distinctUntilChanged()
+            .bind(to: loadingView.rx.isLoading)
             .disposed(by: disposeBag)
     }
     

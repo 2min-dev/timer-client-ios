@@ -34,12 +34,14 @@ class AllTimeSetView: UIView {
         return view
     }()
     
+    let loadingView: CommonLoading = CommonLoading()
+    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.Color.alabaster
         
-        addAutolayoutSubviews([timeSetCollectionView, headerView])
+        addAutolayoutSubviews([timeSetCollectionView, headerView, loadingView])
         timeSetCollectionView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
@@ -59,6 +61,10 @@ class AllTimeSetView: UIView {
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
+        }
+        
+        loadingView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

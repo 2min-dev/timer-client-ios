@@ -21,7 +21,7 @@ class PresetViewReactor: Reactor {
     
     enum Mutation {
         /// Set preset sections
-        case setSections([PresetSectionModel]?)
+        case setSections([PresetSectionModel])
         
         /// Set loading flag
         case setLoading(Bool)
@@ -38,7 +38,7 @@ class PresetViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
-
+    
     private var dataSource: PresetSectionDataSource
     
     // MARK: - constructor
@@ -77,27 +77,42 @@ class PresetViewReactor: Reactor {
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        var fetchHotPresets: Single<[TimeSetItem]> = .just([])
-        if dataSource.hotPresetSection == nil {
-            fetchHotPresets = timeSetService.fetchHotPresets()
-                .do(onSuccess: { self.dataSource.setHotPresetItems($0) })
-                .catchErrorJustReturn([])
-        }
-        
-        var fetchAllPresets: Single<[TimeSetItem]> = .just([])
-        if timeSetService.presets == nil {
-            fetchAllPresets = timeSetService.fetchAllPresets()
-                .do(onSuccess: { self.dataSource.setAllPresetItems($0) })
-                .catchErrorJustReturn([])
-        }
-        
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
-        let requestPresets: Observable<Mutation> = Single.zip(fetchHotPresets, fetchAllPresets)
+        let requestPresets: Observable<Mutation> = Single.zip(
+            fetchHotPresets()
+                .do(onSuccess: {
+                    guard let presets = $0 else { return }
+                    self.dataSource.setHotPresetItems(presets)
+                }),
+            fetchAllPresets()
+                .do(onSuccess: {
+                    guard let presets = $0 else { return }
+                    self.dataSource.setAllPresetItems(presets)
+                })
+        )
             .asObservable()
-            .map { _, _ in .setSections(self.dataSource.makeSections()) }
-        let endLoading: Observable<Mutation> = .just(.setLoading(false))
+            .map { _ in .setSections(self.dataSource.makeSections()) }
+        let stopLoading: Observable<Mutation> = .just(.setLoading(false))
         
-        return .concat(startLoading, requestPresets, endLoading)
+        return .concat(startLoading, requestPresets, stopLoading)
+    }
+    
+    // MARK: - private
+    private func fetchHotPresets() -> Single<[TimeSetItem]?> {
+        guard dataSource.hotPresetSection == nil else { return .just(nil) }
+        return timeSetService.fetchHotPresets()
+            .flatMap { presets -> Single<[TimeSetItem]?> in .just(presets) }
+            .catchErrorJustReturn(nil)
+    }
+    
+    private func fetchAllPresets() -> Single<[TimeSetItem]?> {
+        if let presets = timeSetService.presets {
+            return .just(presets)
+        }
+        
+        return timeSetService.fetchAllPresets()
+            .flatMap { presets -> Single<[TimeSetItem]?> in .just(presets) }
+            .catchErrorJustReturn(nil)
     }
     
     deinit {
