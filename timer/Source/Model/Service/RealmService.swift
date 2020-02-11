@@ -9,7 +9,7 @@
 import RxSwift
 import RealmSwift
 
-class RealmService: BaseService, DatabaseServiceProtocol {
+class RealmService: DatabaseServiceProtocol {
     // MARK: - time set operate
     func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
         fetch(key: id)

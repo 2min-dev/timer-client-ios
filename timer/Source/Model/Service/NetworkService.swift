@@ -13,7 +13,11 @@ import RxSwift
 protocol NetworkServiceProtocol {
     /// Request app version
     /// - end-point: **~/v1/app/version.json**
-    func requestAppVersion() -> Single<AppVersion>
+    func requestAppVersion() -> Single<Version>
+    
+    /// Request hot time set preset list
+    /// - end-point: **~/v1/timeset/preset/hot.json**
+    func requestHotPresets() -> Single<[TimeSetItem]>
     
     /// Request time set preset list
     /// - end-point: **~/v1/timeset/preset/list.json**
@@ -26,10 +30,10 @@ protocol NetworkServiceProtocol {
     /// Request notice detail with id
     /// - end-point: **~/v1/notice/detail/id.json**
     /// - parameter id: notice identifier
-    func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail>
+    func requestNoticeDetail(id: Int) -> Single<NoticeDetail>
 }
 
-class NetworkService: BaseService, NetworkServiceProtocol {
+class NetworkService: NetworkServiceProtocol {
     // MARK: - server url
     enum Server {
         case github
@@ -46,20 +50,28 @@ class NetworkService: BaseService, NetworkServiceProtocol {
         }
     }
     
-    func requestAppVersion() -> Single<AppVersion> {
-        return ApiProvider<AppApi>.request(.version)
+    func requestAppVersion() -> Single<Version> {
+        ApiProvider<AppApi>.request(.version)
+            .flatMap { (appVersion: AppVersion) -> Single<Version> in
+                guard let version = Version(appVersion.version) else { return .error(NetworkError.unknown) }
+                return .just(version)
+            }
+    }
+    
+    func requestHotPresets() -> Single<[TimeSetItem]> {
+        ApiProvider<TimeSetApi>.request(.hot)
     }
     
     func requestPresets() -> Single<[TimeSetItem]> {
-        return ApiProvider<TimeSetApi>.request(.list)
+        ApiProvider<TimeSetApi>.request(.list)
     }
     
     func requestNoticeList() -> Single<[Notice]> {
-        return ApiProvider<NoticeApi>.request(.list)
+        ApiProvider<NoticeApi>.request(.list)
     }
     
-    func requestNoticeDetail(_ id: Int) -> Single<NoticeDetail> {
-        return ApiProvider<NoticeApi>.request(.detail(id))
+    func requestNoticeDetail(id: Int) -> Single<NoticeDetail> {
+        ApiProvider<NoticeApi>.request(.detail(id))
     }
 }
 
@@ -92,6 +104,8 @@ struct ApiProvider<API: ApiType> {
                         emitter(.error(NetworkError.emptyData))
                         return
                     }
+                    
+                    Logger.debug(String(bytes: data, encoding: .utf8) ?? "", tag: "NETWORK")
                     
                     // Parse json data to model object
                     guard let model = JSONCodec.decode(data, type: Model.self) else {
@@ -162,6 +176,7 @@ enum AppApi: ApiType {
 
 enum TimeSetApi: ApiType {
     // MARK: - api list
+    case hot
     case list
     
     // MARK: - protocol implement
@@ -170,7 +185,13 @@ enum TimeSetApi: ApiType {
     }
     
     var path: String {
-        "v1/timeset/preset/list/\("localizable_server_flag".localized).json"
+        switch self {
+        case .hot:
+            return "v1/timeset/preset/hot/\("localizable_server_flag".localized).json"
+            
+        case .list:
+            return "v1/timeset/preset/list/\("localizable_server_flag".localized).json"
+        }
     }
     
     var method: HTTPMethod {

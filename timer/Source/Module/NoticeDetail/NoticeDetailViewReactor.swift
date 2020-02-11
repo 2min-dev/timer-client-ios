@@ -39,12 +39,12 @@ class NoticeDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    private let networkService: NetworkServiceProtocol
+    private let appService: AppServiceProtocol
     private let notice: Notice
     
     // MARK: - constructor
-    init(networkService: NetworkServiceProtocol, notice: Notice) {
-        self.networkService = networkService
+    init(appService: AppServiceProtocol, notice: Notice) {
+        self.appService = appService
         self.notice = notice
         
         initialState = State(title: notice.title, date: notice.date, content: "", isLoading: true)
@@ -76,8 +76,9 @@ class NoticeDetailViewReactor: Reactor {
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
-        let requestNoticeDetail: Observable<Mutation> = networkService.requestNoticeDetail(notice.id).asObservable()
-            .flatMap { Observable<Mutation>.just(.setContent($0.content)) }
+        let requestNoticeDetail: Observable<Mutation> = appService.fetchNoticeDetail(id: notice.id)
+            .asObservable()
+            .map { .setContent($0.content) }
         let endLoading: Observable<Mutation> = .just(.setLoading(false))
         
         return .concat(startLoading, requestNoticeDetail, endLoading)

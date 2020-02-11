@@ -69,7 +69,7 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
             return TimeSetManageViewBuilder(with: dependency).build()
             
         case .allTimeSet:
-            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider)
+            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: .saved)
             return AllTimeSetViewBuilder(with: dependency).build()
             
         case let .timeSetDetail(timeSetItem, canSave: canSave):

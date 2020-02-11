@@ -11,6 +11,9 @@ import ReactorKit
 import RxDataSources
 
 class PresetViewReactor: Reactor {
+    // MARK: - constants
+    static let MAX_PRESET = 10
+    
     enum Action {
         /// Fetch preset list from server
         case refresh
@@ -18,41 +21,34 @@ class PresetViewReactor: Reactor {
     
     enum Mutation {
         /// Set preset sections
-        case setSections([PresetSectionModel]?)
+        case setSections([PresetSectionModel])
         
         /// Set loading flag
         case setLoading(Bool)
-        
-        /// Set error
-        case setError(Error)
     }
     
     struct State {
         /// The section list of preset list
-        var sections: RevisionValue<[PresetSectionModel]?>
+        var sections: RevisionValue<[PresetSectionModel]>
         
         /// Is loading to process
         var isLoading: Bool
-        
-        /// Any error state
-        var error: RevisionValue<Error?>
     }
     
     // MARK: - properties
     var initialState: State
-    private let networkService: NetworkServiceProtocol
-
+    private let timeSetService: TimeSetServiceProtocol
+    
     private var dataSource: PresetSectionDataSource
     
     // MARK: - constructor
-    init(networkService: NetworkServiceProtocol) {
-        self.networkService = networkService
+    init(timeSetService: TimeSetServiceProtocol) {
+        self.timeSetService = timeSetService
         dataSource = PresetSectionDataSource()
         
         initialState = State(
             sections: RevisionValue(dataSource.makeSections()),
-            isLoading: false,
-            error: RevisionValue(nil)
+            isLoading: false
         )
     }
     
@@ -76,30 +72,47 @@ class PresetViewReactor: Reactor {
         case let .setLoading(isLoading):
             state.isLoading = isLoading
             return state
-            
-        case let .setError(error):
-            state.error = state.error.next(error)
-            return state
         }
     }
     
     // MARK: - action method
     private func actionRefresh() -> Observable<Mutation> {
-        // Request only preset never fetched
-        guard dataSource.presetSection == nil else { return .empty() }
-        
         let startLoading: Observable<Mutation> = .just(.setLoading(true))
-        // Request preset list from server
-        let requestPresets: Observable<Mutation> = networkService.requestPresets().asObservable()
-            .map {
-                self.dataSource.setItems($0)
-                return .setSections(self.dataSource.makeSections())
-            }
-            // Set error when any error occured
-            .catchError { .just(.setError($0)) }
-        let endLoading: Observable<Mutation> = .just(.setLoading(false))
+        let requestPresets: Observable<Mutation> = Single.zip(
+            fetchHotPresets()
+                .do(onSuccess: {
+                    guard let presets = $0 else { return }
+                    self.dataSource.setHotPresetItems(presets)
+                }),
+            fetchAllPresets()
+                .do(onSuccess: {
+                    guard let presets = $0 else { return }
+                    self.dataSource.setAllPresetItems(presets)
+                })
+        )
+            .asObservable()
+            .map { _ in .setSections(self.dataSource.makeSections()) }
+        let stopLoading: Observable<Mutation> = .just(.setLoading(false))
         
-        return .concat(startLoading, requestPresets, endLoading)
+        return .concat(startLoading, requestPresets, stopLoading)
+    }
+    
+    // MARK: - private
+    private func fetchHotPresets() -> Single<[TimeSetItem]?> {
+        guard dataSource.hotPresetSection == nil else { return .just(nil) }
+        return timeSetService.fetchHotPresets()
+            .flatMap { presets -> Single<[TimeSetItem]?> in .just(presets) }
+            .catchErrorJustReturn(nil)
+    }
+    
+    private func fetchAllPresets() -> Single<[TimeSetItem]?> {
+        if let presets = timeSetService.presets {
+            return .just(presets)
+        }
+        
+        return timeSetService.fetchAllPresets()
+            .flatMap { presets -> Single<[TimeSetItem]?> in .just(presets) }
+            .catchErrorJustReturn(nil)
     }
     
     deinit {
@@ -108,21 +121,51 @@ class PresetViewReactor: Reactor {
 }
 
 // MARK: - preste datasource
-typealias PresetSectionModel = SectionModel<Void, TimeSetCollectionViewCellReactor>
+typealias PresetSectionModel = SectionModel<PresetSectionType, PresetCellType>
 
-typealias PresetCellType = TimeSetCollectionViewCellReactor
+enum PresetSectionType {
+    case hot
+    case all
+}
+
+enum PresetCellType {
+    case regular(TimeSetCollectionViewCellReactor)
+    case all
+}
 
 struct PresetSectionDataSource {
     // MARK: - section
-    private(set) var presetSection: [PresetCellType]?
+    private(set) var hotPresetSection: [PresetCellType]?
+    private var allPresetSection: [PresetCellType] = []
     
     // MARK: - public method
-    mutating func setItems(_ items: [TimeSetItem]) {
-        self.presetSection = items.map { TimeSetCollectionViewCellReactor(timeSetItem: $0) }
+    mutating func setHotPresetItems(_ items: [TimeSetItem]) {
+        hotPresetSection = items
+            .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
     }
     
-    func makeSections() -> [PresetSectionModel]? {
-        guard let items = presetSection else { return nil }
-        return [PresetSectionModel(model: Void(), items: items)]
+    mutating func setAllPresetItems(_ items: [TimeSetItem]) {
+        allPresetSection = items
+            .range(0 ..< PresetViewReactor.MAX_PRESET)
+            .map { .regular(TimeSetCollectionViewCellReactor(timeSetItem: $0)) }
+        
+        if items.count > PresetViewReactor.MAX_PRESET {
+            // Add all time set cell type if item's count exceed MAX_PRESET
+            allPresetSection.append(.all)
+        }
+    }
+    
+    func makeSections() -> [PresetSectionModel] {
+        // Make Sections
+        let hotPresetSection: PresetSectionModel
+        if let hotPresetItems = self.hotPresetSection {
+            hotPresetSection = PresetSectionModel(model: .hot, items: hotPresetItems)
+        } else {
+            hotPresetSection = PresetSectionModel(model: .hot, items: [])
+        }
+        
+        let allPresetSection = PresetSectionModel(model: .all, items: self.allPresetSection)
+        
+        return [hotPresetSection, allPresetSection].filter { $0.items.count > 0 }
     }
 }

@@ -23,7 +23,7 @@ class SettingViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = SettingViewCoordinator(provider: provider)
-        let reactor = SettingViewReactor(appService: provider.appService, networkService: provider.networkService)
+        let reactor = SettingViewReactor(appService: provider.appService)
         let viewController = SettingViewController(coordinator: coordinator)
         
         // DI

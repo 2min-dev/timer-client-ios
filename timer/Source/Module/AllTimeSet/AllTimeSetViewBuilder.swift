@@ -11,6 +11,7 @@ import UIKit
 class AllTimeSetViewBuilder: Builder {
     struct Dependency {
         let provider: ServiceProviderProtocol
+        let type: AllTimeSetViewReactor.TimeSetType
     }
     
     var dependency: Dependency
@@ -23,7 +24,7 @@ class AllTimeSetViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = AllTimeSetViewCoordinator(provider: provider)
-        let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService)
+        let reactor = AllTimeSetViewReactor(timeSetService: provider.timeSetService, type: dependency.type)
         let viewController = AllTimeSetViewController(coordinator: coordinator)
         
         // DI

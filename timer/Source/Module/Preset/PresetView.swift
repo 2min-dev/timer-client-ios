@@ -20,7 +20,10 @@ class PresetView: UIView {
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset = UIEdgeInsets(top: 20.adjust(), left: 0, bottom: 40.adjust(), right: 0)
+        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 20.adjust(), right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
+        layout.minimumLineSpacing = 10.adjust()
+        layout.minimumInteritemSpacing = 5.adjust()
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
@@ -28,8 +31,11 @@ class PresetView: UIView {
         
         // Register supplimentary view
         view.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
+        view.register(TimeSetSectionHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetSectionHeaderCollectionReusableView.name)
         // Register cell
-        view.register(SavedTimeSetSmallCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name)
+        view.register(SavedTimeSetBigCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetBigCollectionViewCell.name)
+        view.register(PresetCollectionViewCell.self, forCellWithReuseIdentifier: PresetCollectionViewCell.name)
+        view.register(TimeSetAllCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetAllCollectionViewCell.name)
         
         return view
     }()
