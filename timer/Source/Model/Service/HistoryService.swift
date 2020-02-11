@@ -37,8 +37,15 @@ class HistoryService: HistoryServiceProtocol {
     
     func createHistory(_ history: History) -> Single<History> {
         // Set time set id of history
-        history.item?.id = timeSetService.getTimeSetId()
+        let timeSetId = timeSetService.getTimeSetId()
+        
+        history.item?.id = timeSetId
         history.item?.isSaved = false
+        
+        if history.originId < 0 {
+            // Set history to refer time set itself
+            history.originId = timeSetId
+        }
         
         return databaseService.createHistory(history)
             .do(onSuccess: { _ in Logger.info("a history created.", tag: "SERVICE") })

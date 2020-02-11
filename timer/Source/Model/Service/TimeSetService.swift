@@ -129,7 +129,7 @@ class TimeSetService: TimeSetServiceProtocol {
     }
     
     func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
-        provider.databaseService.fetchTimeSet(id: id)
+        databaseService.fetchTimeSet(id: id)
             .do(onSuccess: { $0.reset() })
     }
     
@@ -145,7 +145,7 @@ class TimeSetService: TimeSetServiceProtocol {
     }
     
     func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]> {
-        provider.databaseService.fetchRecentlyUsedTimeSets(count: count)
+        databaseService.fetchRecentlyUsedTimeSets(count: count)
             .do(onSuccess: { $0.forEach { $0.reset() } })
     }
     
@@ -171,7 +171,7 @@ class TimeSetService: TimeSetServiceProtocol {
             .flatMap {
                 // Check is time set exist
                 guard $0.firstIndex(where: { $0.id == id }) != nil else { return .error(TimeSetError.notFound) }
-                return self.provider.databaseService.removeTimeSet(id: id)
+                return self.databaseService.removeTimeSet(id: id)
             }
             .flatMap { removedTimeSet in
                 self.databaseService.fetchTimeSets()
@@ -185,9 +185,9 @@ class TimeSetService: TimeSetServiceProtocol {
     }
     
     func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]> {
-        self.provider.databaseService.removeTimeSets(ids: ids)
+        databaseService.removeTimeSets(ids: ids)
             .flatMap { removedTimeSets in
-                self.provider.databaseService.fetchTimeSets()
+                self.databaseService.fetchTimeSets()
                     .do(onSuccess: { self.timeSets = $0 })
                     .map { _ in removedTimeSets }
             }
