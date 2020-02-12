@@ -28,6 +28,7 @@ import RealmSwift
     @objc dynamic private(set) var id: Int = -1             // Identifier
     @objc dynamic var item: TimeSetItem?                    // Performed time set info of history (Non-Optional)
     @objc dynamic var originId: Int = -1                    // Origin time set item id
+    @objc dynamic var isHidden: Bool = false                // Removed flag
     
     @objc dynamic var startDate: Date? {
         didSet { id = Int(startDate?.timeIntervalSince1970 ?? -1) }
@@ -53,6 +54,7 @@ import RealmSwift
         id: Int,
         item: TimeSetItem?,
         originId: Int,
+        isHidden: Bool,
         startDate: Date?,
         endDate: Date?,
         memo: String,
@@ -66,6 +68,7 @@ import RealmSwift
         self.id = id
         self.item = item
         self.originId = originId
+        self.isHidden = isHidden
         self.startDate = startDate
         self.endDate = endDate
         self.memo = memo
@@ -87,6 +90,7 @@ import RealmSwift
             id: id,
             item: item?.copy() as? TimeSetItem,
             originId: originId,
+            isHidden: isHidden,
             startDate: startDate,
             endDate: endDate,
             memo: memo,
