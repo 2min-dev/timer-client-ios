@@ -17,6 +17,9 @@ protocol HistoryServiceProtocol {
     
     /// Update a history
     func updateHistory(_ history: History) -> Single<History>
+    
+    /// Remove a history
+    func removeHistory(_ id: Int) -> Single<History>
 }
 
 class HistoryService: HistoryServiceProtocol {
@@ -54,5 +57,14 @@ class HistoryService: HistoryServiceProtocol {
     func updateHistory(_ history: History) -> Single<History> {
         databaseService.updateHistory(history)
             .do(onSuccess: { _ in Logger.info("the history updated.", tag: "SERVICE") })
+    }
+    
+    func removeHistory(_ id: Int) -> Single<History> {
+        databaseService.fetchHistory(id: id)
+            .map {
+                $0.isHidden = true
+                return $0
+            }
+            .flatMap { self.databaseService.updateHistory($0) }
     }
 }

@@ -56,6 +56,12 @@ protocol DatabaseServiceProtocol {
     /// - returns: A observable that emit all updated time set item list
     func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]>
     
+    /// Fetch a history by id
+    /// - parameters:
+    ///   - id: identifier of a history
+    /// - returns: A observable that emit a history searched by id
+    func fetchHistory(id: Int) -> Single<History>
+    
     /// Fetch all hisotry list
     /// - returns: A observable that emit all history list
     func fetchHistories(pagination: PaginationParam?) -> Single<[History]>
