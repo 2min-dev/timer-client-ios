@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 
 @objc class History: Object, NSCopying, Codable {
-    @objc enum EndState: Int, Codable {
+    @objc enum EndState: Int, RealmEnum, Codable {
         /// The time set not ended
         case none = 0
         

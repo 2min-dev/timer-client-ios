@@ -8,25 +8,25 @@ target 'timer' do
 
   # Pods for timer
   # Firebase
-  pod 'Fabric', '~> 1.10.2'
-  pod 'Crashlytics', '~> 3.13.4'
+  pod 'Fabric'
+  pod 'Crashlytics'
   pod 'Firebase/Analytics'
   
   # Common Libraries
-  pod 'JSReorderableCollectionView', '~> 1.0.6'
+  pod 'JSReorderableCollectionView'
 
   # RxSwift
-  pod 'RxSwift', '~> 5'
-  pod 'RxCocoa', '~> 5'
-  pod 'RxDataSources', '~> 4.0'
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxDataSources'
   pod 'ReactorKit'
-  pod 'SnapKit', '~> 4.0.0'
+  pod 'SnapKit'
 
   # Alamofire
-  pod 'Alamofire', '~> 5.0.0-rc.2'
+  pod 'Alamofire'
 
   # Realm
-  pod 'RealmSwift', '~> 3.17.3'
+  pod 'RealmSwift'
   
   # SwiftLint
   pod 'SwiftLint'
@@ -37,6 +37,6 @@ target 'timer' do
   target 'timerTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'RxTest', '~> 5'
+    pod 'RxTest'
   end
 end
