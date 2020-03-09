@@ -46,7 +46,7 @@ class Toast: UIView {
         view.addAutolayoutSubview(contentLabel)
         contentLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20.adjust())
-            make.trailing.equalToSuperview().inset(20.adjust()).priorityMedium()
+            make.trailing.equalToSuperview().inset(20.adjust()).priority(.medium)
             make.centerY.equalToSuperview()
         }
         
@@ -179,7 +179,7 @@ class Toast: UIView {
         // Set constraint of task button
         contentStackView.addArrangedSubview(taskButton)
         taskButton.snp.makeConstraints { make in
-            make.width.equalTo(70.adjust()).priorityHigh()
+            make.width.equalTo(70.adjust()).priority(.high)
         }
         
         self.task = task

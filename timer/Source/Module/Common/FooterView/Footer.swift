@@ -33,7 +33,7 @@ class Footer: UIView {
         // Set constraint of subviews
         view.addAutolayoutSubview(containerStackView)
         containerStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 0, left: 23.adjust(), bottom: 14.adjust(), right: 23.adjust())).priorityHigh()
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 0, left: 23.adjust(), bottom: 14.adjust(), right: 23.adjust())).priority(.high)
             make.height.equalTo(50.adjust())
         }
         

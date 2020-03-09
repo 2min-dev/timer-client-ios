@@ -51,9 +51,9 @@ class LocalTimeSetView: UIView {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             if #available(iOS 11.0, *) {
-                make.bottom.equalTo(safeAreaLayoutGuide).priorityHigh()
+                make.bottom.equalTo(safeAreaLayoutGuide).priority(.high)
             } else {
-                make.bottom.equalToSuperview().priorityHigh()
+                make.bottom.equalToSuperview().priority(.high)
             }
         }
         

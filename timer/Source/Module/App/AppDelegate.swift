@@ -23,12 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Initialize `SwiftBeaver`
-        Logger.initialize()
         // Firebase Analytics (only release)
         #if !DEBUG
         FirebaseApp.configure()
         #endif
+        // Initialize `SwiftBeaver`
+        Logger.initialize()
         // Initialize `Realm`
         migrateRealm()
         // Set audio session category to play at the same time with other app's audio

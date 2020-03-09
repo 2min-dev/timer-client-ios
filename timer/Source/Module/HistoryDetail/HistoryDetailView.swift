@@ -212,8 +212,8 @@ class HistoryDetailView: UIView {
         memoTextView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(13.adjust())
             make.leading.equalTo(memoIconImageView.snp.trailing).inset(2.adjust())
-            make.trailing.equalToSuperview().inset(11.adjust()).priorityHigh()
-            make.bottom.equalToSuperview().inset(30.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(11.adjust()).priority(.high)
+            make.bottom.equalToSuperview().inset(30.adjust()).priority(.high)
         }
         
         memoExcessLabel.snp.makeConstraints { make in
@@ -254,13 +254,13 @@ class HistoryDetailView: UIView {
         view.addAutolayoutSubviews([titleLabel, divider, infoStackView, memoInputView, timerBadgeCollectionView])
         titleLabel.snp.makeConstraints { make in
             make.leading.equalTo(divider)
-            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(20.adjust()).priority(.high)
             make.bottom.equalTo(divider.snp.top).inset(-13.adjust())
         }
         
         divider.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(49.adjust())
-            make.leading.equalToSuperview().inset(60.adjust()).priorityHigh()
+            make.leading.equalToSuperview().inset(60.adjust()).priority(.high)
             make.trailing.equalToSuperview()
             make.height.equalTo(0.5)
         }
@@ -268,14 +268,14 @@ class HistoryDetailView: UIView {
         infoStackView.snp.makeConstraints { make in
             make.top.equalTo(divider.snp.bottom).offset(14.adjust())
             make.leading.equalTo(divider)
-            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(20.adjust()).priority(.high)
         }
         
         memoInputView.snp.makeConstraints { make in
             make.top.equalTo(infoStackView.snp.bottom).offset(61.adjust())
             make.leading.equalTo(divider)
             make.trailing.equalToSuperview().inset(20.adjust())
-            make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-20.adjust()).priorityHigh()
+            make.bottom.equalTo(timerBadgeCollectionView.snp.top).inset(-20.adjust()).priority(.high)
         }
 
         timerBadgeCollectionView.snp.makeConstraints { make in
