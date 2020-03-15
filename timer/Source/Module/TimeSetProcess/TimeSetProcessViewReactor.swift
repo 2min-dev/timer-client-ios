@@ -137,10 +137,9 @@ class TimeSetProcessViewReactor: Reactor {
     
     let origin: TimeSetItem
     let timeSet: TimeSet // Running time set
+    private var countdownTimer: JSTimer
     
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
-    
-    private var countdownTimer: JSTimer
     
     // MARK: - constructor
     private init(
