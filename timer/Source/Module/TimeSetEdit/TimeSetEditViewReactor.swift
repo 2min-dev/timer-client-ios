@@ -117,7 +117,7 @@ class TimeSetEditViewReactor: Reactor {
     private var dataSource: TimerBadgeSectionDataSource
     
     // Sub reactor
-    let timerOptionViewReactor: TimerOptionViewReactor
+    let timerOptionViewReactor: TimerOptionViewReactor = TimerOptionViewReactor()
     
     // MARK: - constructor
     init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem? = nil) {
@@ -133,9 +133,6 @@ class TimeSetEditViewReactor: Reactor {
             self.timeSetItem = TimeSetItem()
             self.timeSetItem.timers.append(TimerItem(alarm: appService.getAlarm()))
         }
-        
-        // Create sub reactor
-        timerOptionViewReactor = TimerOptionViewReactor()
         
         let timers = self.timeSetItem.timers.toArray()
         let timer = timers.first

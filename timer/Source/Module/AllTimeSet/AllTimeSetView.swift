@@ -49,7 +49,7 @@ class AllTimeSetView: UIView {
             if #available(iOS 11.0, *) {
                 make.bottom.equalTo(safeAreaLayoutGuide)
             } else {
-                make.bottom.equalToSuperview().priorityHigh()
+                make.bottom.equalToSuperview().priority(.high)
             }
         }
         

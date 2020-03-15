@@ -238,7 +238,7 @@ class TimeSetSaveView: UIView {
         view.addAutolayoutSubviews([titleInputView, infoStackView, timerBadgeCollectionView])
         titleInputView.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(60.adjust()).priorityHigh()
+            make.leading.equalToSuperview().inset(60.adjust()).priority(.high)
             make.trailing.equalToSuperview()
             make.height.equalTo(50.adjust())
         }
@@ -303,7 +303,7 @@ class TimeSetSaveView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().priorityHigh()
+            make.bottom.equalToSuperview().priority(.high)
         }
         
         footerView.snp.makeConstraints { make in

@@ -41,8 +41,8 @@ class CommonLoading: UIView {
         // Set constraint of subviews
         addAutolayoutSubview(progressView)
         progressView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().priorityHigh()
-            make.center.equalToSuperview().priorityHigh()
+            make.edges.equalToSuperview().priority(.high)
+            make.center.equalToSuperview().priority(.high)
             make.width.lessThanOrEqualTo(60.adjust())
             make.height.equalTo(progressView.snp.width)
         }

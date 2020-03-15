@@ -15,7 +15,6 @@ protocol ServiceProviderProtocol: class {
 
 class ServiceProvider: ServiceProviderProtocol {
     // MARK: - private service
-    
     private lazy var userDefaultService: UserDefaultServiceProtocol = UserDefaultService()
     private lazy var databaseService: DatabaseServiceProtocol = RealmService()
     private lazy var networkService: NetworkServiceProtocol = NetworkService()

@@ -143,7 +143,7 @@ class CommonHeader: Header {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priorityHigh()
+            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priority(.high)
             make.trailing.equalTo(additionalStackView.snp.leading).offset(-5.adjust())
             make.centerY.equalToSuperview()
         }

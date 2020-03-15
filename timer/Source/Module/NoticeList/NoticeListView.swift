@@ -51,7 +51,7 @@ class NoticeListView: UIView {
         view.addAutolayoutSubview(emptyLabel)
         emptyLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20.adjust())
-            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(20.adjust()).priority(.high)
             make.bottom.equalToSuperview()
         }
         
@@ -76,7 +76,7 @@ class NoticeListView: UIView {
             if #available(iOS 11.0, *) {
                 make.bottom.equalTo(safeAreaLayoutGuide)
             } else {
-                make.bottom.equalToSuperview().priorityHigh()
+                make.bottom.equalToSuperview().priority(.high)
             }
         }
         

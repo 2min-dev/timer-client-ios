@@ -180,7 +180,7 @@ class TimeSetDetailView: UIView {
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(35.adjust())
             make.leading.equalToSuperview().inset(60.adjust())
-            make.trailing.equalToSuperview().inset(20.adjust()).priorityHigh()
+            make.trailing.equalToSuperview().inset(20.adjust()).priority(.high)
         }
         
         infoStackView.snp.makeConstraints { make in
@@ -230,7 +230,7 @@ class TimeSetDetailView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(footerView.snp.top).priorityHigh()
+            make.bottom.equalTo(footerView.snp.top).priority(.high)
         }
         
         footerView.snp.makeConstraints { make in

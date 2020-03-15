@@ -742,8 +742,8 @@
 			isa = PBXGroup;
 			children = (
 				F3D49922227F272600AC4B2B /* Common */,
-				F3735C9522CFA81100DC247C /* App */,
 				F3735C9622CFA82000DC247C /* Base */,
+				F3735C9522CFA81100DC247C /* App */,
 				F3735C9722CFA83C00DC247C /* Intro */,
 				F3735C9922CFA8C000DC247C /* Main */,
 				F3735C9822CFA88700DC247C /* Productivity */,
@@ -1176,12 +1176,12 @@
 		F3D1F7A2225CBCDC006DC162 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				F39B0B8E231F7D4900C2785A /* DatabaseServiceProtocol.swift */,
 				F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */,
-				F34CADE6236341EB007C2672 /* NotificationService.swift */,
 				F3A7940E22FDC0AB007D5D40 /* UserDefaultService.swift */,
+				F39B0B8E231F7D4900C2785A /* DatabaseServiceProtocol.swift */,
 				F39B0B8C231F7D3B00C2785A /* RealmService.swift */,
 				F32DFA4123569A61006FDA0F /* NetworkService.swift */,
+				F34CADE6236341EB007C2672 /* NotificationService.swift */,
 				F3C18757226318DB00B2C644 /* AppService.swift */,
 				F373CCD32265F995007ECCA0 /* TimeSetService.swift */,
 				F396856323E7107400C695FD /* HistoryService.swift */,

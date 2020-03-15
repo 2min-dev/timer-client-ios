@@ -34,9 +34,9 @@ struct RunningTimeSet: Codable {
         let history = try container.decode(History.self, forKey: .history)
         let index = try container.decode(Int.self, forKey: .index)
 
-        /// [19. 12. 18] modified by Jeong Jin Eun.
-        /// Update history's time set item reference to decoded item object.
-        /// Originally history's item and time set's item were linked. However, it is generated separately while decoding.
+        // [19. 12. 18] modified by Jeong Jin Eun.
+        // Update history's time set item reference to decoded item object.
+        // Originally history's item and time set's item were linked. However, it is generated separately while decoding.
         history.item = item
         
         origin = try container.decode(TimeSetItem.self, forKey: .origin)
