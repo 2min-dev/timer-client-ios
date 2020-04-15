@@ -22,10 +22,16 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
     // MARK: - properties
     var coordinator: HistoryListViewCoordinator
     
-    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<HistorySectionModel>(configureCell: { datasource, collectionView, indexPath, reactor in
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HistoryListCollectionViewCell.name, for: indexPath) as? HistoryListCollectionViewCell else { fatalError() }
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<HistorySectionModel>(configureCell: { [weak self] datasource, collectionView, indexPath, reactor in
+        guard let self = self, let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HistoryListCollectionViewCell.name, for: indexPath) as? HistoryListCollectionViewCell else { fatalError() }
         
         cell.reactor = reactor
+        // Delete the history
+        cell.rx.delete
+            .map { .deleteHistory(id: reactor.history.id) }
+            .subscribe(onNext: { [weak self] in self?.reactor?.action.onNext($0) })
+            .disposed(by: self.disposeBag)
+        
         return cell
     }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath in
         guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HistoryListEmptyCollectionReusableView.name, for: indexPath) as? HistoryListEmptyCollectionReusableView else { fatalError("Collection view doesn't have supplementary view type of HistoryListEmptyCollectionReusableView") }
