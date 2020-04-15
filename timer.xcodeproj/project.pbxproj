@@ -43,6 +43,8 @@
 		F31684252382838600EF1510 /* timerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31684242382838600EF1510 /* timerTests.swift */; };
 		F316842D23837CFE00EF1510 /* AlarmSettingTableViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F316842C23837CFE00EF1510 /* AlarmSettingTableViewCellReactor.swift */; };
 		F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31CD7B822F7479F0038A2DE /* TimerInputView.swift */; };
+		F31CE24B2446E5830085E910 /* SwipeableCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31CE24A2446E5830085E910 /* SwipeableCollectionViewCell.swift */; };
+		F31CE24D2446E5B10085E910 /* UICollectionView+Swipeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31CE24C2446E5B10085E910 /* UICollectionView+Swipeable.swift */; };
 		F321B99F231503B700A7D9FF /* TimeSetPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F321B99E231503B700A7D9FF /* TimeSetPopup.swift */; };
 		F321B9A123166EEA00A7D9FF /* BubbleAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F321B9A023166EEA00A7D9FF /* BubbleAlert.swift */; };
 		F3282C9722F30D2200824F8A /* UITextField+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3282C9622F30D2200824F8A /* UITextField+rx.swift */; };
@@ -318,6 +320,8 @@
 		F31684262382838600EF1510 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F316842C23837CFE00EF1510 /* AlarmSettingTableViewCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSettingTableViewCellReactor.swift; sourceTree = "<group>"; };
 		F31CD7B822F7479F0038A2DE /* TimerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerInputView.swift; sourceTree = "<group>"; };
+		F31CE24A2446E5830085E910 /* SwipeableCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableCollectionViewCell.swift; sourceTree = "<group>"; };
+		F31CE24C2446E5B10085E910 /* UICollectionView+Swipeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Swipeable.swift"; sourceTree = "<group>"; };
 		F321B99E231503B700A7D9FF /* TimeSetPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetPopup.swift; sourceTree = "<group>"; };
 		F321B9A023166EEA00A7D9FF /* BubbleAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleAlert.swift; sourceTree = "<group>"; };
 		F3282C9622F30D2200824F8A /* UITextField+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+rx.swift"; sourceTree = "<group>"; };
@@ -659,6 +663,15 @@
 				F31684262382838600EF1510 /* Info.plist */,
 			);
 			path = timerTests;
+			sourceTree = "<group>";
+		};
+		F31CE2492446E5690085E910 /* SwipeableCollectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				F31CE24A2446E5830085E910 /* SwipeableCollectionViewCell.swift */,
+				F31CE24C2446E5B10085E910 /* UICollectionView+Swipeable.swift */,
+			);
+			path = SwipeableCollectionViewCell;
 			sourceTree = "<group>";
 		};
 		F33408FE22D0D8BC008661EC /* TimerBadgeView */ = {
@@ -1225,6 +1238,7 @@
 		F3D49922227F272600AC4B2B /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				F31CE2492446E5690085E910 /* SwipeableCollectionViewCell */,
 				F309F96322E980E800C280A0 /* TimerOptionView */,
 				F33408FE22D0D8BC008661EC /* TimerBadgeView */,
 				F38702AD22F899720099241C /* HeaderView */,
@@ -1746,6 +1760,7 @@
 				F307166223CF6D32001AEC96 /* Array+range.swift in Sources */,
 				F3ADF4352312945600FA9277 /* TimeSetMemoViewCoordinator.swift in Sources */,
 				F3C2D0072393AA58004D2219 /* RevisionValue.swift in Sources */,
+				F31CE24D2446E5B10085E910 /* UICollectionView+Swipeable.swift in Sources */,
 				F3F541432327E07500D618D2 /* TimeSetManageCollectionViewCell.swift in Sources */,
 				F3F97A8E2378111F0041341B /* Toast.swift in Sources */,
 				F309F97B22E9883100C280A0 /* TimerOptionView.swift in Sources */,
@@ -1796,6 +1811,7 @@
 				F3C0DF8E233342C800E49425 /* CountdownSettingTableViewCell.swift in Sources */,
 				F3CF614B23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift in Sources */,
 				F3A218FC23535FB5007ABE3F /* HistoryListView.swift in Sources */,
+				F31CE24B2446E5830085E910 /* SwipeableCollectionViewCell.swift in Sources */,
 				F3A23D7A2320D7DA003856AB /* Realm+convert.swift in Sources */,
 				F37CA0BB23A8F4DF00A8990F /* TimeSetProcessViewBuilder.swift in Sources */,
 				F3F21F7023338A100000597B /* NoticeDetailViewController.swift in Sources */,
