@@ -104,7 +104,6 @@
 		F37CA0D123A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0D023A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift */; };
 		F37FF50B23536E07009F6156 /* HistoryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */; };
 		F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */; };
-		F37FF50F23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50E23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift */; };
 		F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702AE22F899C50099241C /* ConfirmHeader.swift */; };
 		F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B322F970E80099241C /* TimeSetDetailViewCoordinator.swift */; };
 		F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B422F970E80099241C /* TimeSetDetailViewReactor.swift */; };
@@ -383,7 +382,6 @@
 		F37CA0D023A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSourceLicenseViewBuilder.swift; sourceTree = "<group>"; };
 		F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListCollectionViewCell.swift; sourceTree = "<group>"; };
 		F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListCollectionViewCellReactor.swift; sourceTree = "<group>"; };
-		F37FF50E23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListEmptyCollectionReusableView.swift; sourceTree = "<group>"; };
 		F38702AE22F899C50099241C /* ConfirmHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmHeader.swift; sourceTree = "<group>"; };
 		F38702B322F970E80099241C /* TimeSetDetailViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetDetailViewCoordinator.swift; sourceTree = "<group>"; };
 		F38702B422F970E80099241C /* TimeSetDetailViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetDetailViewReactor.swift; sourceTree = "<group>"; };
@@ -883,7 +881,6 @@
 			children = (
 				F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */,
 				F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */,
-				F37FF50E23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1724,7 +1721,6 @@
 				F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */,
 				F35CE4092360BCD800F8BC31 /* RunningTimeSet.swift in Sources */,
 				F3A218FB23535FB5007ABE3F /* HistoryListViewController.swift in Sources */,
-				F37FF50F23546CBA009F6156 /* HistoryListEmptyCollectionReusableView.swift in Sources */,
 				F303F281225CCE9D00A11FAF /* ProductivityViewCoordinator.swift in Sources */,
 				F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */,
 				F387AF3022F18215002ABDB6 /* TimeSetSaveViewCoordinator.swift in Sources */,
