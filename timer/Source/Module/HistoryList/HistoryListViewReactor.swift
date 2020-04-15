@@ -14,6 +14,8 @@ class HistoryListViewReactor: Reactor {
     enum Action {
         /// Fetch history list to refresh
         case refresh
+        /// Delete history
+        case deleteHistory(id: Int)
     }
     
     enum Mutation {
@@ -45,6 +47,9 @@ class HistoryListViewReactor: Reactor {
         switch action {
         case .refresh:
             return actionRefresh()
+            
+        case let .deleteHistory(id: id):
+            return actionDeleteHistory(id: id)
         }
     }
     
@@ -67,13 +72,19 @@ class HistoryListViewReactor: Reactor {
             .map { _ in .setSections(self.dataSource.makeSections()) }
     }
     
+    private func actionDeleteHistory(id: Int) -> Observable<Mutation> {
+        historyService.removeHistory(id)
+            .asObservable()
+            .flatMap { [weak self] _ in self?.actionRefresh() ?? .empty() }
+    }
+    
     deinit {
         Logger.verbose()
     }
 }
 
 // MARK: - setting datasource
-typealias HistorySectionModel = SectionModel<Void, HistoryListCollectionViewCellReactor>
+typealias HistorySectionModel = AnimatableSectionModel<Int, HistoryListCollectionViewCellReactor>
 
 typealias HistoryCellType = HistoryListCollectionViewCellReactor
 
@@ -88,6 +99,6 @@ struct HistoryListSectionDataSource {
     }
     
     func makeSections() -> [HistorySectionModel] {
-        return [HistorySectionModel(model: Void(), items: historySection)]
+        return [HistorySectionModel(model: 0, items: historySection)]
     }
 }

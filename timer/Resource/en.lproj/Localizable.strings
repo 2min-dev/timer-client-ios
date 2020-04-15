@@ -126,6 +126,7 @@
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%dM";
 "history_repeat_count_format" = "%d";
+"history_delete_title" = "DELETE";
 
 // MARK: - History alert
 "history_alert_time_set_cancel_format" = "Canceled at %d timer\nwith %@ left";

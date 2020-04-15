@@ -126,6 +126,7 @@
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%d분";
 "history_repeat_count_format" = "%d회";
+"history_delete_title" = "삭제";
 
 // MARK: - History alert
 "history_alert_time_set_cancel_format" = "%d번째 타이머에서\n%@ 남기고 취소";

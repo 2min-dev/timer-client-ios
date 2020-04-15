@@ -13,31 +13,28 @@ import RxDataSources
 
 class HistoryListViewController: BaseHeaderViewController, ViewControllable, View {
     // MARK: - view properties
-    private var historyListView: HistoryListView { return view as! HistoryListView }
+    private var root: HistoryListView { view as! HistoryListView }
     
-    override var headerView: CommonHeader { return historyListView.headerView }
+    override var headerView: CommonHeader { root.headerView }
     
-    private var historyCollectionView: UICollectionView { return historyListView.historyCollectionView }
+    private var historyListEmptyView: UIView { root.historyListEmptyView }
+    private var createButton: UIButton { root.createButton }
+    private var historyCollectionView: UICollectionView { root.historyCollectionView }
     
     // MARK: - properties
     var coordinator: HistoryListViewCoordinator
     
-    private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<HistorySectionModel>(configureCell: { datasource, collectionView, indexPath, reactor in
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HistoryListCollectionViewCell.name, for: indexPath) as? HistoryListCollectionViewCell else { fatalError() }
+    private lazy var dataSource = RxCollectionViewSectionedAnimatedDataSource<HistorySectionModel>(configureCell: { [weak self] datasource, collectionView, indexPath, reactor in
+        guard let self = self, let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HistoryListCollectionViewCell.name, for: indexPath) as? HistoryListCollectionViewCell else { fatalError() }
         
         cell.reactor = reactor
+        // Delete the history
+        cell.rx.delete
+            .map { .deleteHistory(id: reactor.history.id) }
+            .subscribe(onNext: { [weak self] in self?.reactor?.action.onNext($0) })
+            .disposed(by: self.disposeBag)
+        
         return cell
-    }, configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath in
-        guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HistoryListEmptyCollectionReusableView.name, for: indexPath) as? HistoryListEmptyCollectionReusableView else { fatalError("Collection view doesn't have supplementary view type of HistoryListEmptyCollectionReusableView") }
-        
-        if let self = self {
-            // Bind create button action
-            supplementaryView.createButton.rx.tap
-                .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .productivity, animated: true) })
-                .disposed(by: self.disposeBag)
-        }
-        
-        return supplementaryView
     })
     
     // MARK: - constructor
@@ -63,6 +60,10 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
             .subscribe(onNext: { [weak self] in self?.handleHeaderAction($0) })
             .disposed(by: disposeBag)
         
+        createButton.rx.tap
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .productivity, animated: true) })
+            .disposed(by: disposeBag)
+        
         historyCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
@@ -79,11 +80,20 @@ class HistoryListViewController: BaseHeaderViewController, ViewControllable, Vie
             .disposed(by: disposeBag)
         
         // MARK: state
-        reactor.state
+        let sections = reactor.state
             .map { $0.sections }
             .distinctUntilChanged()
             .map { $0.value }
+            .share()
+        
+        // Sections
+        sections
             .bind(to: historyCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        // Empty view hidden
+        sections.map { !$0.isEmpty && !($0.first?.items.isEmpty ?? false)  }
+            .bind(to: historyListEmptyView.rx.isHidden)
             .disposed(by: disposeBag)
     }
     
@@ -108,20 +118,5 @@ extension HistoryListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
         return CGSize(width: collectionView.bounds.width - horizontalInset, height: 90.adjust())
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard reactor?.currentState.sections.value.first?.items.count ?? 0 == 0,
-            let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
-        
-        // Calculate inset size of header view
-        var inset = headerView.bounds.height + layout.sectionInset.bottom
-        if #available(iOS 11.0, *) {
-            inset -= view.safeAreaInsets.top // Status bar inset
-        } else {
-            inset -= 20 // Status bar inset hard cording if os version lower than 11.0
-        }
-        
-        return CGSize(width: 0, height: collectionView.bounds.height - inset)
     }
 }

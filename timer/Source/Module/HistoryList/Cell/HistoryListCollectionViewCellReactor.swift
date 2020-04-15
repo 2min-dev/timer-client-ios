@@ -7,6 +7,7 @@
 //
 
 import RxSwift
+import RxDataSources
 import ReactorKit
 
 class HistoryListCollectionViewCellReactor: Reactor {
@@ -44,5 +45,13 @@ class HistoryListCollectionViewCellReactor: Reactor {
     
     deinit {
         Logger.verbose()
+    }
+}
+
+extension HistoryListCollectionViewCellReactor: IdentifiableType, Equatable {
+    var identity: Int { history.id }
+    
+    static func == (lhs: HistoryListCollectionViewCellReactor, rhs: HistoryListCollectionViewCellReactor) -> Bool {
+        lhs.identity == rhs.identity
     }
 }

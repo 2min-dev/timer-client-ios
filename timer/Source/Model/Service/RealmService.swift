@@ -57,8 +57,12 @@ class RealmService: DatabaseServiceProtocol {
         update(list: items)
     }
     
+    func fetchHistory(id: Int) -> Single<History> {
+        fetch(key: id)
+    }
+    
     func fetchHistories(pagination: PaginationParam?) -> Single<[History]> {
-        fetch(sorted: SortingParam(keyPath: "startDate"), pagination: pagination)
+        fetch(filter: NSPredicate(format: "isHidden == false"), sorted: SortingParam(keyPath: "startDate"), pagination: pagination)
     }
     
     func fetchHistories(origin id: Int) -> Single<[History]> {
