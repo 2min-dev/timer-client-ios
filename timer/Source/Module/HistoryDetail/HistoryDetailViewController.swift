@@ -126,10 +126,15 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         
         // MARK: state
         // Tile
-        reactor.state
+        let title = reactor.state
             .map { $0.title }
             .distinctUntilChanged()
-            .bind(to: titleLabel.rx.text)
+            .share(replay: 1)
+            
+        title.bind(to: headerView.rx.title)
+            .disposed(by: disposeBag)
+        
+        title.bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
         
         // Running time

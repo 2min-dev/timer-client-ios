@@ -12,7 +12,6 @@ class HistoryDetailView: UIView {
     // MARK: - view properties
     let headerView: CommonHeader = {
         let view = CommonHeader()
-        view.title = "history_detail_title".localized
         return view
     }()
     
