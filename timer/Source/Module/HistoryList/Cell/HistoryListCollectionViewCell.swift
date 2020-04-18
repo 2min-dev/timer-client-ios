@@ -10,8 +10,9 @@ import UIKit
 import RxSwift
 import RxCocoa
 import ReactorKit
+import JSSwipeableCell
 
-class HistoryListCollectionViewCell: SwipeableCollectionViewCell, View {
+class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
     // MARK: - view properties
     private let runningTimeLabel: UILabel = {
         let view = UILabel()
@@ -60,6 +61,7 @@ class HistoryListCollectionViewCell: SwipeableCollectionViewCell, View {
     
     // MARK: - lifecycle
     override func prepareForReuse() {
+        super.prepareForReuse()
         disposeBag = DisposeBag()
     }
     

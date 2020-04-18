@@ -14,6 +14,7 @@ target 'timer' do
   
   # Common Libraries
   pod 'JSReorderableCollectionView'
+  pod 'JSSwipeableCell'
 
   # RxSwift
   pod 'RxSwift'
