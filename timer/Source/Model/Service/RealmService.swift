@@ -9,83 +9,84 @@
 import RxSwift
 import RealmSwift
 
-class RealmService: BaseService, DatabaseServiceProtocol {
+class RealmService: DatabaseServiceProtocol {
     // MARK: - time set operate
-    /// Fetch all time set list
-    /// - returns: A observable that emit all time set item list
+    func fetchTimeSet(id: Int) -> Single<TimeSetItem> {
+        fetch(key: id)
+    }
+    
     func fetchTimeSets() -> Single<[TimeSetItem]> {
-        return fetch(with: { $0.id?.range(regex: "^[0-9]") != nil })
+        fetch(filter: NSPredicate(format: "isSaved = true"))
     }
     
-    /// Create a time set
-    /// - parameters:
-    ///   - item: data of the time set
-    /// - returns: A observable that emit a created time set item
-    func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
-        return create(item)
-    }
-    
-    /// Remove the time set
-    /// - parameters:
-    ///   - id: Identifier of the time set to remove
-    /// - returns: A observable that emit a removed time set item
-    func removeTimeSet(id: String) -> Single<TimeSetItem> {
-        return remove(key: id)
-    }
-    
-    /// Remove time set list
-    /// - parameters:
-    ///   - ids: Identifier list of the time set list to remove
-    /// - returns: A observable that emit all removed time set item list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]> {
-        return remove(keys: ids)
-    }
-    
-    /// Update the time set
-    /// - parameters:
-    ///   - item: data of the time set
-    /// - returns: A observable that emit a updated time set item
-    func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
-        return update(item)
-    }
-    
-    /// Update time set list
-    /// - parameters:
-    ///   - items: data list of the time set
-    /// - returns: A observable that emit all updated time set item list
-    func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]> {
-        return update(list: items)
-    }
-    
-    /// Fetch all hisotry list
-    /// - returns: A observable that emit all history list
-    func fetchHistories() -> Single<[History]> {
-        return fetch {
-            guard let lhs = $0.startDate, let rhs = $1.startDate else { return true }
-            return lhs > rhs
+    func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]> {
+        // Fetch recent history list that refer saved time set and distinct refering origin id
+        let recentUsedHistories: Single<[History]> = fetch(
+            filter: NSPredicate(format: "originId > 0"),
+            sorted: SortingParam(keyPath: "startDate"),
+            distinct: "originId",
+            pagination: PaginationParam(count: count)
+        )
+        
+        return recentUsedHistories.flatMap {
+            // Fetch time set item list from id
+            Single.zip(
+                $0.map { $0.originId }
+                    .map { id -> Single<TimeSetItem> in self.fetch(key: id) }
+            )
         }
     }
     
-    /// Create a history
-    /// - parameters:
-    ///   - history: data of the history
-    /// - returns: A observable that emit a created history
+    func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
+        create(item)
+    }
+    
+    func removeTimeSet(id: Int) -> Single<TimeSetItem> {
+        remove(key: id)
+    }
+    
+    func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]> {
+        remove(keys: ids)
+    }
+    
+    func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem> {
+        update(item)
+    }
+    
+    func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]> {
+        update(list: items)
+    }
+    
+    func fetchHistory(id: Int) -> Single<History> {
+        fetch(key: id)
+    }
+    
+    func fetchHistories(pagination: PaginationParam?) -> Single<[History]> {
+        fetch(filter: NSPredicate(format: "isHidden == false"), sorted: SortingParam(keyPath: "startDate"), pagination: pagination)
+    }
+    
+    func fetchHistories(origin id: Int) -> Single<[History]> {
+        fetch(filter: NSPredicate(format: "originId == %d", id))
+    }
+    
+    func fetchHistories(origin ids: [Int]) -> Single<[History]> {
+        fetch(filter: NSPredicate(format: "originId IN %@", ids))
+    }
+    
     func createHistory(_ history: History) -> Single<History> {
-        guard history.id > 0 else { return .error(DatabaseError.wrongData) }
+        guard history.id > 0 && history.originId > 0 else { return .error(DatabaseError.invalidFormat) }
         return create(history)
     }
     
-    /// Update the history
-    /// - parameters:
-    ///   - history: data of the history
-    /// - returns: A observable that emit a updated hisotry
     func updateHistory(_ history: History) -> Single<History> {
-        guard history.id > 0 else { return .error(DatabaseError.wrongData) }
-        return update(history)
+        update(history)
+    }
+    
+    func updateHistories(_ histories: [History]) -> Single<[History]> {
+        update(list: histories)
     }
     
     // MARK: - database operate
-    /// Clear all data from database
     func clear() {
         guard let realm = try? Realm() else { return }
         try? realm.write {
@@ -94,10 +95,8 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     }
     
     // MARK: - private method
-    /// Fetch object list from `realm`
-    /// - returns: `Single` observable wrap created object list, not realm object (copied)
-    private func fetch<T>(with filter: @escaping (T) -> Bool = { _ in true }, by sorted: @escaping (T, T) -> Bool = { _, _ in true }) -> Single<[T]> where T: Object & NSCopying {
-        return Single.create { emitter in
+    private func fetch<Key, T>(key: Key) -> Single<T> where T: Object {
+        Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {
                 // Wrap autorelease pool explicitly due to use realm.
@@ -108,11 +107,67 @@ class RealmService: BaseService, DatabaseServiceProtocol {
                         let realm = try self.open()
 
                         // Transaction
-                        let objects = realm.objects(T.self).filter(filter).sorted(by: sorted)
-                        Logger.info("fetch objects from realm - count(\(objects.count)) \n\(objects)", tag: "REALM")
+                        guard let object = realm.object(ofType: T.self, forPrimaryKey: key) else { throw DatabaseError.notFound }
+                        
+                        // Copy object from realm object
+                        guard let copiedObject = object.copy() as? T else { throw DatabaseError.unknown }
+                        
+                        Logger.info("fetch object from realm\n\(object)", tag: "REALM")
+                        DispatchQueue.main.async {
+                            emitter(.success(copiedObject))
+                        }
+                    } catch {
+                        emitter(.error(error))
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    /// Fetch object list from `realm`
+    /// - returns: `Single` observable wrap created object list, not realm object (copied)
+    private func fetch<T>(
+        filter: NSPredicate? = nil,
+        sorted: SortingParam? = nil,
+        distinct: String? = nil,
+        pagination: PaginationParam? = nil
+    ) -> Single<[T]> where T: Object & NSCopying {
+        Single.create { emitter in
+            // Realm transaction in global queue (background thread)
+            DispatchQueue.global().async {
+                // Wrap autorelease pool explicitly due to use realm.
+                // Not occur problems normally even if not use autorelase pool. but `Realm` document recommended for efficiency
+                autoreleasepool {
+                    do {
+                        // Open `Realm`
+                        let realm = try self.open()
+
+                        // Transaction
+                        var objects = realm.objects(T.self)
+                        if let filter = filter {
+                            objects = objects.filter(filter)
+                        }
+                        if let sorted = sorted {
+                            objects = objects.sorted(byKeyPath: sorted.keyPath, ascending: sorted.accending)
+                        }
+                        if let distinct = distinct {
+                            objects = objects.distinct(by: [distinct])
+                        }
+                        
+                        let result: [T]
+                        if let pagination = pagination {
+                            // Pagiate if pagination info isn't `nil`
+                            result = objects.range(pagination.range)
+                        } else {
+                            result = objects.toArray()
+                        }
+                        
+                        Logger.info("fetch objects from realm - count(\(result.count)) \n\(result)", tag: "REALM")
                         
                         // Copy time set from realm object & Emit copied object
-                        let copiedObjects = objects.compactMap { $0.copy() as? T }
+                        let copiedObjects = result.compactMap { $0.copy() as? T }
                         DispatchQueue.main.async {
                             emitter(.success(copiedObjects))
                         }
@@ -169,7 +224,7 @@ class RealmService: BaseService, DatabaseServiceProtocol {
     /// - parameters:
     ///   - key: Identifier of the object to remove
     /// - returns: `Single` observable wrap removed object, not realm object (copied)
-    private func remove<T>(key: String) -> Single<T> where T: Object & NSCopying {
+    private func remove<Key, T>(key: Key) -> Single<T> where T: Object & NSCopying {
         return Single.create { emitter in
             // Realm transaction in global queue (background thread)
             DispatchQueue.global().async {

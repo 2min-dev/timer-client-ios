@@ -20,7 +20,7 @@ protocol UserDefaultServiceProtocol {
     func object<T>(_ key: UserDefaultService.Key) -> T?
 }
 
-class UserDefaultService: BaseService, UserDefaultServiceProtocol {
+class UserDefaultService: UserDefaultServiceProtocol {
     enum Key: String, CaseIterable {
         case timeSetId
         case runningTimeSet

@@ -211,7 +211,7 @@ class TimeSetEditView: UIView {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(footerView.snp.top).priorityHigh()
+            make.bottom.equalTo(footerView.snp.top).priority(.high)
         }
         
         timerOptionView.snp.makeConstraints { make in

@@ -119,7 +119,7 @@ class TeamInfoView: UIView {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalToSuperview()
-            make.height.lessThanOrEqualToSuperview().priorityLow()
+            make.height.lessThanOrEqualToSuperview().priority(.low)
         }
         
         return view

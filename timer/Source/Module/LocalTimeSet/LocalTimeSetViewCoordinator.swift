@@ -13,9 +13,9 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
      // MARK: - route enumeration
     enum Route {
         case productivity
-        case timeSetManage(TimeSetManageViewReactor.TimeSetType)
-        case allTimeSet(AllTimeSetViewReactor.TimeSetType)
-        case timeSetDetail(TimeSetItem)
+        case timeSetManage
+        case allTimeSet
+        case timeSetDetail(TimeSetItem, canSave: Bool)
         case history
         case setting
     }
@@ -42,13 +42,13 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
             guard let mainViewController = presentingViewController.tabBarController as? MainViewController else { return nil }
             mainViewController.select(tab: .productivity, animated: animated)
             
-        case .timeSetManage(_):
+        case .timeSetManage:
             // Set dismiss handler
             coordinator.dismiss = dismissViewController
             viewController.present(presentingViewController, animated: animated)
              
-        case .allTimeSet(_),
-             .timeSetDetail(_),
+        case .allTimeSet,
+             .timeSetDetail,
              .history,
              .setting:
             // Set dismiss handler
@@ -64,16 +64,16 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         case .productivity:
             return (viewController, self)
             
-        case let .timeSetManage(type):
-            let dependency = TimeSetManageViewBuilder.Dependency(provider: provider, type: type)
+        case .timeSetManage:
+            let dependency = TimeSetManageViewBuilder.Dependency(provider: provider)
             return TimeSetManageViewBuilder(with: dependency).build()
             
-        case let .allTimeSet(type):
-            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: type)
+        case .allTimeSet:
+            let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: .saved)
             return AllTimeSetViewBuilder(with: dependency).build()
             
-        case let .timeSetDetail(timeSetItem):
-            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: false)
+        case let .timeSetDetail(timeSetItem, canSave: canSave):
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: canSave)
             return TimeSetDetailViewBuilder(with: dependency).build()
 
         case .history:

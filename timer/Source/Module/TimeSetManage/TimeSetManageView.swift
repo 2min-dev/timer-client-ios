@@ -13,12 +13,13 @@ class TimeSetManageView: UIView {
     // MARK: - view properties
     let headerView: ConfirmHeader = {
         let view = ConfirmHeader()
+        view.title = "saved_time_set_management_title".localized
         return view
     }()
     
     let timeSetCollectionView: JSReorderableCollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset.top = 10.adjust()
+        layout.globalInset.top = 16.adjust()
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 40.adjust(), right: 0)
         
         let view = JSReorderableCollectionView(frame: .zero, collectionViewLayout: layout)
@@ -48,7 +49,7 @@ class TimeSetManageView: UIView {
             if #available(iOS 11.0, *) {
                 make.bottom.equalTo(safeAreaLayoutGuide)
             } else {
-                make.bottom.equalToSuperview().priorityHigh()
+                make.bottom.equalToSuperview().priority(.high)
             }
         }
         

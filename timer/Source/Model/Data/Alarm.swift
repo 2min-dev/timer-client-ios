@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import RealmSwift
 import AVFoundation
 
-@objc enum Alarm: Int, CaseIterable, Codable {
+@objc enum Alarm: Int, RealmEnum, CaseIterable, Codable {
     case `default` = 0
     case vibrate
     case silence

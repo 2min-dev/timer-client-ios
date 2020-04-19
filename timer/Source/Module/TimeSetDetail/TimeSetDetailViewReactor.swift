@@ -11,9 +11,6 @@ import ReactorKit
 
 class TimeSetDetailViewReactor: Reactor {
     enum Action {
-        /// Toggle time set bookmark
-        case toggleBookmark
-        
         /// Select the timer
         case selectTimer(at: Int)
         
@@ -22,9 +19,6 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     enum Mutation {
-        /// Set time set bookmark
-        case setBookmark(Bool)
-        
         /// Set current timer
         case setTimer(TimerItem)
         
@@ -36,9 +30,6 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     struct State {
-        /// Time set bookmarked mark
-        var isBookmark: Bool
-        
         /// Title of time set
         let title: String
         
@@ -58,10 +49,7 @@ class TimeSetDetailViewReactor: Reactor {
         var canTimeSetSave: Bool
         
         /// Flag that time set is saved
-        var didTimeSetSaved: RevisionValue<Bool?>
-        
-        /// Need section reload
-        var shouldSectionReload: Bool
+        var didTimeSetSaved: RevisionValue<Bool>
     }
     
     // MARK: - properties
@@ -81,24 +69,19 @@ class TimeSetDetailViewReactor: Reactor {
         dataSource = TimerBadgeSectionDataSource(regulars: timeSetItem.timers.toArray(), index: 0)
         
         initialState = State(
-            isBookmark: timeSetItem.isBookmark,
             title: timeSetItem.title,
             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
             timer: timeSetItem.timers.first ?? TimerItem(),
             sections: RevisionValue(dataSource.makeSections()),
             selectedIndex: 0,
             canTimeSetSave: canSave,
-            didTimeSetSaved: RevisionValue(nil),
-            shouldSectionReload: true
+            didTimeSetSaved: RevisionValue(false)
         )
     }
     
     // MARK: - mutation
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .toggleBookmark:
-            return actionToggleBookmark()
-
         case let .selectTimer(at: index):
             return actionSelectTimer(at: index)
             
@@ -109,13 +92,8 @@ class TimeSetDetailViewReactor: Reactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-        state.shouldSectionReload = false
         
         switch mutation {
-        case let .setBookmark(isBookmark):
-            state.isBookmark = isBookmark
-            return state
-            
         case let .setTimer(timer):
             state.timer = timer
             return state
@@ -132,14 +110,6 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     // MARK: - action method
-    private func actionToggleBookmark() -> Observable<Mutation> {
-        // Toggle time set bookmark
-        timeSetItem.isBookmark.toggle()
-        
-        return timeSetService.updateTimeSet(item: timeSetItem).asObservable()
-            .map { .setBookmark($0.isBookmark) }
-    }
-    
     private func actionSelectTimer(at index: Int) -> Observable<Mutation> {
         guard index >= 0 && index < timeSetItem.timers.count else { return .empty() }
         
@@ -159,9 +129,12 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     private func actionSaveTimeSet() -> Observable<Mutation> {
+        guard let timeSetItem = timeSetItem.copy() as? TimeSetItem else { return .empty() }
+        
         // Create the time set
-        return timeSetService.createTimeSet(item: timeSetItem).asObservable()
-            .do(onNext: { self.timeSetItem = $0 })
+        return timeSetService.createTimeSet(item: timeSetItem)
+            .do(onSuccess: { self.timeSetItem = $0 })
+            .asObservable()
             .map { _ in .save }
     }
     

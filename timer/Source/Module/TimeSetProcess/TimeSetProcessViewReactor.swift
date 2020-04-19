@@ -131,42 +131,42 @@ class TimeSetProcessViewReactor: Reactor {
     var initialState: State
     private let appService: AppServiceProtocol
     private var timeSetService: TimeSetServiceProtocol
+    private let historyService: HistoryServiceProtocol
     
     private var dataSource: TimerBadgeSectionDataSource
     
     let origin: TimeSetItem
     let timeSet: TimeSet // Running time set
+    private var countdownTimer: JSTimer
     
     private var remainedTime: TimeInterval // Remained time that after executing timer of time set
-    
-    private var countdownTimer: JSTimer
     
     // MARK: - constructor
     private init(
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
+        historyService: HistoryServiceProtocol,
         origin: TimeSetItem,
         timeSet: TimeSet,
         canSave: Bool
     ) {
         self.appService = appService
         self.timeSetService = timeSetService
+        self.historyService = historyService
 
         self.origin = origin
         self.timeSet = timeSet
         
+        // Get initial state
+        let index = timeSet.currentIndex
+        let timer = timeSet.item.timers[index]
+        let time = timer.end - timer.current
+        
         // Create countdown timer
         countdownTimer = JSTimer(item: TimerItem(target: TimeInterval(appService.getCountdown())))
-        
-        // Calculate remainted time
-        let index = timeSet.currentIndex
         remainedTime = timeSet.item.timers.enumerated()
             .filter { $0.offset > index }
             .reduce(0) { $0 + $1.element.end }
-        
-        // Get initial state
-        let timer = timeSet.item.timers[index]
-        let time = timer.end - timer.current
         
         // Create seciont datasource
         dataSource = TimerBadgeSectionDataSource(regulars: timeSet.item.timers.toArray(), index: index)
@@ -193,7 +193,8 @@ class TimeSetProcessViewReactor: Reactor {
     
     convenience init?(
         appService: AppServiceProtocol,
-        timeSetService: TimeSetServiceProtocol
+        timeSetService: TimeSetServiceProtocol,
+        historyService: HistoryServiceProtocol
     ) {
         // Fetch running time set from time set service
         guard let runningTimeSet = timeSetService.runningTimeSet else {
@@ -204,6 +205,7 @@ class TimeSetProcessViewReactor: Reactor {
         self.init(
             appService: appService,
             timeSetService: timeSetService,
+            historyService: historyService,
             origin: runningTimeSet.origin,
             timeSet: runningTimeSet.timeSet,
             canSave: runningTimeSet.canSave
@@ -216,10 +218,12 @@ class TimeSetProcessViewReactor: Reactor {
     convenience init?(
         appService: AppServiceProtocol,
         timeSetService: TimeSetServiceProtocol,
+        historyService: HistoryServiceProtocol,
         timeSetItem: TimeSetItem,
         startIndex: Int,
         canSave: Bool
     ) {
+        // Check start index
         guard (0 ..< timeSetItem.timers.count).contains(startIndex) else {
             Logger.error("can't start from \(startIndex) because time set not fulfill count of timers", tag: "TIME SET PROCESS")
             return nil
@@ -231,6 +235,7 @@ class TimeSetProcessViewReactor: Reactor {
         self.init(
             appService: appService,
             timeSetService: timeSetService,
+            historyService: historyService,
             origin: timeSetItem,
             timeSet: TimeSet(item: copiedItem, index: startIndex),
             canSave: canSave
@@ -523,10 +528,14 @@ class TimeSetProcessViewReactor: Reactor {
             switch timeSet.history.endState {
             case .normal,
                  .cancel:
-                _ = timeSetService.createHistory(timeSet.history).subscribe()
+                return historyService.createHistory(timeSet.history)
+                    .asObservable()
+                    .flatMap { _ in setTimeSetState }
                 
             case .overtime:
-                _ = timeSetService.updateHistory(timeSet.history).subscribe()
+                return historyService.updateHistory(timeSet.history)
+                    .asObservable()
+                    .flatMap { _ in setTimeSetState }
                 
             default:
                 break

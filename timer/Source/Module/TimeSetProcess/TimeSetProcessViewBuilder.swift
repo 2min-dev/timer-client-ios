@@ -38,20 +38,25 @@ class TimeSetProcessViewBuilder: Builder {
     
     func build() -> (UIViewController, ViewCoordinatorType)? {
         let provider = dependency.provider
-
+        
         let coordinator = TimeSetProcessViewCoordinator(provider: provider)
         let reactor: TimeSetProcessViewReactor
         if let timeSetItem = dependency.timeSetItem, let startIndex = dependency.startIndex, let canSave = dependency.canSave {
             guard let viewReactor = TimeSetProcessViewReactor(
                 appService: provider.appService,
                 timeSetService: provider.timeSetService,
+                historyService: provider.historyService,
                 timeSetItem: timeSetItem,
                 startIndex: startIndex,
                 canSave: canSave
             ) else { return nil }
             reactor = viewReactor
         } else {
-            guard let viewReactor = TimeSetProcessViewReactor(appService: provider.appService, timeSetService: provider.timeSetService) else { return nil }
+            guard let viewReactor = TimeSetProcessViewReactor(
+                appService: provider.appService,
+                timeSetService: provider.timeSetService,
+                historyService: provider.historyService
+            ) else { return nil }
             reactor = viewReactor
         }
         let viewController = TimeSetProcessViewController(coordinator: coordinator)

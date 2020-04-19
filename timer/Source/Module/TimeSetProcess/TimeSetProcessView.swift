@@ -250,7 +250,7 @@ class TimeSetProcessView: UIView {
         }
         
         memoButton.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(5.adjust()).priorityHigh()
+            make.top.equalTo(timeLabel.snp.bottom).offset(5.adjust()).priority(.high)
             make.leading.equalTo(timeLabel)
         }
         
@@ -341,7 +341,7 @@ class TimeSetProcessView: UIView {
                 make.top.equalToSuperview().inset(20)
             }
             make.leading.equalToSuperview()
-            make.trailing.equalToSuperview().priorityHigh()
+            make.trailing.equalToSuperview().priority(.high)
             make.bottom.equalTo(footerView.snp.top)
         }
         

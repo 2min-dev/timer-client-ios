@@ -23,7 +23,7 @@ class NoticeListViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = NoticeListViewCoordinator(provider: provider)
-        let reactor = NoticeListViewReactor(networkService: provider.networkService)
+        let reactor = NoticeListViewReactor(appService: provider.appService)
         let viewController = NoticeListViewController(coordinator: coordinator)
         
         // DI

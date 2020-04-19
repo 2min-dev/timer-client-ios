@@ -10,7 +10,7 @@ import UIKit
 
 class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - view properties
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.codGray
@@ -20,13 +20,26 @@ class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 10.adjust()
         
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .kern: -0.45
+        ]
+        
         // Set attributed string
-        view.attributedText = NSAttributedString(string: "local_header_title".localized,
-                                                 attributes: [.paragraphStyle: paragraphStyle,
-                                                              .kern: -0.45])
+        view.attributedText = NSAttributedString(string: " ", attributes: attributes)
         
         return view
     }()
+    
+    // MARK: - properties
+    var title: String? {
+        get { titleLabel.attributedText?.string }
+        set {
+            guard let string = newValue,
+                let attributedString = titleLabel.attributedText?.setString(string) else { return }
+            titleLabel.attributedText = attributedString
+        }
+    }
     
     // MARK: - constructor
     override init(frame: CGRect) {

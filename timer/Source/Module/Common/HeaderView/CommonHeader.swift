@@ -17,7 +17,6 @@ class CommonHeader: Header {
         case setting
         case history
         case search
-        case bookmark
         case share
         case delete
         case close
@@ -42,10 +41,6 @@ class CommonHeader: Header {
             case .search:
                 button.setImage(UIImage(named: "btn_search"), for: .normal)
                 
-            case .bookmark:
-                button.setImage(UIImage(named: "btn_bookmark_off"), for: .normal)
-                button.setImage(UIImage(named: "btn_bookmark_on"), for: .selected)
-                
             case .share:
                 button.setImage(UIImage(named: "btn_share"), for: .normal)
                 
@@ -66,9 +61,6 @@ class CommonHeader: Header {
                 
             case .home:
                 return .home
-                
-            case .bookmark:
-                return .bookmark
                 
             case .delete:
                 return .delete
@@ -151,7 +143,7 @@ class CommonHeader: Header {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priorityHigh()
+            make.leading.equalTo(backButton.snp.trailing).offset(14.adjust()).priority(.high)
             make.trailing.equalTo(additionalStackView.snp.leading).offset(-5.adjust())
             make.centerY.equalToSuperview()
         }

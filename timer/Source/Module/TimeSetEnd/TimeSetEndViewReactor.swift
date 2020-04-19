@@ -51,6 +51,7 @@ class TimeSetEndViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
+    private let historyService: HistoryServiceProtocol
     private let timeSetService: TimeSetServiceProtocol
     
     private let history: History
@@ -68,7 +69,8 @@ class TimeSetEndViewReactor: Reactor {
     }
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
+    init(historyService: HistoryServiceProtocol, timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
+        self.historyService = historyService
         self.timeSetService = timeSetService
         self.history = history
         
@@ -114,7 +116,7 @@ class TimeSetEndViewReactor: Reactor {
     
     // MARK: - action method
     private func actionSaveHistory() -> Observable<Mutation> {
-        _ = timeSetService.updateHistory(history).subscribe()
+        _ = historyService.updateHistory(history).subscribe()
         return .empty()
     }
     

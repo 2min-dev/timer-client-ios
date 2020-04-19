@@ -24,7 +24,7 @@ class NoticeDetailViewBuilder: Builder {
         let provider = dependency.provider
 
         let coordinator = NoticeDetailViewCoordinator(provider: provider)
-        let reactor = NoticeDetailViewReactor(networkService: provider.networkService, notice: dependency.notice)
+        let reactor = NoticeDetailViewReactor(appService: provider.appService, notice: dependency.notice)
         let viewController = NoticeDetailViewController(coordinator: coordinator)
         
         // DI

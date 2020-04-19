@@ -7,6 +7,7 @@
 //
 
 enum DatabaseError: Error {
+    case invalidFormat
     case initialize
     case transaction
     case notFound
@@ -15,9 +16,11 @@ enum DatabaseError: Error {
 }
 
 enum NetworkError: Error {
-    case urlNotCorrect
+    case badRequest
     case emptyData
+    case missingRequiredPrameters
     case parseError
+    case unknown
 }
 
 enum TimeSetError: Error {

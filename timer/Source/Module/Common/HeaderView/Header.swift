@@ -19,7 +19,6 @@ class Header: UIView {
         case setting
         case history
         case search
-        case bookmark
         case share
         case delete
         case additional

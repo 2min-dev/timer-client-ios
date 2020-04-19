@@ -47,12 +47,11 @@
 "time_set_edit_title" = "Timeset Edit";
 "time_set_memo_title" = "Memo";
 "time_set_end_title" = "Timeset End";
-"local_time_set_title" = "My Timeset";
-"saved_time_set_title" = "Saved Timeset";
+"local_time_set_title" = "My";
+"all_saved_time_set_title" = "All Saved Timeset";
 "saved_time_set_management_title" = "Saved Timeset Management";
-"bookmarked_time_set_title" = "Bookmarked Timeset";
-"bookmarked_time_set_management_title" = "Bookmarked Timeset Management";
 "preset_title" = "Preset";
+"all_preset_title" = "All Time Preset";
 "shared_time_set_title" = "Shared Timeset";
 "shared_time_set_more_title" = "Shared Timeset More";
 "my_shared_time_set_title" = "My Shared Timeset";
@@ -67,16 +66,17 @@
 
 // MARK: - local time set
 "local_header_title" = "Collect your favorite timeset,\n timeset to help you manage your time :)";
+"local_management_title" = "MANAGEMENT";
 "local_saved_time_set_section_title" = "SAVED TIMESET";
-"local_saved_time_set_management_title" = "SAVED TIMESET MANAGEMENT";
 "local_saved_time_set_all_show_title" = "SHOW ALL SAVED TIMESET";
-"local_bookmarked_time_set_section_title" = "BOOKMARKED TIMESET";
-"local_bookmarked_time_set_management_title" = "BOOKMARKED TIMESET MANAGEMENT";
-"local_bookmarked_time_set_all_show_title" = "SHOW ALL BOOKMARKED TIMESET";
+"local_recently_used_time_set_section_title" = "RECENTLY USED TIMESET";
 "time_set_induce_title" = "Try add your timeset!";
 
 // MARK: - Preset
 "preset_header_title" = "Easily boost your time\nwith presets prepared by 2min!";
+"preset_hot_section_title" = "2min's Pick!";
+"preset_all_section_title" = "Time Presets";
+"preset_all_show_title" = "SHOW ALL TIME PRESET";
 
 // MARK: - time set manage
 "time_set_manage_header_title" = "Set the timeset order to your liking";
@@ -126,6 +126,7 @@
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%dM";
 "history_repeat_count_format" = "%d";
+"history_delete_title" = "DELETE";
 
 // MARK: - History alert
 "history_alert_time_set_cancel_format" = "Canceled at %d timer\nwith %@ left";
@@ -181,8 +182,6 @@
 // MARK: - Toast
 "toast_alarm_all_apply_title" = "All timer alarm set [%@]!";
 "toast_time_set_timer_selected_title" = "Timeset will be start from selected timer!";
-"toast_time_set_add_bookmark_title" = "Timeset added to your bookmarks!";
-"toast_time_set_remove_bookmark_title" = "Timeset removed from your bookmarks!";
 "toast_time_set_end_cancel_title" = "Timeset canceled. Move to check result!";
 "toast_time_set_end_overtime_title" = "Try to write memo that why timeset record overtime!";
 "toast_time_set_saved_title" = "Timeset saved! Press 'Edit' to edit saved timeset.";

@@ -47,12 +47,11 @@
 "time_set_edit_title" = "타임셋 편집";
 "time_set_memo_title" = "메모 입력";
 "time_set_end_title" = "타임셋 종료";
-"local_time_set_title" = "마이 타임셋";
-"saved_time_set_title" = "저장된 타임셋 모두보기";
+"local_time_set_title" = "마이";
+"all_saved_time_set_title" = "저장된 타임셋 모두보기";
 "saved_time_set_management_title" = "저장한 타임셋 관리";
-"bookmarked_time_set_title" = "즐겨찾는 타임셋 모두보기";
-"bookmarked_time_set_management_title" = "즐겨찾는 타임셋 관리";
 "preset_title" = "프리셋";
+"all_preset_title" = "타임 프리셋 모두보기";
 "shared_time_set_title" = "공유 타임셋";
 "shared_time_set_more_title" = "공유 타임셋 더보기";
 "my_shared_time_set_title" = "내가 공유한 타임셋";
@@ -67,12 +66,10 @@
 
 // MARK: - local time set
 "local_header_title" = "주로 쓰는 타임셋을 모아보세요,\n시간을 관리하는 데 도움이 될 거에요 :)";
+"local_management_title" = "관리";
 "local_saved_time_set_section_title" = "저장한 타임셋";
-"local_saved_time_set_management_title" = "저장한 타임셋 관리";
 "local_saved_time_set_all_show_title" = "저장한 타임셋 모두보기";
-"local_bookmarked_time_set_section_title" = "즐겨찾는 타임셋";
-"local_bookmarked_time_set_management_title" = "즐겨찾는 타임셋 관리";
-"local_bookmarked_time_set_all_show_title" = "즐겨찾는 타임셋 모두보기";
+"local_recently_used_time_set_section_title" = "최근 이용한 타임셋";
 "time_set_induce_title" = "타임셋을 추가해보세요!";
 
 // MARK: - time set manage
@@ -81,6 +78,9 @@
 
 // MARK: - Preset
 "preset_header_title" = "2min이 준비한 프리셋으로\n간편하게 시간의 효율을 높여보세요!";
+"preset_hot_section_title" = "2min의 타임셋 픽!";
+"preset_all_section_title" = "타임 프리셋";
+"preset_all_show_title" = "타임 프리셋 모두보기";
 
 // MARK: - Productivity
 "productivity_button_hour_title" = "시";
@@ -126,6 +126,7 @@
 "history_short_date_format" = "h:m a";
 "history_extra_time_format" = "+%d분";
 "history_repeat_count_format" = "%d회";
+"history_delete_title" = "삭제";
 
 // MARK: - History alert
 "history_alert_time_set_cancel_format" = "%d번째 타이머에서\n%@ 남기고 취소";
@@ -181,8 +182,6 @@
 // MARK: - Toast
 "toast_alarm_all_apply_title" = "모든 타이머의 사운드가 %@으로 지정됐어요!";
 "toast_time_set_timer_selected_title" = "선택한 타이머부터 시작돼요!";
-"toast_time_set_add_bookmark_title" = "즐겨찾기에 추가되었어요!";
-"toast_time_set_remove_bookmark_title" = "즐겨찾기에서 삭제되었어요!";
 "toast_time_set_end_cancel_title" = "타임셋을 취소하셨어요. 결과를 확인해보세요!";
 "toast_time_set_end_overtime_title" = "왜 타이머를 초과 기록했는지 기록해보세요!";
 "toast_time_set_saved_title" = "타임셋이 저장되었어요! 타임셋을 편집하시려면 '편집'버튼을 눌러주세요.";

@@ -20,9 +20,8 @@ class LocalTimeSetView: UIView {
     
     let timeSetCollectionView: UICollectionView = {
         let layout = JSCollectionViewLayout()
-        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 30.adjust(), right: 0)
+        layout.globalInset = UIEdgeInsets(top: 16.adjust(), left: 0, bottom: 20.adjust(), right: 0)
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
-        layout.minimumInteritemSpacing = 5.adjust()
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Constants.Color.clear
@@ -30,13 +29,12 @@ class LocalTimeSetView: UIView {
         
         // Register supplimentary view
         view.register(TimeSetHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.header.kind, withReuseIdentifier: TimeSetHeaderCollectionReusableView.name)
-        view.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
-        view.register(TimeSetSectionCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionFooter.kind, withReuseIdentifier: TimeSetSectionCollectionReusableView.name)
+        view.register(TimeSetSectionHeaderCollectionReusableView.self, forSupplementaryViewOfKind: JSCollectionViewLayout.Element.sectionHeader.kind, withReuseIdentifier: TimeSetSectionHeaderCollectionReusableView.name)
         // Register cell
         view.register(TimeSetInduceCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetInduceCollectionViewCell.name)
-        view.register(SavedTimeSetHighlightCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetHighlightCollectionViewCell.name)
-        view.register(SavedTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetCollectionViewCell.name)
-        view.register(BookmaredTimeSetCollectionViewCell.self, forCellWithReuseIdentifier: BookmaredTimeSetCollectionViewCell.name)
+        view.register(TimeSetAllCollectionViewCell.self, forCellWithReuseIdentifier: TimeSetAllCollectionViewCell.name)
+        view.register(SavedTimeSetBigCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetBigCollectionViewCell.name)
+        view.register(SavedTimeSetSmallCollectionViewCell.self, forCellWithReuseIdentifier: SavedTimeSetSmallCollectionViewCell.name)
         
         return view
     }()
@@ -53,9 +51,9 @@ class LocalTimeSetView: UIView {
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             if #available(iOS 11.0, *) {
-                make.bottom.equalTo(safeAreaLayoutGuide).priorityHigh()
+                make.bottom.equalTo(safeAreaLayoutGuide).priority(.high)
             } else {
-                make.bottom.equalToSuperview().priorityHigh()
+                make.bottom.equalToSuperview().priority(.high)
             }
         }
         

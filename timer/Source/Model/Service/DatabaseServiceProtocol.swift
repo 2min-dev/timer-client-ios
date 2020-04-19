@@ -10,32 +10,91 @@ import RxSwift
 
 protocol DatabaseServiceProtocol {
     // MARK: - time set operate
+    /// Fetch a time set item
+    /// - parameters:
+    ///   - id: Identifier of time set item to fetch
+    /// - returns: A observable that emit a time set item
+    func fetchTimeSet(id: Int) -> Single<TimeSetItem>
+    
     /// Fetch all time set list
+    /// - returns: A observable that emit all time set item list
     func fetchTimeSets() -> Single<[TimeSetItem]>
     
-    /// Save a time set
+    /// Fetch recently used time set list
+    /// - parameters:
+    ///   - count: How many get results from the latest
+    /// - returns: A observable that emit n (count) recently used time set list
+    func fetchRecentlyUsedTimeSets(count: Int) -> Single<[TimeSetItem]>
+    
+    /// Create a time set
+    /// - parameters:
+    ///   - item: data of the time set
+    /// - returns: A observable that emit a created time set item
     func createTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
-    /// Remove the time set by id
-    func removeTimeSet(id: String) -> Single<TimeSetItem>
+    /// Remove the time set
+    /// - parameters:
+    ///   - id: Identifier of the time set to remove
+    /// - returns: A observable that emit a removed time set item
+    func removeTimeSet(id: Int) -> Single<TimeSetItem>
     
     /// Remove time set list
-    func removeTimeSets(ids: [String]) -> Single<[TimeSetItem]>
+    /// - parameters:
+    ///   - ids: Identifier list of the time set list to remove
+    /// - returns: A observable that emit all removed time set item list
+    func removeTimeSets(ids: [Int]) -> Single<[TimeSetItem]>
     
-    /// Update the time set item
+    /// Update the time set
+    /// - parameters:
+    ///   - item: data of the time set
+    /// - returns: A observable that emit a updated time set item
     func updateTimeSet(item: TimeSetItem) -> Single<TimeSetItem>
     
     /// Update time set list
+    /// - parameters:
+    ///   - items: data list of the time set
+    /// - returns: A observable that emit all updated time set item list
     func updateTimeSets(items: [TimeSetItem]) -> Single<[TimeSetItem]>
     
-    /// Fetch all history list
-    func fetchHistories() -> Single<[History]>
+    /// Fetch a history by id
+    /// - parameters:
+    ///   - id: identifier of a history
+    /// - returns: A observable that emit a history searched by id
+    func fetchHistory(id: Int) -> Single<History>
     
-    /// Save a history
+    /// Fetch all hisotry list
+    /// - returns: A observable that emit all history list
+    func fetchHistories(pagination: PaginationParam?) -> Single<[History]>
+    
+    /// Fetch history list that refer origin time set item id
+    /// - parameters:
+    ///   - id: Identifier of original time set item of history
+    /// - returns: A observable that emit all history list that refer origin time set item id
+    func fetchHistories(origin id: Int) -> Single<[History]>
+    
+    /// Fetch history list that refer origin time set item id
+    /// - parameters:
+    ///   - ids: Identifier list of original time set item of history
+    /// - returns: A observable that emit all history list that refer origin time set item id
+    func fetchHistories(origin ids: [Int]) -> Single<[History]>
+    
+    /// Create a history
+    /// - parameters:
+    ///   - history: data of the history
+    /// - returns: A observable that emit a created history
     func createHistory(_ history: History) -> Single<History>
     
     /// Update the history
+    /// - parameters:
+    ///   - history: data of the history
+    /// - returns: A observable that emit a updated hisotry
     func updateHistory(_ history: History) -> Single<History>
+    
+    /// Update history list
+    /// - parameters:
+    ///   - histories: data list of the history
+    /// - returns: A observable that emit all updated history list
+    func updateHistories(_ histories: [History]) -> Single<[History]>
     
     // MARK: - database operate
     /// Clear database

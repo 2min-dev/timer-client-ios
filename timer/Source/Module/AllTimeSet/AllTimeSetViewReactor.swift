@@ -11,9 +11,9 @@ import RxDataSources
 import ReactorKit
 
 class AllTimeSetViewReactor: Reactor {
-    enum TimeSetType: Int {
+    enum TimeSetType {
         case saved
-        case bookmarked
+        case preset
     }
     
     enum Action {
@@ -24,14 +24,20 @@ class AllTimeSetViewReactor: Reactor {
     enum Mutation {
         /// Set sections
         case setSections([AllTimeSetSectionModel])
+        
+        /// Set loading state
+        case setLoading(Bool)
     }
     
     struct State {
-        /// Title of header
-        let type: TimeSetType
+        /// The type of time set
+        var type: TimeSetType
         
         /// The section list of time set list
         var sections: RevisionValue<[AllTimeSetSectionModel]>
+        
+        /// Is loading to process
+        var isLoading: Bool
     }
     
     // MARK: - properties
@@ -47,7 +53,8 @@ class AllTimeSetViewReactor: Reactor {
         
         initialState = State(
             type: type,
-            sections: RevisionValue(dataSource.makeSections())
+            sections: RevisionValue(dataSource.makeSections()),
+            isLoading: false
         )
     }
     
@@ -67,16 +74,32 @@ class AllTimeSetViewReactor: Reactor {
         case let .setSections(sections):
             state.sections = state.sections.next(sections)
             return state
+            
+        case let .setLoading(isLoading):
+            state.isLoading = isLoading
+            return state
         }
     }
     
     // MARK: - action method
     private func actionLoad() -> Observable<Mutation> {
-        return timeSetService.fetchTimeSets().asObservable()
-            .map {
-                self.dataSource.setItems($0, type: self.currentState.type)
-                return .setSections(self.dataSource.makeSections())
-            }
+        switch currentState.type {
+        case .saved:
+            return timeSetService.fetchTimeSets()
+                .do(onSuccess: { self.dataSource.setItems($0) })
+                .asObservable()
+                .map { _ in .setSections(self.dataSource.makeSections()) }
+            
+        case .preset:
+            let startLoading: Observable<Mutation> = .just(.setLoading(true))
+            let setSections: Observable<Mutation> = timeSetService.fetchAllPresets()
+                .do(onSuccess: { self.dataSource.setItems($0) })
+                .asObservable()
+                .map { _ in .setSections(self.dataSource.makeSections()) }
+            let stopLoading: Observable<Mutation> = .just(.setLoading(true))
+            
+            return .concat(startLoading, setSections, stopLoading)
+        }
     }
     
     deinit {
@@ -91,17 +114,17 @@ typealias AllTimeSetCellType = TimeSetCollectionViewCellReactor
 
 struct AllTimeSetSectionDataSource {
     // MARK: - section
-    var timeSetSection: [AllTimeSetCellType] = []
+    private var timeSetSection: [AllTimeSetCellType] = []
     
     // MARK: - public method
-    mutating func setItems(_ items: [TimeSetItem], type: AllTimeSetViewReactor.TimeSetType) {
+    mutating func setItems(_ items: [TimeSetItem]) {
         timeSetSection = items
-            .filter { type == .saved || (type == .bookmarked && $0.isBookmark) }
-            .sorted(by: { type == .saved ? $0.sortingKey < $1.sortingKey : $0.bookmarkSortingKey < $1.bookmarkSortingKey })
+            .sorted(by: { $0.sortingKey < $1.sortingKey })
             .map { TimeSetCollectionViewCellReactor(timeSetItem: $0) }
     }
     
     func makeSections() -> [AllTimeSetSectionModel] {
-        return [AllTimeSetSectionModel(model: Void(), items: timeSetSection)]
+        let timeSetSection = AllTimeSetSectionModel(model: Void(), items: self.timeSetSection)
+        return [timeSetSection].filter { $0.items.count > 0 }
     }
 }
