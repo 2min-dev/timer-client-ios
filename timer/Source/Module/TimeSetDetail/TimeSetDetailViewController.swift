@@ -124,7 +124,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
         let timer = reactor.state
             .map { $0.timer }
             .distinctUntilChanged()
-            .share()
+            .share(replay: 1)
         
         // Alarm
         timer.map { $0.alarm.title }
