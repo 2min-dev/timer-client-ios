@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FirebaseAnalytics
 
 class Logger {
     private static let dateFormatter: DateFormatter = {
@@ -57,5 +58,25 @@ class Logger {
         let tag = tag.isEmpty ? tag : "[\(tag)] "
         log("❤️ \(className).\(function):\(line) \(tag)\(message)")
         #endif
+    }
+    
+    enum Event: String {
+        case click = "click"
+    }
+    
+    enum Parameter {
+        enum Key: String {
+            case componentName = "component_name"
+            case text = "text"
+        }
+    }
+    
+    func logEvent(_ event: Event, parameters: [Parameter.Key: Any]? = nil) {
+        // Transform param
+        var param: [String: Any]? = parameters != nil ? [:] : nil
+        parameters?.forEach { param?[$0.rawValue] = $1 }
+        
+        // Firebase analytics log event
+        Analytics.logEvent(event.rawValue, parameters: param)
     }
 }
