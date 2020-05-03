@@ -86,14 +86,15 @@ class HistoryDetailViewReactor: Reactor {
     var initialState: State
     private let historyService: HistoryServiceProtocol
     private let timeSetService: TimeSetServiceProtocol
+    private let logger: Logger
     
     private let history: History
-    var timeSetItem: TimeSetItem
+    private(set) var timeSetItem: TimeSetItem
     
     private var dataSource: TimerBadgeSectionDataSource
     
     // MARK: - constructor
-    init?(historyService: HistoryServiceProtocol, timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
+    init?(historyService: HistoryServiceProtocol, timeSetService: TimeSetServiceProtocol, logger: Logger, history: History, canSave: Bool) {
         // Check required properties of history
         guard let item = history.item,
             let startDate = history.startDate,
@@ -107,6 +108,7 @@ class HistoryDetailViewReactor: Reactor {
         
         self.historyService = historyService
         self.timeSetService = timeSetService
+        self.logger = logger
         self.history = history
         self.timeSetItem = timeSetItem
         
@@ -186,8 +188,14 @@ class HistoryDetailViewReactor: Reactor {
     
     private func actionSaveTimeSet() -> Observable<Mutation> {
         // Create the time set
-        timeSetService.createTimeSet(item: timeSetItem)
-            .asObservable()
+        timeSetService.createTimeSet(item: timeSetItem).asObservable()
+            .do(onNext: { _ in
+                // Log save time set event
+                self.logger.logEvent(.click, parameters: [
+                    .componentName: "save_time_set",
+                    .text: "history"
+                ])
+            })
             .map { _ in .save }
     }
     

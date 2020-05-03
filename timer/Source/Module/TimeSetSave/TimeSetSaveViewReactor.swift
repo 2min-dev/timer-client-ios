@@ -78,13 +78,15 @@ class TimeSetSaveViewReactor: Reactor {
     // MARK: - properties
     var initialState: State
     private let timeSetService: TimeSetServiceProtocol
+    private let logger: Logger
     
     let timeSetItem: TimeSetItem
     private var dataSource: TimerBadgeSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem) {
+    init(timeSetService: TimeSetServiceProtocol, logger: Logger, timeSetItem: TimeSetItem) {
         self.timeSetService = timeSetService
+        self.logger = logger
         self.timeSetItem = timeSetItem
         
         // Create seciont datasource
@@ -198,6 +200,13 @@ class TimeSetSaveViewReactor: Reactor {
         if timeSetItem.id < 0 {
             // Create time set
             return timeSetService.createTimeSet(item: timeSetItem).asObservable()
+                .do(onNext: { _ in
+                    // Log save time set event
+                    self.logger.logEvent(.click, parameters: [
+                        .componentName: "save_time_set",
+                        .text: "create"
+                    ])
+                })
                 .flatMap { Observable<Mutation>.just(.setSavedTimeSet(item: $0))}
         } else {
             // Update time set

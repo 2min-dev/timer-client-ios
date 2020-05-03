@@ -53,6 +53,7 @@ class TimeSetEndViewReactor: Reactor {
     var initialState: State
     private let historyService: HistoryServiceProtocol
     private let timeSetService: TimeSetServiceProtocol
+    private let logger: Logger
     
     private let history: History
     
@@ -69,9 +70,10 @@ class TimeSetEndViewReactor: Reactor {
     }
     
     // MARK: - constructor
-    init(historyService: HistoryServiceProtocol, timeSetService: TimeSetServiceProtocol, history: History, canSave: Bool) {
+    init(historyService: HistoryServiceProtocol, timeSetService: TimeSetServiceProtocol, logger: Logger, history: History, canSave: Bool) {
         self.historyService = historyService
         self.timeSetService = timeSetService
+        self.logger = logger
         self.history = history
         
         initialState = State(
@@ -131,6 +133,13 @@ class TimeSetEndViewReactor: Reactor {
         // Create the time set
         return timeSetService.createTimeSet(item: timeSetItem).asObservable()
             .do(onNext: { self.savedTimeSetItem = $0 })
+            .do(onNext: { _ in
+                // Log save time set event
+                self.logger.logEvent(.click, parameters: [
+                    .componentName: "save_time_set",
+                    .text: "end"
+                ])
+            })
             .map { _ in .save }
     }
     

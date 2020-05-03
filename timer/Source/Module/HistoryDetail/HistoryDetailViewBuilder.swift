@@ -24,7 +24,7 @@ class HistoryDetailViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = HistoryDetailViewCoordinator(provider: provider)
-        guard let reactor = HistoryDetailViewReactor(historyService: provider.historyService, timeSetService: provider.timeSetService, history: dependency.history, canSave: true) else { return nil }
+        guard let reactor = HistoryDetailViewReactor(historyService: provider.historyService, timeSetService: provider.timeSetService, logger: Logger(), history: dependency.history, canSave: true) else { return nil }
         let viewController = HistoryDetailViewController(coordinator: coordinator)
         
         // DI
