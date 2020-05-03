@@ -25,7 +25,7 @@ class TimeSetEndViewBuilder: Builder {
         let provider = dependency.provider
 
         let coordinator = TimeSetEndViewCoordinator(provider: provider)
-        let reactor = TimeSetEndViewReactor(historyService: provider.historyService, timeSetService: provider.timeSetService, history: dependency.history, canSave: dependency.canSave)
+        let reactor = TimeSetEndViewReactor(historyService: provider.historyService, timeSetService: provider.timeSetService, logger: Logger(), history: dependency.history, canSave: dependency.canSave)
         let viewController = TimeSetEndViewController(coordinator: coordinator)
         
         // DI

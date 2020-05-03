@@ -16,6 +16,9 @@ class TimeSetDetailViewReactor: Reactor {
         
         /// Save the time set
         case saveTimeSet
+        
+        /// Start the time set
+        case startTimeSet
     }
     
     enum Mutation {
@@ -54,15 +57,18 @@ class TimeSetDetailViewReactor: Reactor {
     
     // MARK: - properties
     var initialState: State
-    var timeSetService: TimeSetServiceProtocol
+    private let timeSetService: TimeSetServiceProtocol
+    private let logger: Logger
     
-    var timeSetItem: TimeSetItem
+    private(set) var timeSetItem: TimeSetItem
     
-    private var dataSource: TimerBadgeSectionDataSource
+    private let dataSource: TimerBadgeSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem, canSave: Bool) {
+    init(timeSetService: TimeSetServiceProtocol, logger: Logger, timeSetItem: TimeSetItem, canSave: Bool) {
         self.timeSetService = timeSetService
+        self.logger = logger
+        
         self.timeSetItem = timeSetItem
         
         // Create seciont datasource
@@ -87,6 +93,9 @@ class TimeSetDetailViewReactor: Reactor {
             
         case .saveTimeSet:
             return actionSaveTimeSet()
+            
+        case .startTimeSet:
+            return actionStartTimeSet()
         }
     }
     
@@ -136,6 +145,14 @@ class TimeSetDetailViewReactor: Reactor {
             .do(onSuccess: { self.timeSetItem = $0 })
             .asObservable()
             .map { _ in .save }
+    }
+    
+    private func actionStartTimeSet() -> Observable<Mutation> {
+        logger.logEvent(.click, parameters: [
+            .componentName: "start_time_set",
+            .text: timeSetItem.id == -1 ? "preset" : "saved"
+        ])
+        return .empty()
     }
     
     deinit {

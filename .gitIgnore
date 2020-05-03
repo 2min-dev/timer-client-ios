@@ -3,7 +3,6 @@
 
 # CocoaPods
 Pods/
-Podfile.lock
 Podfile
 
 # Build generated

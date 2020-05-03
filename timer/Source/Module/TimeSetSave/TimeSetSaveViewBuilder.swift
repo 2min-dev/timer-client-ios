@@ -24,7 +24,7 @@ class TimeSetSaveViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = TimeSetSaveViewCoordinator(provider: provider)
-        let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, timeSetItem: dependency.timeSetItem)
+        let reactor = TimeSetSaveViewReactor(timeSetService: provider.timeSetService, logger: Logger(), timeSetItem: dependency.timeSetItem)
         let viewController = TimeSetSaveViewController(coordinator: coordinator)
         
         // DI

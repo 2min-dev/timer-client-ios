@@ -27,8 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if !DEBUG
         FirebaseApp.configure()
         #endif
-        // Initialize `SwiftBeaver`
-        Logger.initialize()
         // Initialize `Realm`
         migrateRealm()
         // Set audio session category to play at the same time with other app's audio

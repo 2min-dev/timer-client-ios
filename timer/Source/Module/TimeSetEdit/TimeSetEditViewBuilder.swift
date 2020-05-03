@@ -24,7 +24,12 @@ class TimeSetEditViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = TimeSetEditViewCoordinator(provider: provider)
-        guard let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, timeSetItem: dependency.timeSetItem) else { return nil }
+        guard let reactor = TimeSetEditViewReactor(
+            appService: provider.appService,
+            timeSetService: provider.timeSetService,
+            logger: Logger(),
+            timeSetItem: dependency.timeSetItem
+        ) else { return nil }
         let viewController = TimeSetEditViewController(coordinator: coordinator)
         
         // DI
