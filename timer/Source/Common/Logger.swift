@@ -61,9 +61,10 @@ class Logger {
     }
     
     enum Event: String {
-        case click = "click"
+        case click
     }
     
+    // swiftlint:disable nesting
     enum Parameter {
         enum Key: String {
             case componentName = "component_name"
