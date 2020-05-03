@@ -32,9 +32,6 @@ target 'timer' do
   # SwiftLint
   pod 'SwiftLint'
   
-  # Log
-  pod 'SwiftyBeaver'
-  
   target 'timerTests' do
     inherit! :search_paths
     # Pods for testing
