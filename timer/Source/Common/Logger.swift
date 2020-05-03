@@ -6,20 +6,24 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
-import SwiftyBeaver
+import Foundation
 
 class Logger {
-    static func initialize() {
-        let console = ConsoleDestination()
-        console.format = "$DYYYY-MM-dd HH:mm:ss$d $C$L$c $M"
-        SwiftyBeaver.addDestination(console)
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
+    
+    private static func log(_ message: String) {
+        print("\(dateFormatter.string(from: Date())) \(message)")
     }
     
     static func verbose(_ message: Any = "", tag: String = "", file: String = #file, function: String = #function, line: Int = #line) {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
         let tag = tag.isEmpty ? tag : "[\(tag)] "
-        SwiftyBeaver.verbose("\(className).\(function):\(line) \(tag)\(message)")
+        log("💜 \(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
@@ -27,7 +31,7 @@ class Logger {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
         let tag = tag.isEmpty ? tag : "[\(tag)] "
-        SwiftyBeaver.debug("\(className).\(function):\(line) \(tag)\(message)")
+        log("💚 \(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
@@ -35,7 +39,7 @@ class Logger {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
         let tag = tag.isEmpty ? tag : "[\(tag)] "
-        SwiftyBeaver.info("\(className).\(function):\(line) \(tag)\(message)")
+        log("💙 \(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
@@ -43,7 +47,7 @@ class Logger {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
         let tag = tag.isEmpty ? tag : "[\(tag)] "
-        SwiftyBeaver.warning("\(className).\(function):\(line) \(tag)\(message)")
+        log("💛 \(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
     
@@ -51,7 +55,7 @@ class Logger {
         #if DEBUG
         let className = (file as NSString).lastPathComponent.components(separatedBy: ".").first!
         let tag = tag.isEmpty ? tag : "[\(tag)] "
-        SwiftyBeaver.error("\(className).\(function):\(line) \(tag)\(message)")
+        log("❤️ \(className).\(function):\(line) \(tag)\(message)")
         #endif
     }
 }
