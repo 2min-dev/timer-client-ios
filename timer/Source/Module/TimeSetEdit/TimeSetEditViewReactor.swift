@@ -112,17 +112,19 @@ class TimeSetEditViewReactor: Reactor {
     var initialState: State
     private let appService: AppServiceProtocol
     private let timeSetService: TimeSetServiceProtocol
+    private let logger: Logger
     
-    var timeSetItem: TimeSetItem
+    private(set) var timeSetItem: TimeSetItem
     private var dataSource: TimerBadgeSectionDataSource
     
     // Sub reactor
     let timerOptionViewReactor: TimerOptionViewReactor = TimerOptionViewReactor()
     
     // MARK: - constructor
-    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, timeSetItem: TimeSetItem? = nil) {
+    init?(appService: AppServiceProtocol, timeSetService: TimeSetServiceProtocol, logger: Logger, timeSetItem: TimeSetItem? = nil) {
         self.appService = appService
         self.timeSetService = timeSetService
+        self.logger = logger
         
         if let timeSetItem = timeSetItem {
             // Copy time set item to preserve origin data
@@ -453,6 +455,11 @@ class TimeSetEditViewReactor: Reactor {
     
     private func actionStartTimeSet() -> Observable<Mutation> {
         timeSetItem.title = "time_set_default_title".localized
+        
+        logger.logEvent(.click, parameters: [
+            .componentName: "start_time_set",
+            .text: "instant"
+        ])
         
         return .concat(
             validate(current: currentState.selectedIndex),

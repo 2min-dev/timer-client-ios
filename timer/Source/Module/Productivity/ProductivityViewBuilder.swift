@@ -23,7 +23,7 @@ class ProductivityViewBuilder: Builder {
         let provider = dependency.provider
         
         let coordinator = ProductivityViewCoordinator(provider: provider)
-        let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService)
+        let reactor = TimeSetEditViewReactor(appService: provider.appService, timeSetService: provider.timeSetService, logger: Logger())
         let viewController = ProductivityViewController(coordinator: coordinator)
         
         // DI

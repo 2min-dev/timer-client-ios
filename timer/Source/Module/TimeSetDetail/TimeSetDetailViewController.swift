@@ -89,6 +89,7 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
             .withLatestFrom(reactor.state
                 .map { $0.selectedIndex }
                 .distinctUntilChanged())
+            .do(onNext: { _ in reactor.action.onNext(.startTimeSet) })
             .subscribe(onNext: { [weak self] in _ = self?.coordinator.present(for: .timeSetProcess(reactor.timeSetItem, startAt: $0, canSave: false), animated: true) })
             .disposed(by: disposeBag)
         

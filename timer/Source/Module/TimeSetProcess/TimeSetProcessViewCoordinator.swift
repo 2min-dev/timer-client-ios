@@ -45,7 +45,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
             guard let mainViewController = viewController.navigationController?.viewControllers.first else { return nil }
             viewController.navigationController?.setViewControllers([mainViewController], animated: animated)
         
-        case .timeSetProcess(_):
+        case .timeSetProcess:
             guard var viewControllers = viewController.navigationController?.viewControllers else { return nil }
             
             viewControllers.removeLast()
@@ -55,7 +55,7 @@ class TimeSetProcessViewCoordinator: ViewCoordinator, ServiceContainer {
             coordinator.dismiss = popViewController
             viewController.navigationController?.setViewControllers(viewControllers, animated: animated)
 
-        case .timeSetEnd(_):
+        case .timeSetEnd:
             // Wrap view to navigation container
             presentingViewController = BaseNavigationController(rootViewController: coordinator.viewController)
             fallthrough
