@@ -120,7 +120,7 @@ class MainViewController: UITabBarController, ViewControllable, View {
             Toast(
                 content: "toast_time_set_end_cancel_title".localized,
                 task: ToastTask(
-                    title: "toast_task_move_title".localized,
+                    title: "toast_task_go_title".localized,
                     handler: { _ = self.coordinator.present(for: .historyDetail(history), animated: true) }
                 )
             ).show(animated: true, withDuration: 3)

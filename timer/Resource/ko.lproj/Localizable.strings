@@ -118,12 +118,12 @@
 // MARK: - History
 "history_empty_title" = "타임셋 히스토리가 아직 없어요.\n나만의 시간을 자유롭게 등록해 보세요!";
 "history_make_time_set_title" = "타임셋 만들어 보기";
-"history_started_date_format" = "yy.MM.dd";
+"history_started_date_format" = "yyyy.MM.dd";
 "history_date_title" = "사용 일시";
 "history_extra_time_title" = "추가한 시간";
 "history_repeat_count_title" = "반복 횟수";
-"history_full_date_format" = "yy. M. d / h:m a";
-"history_short_date_format" = "h:m a";
+"history_full_date_format" = "yyyy. MM. dd / hh:m a";
+"history_short_date_format" = "hh:m a";
 "history_extra_time_format" = "+%d분";
 "history_repeat_count_format" = "%d회";
 "history_delete_title" = "삭제";
@@ -142,7 +142,7 @@
 
 "time_set_end_time_title" = "종료 예정";
 "time_set_end_time_title_format" = "종료 예정 %@";
-"time_set_end_time_format" = "h:mm a";
+"time_set_end_time_format" = "hh:mm a";
 "time_set_end_time_full_format" = "HH:mm";
 
 "time_set_add_time_title" = "+1분";
@@ -188,7 +188,7 @@
 "toast_team_info_copy_email_title" = "클립보드에 복사되었어요!";
 
 "toast_task_memo_title" = "메모 작성";
-"toast_task_move_title" = "이동";
+"toast_task_go_title" = "이동";
 "toast_task_edit_title" = "편집";
 
 // MARK: - Setting
