@@ -60,9 +60,19 @@ class TimeSetMemoView: UIView {
     
     let memoHintLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.silver
-        view.text = "time_set_memo_hint".localized
+        view.numberOfLines = 0
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8.2.adjust()
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .foregroundColor: Constants.Color.silver,
+            .kern: -0.45,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        view.attributedText = NSAttributedString(string: "time_set_memo_hint".localized, attributes: attributes)
         return view
     }()
     
@@ -94,7 +104,7 @@ class TimeSetMemoView: UIView {
         
         memoHintLabel.snp.makeConstraints { make in
             make.top.equalTo(memoTextView)
-            make.leading.equalTo(memoTextView)
+            make.leading.trailing.equalTo(memoTextView)
         }
         
         divider.snp.makeConstraints { make in

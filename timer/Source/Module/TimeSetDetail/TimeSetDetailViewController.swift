@@ -174,7 +174,17 @@ class TimeSetDetailViewController: BaseHeaderViewController, ViewControllable, V
             .distinctUntilChanged()
             .compactMap { $0.value }
             .filter { $0 }
-            .subscribe(onNext: { _ in Toast(content: "toast_time_set_saved_title".localized).show(animated: true, withDuration: 3) })
+            .withLatestFrom(reactor.state.map { $0.type })
+            .subscribe(onNext: {
+                switch $0 {
+                case .preset:
+                    Toast(content: "toast_preset_saved_title".localized)
+                        .show(animated: true, withDuration: 3)
+                default:
+                    Toast(content: "toast_time_set_saved_title".localized)
+                        .show(animated: true, withDuration: 3)
+                }
+            })
             .disposed(by: disposeBag)
     }
     
