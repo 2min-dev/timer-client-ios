@@ -10,6 +10,25 @@ import RxSwift
 import ReactorKit
 
 class TimeSetDetailViewReactor: Reactor {
+    enum TimeSetType {
+        case saved
+        case recentlyUsed
+        case preset
+        
+        fileprivate var logText: String {
+            switch self {
+            case .saved:
+                return "saved"
+                
+            case .recentlyUsed:
+                return "history"
+                
+            case .preset:
+                return "preset"
+            }
+        }
+    }
+    
     enum Action {
         /// Select the timer
         case selectTimer(at: Int)
@@ -33,6 +52,9 @@ class TimeSetDetailViewReactor: Reactor {
     }
     
     struct State {
+        /// Type of time set
+        let type: TimeSetType
+        
         /// Title of time set
         let title: String
         
@@ -65,7 +87,7 @@ class TimeSetDetailViewReactor: Reactor {
     private let dataSource: TimerBadgeSectionDataSource
     
     // MARK: - constructor
-    init(timeSetService: TimeSetServiceProtocol, logger: Logger, timeSetItem: TimeSetItem, canSave: Bool) {
+    init(timeSetService: TimeSetServiceProtocol, logger: Logger, timeSetItem: TimeSetItem, type: TimeSetType) {
         self.timeSetService = timeSetService
         self.logger = logger
         
@@ -75,12 +97,13 @@ class TimeSetDetailViewReactor: Reactor {
         dataSource = TimerBadgeSectionDataSource(regulars: timeSetItem.timers.toArray(), index: 0)
         
         initialState = State(
+            type: type,
             title: timeSetItem.title,
             allTime: timeSetItem.timers.reduce(0) { $0 + $1.end },
             timer: timeSetItem.timers.first ?? TimerItem(),
             sections: RevisionValue(dataSource.makeSections()),
             selectedIndex: 0,
-            canTimeSetSave: canSave,
+            canTimeSetSave: type != .saved,
             didTimeSetSaved: RevisionValue(false)
         )
     }
@@ -143,6 +166,13 @@ class TimeSetDetailViewReactor: Reactor {
         // Create the time set
         return timeSetService.createTimeSet(item: timeSetItem)
             .do(onSuccess: { self.timeSetItem = $0 })
+            .do(onSuccess: { _ in
+                // Log save time set event
+                self.logger.logEvent(.click, parameters: [
+                    .componentName: "save_time_set",
+                    .text: self.currentState.type.logText
+                ])
+            })
             .asObservable()
             .map { _ in .save }
     }
@@ -150,7 +180,7 @@ class TimeSetDetailViewReactor: Reactor {
     private func actionStartTimeSet() -> Observable<Mutation> {
         logger.logEvent(.click, parameters: [
             .componentName: "start_time_set",
-            .text: timeSetItem.id == -1 ? "preset" : "saved"
+            .text: currentState.type.logText
         ])
         return .empty()
     }

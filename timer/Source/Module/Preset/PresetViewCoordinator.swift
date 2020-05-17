@@ -50,7 +50,7 @@ class PresetViewCoordinator: ViewCoordinator, ServiceContainer {
     func get(for route: Route) -> (controller: UIViewController, coordinator: ViewCoordinatorType)? {
         switch route {
         case let .timeSetDetail(timeSetItem):
-            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: true)
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, type: .preset)
             return TimeSetDetailViewBuilder(with: dependency).build()
             
         case .allTimeSet:

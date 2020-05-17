@@ -130,12 +130,21 @@ class AllTimeSetViewController: BaseHeaderViewController, ViewControllable, View
             .disposed(by: disposeBag)
         
         timeSetCollectionView.rx.itemSelected
-            .withLatestFrom(Observable.combineLatest(
-                reactor.state.map { $0.sections.value },
-                reactor.state.map { $0.type })
+            .withLatestFrom(
+                Observable.combineLatest(
+                    reactor.state.map { $0.sections.value },
+                    reactor.state.map {
+                        switch $0.type {
+                        case .saved:
+                            return .saved
+                        case .preset:
+                            return .preset
+                        }
+                    }
+                )
             ) { ($0, $1.0, $1.1) }
-            .map { ($1[$0.section].items[$0.item].timeSetItem, $2 == .preset) }
-            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .timeSetDetail($0, canSave: $1), animated: true) })
+            .map { ($1[$0.section].items[$0.item].timeSetItem, $2) }
+            .subscribe(onNext: { [weak self] in self?.coordinator.present(for: .timeSetDetail($0, type: $1), animated: true) })
             .disposed(by: disposeBag)
         
         // MARK: state
