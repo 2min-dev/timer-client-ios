@@ -44,9 +44,9 @@
 
 // MARK: - Screen title
 "time_set_save_title" = "Save Timeset";
-"time_set_edit_title" = "Timeset Edit";
+"time_set_edit_title" = "Edit Timeset";
 "time_set_memo_title" = "Memo";
-"time_set_end_title" = "Timeset End";
+"time_set_end_title" = "Terminated Timeset";
 "local_time_set_title" = "My";
 "all_saved_time_set_title" = "All Saved Timeset";
 "saved_time_set_management_title" = "Saved Timeset Management";
@@ -57,7 +57,7 @@
 "my_shared_time_set_title" = "My Shared Timeset";
 "history_title" = "History";
 "history_detail_title" = "History Detail";
-"setting_title" = "Setting";
+"setting_title" = "Settings";
 "notice_title" = "Notice";
 "alarm_setting_title" = "Alarm Sound";
 "countdown_setting_title" = "Countdown";
@@ -107,7 +107,7 @@
 "time_set_process_memo_title" = "Memo";
 
 // MARK: - Time set alert
-"time_set_alert_timer_start_title_format" = "Start with %d timer?";
+"time_set_alert_timer_start_title_format" = "Start with timer %d?";
 
 // MARK: - Time set popup
 "time_set_popup_timer_end_title_format" = "Timer %d End";
@@ -118,14 +118,15 @@
 // MARK: - History
 "history_empty_title" = "You don't have any timeset history yet. \nEnroll your own time!";
 "history_make_time_set_title" = "Create a timeset";
-"history_started_date_format" = "dd MMM yyyy";
+"history_started_date_format" = "dd MMM, yyyy";
 "history_date_title" = "Date";
 "history_extra_time_title" = "Added Time";
 "history_repeat_count_title" = "Repetitions";
-"history_full_date_format" = "dd MMM yyyy / hh:mm a";
+"history_full_date_format" = "dd MMM, yyyy / hh:mm a";
 "history_short_date_format" = "hh:mm a";
 "history_extra_time_format" = "+%dM";
 "history_repeat_count_format" = "%d";
+"history_memo_hint" = "You can still leave memo.";
 "history_delete_title" = "DELETE";
 
 // MARK: - History alert
@@ -147,7 +148,7 @@
 
 "time_set_add_time_title" = "+1M";
 
-"time_set_memo_hint" = "You can still leave memo.";
+"time_set_memo_hint" = "Type memo about the timeset you are using.";
 "time_set_memo_bytes_format" = "%d/%d bytes";
 "time_set_memo_excess_title" = "Exceeded the number of characters";
 
@@ -181,10 +182,11 @@
 
 // MARK: - Toast
 "toast_alarm_all_apply_title" = "All timer alarm set [%@]!";
-"toast_time_set_timer_selected_title" = "Timeset will be start from selected timer!";
+"toast_time_set_timer_selected_title" = "It'll start with this timer you choose!";
 "toast_time_set_end_cancel_title" = "You canceled the timeset. Go see the results!";
 "toast_time_set_end_overtime_title" = "Leave a memo about why you're out of time!";
 "toast_time_set_saved_title" = "You saved this timeset and can edit it now!";
+"toast_preset_saved_title" = "This preset has been saved. Try it right away!";
 "toast_team_info_copy_email_title" = "Copied to clipboard!";
 
 "toast_task_memo_title" = "Memo";

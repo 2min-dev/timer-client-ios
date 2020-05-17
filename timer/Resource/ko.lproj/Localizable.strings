@@ -59,7 +59,7 @@
 "history_detail_title" = "히스토리 상세";
 "setting_title" = "설정";
 "notice_title" = "공지사항";
-"alarm_setting_title" = "기본 사운드 설정";
+"alarm_setting_title" = "기본 사운드";
 "countdown_setting_title" = "카운트 다운";
 "team_info_title" = "제작팀 정보";
 "opensource_license_title" = "오픈소스 라이센스";
@@ -83,7 +83,7 @@
 "preset_all_show_title" = "타임 프리셋 모두보기";
 
 // MARK: - Productivity
-"productivity_button_hour_title" = "시";
+"productivity_button_hour_title" = "시간";
 "productivity_button_minute_title" = "분";
 "productivity_button_second_title" = "초";
 "productivity_time_input_prefix_title" = "+ ";
@@ -185,6 +185,7 @@
 "toast_time_set_end_cancel_title" = "타임셋을 취소하셨어요. 결과를 확인해보세요!";
 "toast_time_set_end_overtime_title" = "왜 타이머를 초과 기록했는지 기록해보세요!";
 "toast_time_set_saved_title" = "타임셋이 저장되었어요! 타임셋을 편집하시려면 '편집'버튼을 눌러주세요.";
+"toast_preset_saved_title" = "프리셋이 저장되었어요. 프리셋을 바로 이용해보세요!";
 "toast_team_info_copy_email_title" = "클립보드에 복사되었어요!";
 
 "toast_task_memo_title" = "메모 작성";
