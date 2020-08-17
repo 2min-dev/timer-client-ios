@@ -15,7 +15,7 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         case productivity
         case timeSetManage
         case allTimeSet
-        case timeSetDetail(TimeSetItem, canSave: Bool)
+        case timeSetDetail(TimeSetItem, type: TimeSetDetailViewReactor.TimeSetType)
         case history
         case setting
     }
@@ -72,8 +72,8 @@ class LocalTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
             let dependency = AllTimeSetViewBuilder.Dependency(provider: provider, type: .saved)
             return AllTimeSetViewBuilder(with: dependency).build()
             
-        case let .timeSetDetail(timeSetItem, canSave: canSave):
-            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: canSave)
+        case let .timeSetDetail(timeSetItem, type: type):
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, type: type)
             return TimeSetDetailViewBuilder(with: dependency).build()
 
         case .history:

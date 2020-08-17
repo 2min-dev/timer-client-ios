@@ -185,7 +185,7 @@ class HistoryDetailView: UIView {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
         view.textColor = Constants.Color.silver
-        view.text = "time_set_memo_hint".localized
+        view.text = "history_memo_hint".localized
         return view
     }()
     

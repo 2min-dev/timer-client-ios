@@ -211,7 +211,15 @@ class LocalTimeSetViewController: BaseHeaderViewController, ViewControllable, Vi
     private func timeSetSelected(cell type: LocalTimeSetCellType, in section: LocalTimeSetSectionType) {
         switch type {
         case let .regular(reactor):
-            coordinator.present(for: .timeSetDetail(reactor.timeSetItem, canSave: section != .saved), animated: true)
+            let type: TimeSetDetailViewReactor.TimeSetType
+            switch section {
+            case .saved:
+                type = .saved
+            case .recentlyUsed:
+                type = .recentlyUsed
+            }
+            
+            coordinator.present(for: .timeSetDetail(reactor.timeSetItem, type: type), animated: true)
             
         case .empty:
             coordinator.present(for: .productivity, animated: true)

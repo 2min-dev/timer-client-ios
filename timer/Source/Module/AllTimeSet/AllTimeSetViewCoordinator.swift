@@ -12,7 +12,7 @@ class AllTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
     // MARK: - route enumeration
     enum Route {
         case dismiss
-        case timeSetDetail(TimeSetItem, canSave: Bool)
+        case timeSetDetail(TimeSetItem, type: TimeSetDetailViewReactor.TimeSetType)
     }
     
     // MARK: - properties
@@ -50,8 +50,8 @@ class AllTimeSetViewCoordinator: ViewCoordinator, ServiceContainer {
         case .dismiss:
             return (viewController, self)
             
-        case let .timeSetDetail(timeSetItem, canSave: canSave):
-            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, canSave: canSave)
+        case let .timeSetDetail(timeSetItem, type: type):
+            let dependency = TimeSetDetailViewBuilder.Dependency(provider: provider, timeSetItem: timeSetItem, type: type)
             return TimeSetDetailViewBuilder(with: dependency).build()
         }
     }

@@ -12,7 +12,7 @@ class TimeSetDetailViewBuilder: Builder {
     struct Dependency {
         let provider: ServiceProviderProtocol
         let timeSetItem: TimeSetItem
-        let canSave: Bool
+        let type: TimeSetDetailViewReactor.TimeSetType
     }
     
     var dependency: Dependency
@@ -25,7 +25,7 @@ class TimeSetDetailViewBuilder: Builder {
         let provider = dependency.provider
 
         let coordinator = TimeSetDetailViewCoordinator(provider: provider)
-        let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, logger: Logger(), timeSetItem: dependency.timeSetItem, canSave: dependency.canSave)
+        let reactor = TimeSetDetailViewReactor(timeSetService: provider.timeSetService, logger: Logger(), timeSetItem: dependency.timeSetItem, type: dependency.type)
         let viewController = TimeSetDetailViewController(coordinator: coordinator)
         
         // DI
