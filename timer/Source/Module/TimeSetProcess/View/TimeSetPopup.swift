@@ -87,17 +87,17 @@ class TimeSetPopup: UIView {
     
     // MARK: - properties
     var title: String? {
-        set { titleLabel.text = newValue }
         get { return titleLabel.text }
+        set { titleLabel.text = newValue }
     }
     var subtitle: String? {
+        get { return subtitleLabel.text }
         set {
             subtitleLabel.text = newValue
             
             subtitleLabel.isHidden = newValue?.isEmpty ?? true
             timerIconImageView.isHidden = newValue?.isEmpty ?? true
         }
-        get { return subtitleLabel.text }
     }
     
     // MARK: - constructor

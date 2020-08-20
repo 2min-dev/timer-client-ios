@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-  platform :ios, '10.0'
+  platform :ios, '11.0'
 
 target 'timer' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
@@ -16,25 +16,9 @@ target 'timer' do
   pod 'JSReorderableCollectionView'
   pod 'JSSwipeableCell'
 
-  # RxSwift
-  pod 'RxSwift'
-  pod 'RxCocoa'
-  pod 'RxDataSources'
-  pod 'ReactorKit'
-  pod 'SnapKit'
-
-  # Alamofire
-  pod 'Alamofire'
-
   # Realm
   pod 'RealmSwift'
   
   # SwiftLint
   pod 'SwiftLint'
-  
-  target 'timerTests' do
-    inherit! :search_paths
-    # Pods for testing
-    pod 'RxTest'
-  end
 end

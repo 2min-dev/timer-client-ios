@@ -35,8 +35,8 @@ class Header: UIView {
     
     // MARK: - properties
     var title: String? {
-        set { titleLabel.text = newValue }
         get { titleLabel.text }
+        set { titleLabel.text = newValue }
     }
     
     var action: PublishRelay<Action> = PublishRelay()
