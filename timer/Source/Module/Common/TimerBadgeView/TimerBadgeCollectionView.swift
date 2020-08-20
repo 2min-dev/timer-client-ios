@@ -144,8 +144,8 @@ class TimerBadgeCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     private var _axisPoint: CGPoint = .zero
     var axisPoint: CGPoint {
-        set { _axisPoint = newValue }
         get { return _axisPoint == Axis.center ? CGPoint(x: (collectionView?.bounds.width ?? 0) / 2, y: _axisPoint.y) : _axisPoint }
+        set { _axisPoint = newValue }
     }
     
     override var collectionViewContentSize: CGSize {

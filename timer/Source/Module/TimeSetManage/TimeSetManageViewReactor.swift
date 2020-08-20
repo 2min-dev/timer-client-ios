@@ -6,6 +6,7 @@
 //  Copyright © 2019 Jeong Jin Eun. All rights reserved.
 //
 
+import Foundation
 import RxSwift
 import ReactorKit
 import RxDataSources

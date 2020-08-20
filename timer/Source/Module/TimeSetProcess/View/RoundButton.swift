@@ -35,25 +35,25 @@ class RoundButton: UIView {
     
     // MARK: - properties
     var title: String? {
+        get { titleLabel.text }
         set {
             titleLabel.isHidden = newValue == nil
             titleLabel.text = newValue
-
+            
             setNeedsDisplay()
             invalidateIntrinsicContentSize()
         }
-        get { titleLabel.text }
     }
     var font: UIFont {
+        get { titleLabel.font }
         set {
             titleLabel.font = newValue
             invalidateIntrinsicContentSize()
         }
-        get { titleLabel.font }
     }
     var textColor: UIColor {
-        set { titleLabel.textColor = newValue }
         get { titleLabel.textColor }
+        set { titleLabel.textColor = newValue }
     }
     var isSelected: Bool = false {
         didSet {
