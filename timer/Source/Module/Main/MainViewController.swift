@@ -25,9 +25,9 @@ class MainViewController: UITabBarController, ViewControllable, View {
         view.tintColor = Constants.Color.carnation
         
         view.tabBarItems = [
-            JSTabBarItem(title: "tab_button_my_time_set".localized, icon: UIImage(named: "btn_tab_my")),
-            JSTabBarItem(title: "tab_button_home".localized, icon: UIImage(named: "btn_tab_home")),
-            JSTabBarItem(title: "tab_button_preset".localized, icon: UIImage(named: "btn_tab_share"))
+            JSTabBarItem(title: "tab_button_my_time_set".localized, icon: R.Icon.icBtnTabMy),
+            JSTabBarItem(title: "tab_button_home".localized, icon: R.Icon.icBtnTabHome),
+            JSTabBarItem(title: "tab_button_preset".localized, icon: R.Icon.icBtnTabShare)
         ]
         return view
     }()

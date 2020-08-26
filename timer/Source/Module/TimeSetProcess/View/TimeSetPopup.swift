@@ -21,7 +21,7 @@ class TimeSetPopup: UIView {
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .center
-        view.image = UIImage(named: "icon_timer")
+        view.image = R.Icon.icTimer
         return view
     }()
     
@@ -35,7 +35,7 @@ class TimeSetPopup: UIView {
     
     let confirmButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_confirm"), for: .normal)
+        view.setImage(R.Icon.icBtnConfirm, for: .normal)
         return view
     }()
     

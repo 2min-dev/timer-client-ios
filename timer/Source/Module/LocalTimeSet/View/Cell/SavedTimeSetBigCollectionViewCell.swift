@@ -48,10 +48,10 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
         var timerIconImage: UIImage? {
             switch self {
             case .normal:
-                return UIImage(named: "icon_timer")
+                return R.Icon.icTimer
                 
             case .highlight:
-                return UIImage(named: "icon_timer_white")
+                return R.Icon.icTimerWhite
             }
         }
     }
@@ -82,7 +82,7 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_timer_white")
+        view.image = R.Icon.icTimerWhite
         return view
     }()
     

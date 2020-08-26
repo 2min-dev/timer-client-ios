@@ -12,7 +12,7 @@ class TimeSetInduceCollectionViewCell: UICollectionViewCell {
     // MARK: - view properties
     private let plusIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "btn_timeset_add")
+        view.image = R.Icon.icBtnTimesetAdd
         return view
     }()
     

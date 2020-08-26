@@ -27,28 +27,28 @@ class CommonHeader: Header {
             
             switch self {
             case .back:
-                button.setImage(UIImage(named: "btn_back"), for: .normal)
+                button.setImage(R.Icon.icBtnBack, for: .normal)
                 
             case .home:
-                button.setImage(UIImage(named: "btn_home"), for: .normal)
+                button.setImage(R.Icon.icBtnHome, for: .normal)
                 
             case .setting:
-                button.setImage(UIImage(named: "btn_setting"), for: .normal)
+                button.setImage(R.Icon.icBtnSetting, for: .normal)
                 
             case .history:
-                button.setImage(UIImage(named: "btn_history"), for: .normal)
+                button.setImage(R.Icon.icBtnHistory, for: .normal)
                 
             case .search:
-                button.setImage(UIImage(named: "btn_search"), for: .normal)
+                button.setImage(R.Icon.icBtnSearch, for: .normal)
                 
             case .share:
-                button.setImage(UIImage(named: "btn_share"), for: .normal)
+                button.setImage(R.Icon.icBtnShare, for: .normal)
                 
             case .delete:
-                button.setImage(UIImage(named: "btn_delete"), for: .normal)
+                button.setImage(R.Icon.icBtnDelete, for: .normal)
                 
             case .close:
-                button.setImage(UIImage(named: "btn_clear"), for: .normal)
+                button.setImage(R.Icon.icBtnClear, for: .normal)
             }
             
             return button

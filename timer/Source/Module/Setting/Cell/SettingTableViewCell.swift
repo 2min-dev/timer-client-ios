@@ -26,7 +26,7 @@ class SettingTableViewCell: UITableViewCell {
     }()
     
     private let arrowIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_arrow_right"))
+        let view = UIImageView(image: R.Icon.icArrowRight)
         return view
     }()
     

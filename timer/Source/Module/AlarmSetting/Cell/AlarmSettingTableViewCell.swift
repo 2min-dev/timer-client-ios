@@ -22,13 +22,13 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     
     let playButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_play"), for: .normal)
-        view.setImage(UIImage(named: "btn_pause"), for: .selected)
+        view.setImage(R.Icon.icBtnPlay, for: .normal)
+        view.setImage(R.Icon.icBtnPause, for: .selected)
         return view
     }()
     
     private let selectIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_selected"))
+        let view = UIImageView(image: R.Icon.icSelected)
         return view
     }()
     

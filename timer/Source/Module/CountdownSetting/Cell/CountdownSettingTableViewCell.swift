@@ -18,7 +18,7 @@ class CountdownSettingTableViewCell: UITableViewCell {
     }()
     
     private let selectIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_selected"))
+        let view = UIImageView(image: R.Icon.icSelected)
         return view
     }()
     

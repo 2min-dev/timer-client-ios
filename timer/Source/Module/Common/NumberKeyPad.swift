@@ -137,7 +137,7 @@ class NumberKeyPad: UIView {
     let backButton: UIButton = {
         let view = UIButton()
         view.tag = Key.back.rawValue
-        view.setImage(UIImage(named: "icon_keypad_delete")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        view.setImage(R.Icon.icKeypadDelete.withRenderingMode(.alwaysTemplate), for: .normal)
         return view
     }()
     

@@ -190,7 +190,7 @@ class HistoryDetailView: UIView {
     }()
     
     private let memoIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_memo"))
+        let view = UIImageView(image: R.Icon.icMemo)
         return view
     }()
     

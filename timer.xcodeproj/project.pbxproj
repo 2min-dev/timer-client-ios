@@ -189,7 +189,7 @@
 		F3CF614B23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF614A23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift */; };
 		F3CF614D23DE83BD0038FBDA /* NSAttributedString+string.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
-		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
+		F3D1F793225CB6C2006DC162 /* App.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* App.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
 		F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */; };
 		F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */; };
@@ -212,6 +212,9 @@
 		F3DD7AD623216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */; };
 		F3DD7AD8232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */; };
 		F3DD937B233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */; };
+		F3DEAE2724F6972D00D788C2 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DEAE2624F6972D00D788C2 /* Resource.swift */; };
+		F3DEAE2924F698DD00D788C2 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3DEAE2824F698DD00D788C2 /* Color.xcassets */; };
+		F3DEAE2C24F698ED00D788C2 /* Icon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3DEAE2B24F698ED00D788C2 /* Icon.xcassets */; };
 		F3E1FBF92387B3B3008FB3AB /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FBF82387B3B3008FB3AB /* Version.swift */; };
 		F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FC152387C88F008FB3AB /* VersionTests.swift */; };
 		F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */; };
@@ -463,7 +466,7 @@
 		F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+string.swift"; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F3D1F792225CB6C2006DC162 /* App.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = App.xcassets; sourceTree = "<group>"; };
 		F3D1F795225CB6C2006DC162 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F3D1F797225CB6C2006DC162 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -488,6 +491,9 @@
 		F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetSmallCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCellReactor.swift; sourceTree = "<group>"; };
+		F3DEAE2624F6972D00D788C2 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
+		F3DEAE2824F698DD00D788C2 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
+		F3DEAE2B24F698ED00D788C2 /* Icon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icon.xcassets; sourceTree = "<group>"; };
 		F3E1FBF82387B3B3008FB3AB /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		F3E1FC152387C88F008FB3AB /* VersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionTests.swift; sourceTree = "<group>"; };
 		F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModelProtocol.swift; sourceTree = "<group>"; };
@@ -571,11 +577,12 @@
 		F303F259225CC56800A11FAF /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				F3D1F792225CB6C2006DC162 /* Assets.xcassets */,
+				F3DEAE2A24F698E000D788C2 /* Assets */,
 				F303F25A225CC57B00A11FAF /* Fonts */,
 				F33C8BED237C6EBA00EF6B21 /* Alarms */,
 				F30B9CD8233263FE003496A9 /* License */,
 				F3F800B3226A0C15003D1D88 /* Localizable.strings */,
+				F3DEAE2624F6972D00D788C2 /* Resource.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -1246,6 +1253,16 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		F3DEAE2A24F698E000D788C2 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F792225CB6C2006DC162 /* App.xcassets */,
+				F3DEAE2824F698DD00D788C2 /* Color.xcassets */,
+				F3DEAE2B24F698ED00D788C2 /* Icon.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 		F3DF50A4234CDC5D0000AD60 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -1450,15 +1467,17 @@
 			files = (
 				F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */,
 				F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */,
+				F3DEAE2924F698DD00D788C2 /* Color.xcassets in Resources */,
 				F3A12870235FE79F0072FB51 /* GoogleService-Info.plist in Resources */,
 				F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */,
 				F33C8BF4237D209400EF6B21 /* alarm_default_10x.mp3 in Resources */,
+				F3DEAE2C24F698ED00D788C2 /* Icon.xcassets in Resources */,
 				F33C8BF1237C6ECD00EF6B21 /* alarm_default_1x.mp3 in Resources */,
 				F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */,
 				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
 				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
 				F33C8BF0237C6ECD00EF6B21 /* alarm_default_3x.mp3 in Resources */,
-				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
+				F3D1F793225CB6C2006DC162 /* App.xcassets in Resources */,
 				F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1635,6 +1654,7 @@
 				F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
+				F3DEAE2724F6972D00D788C2 /* Resource.swift in Sources */,
 				F32DFA4223569A61006FDA0F /* NetworkService.swift in Sources */,
 				F396856423E7107400C695FD /* HistoryService.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* TeamInfoViewController.swift in Sources */,

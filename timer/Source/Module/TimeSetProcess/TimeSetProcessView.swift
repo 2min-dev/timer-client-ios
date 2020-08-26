@@ -37,7 +37,7 @@ class TimeSetProcessView: UIView {
     }()
     
     let memoButton: RoundButton = {
-        let view = RoundButton(title: "time_set_process_memo_title".localized, image: UIImage(named: "icon_memo"))
+        let view = RoundButton(title: "time_set_process_memo_title".localized, image: R.Icon.icMemo)
         view.backgroundColor = Constants.Color.gallery
         view.font = Constants.Font.Bold.withSize(12.adjust())
         view.textColor = Constants.Color.codGray
@@ -45,9 +45,9 @@ class TimeSetProcessView: UIView {
     }()
     
     let repeatButton: RoundButton = {
-        let view = RoundButton(image: UIImage(named: "btn_repeat_off"))
+        let view = RoundButton(image: R.Icon.icBtnRepeatOff)
         view.backgroundColor = Constants.Color.gallery
-        view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
+        view.setImage(R.Icon.icBtnRepeatOn, for: .selected)
         return view
     }()
     

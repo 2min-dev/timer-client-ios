@@ -35,7 +35,7 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
     
     let reorderButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_change"), for: .normal)
+        view.setImage(R.Icon.icBtnChange, for: .normal)
         return view
     }()
     
@@ -96,7 +96,7 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         reactor.state
             .map { $0.type }
             .distinctUntilChanged()
-            .map { UIImage(named: $0 == .saved ? "btn_timeset_delete" : "btn_timeset_recover") }
+            .map { $0 == .saved ? R.Icon.icBtnTimesetDelete : R.Icon.icBtnTimesetRecover }
             .bind(to: editButton.rx.image(for: .normal))
             .disposed(by: disposeBag)
         

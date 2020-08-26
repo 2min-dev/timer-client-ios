@@ -168,7 +168,7 @@ class TimeSetDetailView: UIView {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_sound")
+        view.image = R.Icon.icSound
         return view
     }()
     

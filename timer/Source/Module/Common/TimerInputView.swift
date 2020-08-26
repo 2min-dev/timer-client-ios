@@ -22,7 +22,7 @@ class TimerInputView: UIView {
     
     let timerClearButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_clear_mini"), for: .normal)
+        view.setImage(R.Icon.icBtnClearMini, for: .normal)
         view.isHidden = true
         return view
     }()

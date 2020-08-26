@@ -17,7 +17,7 @@ class TimeSetAllCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    private let arrowIconImageView: UIImageView = UIImageView(image: UIImage(named: "icon_arrow_right_carnation"))
+    private let arrowIconImageView: UIImageView = UIImageView(image: R.Icon.icArrowRightCarnation)
     
     // MARK: - properties
     var title: String? {

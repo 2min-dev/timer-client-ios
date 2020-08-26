@@ -140,7 +140,7 @@ class TimerOptionView: UIView, View {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_sound")
+        view.image = R.Icon.icSound
         return view
     }()
     
@@ -214,7 +214,7 @@ class TimerOptionView: UIView, View {
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .center
-        view.image = UIImage(named: "icon_timer")
+        view.image = R.Icon.icTimer
         return view
     }()
     
@@ -227,7 +227,7 @@ class TimerOptionView: UIView, View {
     
     let deleteButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_delete"), for: .normal)
+        view.setImage(R.Icon.icBtnDelete, for: .normal)
         return view
     }()
     

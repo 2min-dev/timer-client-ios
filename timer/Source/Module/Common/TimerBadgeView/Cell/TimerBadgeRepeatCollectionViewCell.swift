@@ -14,9 +14,9 @@ class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let repeatButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_repeat_off"), for: .normal)
-        view.setImage(UIImage(named: "btn_repeat_on"), for: .selected)
-        view.setImage(UIImage(named: "btn_repeat_disable"), for: .disabled)
+        view.setImage(R.Icon.icBtnRepeatOff, for: .normal)
+        view.setImage(R.Icon.icBtnRepeatOn, for: .selected)
+        view.setImage(R.Icon.icBtnRepeatDisable, for: .disabled)
         return view
     }()
     

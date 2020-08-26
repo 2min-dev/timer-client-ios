@@ -13,7 +13,7 @@ import ReactorKit
 class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     // MARK: - view properties
     private let timerIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_timer"))
+        let view = UIImageView(image: R.Icon.icTimer)
         return view
     }()
     
@@ -38,7 +38,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     let editButton: UIButton = {
         let view = UIButton()
         view.isUserInteractionEnabled = false
-        view.setImage(UIImage(named: "btn_timer_edit"), for: .normal)
+        view.setImage(R.Icon.icBtnTimerEdit, for: .normal)
         return view
     }()
     

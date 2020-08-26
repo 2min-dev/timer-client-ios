@@ -37,7 +37,7 @@ class SavedTimeSetSmallCollectionViewCell: UICollectionViewCell, View {
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_timer")
+        view.image = R.Icon.icTimer
         return view
     }()
     
