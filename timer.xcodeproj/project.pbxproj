@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27BE61DEC5DA9402847FAC2C /* Pods_timerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9EA7CC2B0D89A1A357170F2 /* Pods_timerTests.framework */; };
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
 		F302608F22EEAFC300E3E431 /* JSTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* JSTabBar.swift */; };
 		F302609122EEB89600E3E431 /* JSTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* JSTabBarItem.swift */; };
@@ -76,7 +77,7 @@
 		F3756F242322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3756F232322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift */; };
 		F3790DDF238557860093D73E /* UIView+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3790DDE238557850093D73E /* UIView+rx.swift */; };
 		F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */ = {isa = PBXBuildFile; fileRef = F379A712231CF6EE007E69A0 /* NSObject+name.swift */; };
-		F37AC9D624EEB63900438BCB /* SPM in Frameworks */ = {isa = PBXBuildFile; productRef = F37AC9D524EEB63900438BCB /* SPM */; };
+		F37AC9D624EEB63900438BCB /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = F37AC9D524EEB63900438BCB /* SwiftPackageProductDependency */; };
 		F37AF0E622F8211800509F5F /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37AF0E522F8211800509F5F /* AlertBuilder.swift */; };
 		F37CA0A723A8EC7100A8990F /* IntroViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0A623A8EC7100A8990F /* IntroViewBuilder.swift */; };
 		F37CA0A923A8EF3400A8990F /* MainViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0A823A8EF3400A8990F /* MainViewBuilder.swift */; };
@@ -102,7 +103,6 @@
 		F37CA0D123A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0D023A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift */; };
 		F37FF50B23536E07009F6156 /* HistoryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */; };
 		F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */; };
-		F386A3D824EEB230007301C1 /* SPM in Frameworks */ = {isa = PBXBuildFile; productRef = F386A3D724EEB230007301C1 /* SPM */; };
 		F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702AE22F899C50099241C /* ConfirmHeader.swift */; };
 		F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B322F970E80099241C /* TimeSetDetailViewCoordinator.swift */; };
 		F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B422F970E80099241C /* TimeSetDetailViewReactor.swift */; };
@@ -112,6 +112,7 @@
 		F387AF3122F18215002ABDB6 /* TimeSetSaveViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2D22F18215002ABDB6 /* TimeSetSaveViewReactor.swift */; };
 		F387AF3322F18215002ABDB6 /* TimeSetSaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2F22F18215002ABDB6 /* TimeSetSaveView.swift */; };
 		F38975982343317200BBAAF3 /* TimeSetSaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2E22F18215002ABDB6 /* TimeSetSaveViewController.swift */; };
+		F38B693724F7E43C00B3AC80 /* ResourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38B693624F7E43C00B3AC80 /* ResourceTests.swift */; };
 		F38C37A323253C55000A0596 /* TimeSetInduceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */; };
 		F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */; };
 		F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */; };
@@ -280,8 +281,11 @@
 		488658218883DE882F12C592 /* Pods-widget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widget.release.xcconfig"; path = "Target Support Files/Pods-widget/Pods-widget.release.xcconfig"; sourceTree = "<group>"; };
 		57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DAA476B776A79A887A8BAB2 /* Pods-timer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.debug.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.debug.xcconfig"; sourceTree = "<group>"; };
+		CBD9D3B8AD4C93EEE4C9CA75 /* Pods-timerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerTests.release.xcconfig"; path = "Target Support Files/Pods-timerTests/Pods-timerTests.release.xcconfig"; sourceTree = "<group>"; };
 		CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-test.release.xcconfig"; path = "Target Support Files/Pods-test/Pods-test.release.xcconfig"; sourceTree = "<group>"; };
 		E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.release.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.release.xcconfig"; sourceTree = "<group>"; };
+		E345CA78F0650942EBFF434F /* Pods-timerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerTests.debug.xcconfig"; path = "Target Support Files/Pods-timerTests/Pods-timerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E9EA7CC2B0D89A1A357170F2 /* Pods_timerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_timerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F302608E22EEAFC300E3E431 /* JSTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTabBar.swift; sourceTree = "<group>"; };
 		F302609022EEB89600E3E431 /* JSTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTabBarItem.swift; sourceTree = "<group>"; };
 		F303F266225CC9E900A11FAF /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
@@ -388,6 +392,7 @@
 		F387AF2D22F18215002ABDB6 /* TimeSetSaveViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveViewReactor.swift; sourceTree = "<group>"; };
 		F387AF2E22F18215002ABDB6 /* TimeSetSaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveViewController.swift; sourceTree = "<group>"; };
 		F387AF2F22F18215002ABDB6 /* TimeSetSaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveView.swift; sourceTree = "<group>"; };
+		F38B693624F7E43C00B3AC80 /* ResourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTests.swift; sourceTree = "<group>"; };
 		F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInduceCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevisionValueTests.swift; sourceTree = "<group>"; };
 		F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -527,7 +532,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F386A3D824EEB230007301C1 /* SPM in Frameworks */,
+				27BE61DEC5DA9402847FAC2C /* Pods_timerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,7 +548,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */,
-				F37AC9D624EEB63900438BCB /* SPM in Frameworks */,
+				F37AC9D624EEB63900438BCB /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,6 +562,7 @@
 				192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */,
 				08C6E86474A099E3080F5433 /* Pods_widget.framework */,
 				57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */,
+				E9EA7CC2B0D89A1A357170F2 /* Pods_timerTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -570,6 +576,8 @@
 				488658218883DE882F12C592 /* Pods-widget.release.xcconfig */,
 				2B3400BA80561FC45BF0C4C9 /* Pods-test.debug.xcconfig */,
 				CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */,
+				E345CA78F0650942EBFF434F /* Pods-timerTests.debug.xcconfig */,
+				CBD9D3B8AD4C93EEE4C9CA75 /* Pods-timerTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -651,9 +659,10 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F38B693524F7E42800B3AC80 /* Helper */,
+				F38B693624F7E43C00B3AC80 /* ResourceTests.swift */,
 				F36B26E123D6D23B008CABBA /* RealmTests.swift */,
 				F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */,
-				F307165F23CEEE0E001AEC96 /* Collector.swift */,
 				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
 				F3E1FC152387C88F008FB3AB /* VersionTests.swift */,
 				F31684242382838600EF1510 /* timerTests.swift */,
@@ -907,6 +916,14 @@
 				F37CA0B623A8F3C600A8990F /* TimeSetSaveViewBuilder.swift */,
 			);
 			path = TimeSetSave;
+			sourceTree = "<group>";
+		};
+		F38B693524F7E42800B3AC80 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				F307165F23CEEE0E001AEC96 /* Collector.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		F39BFF832354D31C0057816B /* HistoryDetail */ = {
@@ -1337,6 +1354,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F31684292382838600EF1510 /* Build configuration list for PBXNativeTarget "timerTests" */;
 			buildPhases = (
+				8D5E1C86B7DBAEF4B12D93CF /* [CP] Check Pods Manifest.lock */,
 				F316841E2382838600EF1510 /* Sources */,
 				F316841F2382838600EF1510 /* Frameworks */,
 				F31684202382838600EF1510 /* Resources */,
@@ -1347,9 +1365,6 @@
 				F31684282382838600EF1510 /* PBXTargetDependency */,
 			);
 			name = timerTests;
-			packageProductDependencies = (
-				F386A3D724EEB230007301C1 /* SPM */,
-			);
 			productName = timerTests;
 			productReference = F31684222382838600EF1510 /* timerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1391,7 +1406,7 @@
 			);
 			name = timer;
 			packageProductDependencies = (
-				F37AC9D524EEB63900438BCB /* SPM */,
+				F37AC9D524EEB63900438BCB /* SwiftPackageProductDependency */,
 			);
 			productName = "timerset-ios";
 			productReference = F3D1F788225CB6C1006DC162 /* timer.app */;
@@ -1524,6 +1539,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timer/Pods-timer-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8D5E1C86B7DBAEF4B12D93CF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-timerTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		F3A12871235FEA690072FB51 /* Firebase crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1568,6 +1605,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F307166023CEEE0E001AEC96 /* Collector.swift in Sources */,
+				F38B693724F7E43C00B3AC80 /* ResourceTests.swift in Sources */,
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
 				F36B26E223D6D23B008CABBA /* RealmTests.swift in Sources */,
@@ -1838,6 +1876,7 @@
 /* Begin XCBuildConfiguration section */
 		F316842A2382838600EF1510 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E345CA78F0650942EBFF434F /* Pods-timerTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -1859,6 +1898,7 @@
 		};
 		F316842B2382838600EF1510 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CBD9D3B8AD4C93EEE4C9CA75 /* Pods-timerTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -2131,11 +2171,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F37AC9D524EEB63900438BCB /* SPM */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SPM;
-		};
-		F386A3D724EEB230007301C1 /* SPM */ = {
+		F37AC9D524EEB63900438BCB /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SPM;
 		};

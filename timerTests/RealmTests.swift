@@ -15,8 +15,7 @@ class RealmTests: XCTestCase {
     private var disposeBag: DisposeBag!
 
     override func setUp() {
-        let provider = ServiceProvider()
-        realmService = RealmService(provider: provider)
+        realmService = RealmService()
         disposeBag = DisposeBag()
     }
 
