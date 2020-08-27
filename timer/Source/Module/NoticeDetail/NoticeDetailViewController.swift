@@ -122,7 +122,7 @@ class NoticeDetailViewController: BaseHeaderViewController, ViewControllable, Vi
         // Set attributed string
         return NSAttributedString(string: text, attributes: [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .paragraphStyle: paragraphStyle
         ])
     }

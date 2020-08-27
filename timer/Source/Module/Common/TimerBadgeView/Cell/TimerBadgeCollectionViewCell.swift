@@ -20,7 +20,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     fileprivate let timerIndexLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(10.adjust())
-        view.textColor = Constants.Color.silver
+        view.textColor = R.Color.silver
         view.textAlignment = .center
         return view
     }()
@@ -30,7 +30,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view
     }()
@@ -129,10 +129,10 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     
     // MARK: - private method
     private func initLayout() {
-        contentView.backgroundColor = Constants.Color.alabaster
+        contentView.backgroundColor = R.Color.alabaster
         
         contentView.layer.cornerRadius = 5.adjust()
-        contentView.layer.borderColor = Constants.Color.silver.cgColor
+        contentView.layer.borderColor = R.Color.silver.cgColor
         contentView.layer.borderWidth = 0.5
     }
     
@@ -153,7 +153,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     private func animateSelection(_ isSelected: Bool) {
         // Create layer animation
         let borderColorAnimation = CABasicAnimation(keyPath: "borderColor")
-        borderColorAnimation.toValue = (isSelected ? Constants.Color.carnation : Constants.Color.silver).cgColor
+        borderColorAnimation.toValue = (isSelected ? R.Color.carnation : R.Color.silver).cgColor
 
         let borderWidthAnimation = CABasicAnimation(keyPath: "borderWidth")
         borderWidthAnimation.toValue = isSelected ? 1 : 0.5
@@ -167,7 +167,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
 
         // Set properties when animation complete
         CATransaction.setCompletionBlock {
-            self.contentView.layer.borderColor = (isSelected ? Constants.Color.carnation : Constants.Color.silver).cgColor
+            self.contentView.layer.borderColor = (isSelected ? R.Color.carnation : R.Color.silver).cgColor
             self.contentView.layer.borderWidth = isSelected ? 1 : 0.5
         }
         

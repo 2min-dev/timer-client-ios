@@ -16,7 +16,7 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     fileprivate let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -38,11 +38,11 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     // MARK: - constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = Constants.Color.clear
+        backgroundColor = R.Color.clear
         selectionStyle = .none
         
         let divider = UIView()
-        divider.backgroundColor = Constants.Color.silver
+        divider.backgroundColor = R.Color.silver
         
         // Set constraint of subviews
         addAutolayoutSubviews([playButton, titleLabel, selectIconImageView, divider])

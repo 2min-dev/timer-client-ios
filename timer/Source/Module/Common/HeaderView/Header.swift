@@ -29,7 +29,7 @@ class Header: UIView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     

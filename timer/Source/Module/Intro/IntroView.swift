@@ -19,7 +19,7 @@ class IntroView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         addAutolayoutSubview(splashIconImageView)
         

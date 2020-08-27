@@ -15,7 +15,7 @@ class TimeSetSectionHeaderCollectionReusableView: UICollectionReusableView {
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -26,7 +26,7 @@ class TimeSetSectionHeaderCollectionReusableView: UICollectionReusableView {
          
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Bold.withSize(12.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .kern: -0.36
         ]

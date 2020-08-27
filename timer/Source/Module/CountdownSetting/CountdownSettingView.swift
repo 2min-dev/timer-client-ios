@@ -18,7 +18,7 @@ class CountdownSettingView: UIView {
     
     let countdownTableView: UITableView = {
         let view = UITableView()
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
         
@@ -31,7 +31,7 @@ class CountdownSettingView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([countdownTableView, headerView])

@@ -19,7 +19,7 @@ class TimeSetInduceCollectionViewCell: UICollectionViewCell {
     private let descriptionLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.text = "time_set_induce_title".localized
         return view
     }()
@@ -51,9 +51,9 @@ class TimeSetInduceCollectionViewCell: UICollectionViewCell {
     
     // MARK: - private method
     private func initLayout() {
-        backgroundColor = Constants.Color.white
+        backgroundColor = R.Color.white
         layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
-        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
         layer.cornerRadius = 20.adjust()
     }

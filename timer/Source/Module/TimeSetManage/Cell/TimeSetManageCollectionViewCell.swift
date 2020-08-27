@@ -22,14 +22,14 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -82,8 +82,8 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
     
     // MARK: - private method
     private func initLayout() {
-        backgroundColor = Constants.Color.white
-        layer.borderColor = Constants.Color.gallery.cgColor
+        backgroundColor = R.Color.white
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
     }
     

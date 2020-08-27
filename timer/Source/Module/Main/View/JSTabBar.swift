@@ -28,7 +28,7 @@ class JSTabBar: UIView {
     
     private let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.silver
+        view.backgroundColor = R.Color.silver
         return view
     }()
     
@@ -81,7 +81,7 @@ class JSTabBar: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white_fdfdfd
+        backgroundColor = R.Color.white_fdfdfd
         
         addAutolayoutSubviews([tabBarStackView, dividerView, indicatorView])
         tabBarStackView.snp.makeConstraints { make in

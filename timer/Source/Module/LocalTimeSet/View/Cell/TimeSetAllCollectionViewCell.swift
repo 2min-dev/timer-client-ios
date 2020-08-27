@@ -13,7 +13,7 @@ class TimeSetAllCollectionViewCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.carnation
+        view.textColor = R.Color.carnation
         return view
     }()
     
@@ -38,7 +38,7 @@ class TimeSetAllCollectionViewCell: UICollectionViewCell {
     
     // MARK: - private method
     private func setUpLayout() {
-        backgroundColor = Constants.Color.gallery
+        backgroundColor = R.Color.gallery
         layer.cornerRadius = 20.adjust()
         
         // Set constraints of subviews

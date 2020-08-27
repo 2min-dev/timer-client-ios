@@ -39,8 +39,8 @@ class JSTabBarItem: UIButton {
     // MARK: - properties
     override var isSelected: Bool {
         didSet {
-            title.textColor = isSelected ? tintColor : Constants.Color.codGray
-            icon.tintColor = isSelected ? tintColor : Constants.Color.codGray
+            title.textColor = isSelected ? tintColor : R.Color.codGray
+            icon.tintColor = isSelected ? tintColor : R.Color.codGray
         }
     }
     

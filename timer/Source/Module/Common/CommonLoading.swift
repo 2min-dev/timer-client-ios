@@ -20,8 +20,8 @@ class CommonLoading: UIView {
     
     private let circleLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = Constants.Color.carnation.cgColor
-        layer.fillColor = Constants.Color.clear.cgColor
+        layer.strokeColor = R.Color.carnation.cgColor
+        layer.fillColor = R.Color.clear.cgColor
         layer.lineCap = .round
         layer.strokeStart = 0
         layer.strokeEnd = 0

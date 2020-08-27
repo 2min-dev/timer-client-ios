@@ -18,7 +18,7 @@ class NoticeListView: UIView {
     
     let noticeTableView: UITableView = {
         let view = UITableView()
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.separatorStyle = .none
         view.rowHeight = 60.adjust()
         
@@ -32,7 +32,7 @@ class NoticeListView: UIView {
     private let emptyLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.numberOfLines = 0
         
         // Create paragraph style
@@ -65,7 +65,7 @@ class NoticeListView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([noticeTableView, headerView, loadingView])

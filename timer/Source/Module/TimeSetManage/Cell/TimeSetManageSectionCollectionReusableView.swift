@@ -13,7 +13,7 @@ class TimeSetManageSectionCollectionReusableView: UICollectionReusableView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.text = "time_set_manage_removed_time_set_title".localized
         return view
     }()

@@ -21,20 +21,20 @@ class TimeSetEndView: UIView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     let dateLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     lazy var memoTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         view.textContainer.lineFragmentPadding = 0
         
@@ -48,7 +48,7 @@ class TimeSetEndView: UIView {
         
         view.typingAttributes = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
         ]
@@ -59,7 +59,7 @@ class TimeSetEndView: UIView {
     let memoExcessLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.carnation
+        view.textColor = R.Color.carnation
         view.text = "time_set_memo_excess_title".localized
         return view
     }()
@@ -68,7 +68,7 @@ class TimeSetEndView: UIView {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -81,7 +81,7 @@ class TimeSetEndView: UIView {
         
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.silver,
+            .foregroundColor: R.Color.silver,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
         ]
@@ -94,7 +94,7 @@ class TimeSetEndView: UIView {
         let view = UIView()
         
         let divider: UIView = UIView()
-        divider.backgroundColor = Constants.Color.doveGray
+        divider.backgroundColor = R.Color.doveGray
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([memoTextView, memoExcessLabel, memoLengthLabel, memoHintLabel, divider])
@@ -163,7 +163,7 @@ class TimeSetEndView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([headerView, titleLabel, dateLabel, memoInputView, footerView])

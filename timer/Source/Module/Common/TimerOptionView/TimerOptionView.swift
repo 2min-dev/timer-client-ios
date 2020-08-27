@@ -21,7 +21,7 @@ class TimerOptionView: UIView, View {
             let button = UIButton()
             button.tag = rawValue
             button.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
-            button.setTitleColor(Constants.Color.codGray, for: .normal)
+            button.setTitleColor(R.Color.codGray, for: .normal)
             
             switch self {
             case .default:
@@ -57,7 +57,7 @@ class TimerOptionView: UIView, View {
     // MARK: - view properties
     lazy var commentTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.textContainerInset = UIEdgeInsets(top: 5.adjust(), left: 0, bottom: 0, right: 0) // Vertical padding
         view.textContainer.lineFragmentPadding = 5.adjust() // Horizontal padding
         
@@ -70,7 +70,7 @@ class TimerOptionView: UIView, View {
         paragraphStyle.lineSpacing = 10.adjust()
         
         view.typingAttributes = [.font: Constants.Font.Regular.withSize(15.adjust()),
-                                 .foregroundColor: Constants.Color.codGray,
+                                 .foregroundColor: R.Color.codGray,
                                  .kern: -0.45,
                                  .paragraphStyle: paragraphStyle]
         return view
@@ -80,7 +80,7 @@ class TimerOptionView: UIView, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.textAlignment = .right
         return view
     }()
@@ -91,7 +91,7 @@ class TimerOptionView: UIView, View {
         let string = "timer_option_comment_hint_title".localized
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.silver,
+            .foregroundColor: R.Color.silver,
             .kern: -0.45
         ]
         
@@ -102,7 +102,7 @@ class TimerOptionView: UIView, View {
     let commentExcessLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.carnation
+        view.textColor = R.Color.carnation
         view.text = "timer_option_comment_excess_title".localized
         return view
     }()
@@ -155,7 +155,7 @@ class TimerOptionView: UIView, View {
     private let alarmIndicatorView: UIView = {
         let view = UIView()
         view.bounds.size.height = 6.adjust()
-        view.backgroundColor = Constants.Color.carnation
+        view.backgroundColor = R.Color.carnation
         return view
     }()
     
@@ -163,7 +163,7 @@ class TimerOptionView: UIView, View {
         let view = UIButton()
         let string = "timer_option_alarm_all_apply".localized
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .font: Constants.Font.Regular.withSize(15.adjust())
         ]
@@ -175,7 +175,7 @@ class TimerOptionView: UIView, View {
         let view = UIView()
         
         let divider = UIView()
-        divider.backgroundColor = Constants.Color.gallery
+        divider.backgroundColor = R.Color.gallery
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([divider, alarmIconImageView, alarmButtonsStackView, alarmApplyAllButton])
@@ -221,7 +221,7 @@ class TimerOptionView: UIView, View {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -235,7 +235,7 @@ class TimerOptionView: UIView, View {
         let view = UIView()
         
         let divider = UIView()
-        divider.backgroundColor = Constants.Color.gallery
+        divider.backgroundColor = R.Color.gallery
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([divider, timerIconImageView, titleLabel, deleteButton])
@@ -299,8 +299,8 @@ class TimerOptionView: UIView, View {
     
     private let borderLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.white.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.fillColor = R.Color.white.cgColor
+        layer.strokeColor = R.Color.codGray.cgColor
         layer.lineWidth = 1
         layer.shadow(alpha: 0.16, offset: CGSize(width: 0, height: 3.adjust()), blur: 6.adjust())
         return layer
@@ -317,7 +317,7 @@ class TimerOptionView: UIView, View {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.white
+        backgroundColor = R.Color.white
         
         // Set constraint of subviews
         addAutolayoutSubview(contentStackView)
@@ -462,7 +462,7 @@ class TimerOptionView: UIView, View {
         if isExceeded {
             // Highlight length text
             let range = NSString(string: lengthString).range(of: String(length))
-            attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
+            attributedString.addAttribute(.foregroundColor, value: R.Color.carnation, range: range)
         }
         
         return attributedString

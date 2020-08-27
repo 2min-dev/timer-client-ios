@@ -22,7 +22,7 @@ class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell, View {
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.gallery
+        view.backgroundColor = R.Color.gallery
         
         // Set constraint of subviews
         view.addAutolayoutSubview(repeatButton)
@@ -39,7 +39,7 @@ class TimerBadgeRepeatCollectionViewCell: UICollectionViewCell, View {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.clear
+        backgroundColor = R.Color.clear
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.snp.makeConstraints { make in

@@ -409,7 +409,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
     private func getTimeSetStateByCountdown(_ countdown: Int, state: JSTimer.State) -> NSAttributedString {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray
+            .foregroundColor: R.Color.codGray
         ]
         
         var string = ""
@@ -432,7 +432,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
     private func getTimeSetState(_ state: TimeSet.State, history: History) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray
+            .foregroundColor: R.Color.codGray
         ]
         
         var string = ""
@@ -443,7 +443,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
         case .run:
             if history.endState != .none {
                 // Set overtime attributes
-                attributes[.foregroundColor] = Constants.Color.carnation
+                attributes[.foregroundColor] = R.Color.carnation
                 string = "time_set_state_overtime_title".localized
             }
             
@@ -505,7 +505,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
                 
                 // Set view disabled
                 timeSetProcessView.isEnabled = false
-                timeLabel.textColor = Constants.Color.carnation
+                timeLabel.textColor = R.Color.carnation
             }
             
         case .end:

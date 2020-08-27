@@ -13,7 +13,7 @@ class TimeSetHeaderCollectionReusableView: UICollectionReusableView {
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.numberOfLines = 0
         
         // Create paragraph style

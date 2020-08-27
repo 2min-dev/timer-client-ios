@@ -18,30 +18,30 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
         var backgroundColor: UIColor {
             switch self {
             case .normal:
-                return Constants.Color.white
+                return R.Color.white
                 
             case .highlight:
-                return Constants.Color.carnation
+                return R.Color.carnation
             }
         }
         
         var titleColor: UIColor {
             switch self {
             case .normal:
-                return Constants.Color.codGray
+                return R.Color.codGray
                 
             case .highlight:
-                return Constants.Color.white
+                return R.Color.white
             }
         }
         
         var subtitleColor: UIColor {
             switch self {
             case .normal:
-                return Constants.Color.doveGray
+                return R.Color.doveGray
                 
             case .highlight:
-                return Constants.Color.gallery
+                return R.Color.gallery
             }
         }
         
@@ -60,7 +60,7 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
     private let timeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(24.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -69,14 +69,14 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -91,7 +91,7 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -158,7 +158,7 @@ class SavedTimeSetBigCollectionViewCell: UICollectionViewCell, View {
     // MARK: - private method
     private func setUpLayout() {
         layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
-        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderColor = R.Color.gallery.cgColor
         layer.cornerRadius = 20.adjust()
         setCellType(type)
         

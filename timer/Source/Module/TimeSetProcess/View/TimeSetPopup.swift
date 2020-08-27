@@ -14,7 +14,7 @@ class TimeSetPopup: UIView {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -29,7 +29,7 @@ class TimeSetPopup: UIView {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(10.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -41,7 +41,7 @@ class TimeSetPopup: UIView {
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.gallery
+        view.backgroundColor = R.Color.gallery
         view.layer.cornerRadius = 6.adjust()
         view.layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 6)
     

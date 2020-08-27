@@ -15,7 +15,7 @@ class TimerInputView: UIView {
     let timerLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(24.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view
     }()
@@ -63,23 +63,23 @@ class TimerInputView: UIView {
     
     // MARK: - private method
     private func initLayout() {
-        backgroundColor = Constants.Color.white
+        backgroundColor = R.Color.white
         
         layer.borderWidth = 1.adjust()
-        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderColor = R.Color.gallery.cgColor
     }
     
     /// Animate to layer's border highlight
     fileprivate func borderHighlight(_ isHighlight: Bool) {
         let animation = CABasicAnimation(keyPath: "borderColor")
-        animation.toValue = isHighlight ? Constants.Color.carnation.cgColor : Constants.Color.gallery.cgColor
+        animation.toValue = isHighlight ? R.Color.carnation.cgColor : R.Color.gallery.cgColor
         animation.duration = 0.3
         animation.isRemovedOnCompletion = false
         animation.fillMode = .forwards
         
         // Set border color to `toValue`
         CATransaction.setCompletionBlock {
-            self.layer.borderColor = isHighlight ? Constants.Color.carnation.cgColor : Constants.Color.gallery.cgColor
+            self.layer.borderColor = isHighlight ? R.Color.carnation.cgColor : R.Color.gallery.cgColor
         }
         CATransaction.begin()
         layer.add(animation, forKey: "highlight")

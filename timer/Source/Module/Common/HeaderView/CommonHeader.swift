@@ -95,7 +95,7 @@ class CommonHeader: Header {
         view.isUserInteractionEnabled = true
         
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         
         // Create tap gesture recognizer
         view.addGestureRecognizer(UITapGestureRecognizer())
@@ -131,7 +131,7 @@ class CommonHeader: Header {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setContentHuggingPriority(.required, for: .vertical)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set consraint of subviews
         addAutolayoutSubviews([backButton, titleLabel, additionalStackView])

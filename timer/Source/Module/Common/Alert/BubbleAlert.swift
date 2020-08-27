@@ -53,8 +53,8 @@ class BubbleAlert: UIView {
     
     private let confirmLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.carnation.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.fillColor = R.Color.carnation.cgColor
+        layer.strokeColor = R.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
     }()
@@ -69,8 +69,8 @@ class BubbleAlert: UIView {
     
     private let containerLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.white.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.fillColor = R.Color.white.cgColor
+        layer.strokeColor = R.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
     }()
@@ -151,7 +151,7 @@ class BubbleAlert: UIView {
         // Create attributes
         let attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Bold.withSize(12.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .kern: -0.36,
             .paragraphStyle: paragraphStyle
         ]

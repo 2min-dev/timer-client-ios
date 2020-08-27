@@ -17,7 +17,7 @@ class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
     private let runningTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -26,14 +26,14 @@ class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -41,7 +41,7 @@ class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
         let view = UIButton()
         view.titleLabel?.font = Constants.Font.Bold.withSize(12)
         view.setTitle("history_delete_title".localized, for: .normal)
-        view.backgroundColor = Constants.Color.carnation
+        view.backgroundColor = R.Color.carnation
         return view
     }()
     
@@ -100,14 +100,14 @@ class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
     
     // MARK: - private method
     private func setUpLayout() {
-        backgroundColor = Constants.Color.white
+        backgroundColor = R.Color.white
         layer.masksToBounds = true
         layer.cornerRadius = 20.adjust()
-        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
         layer.shadow(alpha: 0.02, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
         
-        contentView.backgroundColor = Constants.Color.white
+        contentView.backgroundColor = R.Color.white
         
         // Set constraint of subviews
         contentView.addAutolayoutSubviews([runningTimeLabel, startedDateLabel, titleLabel])

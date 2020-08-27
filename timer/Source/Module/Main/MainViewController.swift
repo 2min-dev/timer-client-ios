@@ -22,7 +22,7 @@ class MainViewController: UITabBarController, ViewControllable, View {
     let _tabBar: JSTabBar = {
         let view = JSTabBar()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.tintColor = Constants.Color.carnation
+        view.tintColor = R.Color.carnation
         
         view.tabBarItems = [
             JSTabBarItem(title: "tab_button_my_time_set".localized, icon: R.Icon.icBtnTabMy),

@@ -13,7 +13,7 @@ class SettingTableViewCell: UITableViewCell {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -21,7 +21,7 @@ class SettingTableViewCell: UITableViewCell {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -33,11 +33,11 @@ class SettingTableViewCell: UITableViewCell {
     // MARK: - constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = Constants.Color.clear
+        backgroundColor = R.Color.clear
         selectionStyle = .none
         
         let divider = UIView()
-        divider.backgroundColor = Constants.Color.silver
+        divider.backgroundColor = R.Color.silver
         
         // Set constraint of subviews
         addAutolayoutSubviews([titleLabel, subtitleLabel, arrowIconImageView, divider])

@@ -15,21 +15,21 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
     private let timeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(24.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -44,7 +44,7 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -106,8 +106,8 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
     
     // MARK: - private method
     private func setUpLayout() {
-        backgroundColor = Constants.Color.white
-        layer.borderColor = Constants.Color.gallery.cgColor
+        backgroundColor = R.Color.white
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
         layer.cornerRadius = 20.adjust()
         layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)

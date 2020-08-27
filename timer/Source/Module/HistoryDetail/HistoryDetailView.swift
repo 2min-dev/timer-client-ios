@@ -18,14 +18,14 @@ class HistoryDetailView: UIView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.ExtraBold.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let runningTimeTitleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
     }()
@@ -33,7 +33,7 @@ class HistoryDetailView: UIView {
     let runningTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -53,7 +53,7 @@ class HistoryDetailView: UIView {
     private let dateTitleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         view.text = "history_date_title".localized
         return view
     }()
@@ -61,7 +61,7 @@ class HistoryDetailView: UIView {
     let dateLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -81,7 +81,7 @@ class HistoryDetailView: UIView {
     private let extraTimeTitleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         view.text = "history_extra_time_title".localized
         return view
     }()
@@ -89,7 +89,7 @@ class HistoryDetailView: UIView {
     let extraTimeLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -109,7 +109,7 @@ class HistoryDetailView: UIView {
     private let repeatCountTitleLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         view.text = "history_repeat_count_title".localized
         return view
     }()
@@ -117,7 +117,7 @@ class HistoryDetailView: UIView {
     let repeatCountLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -143,7 +143,7 @@ class HistoryDetailView: UIView {
     
     lazy var memoTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         view.textContainer.lineFragmentPadding = 0
         
@@ -157,7 +157,7 @@ class HistoryDetailView: UIView {
         
         view.typingAttributes = [
             .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
         ]
@@ -168,7 +168,7 @@ class HistoryDetailView: UIView {
     let memoExcessLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.carnation
+        view.textColor = R.Color.carnation
         view.text = "time_set_memo_excess_title".localized
         return view
     }()
@@ -177,14 +177,14 @@ class HistoryDetailView: UIView {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.font = Constants.Font.Regular.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.textColor = R.Color.codGray
         return view
     }()
     
     let memoHintLabel: UILabel = {
         let view = UILabel()
         view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.silver
+        view.textColor = R.Color.silver
         view.text = "history_memo_hint".localized
         return view
     }()
@@ -196,7 +196,7 @@ class HistoryDetailView: UIView {
     
     private lazy var memoInputView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.gallery
+        view.backgroundColor = R.Color.gallery
         view.layer.cornerRadius = 20.adjust()
         
         // Set constraint of subviews
@@ -247,7 +247,7 @@ class HistoryDetailView: UIView {
         let view = UIView()
         
         let divider = UIView()
-        divider.backgroundColor = Constants.Color.codGray
+        divider.backgroundColor = R.Color.codGray
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([titleLabel, divider, infoStackView, memoInputView, timerBadgeCollectionView])
@@ -329,7 +329,7 @@ class HistoryDetailView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([headerView, scrollView, footerView])

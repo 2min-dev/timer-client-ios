@@ -30,7 +30,7 @@ class Toast: UIView {
         
         var attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Bold.withSize(12.adjust()),
-            .foregroundColor: Constants.Color.alabaster,
+            .foregroundColor: R.Color.alabaster,
             .kern: -0.36,
             .paragraphStyle: paragraphStyle
         ]
@@ -58,7 +58,7 @@ class Toast: UIView {
         
         var attributes: [NSAttributedString.Key: Any] = [
             .font: Constants.Font.Bold.withSize(10.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .foregroundColor: R.Color.codGray,
             .kern: -0.3
         ]
         
@@ -74,15 +74,15 @@ class Toast: UIView {
     
     private var backgroundLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.codGray.cgColor
+        layer.fillColor = R.Color.codGray.cgColor
         return layer
     }()
     
     private var taskBorderLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.lineWidth = 1
-        layer.strokeColor = Constants.Color.codGray.cgColor
-        layer.fillColor = Constants.Color.alabaster.cgColor
+        layer.strokeColor = R.Color.codGray.cgColor
+        layer.fillColor = R.Color.alabaster.cgColor
         return layer
     }()
     
