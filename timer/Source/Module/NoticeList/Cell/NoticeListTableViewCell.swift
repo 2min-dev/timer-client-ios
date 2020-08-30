@@ -12,7 +12,7 @@ class NoticeListTableViewCell: UITableViewCell {
     // MARK: - view properties
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
@@ -21,7 +21,7 @@ class NoticeListTableViewCell: UITableViewCell {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.silver
         return view
     }()

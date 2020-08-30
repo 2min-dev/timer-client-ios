@@ -34,14 +34,6 @@ enum Constants {
         static let minute: TimeInterval = 60
     }
     
-    // project font define
-    enum Font {
-        static let Light: UIFont! = UIFont.init(name: "NanumSquareL", size: 17.0)
-        static let Regular: UIFont! = UIFont.init(name: "NanumSquareR", size: 17.0)
-        static let Bold: UIFont! = UIFont.init(name: "NanumSquareB", size: 17.0)
-        static let ExtraBold: UIFont! = UIFont.init(name: "NanumSquareEB", size: 17.0)
-    }
-    
     enum Locale {
         static let Korea: String = "ko_KR"
         static let USA: String = "en_US"

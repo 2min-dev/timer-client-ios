@@ -12,7 +12,7 @@ class TimeSetAllCollectionViewCell: UICollectionViewCell {
     // MARK: - view properties
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.carnation
         return view
     }()

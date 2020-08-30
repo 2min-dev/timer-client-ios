@@ -11,6 +11,15 @@ import UIKit
 public typealias R = Resource
 
 public enum Resource {
+    /// Project's font resources
+    public enum Font {
+        public static let light: UIFont! = UIFont(name: "NanumSquareL", size: 17.0)
+        public static let regular: UIFont! = UIFont(name: "NanumSquareR", size: 17.0)
+        public static let bold: UIFont! = UIFont(name: "NanumSquareB", size: 17.0)
+        public static let extraBold: UIFont! = UIFont(name: "NanumSquareEB", size: 17.0)
+    }
+    
+    /// Project's color resources
     public enum Color {
         public static var clear: UIColor { .clear }
         
@@ -26,6 +35,7 @@ public enum Resource {
         public static var white_fdfdfd: UIColor { UIColor(named: "white#fdfdfd")! }
     }
     
+    /// Project's icon resources
     public enum Icon {
         public static var icApp: UIImage { UIImage(named: "ic_app")! }
         public static var icArrowRightDown: UIImage { UIImage(named: "ic_arrow_down")! }

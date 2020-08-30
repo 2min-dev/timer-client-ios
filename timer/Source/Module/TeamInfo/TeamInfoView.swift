@@ -20,7 +20,7 @@ class TeamInfoView: UIView {
     
     private let infoLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         view.numberOfLines = 0
         
@@ -36,7 +36,7 @@ class TeamInfoView: UIView {
     
     let emailLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         view.text = "team_info_contact_email".localized
         return view
@@ -45,7 +45,7 @@ class TeamInfoView: UIView {
     let copyButton: UIButton = {
         let view = UIButton()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.titleLabel?.font = Constants.Font.Regular.withSize(12.adjust())
+        view.titleLabel?.font = R.Font.regular.withSize(12.adjust())
         view.titleLabel?.textColor = R.Color.codGray
         view.setAttributedTitle(NSAttributedString(string: "team_info_email_copy_title".localized, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue]), for: .normal)
         return view

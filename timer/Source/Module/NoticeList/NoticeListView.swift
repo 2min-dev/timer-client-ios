@@ -31,7 +31,7 @@ class NoticeListView: UIView {
     // Empty view
     private let emptyLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         view.numberOfLines = 0
         

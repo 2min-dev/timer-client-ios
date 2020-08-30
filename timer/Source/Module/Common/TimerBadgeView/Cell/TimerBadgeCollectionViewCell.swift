@@ -19,7 +19,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
     
     fileprivate let timerIndexLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(10.adjust())
+        view.font = R.Font.bold.withSize(10.adjust())
         view.textColor = R.Color.silver
         view.textAlignment = .center
         return view
@@ -29,7 +29,7 @@ class TimerBadgeCollectionViewCell: UICollectionViewCell, ReactorKit.View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.ExtraBold.withSize(12.adjust())
+        view.font = R.Font.extraBold.withSize(12.adjust())
         view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view

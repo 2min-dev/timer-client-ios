@@ -14,14 +14,14 @@ class TimeSetDetailView: UIView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
+        view.font = R.Font.extraBold.withSize(24.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
     
     let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
+        view.font = R.Font.bold.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
@@ -29,7 +29,7 @@ class TimeSetDetailView: UIView {
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -49,7 +49,7 @@ class TimeSetDetailView: UIView {
     
     let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
+        view.font = R.Font.bold.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         view.text = "time_set_end_time_title".localized
         return view
@@ -57,7 +57,7 @@ class TimeSetDetailView: UIView {
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -77,7 +77,7 @@ class TimeSetDetailView: UIView {
     
     let alarmTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
+        view.font = R.Font.bold.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         view.text = "timer_alarm_title".localized
         return view
@@ -85,7 +85,7 @@ class TimeSetDetailView: UIView {
     
     let alarmLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -105,7 +105,7 @@ class TimeSetDetailView: UIView {
     
     let commentTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
+        view.font = R.Font.bold.withSize(15.adjust())
         view.textColor = R.Color.doveGray
         view.text = "timer_comment_title".localized
         return view
@@ -124,7 +124,7 @@ class TimeSetDetailView: UIView {
         paragraphStyle.lineSpacing = 10.adjust()
         
         view.typingAttributes = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.doveGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle

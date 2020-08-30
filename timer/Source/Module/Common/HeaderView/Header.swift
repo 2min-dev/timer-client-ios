@@ -28,7 +28,7 @@ class Header: UIView {
     // MARK: - view properties
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.font = R.Font.extraBold.withSize(18.adjust())
         view.textColor = R.Color.codGray
         return view
     }()

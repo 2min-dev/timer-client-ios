@@ -18,7 +18,7 @@ class TimeSetInduceCollectionViewCell: UICollectionViewCell {
     
     private let descriptionLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.codGray
         view.text = "time_set_induce_title".localized
         return view

@@ -17,14 +17,14 @@ class HistoryDetailView: UIView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(15.adjust())
+        view.font = R.Font.extraBold.withSize(15.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
     
     private let runningTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
@@ -32,7 +32,7 @@ class HistoryDetailView: UIView {
     
     let runningTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -52,7 +52,7 @@ class HistoryDetailView: UIView {
     
     private let dateTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         view.text = "history_date_title".localized
         return view
@@ -60,7 +60,7 @@ class HistoryDetailView: UIView {
     
     let dateLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -80,7 +80,7 @@ class HistoryDetailView: UIView {
     
     private let extraTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         view.text = "history_extra_time_title".localized
         return view
@@ -88,7 +88,7 @@ class HistoryDetailView: UIView {
     
     let extraTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -108,7 +108,7 @@ class HistoryDetailView: UIView {
     
     private let repeatCountTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         view.text = "history_repeat_count_title".localized
         return view
@@ -116,7 +116,7 @@ class HistoryDetailView: UIView {
     
     let repeatCountLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -156,7 +156,7 @@ class HistoryDetailView: UIView {
         paragraphStyle.lineSpacing = 8.2.adjust()
         
         view.typingAttributes = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.codGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
@@ -167,7 +167,7 @@ class HistoryDetailView: UIView {
     
     let memoExcessLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.carnation
         view.text = "time_set_memo_excess_title".localized
         return view
@@ -176,14 +176,14 @@ class HistoryDetailView: UIView {
     let memoLengthLabel: UILabel = {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
     
     let memoHintLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.silver
         view.text = "history_memo_hint".localized
         return view

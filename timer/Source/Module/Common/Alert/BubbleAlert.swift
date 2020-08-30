@@ -150,7 +150,7 @@ class BubbleAlert: UIView {
         
         // Create attributes
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Bold.withSize(12.adjust()),
+            .font: R.Font.bold.withSize(12.adjust()),
             .foregroundColor: R.Color.codGray,
             .kern: -0.36,
             .paragraphStyle: paragraphStyle

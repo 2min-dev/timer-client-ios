@@ -20,7 +20,7 @@ class TimerOptionView: UIView, View {
         var button: UIButton {
             let button = UIButton()
             button.tag = rawValue
-            button.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
+            button.titleLabel?.font = R.Font.regular.withSize(15.adjust())
             button.setTitleColor(R.Color.codGray, for: .normal)
             
             switch self {
@@ -69,7 +69,7 @@ class TimerOptionView: UIView, View {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 10.adjust()
         
-        view.typingAttributes = [.font: Constants.Font.Regular.withSize(15.adjust()),
+        view.typingAttributes = [.font: R.Font.regular.withSize(15.adjust()),
                                  .foregroundColor: R.Color.codGray,
                                  .kern: -0.45,
                                  .paragraphStyle: paragraphStyle]
@@ -79,7 +79,7 @@ class TimerOptionView: UIView, View {
     let commentLengthLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.codGray
         view.textAlignment = .right
         return view
@@ -90,7 +90,7 @@ class TimerOptionView: UIView, View {
         
         let string = "timer_option_comment_hint_title".localized
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.silver,
             .kern: -0.45
         ]
@@ -101,7 +101,7 @@ class TimerOptionView: UIView, View {
     
     let commentExcessLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.carnation
         view.text = "timer_option_comment_excess_title".localized
         return view
@@ -165,7 +165,7 @@ class TimerOptionView: UIView, View {
         var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: R.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .font: Constants.Font.Regular.withSize(15.adjust())
+            .font: R.Font.regular.withSize(15.adjust())
         ]
         view.setAttributedTitle(NSAttributedString(string: string, attributes: attributes), for: .normal)
         return view
@@ -220,7 +220,7 @@ class TimerOptionView: UIView, View {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         return view
     }()

@@ -12,7 +12,7 @@ class SettingTableViewCell: UITableViewCell {
     // MARK: - view properties
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
@@ -20,7 +20,7 @@ class SettingTableViewCell: UITableViewCell {
     let subtitleLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()

@@ -29,7 +29,7 @@ class Toast: UIView {
         paragraphStyle.lineSpacing = 6.adjust()
         
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Bold.withSize(12.adjust()),
+            .font: R.Font.bold.withSize(12.adjust()),
             .foregroundColor: R.Color.alabaster,
             .kern: -0.36,
             .paragraphStyle: paragraphStyle
@@ -57,7 +57,7 @@ class Toast: UIView {
         let view = UIButton()
         
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Bold.withSize(10.adjust()),
+            .font: R.Font.bold.withSize(10.adjust()),
             .foregroundColor: R.Color.codGray,
             .kern: -0.3
         ]

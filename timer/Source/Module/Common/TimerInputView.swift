@@ -14,7 +14,7 @@ class TimerInputView: UIView {
     // MARK: - view properties
     let timerLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
+        view.font = R.Font.extraBold.withSize(24.adjust())
         view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view

@@ -21,7 +21,7 @@ class MainViewController: UITabBarController, ViewControllable, View {
     // MARK: - view properties
     let _tabBar: JSTabBar = {
         let view = JSTabBar()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.tintColor = R.Color.carnation
         
         view.tabBarItems = [

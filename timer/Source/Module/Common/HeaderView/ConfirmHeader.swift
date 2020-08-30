@@ -16,7 +16,7 @@ class ConfirmHeader: Header {
         let view = UIButton()
         view.setTitle("header_button_cancel".localized, for: .normal)
         view.setTitleColor(R.Color.codGray, for: .normal)
-        view.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
+        view.titleLabel?.font = R.Font.regular.withSize(15.adjust())
         return view
     }()
     
@@ -24,7 +24,7 @@ class ConfirmHeader: Header {
         let view = UIButton()
         view.setTitle("header_button_confirm".localized, for: .normal)
         view.setTitleColor(R.Color.codGray, for: .normal)
-        view.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
+        view.titleLabel?.font = R.Font.regular.withSize(15.adjust())
         return view
     }()
     

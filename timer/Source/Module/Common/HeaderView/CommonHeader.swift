@@ -94,7 +94,7 @@ class CommonHeader: Header {
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.isUserInteractionEnabled = true
         
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.codGray
         
         // Create tap gesture recognizer

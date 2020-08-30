@@ -18,7 +18,7 @@ class NoticeDetailView: UIView {
     let noticeTextView: UITextView = {
         let view = UITextView()
         view.backgroundColor = R.Color.clear
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.carnation
         view.isEditable = false
         view.textContainer.lineFragmentPadding = 30

@@ -408,7 +408,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
     /// Get current countdown state string
     private func getTimeSetStateByCountdown(_ countdown: Int, state: JSTimer.State) -> NSAttributedString {
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.codGray
         ]
         
@@ -431,7 +431,7 @@ class TimeSetProcessViewController: BaseHeaderViewController, ViewControllable, 
     /// Get current time set state string
     private func getTimeSetState(_ state: TimeSet.State, history: History) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.codGray
         ]
         

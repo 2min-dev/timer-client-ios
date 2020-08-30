@@ -13,7 +13,7 @@ class TimeSetPopup: UIView {
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(15.adjust())
+        view.font = R.Font.bold.withSize(15.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
@@ -28,7 +28,7 @@ class TimeSetPopup: UIView {
     private let subtitleLabel: UILabel = {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(10.adjust())
+        view.font = R.Font.bold.withSize(10.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()

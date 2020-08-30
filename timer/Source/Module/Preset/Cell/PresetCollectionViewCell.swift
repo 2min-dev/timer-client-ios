@@ -14,21 +14,21 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
+        view.font = R.Font.extraBold.withSize(24.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
     
     private let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
@@ -43,7 +43,7 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()

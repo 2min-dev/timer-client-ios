@@ -26,7 +26,7 @@ class TimeSetEditView: UIView {
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view
@@ -34,7 +34,7 @@ class TimeSetEditView: UIView {
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view
@@ -50,7 +50,7 @@ class TimeSetEditView: UIView {
     
     let timeInputLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.codGray
         view.textAlignment = .center
         return view
@@ -58,8 +58,8 @@ class TimeSetEditView: UIView {
     
     let keyPadView: NumberKeyPad = {
         let view = NumberKeyPad()
-        view.font = Constants.Font.Regular.withSize(24.adjust())
-        view.cancelButton.titleLabel?.font = Constants.Font.Regular.withSize(18.adjust())
+        view.font = R.Font.regular.withSize(24.adjust())
+        view.cancelButton.titleLabel?.font = R.Font.regular.withSize(18.adjust())
         view.foregroundColor = R.Color.codGray
         view.cancelButton.isHidden = true
         
@@ -70,7 +70,7 @@ class TimeSetEditView: UIView {
     
     let timeKeyPadView: TimeKeyPad = {
         let view = TimeKeyPad()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.font = R.Font.extraBold.withSize(18.adjust())
         view.setTitleColor(normal: R.Color.codGray, disabled: R.Color.silver)
         
         // Set key touch animation

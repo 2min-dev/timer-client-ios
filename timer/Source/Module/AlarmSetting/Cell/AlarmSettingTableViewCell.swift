@@ -15,7 +15,7 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     // MARK: - view properties
     fileprivate let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
+        view.font = R.Font.regular.withSize(15.adjust())
         view.textColor = R.Color.codGray
         return view
     }()

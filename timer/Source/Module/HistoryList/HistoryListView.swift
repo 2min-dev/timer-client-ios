@@ -46,7 +46,7 @@ class HistoryListView: UIView {
         paragraphStyle.lineSpacing = 10.adjust()
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.codGray,
             .paragraphStyle: paragraphStyle,
             .kern: -0.45
@@ -64,7 +64,7 @@ class HistoryListView: UIView {
         let string = "history_make_time_set_title".localized
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.carnation,
             .kern: -0.45
         ]

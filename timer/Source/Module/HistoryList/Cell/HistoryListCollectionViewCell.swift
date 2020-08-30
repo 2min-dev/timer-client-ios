@@ -16,7 +16,7 @@ class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
     // MARK: - view properties
     private let runningTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
+        view.font = R.Font.extraBold.withSize(18.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
@@ -25,21 +25,21 @@ class HistoryListCollectionViewCell: JSSwipeableCollectionViewCell, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.doveGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
+        view.font = R.Font.bold.withSize(12.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
     
     fileprivate let deleteButton: UIButton = {
         let view = UIButton()
-        view.titleLabel?.font = Constants.Font.Bold.withSize(12)
+        view.titleLabel?.font = R.Font.bold.withSize(12)
         view.setTitle("history_delete_title".localized, for: .normal)
         view.backgroundColor = R.Color.carnation
         return view

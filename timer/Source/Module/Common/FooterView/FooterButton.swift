@@ -109,7 +109,7 @@ class FooterButton: UIButton {
     
     // MARK: - private method
     private func setTitle(_ title: String?) {
-        titleLabel?.font = Constants.Font.ExtraBold.withSize(15.adjust())
+        titleLabel?.font = R.Font.extraBold.withSize(15.adjust())
         
         setTitleColor(type.textColor, for: .normal)
         setTitleColor(R.Color.silver, for: .disabled)

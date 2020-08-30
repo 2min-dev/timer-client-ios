@@ -33,7 +33,7 @@ class TimeSetMemoView: UIView {
         paragraphStyle.lineSpacing = 8.2.adjust()
         
         view.typingAttributes = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.codGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
@@ -44,7 +44,7 @@ class TimeSetMemoView: UIView {
     
     let memoExcessLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.carnation
         view.text = "time_set_memo_excess_title".localized
         return view
@@ -53,7 +53,7 @@ class TimeSetMemoView: UIView {
     let memoLengthLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Regular.withSize(12.adjust())
+        view.font = R.Font.regular.withSize(12.adjust())
         view.textColor = R.Color.codGray
         return view
     }()
@@ -66,7 +66,7 @@ class TimeSetMemoView: UIView {
         paragraphStyle.lineSpacing = 8.2.adjust()
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
+            .font: R.Font.regular.withSize(15.adjust()),
             .foregroundColor: R.Color.silver,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
