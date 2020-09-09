@@ -66,6 +66,7 @@ public enum Resource {
     
     /// Project's icon resources
     public enum Icon {
+        // MARK: - 1.0
         public static var icApp: UIImage { UIImage(named: "ic_app")! }
         public static var icArrowRightDown: UIImage { UIImage(named: "ic_arrow_down")! }
         public static var icArrowRightCarnation: UIImage { UIImage(named: "ic_arrow_right_carnation")! }
@@ -102,5 +103,38 @@ public enum Resource {
         public static var icSound: UIImage { UIImage(named: "ic_sound")! }
         public static var icTimerWhite: UIImage { UIImage(named: "ic_timer_white")! }
         public static var icTimer: UIImage { UIImage(named: "ic_timer")! }
+        
+        // MARK: - 2.0
+        public static var iconBtnAlarmSlient: UIImage { UIImage(named: "icon_btn_alarm_silent")! }
+        public static var iconBtnAlarmSound: UIImage { UIImage(named: "icon_btn_alarm_sound")! }
+        public static var iconBtnAlarmVibe: UIImage { UIImage(named: "icon_btn_alarm_vibe")! }
+        public static var iconBtnBack: UIImage { UIImage(named: "icon_btn_back")! }
+        public static var iconBtnCancel: UIImage { UIImage(named: "icon_btn_cancel")! }
+        public static var iconBtnCardView: UIImage { UIImage(named: "icon_btn_card_view")! }
+        public static var iconBtnChangeShort: UIImage { UIImage(named: "icon_btn_change_short")! }
+        public static var iconBtnCloseBig: UIImage { UIImage(named: "icon_btn_close_big")! }
+        public static var iconBtnCloseSmall: UIImage { UIImage(named: "icon_btn_close_small")! }
+        public static var iconBtnConfirm: UIImage { UIImage(named: "icon_btn_confirm")! }
+        public static var iconBtnDownArrow: UIImage { UIImage(named: "icon_btn_down_arrow")! }
+        public static var iconBtnHistory: UIImage { UIImage(named: "icon_btn_history")! }
+        public static var iconBtnListView: UIImage { UIImage(named: "icon_btn_list_view")! }
+        public static var iconBtnMemo: UIImage { UIImage(named: "icon_btn_memo")! }
+        public static var iconBtnMinusRed: UIImage { UIImage(named: "icon_btn_minus_red")! }
+        public static var iconBtnModifyCircle: UIImage { UIImage(named: "icon_btn_modify_circle")! }
+        public static var iconBtnModify: UIImage { UIImage(named: "icon_btn_modify")! }
+        public static var iconBtnPauseCircle: UIImage { UIImage(named: "icon_btn_pause_circle")! }
+        public static var iconBtnPause: UIImage { UIImage(named: "icon_btn_pause")! }
+        public static var iconBtnPlayCircle: UIImage { UIImage(named: "icon_btn_play_circle")! }
+        public static var iconBtnPlay: UIImage { UIImage(named: "icon_btn_play")! }
+        public static var iconBtnPlusBlue: UIImage { UIImage(named: "icon_btn_plus_blue")! }
+        public static var iconBtnPlusUnAct: UIImage { UIImage(named: "icon_btn_plus_un_act")! }
+        public static var iconBtnPlus: UIImage { UIImage(named: "icon_btn_plus")! }
+        public static var iconBtnRepeatO: UIImage { UIImage(named: "icon_btn_repeat_o")! }
+        public static var iconBtnRepeatX: UIImage { UIImage(named: "icon_btn_repeat_x")! }
+        public static var iconBtnRightArrow: UIImage { UIImage(named: "icon_btn_right_arrow")! }
+        public static var iconBtnSelected: UIImage { UIImage(named: "icon_btn_selected")! }
+        public static var iconBtnSettings: UIImage { UIImage(named: "icon_btn_settings")! }
+        public static var iconBtnTimer: UIImage { UIImage(named: "icon_btn_timer")! }
+        public static var iconBtn: UIImage { UIImage(named: "icon_btn")! }
     }
 }
