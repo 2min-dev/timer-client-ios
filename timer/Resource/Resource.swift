@@ -13,17 +13,26 @@ public typealias R = Resource
 public enum Resource {
     /// Project's font resources
     public enum Font {
-        public static let light: UIFont! = UIFont(name: "NanumSquareL", size: 17.0)
-        public static let regular: UIFont! = UIFont(name: "NanumSquareR", size: 17.0)
-        public static let bold: UIFont! = UIFont(name: "NanumSquareB", size: 17.0)
-        public static let extraBold: UIFont! = UIFont(name: "NanumSquareEB", size: 17.0)
+        // MARK: - 1.0
+        public static let light = UIFont(name: "NanumSquareL", size: 17.0)!
+        public static let regular = UIFont(name: "NanumSquareR", size: 17.0)!
+        public static let bold = UIFont(name: "NanumSquareB", size: 17.0)!
+        public static let extraBold = UIFont(name: "NanumSquareEB", size: 17.0)!
+        
+        // MARK: - 2.0
+        public static let mainTimer = UIFont(name: "NotoSansCJKkr-Black", size: 30)!
+        public static let subTimer = UIFont(name: "NotoSansCJKkr-Black", size: 20)!
+        public static let header = UIFont(name: "NotoSansCJKkr-Bold", size: 18)!
+        public static let title = UIFont(name: "NotoSansCJKkr-Bold", size: 15)!
+        public static let body = UIFont(name: "NotoSansCJKkr-Regular", size: 12)!
+        public static let subInfo = UIFont(name: "NotoSansCJKkr-Regular", size: 10)!
     }
     
     /// Project's color resources
     public enum Color {
         public static var clear: UIColor { .clear }
         
-        // 1.0
+        // MARK: - 1.0
         public static var alabaster: UIColor { UIColor(named: "alabaster")! }
         public static var carnation: UIColor { UIColor(named: "carnation")! }
         public static var codGray: UIColor { UIColor(named: "cod_gray")! }
@@ -35,7 +44,7 @@ public enum Resource {
         public static var white: UIColor { UIColor(named: "white")! }
         public static var white_fdfdfd: UIColor { UIColor(named: "white#fdfdfd")! }
         
-        // 2.0
+        // MARK: - 2.0
         // MARK: - Red
         public static var red1: UIColor { UIColor(named: "red_1")! }
         

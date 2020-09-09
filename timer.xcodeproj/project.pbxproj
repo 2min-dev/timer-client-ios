@@ -59,6 +59,13 @@
 		F33CFA2423675B2300C4032A /* Recordable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2323675B2300C4032A /* Recordable.swift */; };
 		F33CFA2623675B3700C4032A /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2523675B3700C4032A /* Alertable.swift */; };
 		F33CFA2823675B7A00C4032A /* StopWatchItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2723675B7A00C4032A /* StopWatchItem.swift */; };
+		F3451FF62509061C00B4146C /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF22509061C00B4146C /* NanumSquareL.ttf */; };
+		F3451FF72509061C00B4146C /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF32509061C00B4146C /* NanumSquareEB.ttf */; };
+		F3451FF82509061C00B4146C /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF42509061C00B4146C /* NanumSquareB.ttf */; };
+		F3451FF92509061C00B4146C /* NanumSquareR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF52509061C00B4146C /* NanumSquareR.ttf */; };
+		F3451FFD2509063900B4146C /* NotoSansCJKkr-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FFC2509063900B4146C /* NotoSansCJKkr-Regular.otf */; };
+		F3451FFE2509063B00B4146C /* NotoSansCJKkr-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FFA2509061F00B4146C /* NotoSansCJKkr-Black.otf */; };
+		F3451FFF2509063D00B4146C /* NotoSansCJKkr-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FFB2509062000B4146C /* NotoSansCJKkr-Bold.otf */; };
 		F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */; };
 		F34C541423E17E8700BB67FE /* PresetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */; };
 		F34CADE7236341EB007C2672 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34CADE6236341EB007C2672 /* NotificationService.swift */; };
@@ -77,7 +84,7 @@
 		F3756F242322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3756F232322899500C7F814 /* TimeSetHeaderCollectionReusableView.swift */; };
 		F3790DDF238557860093D73E /* UIView+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3790DDE238557850093D73E /* UIView+rx.swift */; };
 		F379A713231CF6EE007E69A0 /* NSObject+name.swift in Sources */ = {isa = PBXBuildFile; fileRef = F379A712231CF6EE007E69A0 /* NSObject+name.swift */; };
-		F37AC9D624EEB63900438BCB /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = F37AC9D524EEB63900438BCB /* SwiftPackageProductDependency */; };
+		F37AC9D624EEB63900438BCB /* SPM in Frameworks */ = {isa = PBXBuildFile; productRef = F37AC9D524EEB63900438BCB /* SPM */; };
 		F37AF0E622F8211800509F5F /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37AF0E522F8211800509F5F /* AlertBuilder.swift */; };
 		F37CA0A723A8EC7100A8990F /* IntroViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0A623A8EC7100A8990F /* IntroViewBuilder.swift */; };
 		F37CA0A923A8EF3400A8990F /* MainViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0A823A8EF3400A8990F /* MainViewBuilder.swift */; };
@@ -130,10 +137,6 @@
 		F39BFF8B2354D32D0057816B /* HistoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF872354D32D0057816B /* HistoryDetailView.swift */; };
 		F39BFF8D2355F9EA0057816B /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF8C2355F9EA0057816B /* History.swift */; };
 		F3A12870235FE79F0072FB51 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3A1286F235FE79E0072FB51 /* GoogleService-Info.plist */; };
-		F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */; };
-		F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */; };
-		F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */; };
-		F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */; };
 		F3A218F923535FB5007ABE3F /* HistoryListViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */; };
 		F3A218FA23535FB5007ABE3F /* HistoryListViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */; };
 		F3A218FB23535FB5007ABE3F /* HistoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */; };
@@ -340,6 +343,13 @@
 		F33CFA2323675B2300C4032A /* Recordable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recordable.swift; sourceTree = "<group>"; };
 		F33CFA2523675B3700C4032A /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		F33CFA2723675B7A00C4032A /* StopWatchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatchItem.swift; sourceTree = "<group>"; };
+		F3451FF22509061C00B4146C /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
+		F3451FF32509061C00B4146C /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
+		F3451FF42509061C00B4146C /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
+		F3451FF52509061C00B4146C /* NanumSquareR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.ttf; sourceTree = "<group>"; };
+		F3451FFA2509061F00B4146C /* NotoSansCJKkr-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Black.otf"; sourceTree = "<group>"; };
+		F3451FFB2509062000B4146C /* NotoSansCJKkr-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Bold.otf"; sourceTree = "<group>"; };
+		F3451FFC2509063900B4146C /* NotoSansCJKkr-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Regular.otf"; sourceTree = "<group>"; };
 		F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpensourceLicenseViewReactor.swift; sourceTree = "<group>"; };
 		F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetCollectionViewCell.swift; sourceTree = "<group>"; };
 		F34CADE6236341EB007C2672 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -410,10 +420,6 @@
 		F39BFF872354D32D0057816B /* HistoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryDetailView.swift; sourceTree = "<group>"; };
 		F39BFF8C2355F9EA0057816B /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		F3A1286F235FE79E0072FB51 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.ttf; sourceTree = "<group>"; };
-		F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
-		F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
-		F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
 		F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewCoordinator.swift; sourceTree = "<group>"; };
 		F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewReactor.swift; sourceTree = "<group>"; };
 		F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewController.swift; sourceTree = "<group>"; };
@@ -548,7 +554,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */,
-				F37AC9D624EEB63900438BCB /* BuildFile in Frameworks */,
+				F37AC9D624EEB63900438BCB /* SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,10 +604,13 @@
 		F303F25A225CC57B00A11FAF /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */,
-				F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */,
-				F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */,
-				F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */,
+				F3451FF42509061C00B4146C /* NanumSquareB.ttf */,
+				F3451FF32509061C00B4146C /* NanumSquareEB.ttf */,
+				F3451FF22509061C00B4146C /* NanumSquareL.ttf */,
+				F3451FF52509061C00B4146C /* NanumSquareR.ttf */,
+				F3451FFA2509061F00B4146C /* NotoSansCJKkr-Black.otf */,
+				F3451FFB2509062000B4146C /* NotoSansCJKkr-Bold.otf */,
+				F3451FFC2509063900B4146C /* NotoSansCJKkr-Regular.otf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -1406,7 +1415,7 @@
 			);
 			name = timer;
 			packageProductDependencies = (
-				F37AC9D524EEB63900438BCB /* SwiftPackageProductDependency */,
+				F37AC9D524EEB63900438BCB /* SPM */,
 			);
 			productName = "timerset-ios";
 			productReference = F3D1F788225CB6C1006DC162 /* timer.app */;
@@ -1480,19 +1489,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3451FFF2509063D00B4146C /* NotoSansCJKkr-Bold.otf in Resources */,
+				F3451FF72509061C00B4146C /* NanumSquareEB.ttf in Resources */,
 				F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */,
-				F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */,
+				F3451FFE2509063B00B4146C /* NotoSansCJKkr-Black.otf in Resources */,
+				F3451FF82509061C00B4146C /* NanumSquareB.ttf in Resources */,
 				F3DEAE2924F698DD00D788C2 /* Color.xcassets in Resources */,
 				F3A12870235FE79F0072FB51 /* GoogleService-Info.plist in Resources */,
-				F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */,
 				F33C8BF4237D209400EF6B21 /* alarm_default_10x.mp3 in Resources */,
 				F3DEAE2C24F698ED00D788C2 /* Icon.xcassets in Resources */,
 				F33C8BF1237C6ECD00EF6B21 /* alarm_default_1x.mp3 in Resources */,
-				F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */,
 				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
-				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
 				F33C8BF0237C6ECD00EF6B21 /* alarm_default_3x.mp3 in Resources */,
+				F3451FFD2509063900B4146C /* NotoSansCJKkr-Regular.otf in Resources */,
+				F3451FF62509061C00B4146C /* NanumSquareL.ttf in Resources */,
 				F3D1F793225CB6C2006DC162 /* App.xcassets in Resources */,
+				F3451FF92509061C00B4146C /* NanumSquareR.ttf in Resources */,
 				F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2171,7 +2183,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F37AC9D524EEB63900438BCB /* SwiftPackageProductDependency */ = {
+		F37AC9D524EEB63900438BCB /* SPM */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SPM;
 		};
