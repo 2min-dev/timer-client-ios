@@ -19,7 +19,8 @@ class ResourceTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testLoadImages() throws {
+    func testLoadIcons() throws {
+        // 1.0
         _ = R.Icon.icApp
         _ = R.Icon.icArrowRightDown
         _ = R.Icon.icArrowRightCarnation
@@ -56,6 +57,39 @@ class ResourceTests: XCTestCase {
         _ = R.Icon.icSound
         _ = R.Icon.icTimerWhite
         _ = R.Icon.icTimer
+        
+        // 2.0
+        _ = R.Icon.iconBtnAlarmSlient
+        _ = R.Icon.iconBtnAlarmSound
+        _ = R.Icon.iconBtnAlarmVibe
+        _ = R.Icon.iconBtnBack
+        _ = R.Icon.iconBtnCancel
+        _ = R.Icon.iconBtnCardView
+        _ = R.Icon.iconBtnChangeShort
+        _ = R.Icon.iconBtnCloseBig
+        _ = R.Icon.iconBtnCloseSmall
+        _ = R.Icon.iconBtnConfirm
+        _ = R.Icon.iconBtnDownArrow
+        _ = R.Icon.iconBtnHistory
+        _ = R.Icon.iconBtnListView
+        _ = R.Icon.iconBtnMemo
+        _ = R.Icon.iconBtnMinusRed
+        _ = R.Icon.iconBtnModifyCircle
+        _ = R.Icon.iconBtnModify
+        _ = R.Icon.iconBtnPauseCircle
+        _ = R.Icon.iconBtnPause
+        _ = R.Icon.iconBtnPlayCircle
+        _ = R.Icon.iconBtnPlay
+        _ = R.Icon.iconBtnPlusBlue
+        _ = R.Icon.iconBtnPlusUnAct
+        _ = R.Icon.iconBtnPlus
+        _ = R.Icon.iconBtnRepeatO
+        _ = R.Icon.iconBtnRepeatX
+        _ = R.Icon.iconBtnRightArrow
+        _ = R.Icon.iconBtnSelected
+        _ = R.Icon.iconBtnSettings
+        _ = R.Icon.iconBtnTimer
+        _ = R.Icon.iconBtn
     }
     
     func testLoadColors() throws {
