@@ -23,6 +23,7 @@ public enum Resource {
     public enum Color {
         public static var clear: UIColor { .clear }
         
+        // 1.0
         public static var alabaster: UIColor { UIColor(named: "alabaster")! }
         public static var carnation: UIColor { UIColor(named: "carnation")! }
         public static var codGray: UIColor { UIColor(named: "cod_gray")! }
@@ -33,6 +34,25 @@ public enum Resource {
         public static var silver: UIColor { UIColor(named: "silver")! }
         public static var white: UIColor { UIColor(named: "white")! }
         public static var white_fdfdfd: UIColor { UIColor(named: "white#fdfdfd")! }
+        
+        // 2.0
+        // MARK: - Red
+        public static var red1: UIColor { UIColor(named: "red_1")! }
+        
+        // MARK: - Blue
+        public static var blue1: UIColor { UIColor(named: "blue_1")! }
+        
+        // MARK: - Green
+        public static var green1: UIColor { UIColor(named: "green_1")! }
+        
+        // MARK: - Grey
+        public static var grey1: UIColor { UIColor(named: "grey_1")! }
+        public static var grey2: UIColor { UIColor(named: "grey_2")! }
+        public static var grey3: UIColor { UIColor(named: "grey_3")! }
+        public static var grey4: UIColor { UIColor(named: "grey_4")! }
+        public static var grey5: UIColor { UIColor(named: "grey_5")! }
+        public static var grey6: UIColor { UIColor(named: "grey_6")! }
+        public static var grey7: UIColor { UIColor(named: "grey_7")! }
     }
     
     /// Project's icon resources
