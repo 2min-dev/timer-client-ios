@@ -58,7 +58,8 @@ class ResourceTests: XCTestCase {
         _ = R.Icon.icTimer
     }
     
-    func testColors() throws {
+    func testLoadColors() throws {
+        // 1.0
         _ = R.Color.clear
         _ = R.Color.alabaster
         _ = R.Color.carnation
@@ -70,5 +71,33 @@ class ResourceTests: XCTestCase {
         _ = R.Color.silver
         _ = R.Color.white
         _ = R.Color.white_fdfdfd
+        
+        // 2.0
+        _ = R.Color.red1
+        _ = R.Color.blue1
+        _ = R.Color.green1
+        _ = R.Color.grey1
+        _ = R.Color.grey2
+        _ = R.Color.grey3
+        _ = R.Color.grey4
+        _ = R.Color.grey5
+        _ = R.Color.grey6
+        _ = R.Color.grey7
+    }
+    
+    func testLoadFonts() throws {
+        // 1.0
+        _ = R.Font.light
+        _ = R.Font.regular
+        _ = R.Font.bold
+        _ = R.Font.extraBold
+        
+        // 2.0
+        _ = R.Font.mainTimer
+        _ = R.Font.subTimer
+        _ = R.Font.header
+        _ = R.Font.title
+        _ = R.Font.body
+        _ = R.Font.subInfo
     }
 }
