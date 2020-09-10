@@ -21,4 +21,8 @@ target 'timer' do
   
   # SwiftLint
   pod 'SwiftLint'
+  
+  target 'timerTests' do
+    inherit! :search_paths
+  end
 end

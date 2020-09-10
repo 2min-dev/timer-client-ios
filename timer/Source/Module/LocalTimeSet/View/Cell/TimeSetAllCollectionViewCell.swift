@@ -12,12 +12,12 @@ class TimeSetAllCollectionViewCell: UICollectionViewCell {
     // MARK: - view properties
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.carnation
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.carnation
         return view
     }()
     
-    private let arrowIconImageView: UIImageView = UIImageView(image: UIImage(named: "icon_arrow_right_carnation"))
+    private let arrowIconImageView: UIImageView = UIImageView(image: R.Icon.icArrowRightCarnation)
     
     // MARK: - properties
     var title: String? {
@@ -38,7 +38,7 @@ class TimeSetAllCollectionViewCell: UICollectionViewCell {
     
     // MARK: - private method
     private func setUpLayout() {
-        backgroundColor = Constants.Color.gallery
+        backgroundColor = R.Color.gallery
         layer.cornerRadius = 20.adjust()
         
         // Set constraints of subviews

@@ -14,23 +14,23 @@ class TimeSetDetailView: UIView {
     
     let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.extraBold.withSize(24.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     let allTimeTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         view.text = "time_set_all_time_title".localized
         return view
     }()
     
     let allTimeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -49,16 +49,16 @@ class TimeSetDetailView: UIView {
     
     let endOfTimeSetTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         view.text = "time_set_end_time_title".localized
         return view
     }()
     
     let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -77,16 +77,16 @@ class TimeSetDetailView: UIView {
     
     let alarmTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         view.text = "timer_alarm_title".localized
         return view
     }()
     
     let alarmLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -105,15 +105,15 @@ class TimeSetDetailView: UIView {
     
     let commentTitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(15.adjust())
+        view.textColor = R.Color.doveGray
         view.text = "timer_comment_title".localized
         return view
     }()
     
     let commentTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.isEditable = false
         view.isSelectable = false
         view.textContainer.lineFragmentPadding = 0
@@ -124,8 +124,8 @@ class TimeSetDetailView: UIView {
         paragraphStyle.lineSpacing = 10.adjust()
         
         view.typingAttributes = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.doveGray,
+            .font: R.Font.regular.withSize(15.adjust()),
+            .foregroundColor: R.Color.doveGray,
             .kern: -0.45,
             .paragraphStyle: paragraphStyle
         ]
@@ -168,7 +168,7 @@ class TimeSetDetailView: UIView {
     
     private let alarmIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_sound")
+        view.image = R.Icon.icSound
         return view
     }()
     
@@ -213,7 +213,7 @@ class TimeSetDetailView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         addAutolayoutSubviews([headerView, contentView, footerView])
         headerView.snp.makeConstraints { make in

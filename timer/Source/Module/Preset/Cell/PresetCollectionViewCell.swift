@@ -14,28 +14,28 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(24.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.extraBold.withSize(24.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let endOfTimeSetLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_timer")
+        view.image = R.Icon.icTimer
         return view
     }()
     
@@ -43,8 +43,8 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -106,8 +106,8 @@ class PresetCollectionViewCell: UICollectionViewCell, View {
     
     // MARK: - private method
     private func setUpLayout() {
-        backgroundColor = Constants.Color.white
-        layer.borderColor = Constants.Color.gallery.cgColor
+        backgroundColor = R.Color.white
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
         layer.cornerRadius = 20.adjust()
         layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)

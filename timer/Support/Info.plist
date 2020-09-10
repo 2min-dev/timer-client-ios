@@ -26,6 +26,9 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>NotoSansCJKkr-Black.otf</string>
+		<string>NotoSansCJKkr-Bold.otf</string>
+		<string>NotoSansCJKkr-Regular.otf</string>
 		<string>NanumSquareB.ttf</string>
 		<string>NanumSquareR.ttf</string>
 		<string>NanumSquareL.ttf</string>

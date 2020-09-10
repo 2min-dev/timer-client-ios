@@ -21,21 +21,21 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.extraBold.withSize(18.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     let reorderButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_change"), for: .normal)
+        view.setImage(R.Icon.icBtnChange, for: .normal)
         return view
     }()
     
@@ -82,8 +82,8 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
     
     // MARK: - private method
     private func initLayout() {
-        backgroundColor = Constants.Color.white
-        layer.borderColor = Constants.Color.gallery.cgColor
+        backgroundColor = R.Color.white
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
     }
     
@@ -96,7 +96,7 @@ class TimeSetManageCollectionViewCell: UICollectionViewCell, View {
         reactor.state
             .map { $0.type }
             .distinctUntilChanged()
-            .map { UIImage(named: $0 == .saved ? "btn_timeset_delete" : "btn_timeset_recover") }
+            .map { $0 == .saved ? R.Icon.icBtnTimesetDelete : R.Icon.icBtnTimesetRecover }
             .bind(to: editButton.rx.image(for: .normal))
             .disposed(by: disposeBag)
         

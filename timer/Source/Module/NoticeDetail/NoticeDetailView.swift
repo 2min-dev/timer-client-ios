@@ -17,9 +17,9 @@ class NoticeDetailView: UIView {
     
     let noticeTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = Constants.Color.clear
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.carnation
+        view.backgroundColor = R.Color.clear
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.carnation
         view.isEditable = false
         view.textContainer.lineFragmentPadding = 30
         view.textContainerInset = UIEdgeInsets(top: 22.adjust(), left: 0, bottom: 22.adjust(), right: 0)
@@ -33,7 +33,7 @@ class NoticeDetailView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constrain of subviews
         addAutolayoutSubviews([noticeTextView, headerView, loadingView])

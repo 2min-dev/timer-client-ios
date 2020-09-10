@@ -15,20 +15,20 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     // MARK: - view properties
     fileprivate let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     let playButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_play"), for: .normal)
-        view.setImage(UIImage(named: "btn_pause"), for: .selected)
+        view.setImage(R.Icon.icBtnPlay, for: .normal)
+        view.setImage(R.Icon.icBtnPause, for: .selected)
         return view
     }()
     
     private let selectIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_selected"))
+        let view = UIImageView(image: R.Icon.icSelected)
         return view
     }()
     
@@ -38,11 +38,11 @@ class AlarmSettingTableViewCell: UITableViewCell, ReactorKit.View {
     // MARK: - constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = Constants.Color.clear
+        backgroundColor = R.Color.clear
         selectionStyle = .none
         
         let divider = UIView()
-        divider.backgroundColor = Constants.Color.silver
+        divider.backgroundColor = R.Color.silver
         
         // Set constraint of subviews
         addAutolayoutSubviews([playButton, titleLabel, selectIconImageView, divider])

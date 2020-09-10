@@ -300,7 +300,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         if isExcess {
             // Highlight length text
             let range = NSString(string: lengthString).range(of: String(length))
-            attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
+            attributedString.addAttribute(.foregroundColor, value: R.Color.carnation, range: range)
         }
         
         return attributedString
@@ -356,8 +356,8 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         
         // Create attributes
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Bold.withSize(12.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .font: R.Font.bold.withSize(12.adjust()),
+            .foregroundColor: R.Color.codGray,
             .kern: -0.36,
             .paragraphStyle: paragraphStyle
         ]
@@ -365,7 +365,7 @@ class HistoryDetailViewController: BaseHeaderViewController, ViewControllable, V
         let text = String(format: "history_alert_time_set_overtime_format".localized, timeString)
         let attributedString = NSMutableAttributedString(string: text, attributes: attributes)
         // Highlight time string
-        attributedString.addAttributes([.foregroundColor: Constants.Color.carnation], range: (text as NSString).range(of: timeString))
+        attributedString.addAttributes([.foregroundColor: R.Color.carnation], range: (text as NSString).range(of: timeString))
         
         // Create alert & binding
         bubbleAlert = BubbleAlert(attributedText: attributedString)

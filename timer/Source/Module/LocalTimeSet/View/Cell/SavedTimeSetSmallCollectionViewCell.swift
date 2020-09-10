@@ -14,8 +14,8 @@ class SavedTimeSetSmallCollectionViewCell: UICollectionViewCell, View {
     // MARK: - view properties
     private let timeLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.ExtraBold.withSize(18.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.extraBold.withSize(18.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -23,21 +23,21 @@ class SavedTimeSetSmallCollectionViewCell: UICollectionViewCell, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_timer")
+        view.image = R.Icon.icTimer
         return view
     }()
     
@@ -45,8 +45,8 @@ class SavedTimeSetSmallCollectionViewCell: UICollectionViewCell, View {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(12.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(12.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
@@ -140,11 +140,11 @@ class SavedTimeSetSmallCollectionViewCell: UICollectionViewCell, View {
     
     // MARK: - private method
     private func initLayout() {
-        backgroundColor = Constants.Color.white
+        backgroundColor = R.Color.white
         
         layer.cornerRadius = 20.adjust()
         
-        layer.borderColor = Constants.Color.gallery.cgColor
+        layer.borderColor = R.Color.gallery.cgColor
         layer.borderWidth = 1
         layer.shadow(alpha: 0.02, offset: CGSize(width: 0, height: 3.adjust()), blur: 4)
     }

@@ -50,7 +50,7 @@ class TimerBadgeCollectionView: JSReorderableCollectionView {
         super.init(frame: frame, collectionViewLayout: layout)
         
         // Set collection view properties
-        backgroundColor = Constants.Color.clear
+        backgroundColor = R.Color.clear
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
         

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27BE61DEC5DA9402847FAC2C /* Pods_timerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9EA7CC2B0D89A1A357170F2 /* Pods_timerTests.framework */; };
 		D282A18CB74B075521AEDD44 /* Pods_timer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */; };
 		F302608F22EEAFC300E3E431 /* JSTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302608E22EEAFC300E3E431 /* JSTabBar.swift */; };
 		F302609122EEB89600E3E431 /* JSTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F302609022EEB89600E3E431 /* JSTabBarItem.swift */; };
@@ -58,6 +59,13 @@
 		F33CFA2423675B2300C4032A /* Recordable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2323675B2300C4032A /* Recordable.swift */; };
 		F33CFA2623675B3700C4032A /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2523675B3700C4032A /* Alertable.swift */; };
 		F33CFA2823675B7A00C4032A /* StopWatchItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33CFA2723675B7A00C4032A /* StopWatchItem.swift */; };
+		F3451FF62509061C00B4146C /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF22509061C00B4146C /* NanumSquareL.ttf */; };
+		F3451FF72509061C00B4146C /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF32509061C00B4146C /* NanumSquareEB.ttf */; };
+		F3451FF82509061C00B4146C /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF42509061C00B4146C /* NanumSquareB.ttf */; };
+		F3451FF92509061C00B4146C /* NanumSquareR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FF52509061C00B4146C /* NanumSquareR.ttf */; };
+		F3451FFD2509063900B4146C /* NotoSansCJKkr-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FFC2509063900B4146C /* NotoSansCJKkr-Regular.otf */; };
+		F3451FFE2509063B00B4146C /* NotoSansCJKkr-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FFA2509061F00B4146C /* NotoSansCJKkr-Black.otf */; };
+		F3451FFF2509063D00B4146C /* NotoSansCJKkr-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = F3451FFB2509062000B4146C /* NotoSansCJKkr-Bold.otf */; };
 		F3457E502332850100B0EF97 /* OpensourceLicenseViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */; };
 		F34C541423E17E8700BB67FE /* PresetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */; };
 		F34CADE7236341EB007C2672 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34CADE6236341EB007C2672 /* NotificationService.swift */; };
@@ -102,7 +110,6 @@
 		F37CA0D123A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CA0D023A8FD8E00A8990F /* OpenSourceLicenseViewBuilder.swift */; };
 		F37FF50B23536E07009F6156 /* HistoryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50A23536E07009F6156 /* HistoryListCollectionViewCell.swift */; };
 		F37FF50D23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37FF50C23536ED9009F6156 /* HistoryListCollectionViewCellReactor.swift */; };
-		F386A3D824EEB230007301C1 /* SPM in Frameworks */ = {isa = PBXBuildFile; productRef = F386A3D724EEB230007301C1 /* SPM */; };
 		F38702AF22F899C50099241C /* ConfirmHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702AE22F899C50099241C /* ConfirmHeader.swift */; };
 		F38702B722F970E80099241C /* TimeSetDetailViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B322F970E80099241C /* TimeSetDetailViewCoordinator.swift */; };
 		F38702B822F970E80099241C /* TimeSetDetailViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38702B422F970E80099241C /* TimeSetDetailViewReactor.swift */; };
@@ -112,6 +119,7 @@
 		F387AF3122F18215002ABDB6 /* TimeSetSaveViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2D22F18215002ABDB6 /* TimeSetSaveViewReactor.swift */; };
 		F387AF3322F18215002ABDB6 /* TimeSetSaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2F22F18215002ABDB6 /* TimeSetSaveView.swift */; };
 		F38975982343317200BBAAF3 /* TimeSetSaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F387AF2E22F18215002ABDB6 /* TimeSetSaveViewController.swift */; };
+		F38B693724F7E43C00B3AC80 /* ResourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38B693624F7E43C00B3AC80 /* ResourceTests.swift */; };
 		F38C37A323253C55000A0596 /* TimeSetInduceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */; };
 		F3921CC023ACCDDC0050533A /* RevisionValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */; };
 		F3925ACC2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */; };
@@ -129,10 +137,6 @@
 		F39BFF8B2354D32D0057816B /* HistoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF872354D32D0057816B /* HistoryDetailView.swift */; };
 		F39BFF8D2355F9EA0057816B /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39BFF8C2355F9EA0057816B /* History.swift */; };
 		F3A12870235FE79F0072FB51 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3A1286F235FE79E0072FB51 /* GoogleService-Info.plist */; };
-		F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */; };
-		F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */; };
-		F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */; };
-		F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */; };
 		F3A218F923535FB5007ABE3F /* HistoryListViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */; };
 		F3A218FA23535FB5007ABE3F /* HistoryListViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */; };
 		F3A218FB23535FB5007ABE3F /* HistoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */; };
@@ -189,7 +193,7 @@
 		F3CF614B23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF614A23D964E80038FBDA /* TimeSetAllCollectionViewCell.swift */; };
 		F3CF614D23DE83BD0038FBDA /* NSAttributedString+string.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */; };
 		F3D1F78C225CB6C1006DC162 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */; };
-		F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* Assets.xcassets */; };
+		F3D1F793225CB6C2006DC162 /* App.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F792225CB6C2006DC162 /* App.xcassets */; };
 		F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3D1F794225CB6C2006DC162 /* LaunchScreen.storyboard */; };
 		F3D1F7A8225CC1CD006DC162 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */; };
 		F3D1F7AA225CC1E8006DC162 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1F7A9225CC1E8006DC162 /* ServiceProvider.swift */; };
@@ -212,6 +216,9 @@
 		F3DD7AD623216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */; };
 		F3DD7AD8232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */; };
 		F3DD937B233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */; };
+		F3DEAE2724F6972D00D788C2 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DEAE2624F6972D00D788C2 /* Resource.swift */; };
+		F3DEAE2924F698DD00D788C2 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3DEAE2824F698DD00D788C2 /* Color.xcassets */; };
+		F3DEAE2C24F698ED00D788C2 /* Icon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3DEAE2B24F698ED00D788C2 /* Icon.xcassets */; };
 		F3E1FBF92387B3B3008FB3AB /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FBF82387B3B3008FB3AB /* Version.swift */; };
 		F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E1FC152387C88F008FB3AB /* VersionTests.swift */; };
 		F3E4383E226E0FEB00FA1246 /* EventStreamModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */; };
@@ -277,8 +284,11 @@
 		488658218883DE882F12C592 /* Pods-widget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widget.release.xcconfig"; path = "Target Support Files/Pods-widget/Pods-widget.release.xcconfig"; sourceTree = "<group>"; };
 		57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DAA476B776A79A887A8BAB2 /* Pods-timer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.debug.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.debug.xcconfig"; sourceTree = "<group>"; };
+		CBD9D3B8AD4C93EEE4C9CA75 /* Pods-timerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerTests.release.xcconfig"; path = "Target Support Files/Pods-timerTests/Pods-timerTests.release.xcconfig"; sourceTree = "<group>"; };
 		CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-test.release.xcconfig"; path = "Target Support Files/Pods-test/Pods-test.release.xcconfig"; sourceTree = "<group>"; };
 		E30573896E44ECFDC130A951 /* Pods-timer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timer.release.xcconfig"; path = "Target Support Files/Pods-timer/Pods-timer.release.xcconfig"; sourceTree = "<group>"; };
+		E345CA78F0650942EBFF434F /* Pods-timerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-timerTests.debug.xcconfig"; path = "Target Support Files/Pods-timerTests/Pods-timerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E9EA7CC2B0D89A1A357170F2 /* Pods_timerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_timerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F302608E22EEAFC300E3E431 /* JSTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTabBar.swift; sourceTree = "<group>"; };
 		F302609022EEB89600E3E431 /* JSTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSTabBarItem.swift; sourceTree = "<group>"; };
 		F303F266225CC9E900A11FAF /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
@@ -333,6 +343,13 @@
 		F33CFA2323675B2300C4032A /* Recordable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recordable.swift; sourceTree = "<group>"; };
 		F33CFA2523675B3700C4032A /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		F33CFA2723675B7A00C4032A /* StopWatchItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatchItem.swift; sourceTree = "<group>"; };
+		F3451FF22509061C00B4146C /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
+		F3451FF32509061C00B4146C /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
+		F3451FF42509061C00B4146C /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
+		F3451FF52509061C00B4146C /* NanumSquareR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.ttf; sourceTree = "<group>"; };
+		F3451FFA2509061F00B4146C /* NotoSansCJKkr-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Black.otf"; sourceTree = "<group>"; };
+		F3451FFB2509062000B4146C /* NotoSansCJKkr-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Bold.otf"; sourceTree = "<group>"; };
+		F3451FFC2509063900B4146C /* NotoSansCJKkr-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Regular.otf"; sourceTree = "<group>"; };
 		F3457E4F2332850100B0EF97 /* OpensourceLicenseViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpensourceLicenseViewReactor.swift; sourceTree = "<group>"; };
 		F34C541323E17E8700BB67FE /* PresetCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetCollectionViewCell.swift; sourceTree = "<group>"; };
 		F34CADE6236341EB007C2672 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -385,6 +402,7 @@
 		F387AF2D22F18215002ABDB6 /* TimeSetSaveViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveViewReactor.swift; sourceTree = "<group>"; };
 		F387AF2E22F18215002ABDB6 /* TimeSetSaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveViewController.swift; sourceTree = "<group>"; };
 		F387AF2F22F18215002ABDB6 /* TimeSetSaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSaveView.swift; sourceTree = "<group>"; };
+		F38B693624F7E43C00B3AC80 /* ResourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTests.swift; sourceTree = "<group>"; };
 		F38C37A223253C55000A0596 /* TimeSetInduceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetInduceCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevisionValueTests.swift; sourceTree = "<group>"; };
 		F3925ACB2281CA96005CE9DD /* TimerBadgeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -402,10 +420,6 @@
 		F39BFF872354D32D0057816B /* HistoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryDetailView.swift; sourceTree = "<group>"; };
 		F39BFF8C2355F9EA0057816B /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		F3A1286F235FE79E0072FB51 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.ttf; sourceTree = "<group>"; };
-		F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareL.ttf; sourceTree = "<group>"; };
-		F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareB.ttf; sourceTree = "<group>"; };
-		F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareEB.ttf; sourceTree = "<group>"; };
 		F3A218F523535FB5007ABE3F /* HistoryListViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewCoordinator.swift; sourceTree = "<group>"; };
 		F3A218F623535FB5007ABE3F /* HistoryListViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewReactor.swift; sourceTree = "<group>"; };
 		F3A218F723535FB5007ABE3F /* HistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewController.swift; sourceTree = "<group>"; };
@@ -463,7 +477,7 @@
 		F3CF614C23DE83BD0038FBDA /* NSAttributedString+string.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+string.swift"; sourceTree = "<group>"; };
 		F3D1F788225CB6C1006DC162 /* timer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D1F78B225CB6C1006DC162 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F3D1F792225CB6C2006DC162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F3D1F792225CB6C2006DC162 /* App.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = App.xcassets; sourceTree = "<group>"; };
 		F3D1F795225CB6C2006DC162 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F3D1F797225CB6C2006DC162 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F3D1F7A7225CC1CD006DC162 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -488,6 +502,9 @@
 		F3DD7AD523216293000E3BB9 /* SavedTimeSetSmallCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTimeSetSmallCollectionViewCell.swift; sourceTree = "<group>"; };
 		F3DD7AD7232162D7000E3BB9 /* TimeSetSectionHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSetSectionHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		F3DD937A233A899700AD32E6 /* TimerBadgeRepeatCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeRepeatCellReactor.swift; sourceTree = "<group>"; };
+		F3DEAE2624F6972D00D788C2 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
+		F3DEAE2824F698DD00D788C2 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
+		F3DEAE2B24F698ED00D788C2 /* Icon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icon.xcassets; sourceTree = "<group>"; };
 		F3E1FBF82387B3B3008FB3AB /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		F3E1FC152387C88F008FB3AB /* VersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionTests.swift; sourceTree = "<group>"; };
 		F3E4383D226E0FEB00FA1246 /* EventStreamModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModelProtocol.swift; sourceTree = "<group>"; };
@@ -521,7 +538,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F386A3D824EEB230007301C1 /* SPM in Frameworks */,
+				27BE61DEC5DA9402847FAC2C /* Pods_timerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +568,7 @@
 				192FFC2A400F1A0E57C22E1D /* Pods_timer.framework */,
 				08C6E86474A099E3080F5433 /* Pods_widget.framework */,
 				57FF53C06D2C2D3BFB2E3F1F /* Pods_test.framework */,
+				E9EA7CC2B0D89A1A357170F2 /* Pods_timerTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -564,6 +582,8 @@
 				488658218883DE882F12C592 /* Pods-widget.release.xcconfig */,
 				2B3400BA80561FC45BF0C4C9 /* Pods-test.debug.xcconfig */,
 				CE6A02A59E76AD65231ABF66 /* Pods-test.release.xcconfig */,
+				E345CA78F0650942EBFF434F /* Pods-timerTests.debug.xcconfig */,
+				CBD9D3B8AD4C93EEE4C9CA75 /* Pods-timerTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -571,11 +591,12 @@
 		F303F259225CC56800A11FAF /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				F3D1F792225CB6C2006DC162 /* Assets.xcassets */,
+				F3DEAE2A24F698E000D788C2 /* Assets */,
 				F303F25A225CC57B00A11FAF /* Fonts */,
 				F33C8BED237C6EBA00EF6B21 /* Alarms */,
 				F30B9CD8233263FE003496A9 /* License */,
 				F3F800B3226A0C15003D1D88 /* Localizable.strings */,
+				F3DEAE2624F6972D00D788C2 /* Resource.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -583,10 +604,13 @@
 		F303F25A225CC57B00A11FAF /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				F3A1FAC9229308D900CB4814 /* NanumSquareB.ttf */,
-				F3A1FACA229308D900CB4814 /* NanumSquareEB.ttf */,
-				F3A1FAC8229308D900CB4814 /* NanumSquareL.ttf */,
-				F3A1FAC7229308D900CB4814 /* NanumSquareR.ttf */,
+				F3451FF42509061C00B4146C /* NanumSquareB.ttf */,
+				F3451FF32509061C00B4146C /* NanumSquareEB.ttf */,
+				F3451FF22509061C00B4146C /* NanumSquareL.ttf */,
+				F3451FF52509061C00B4146C /* NanumSquareR.ttf */,
+				F3451FFA2509061F00B4146C /* NotoSansCJKkr-Black.otf */,
+				F3451FFB2509062000B4146C /* NotoSansCJKkr-Bold.otf */,
+				F3451FFC2509063900B4146C /* NotoSansCJKkr-Regular.otf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -644,9 +668,10 @@
 		F31684232382838600EF1510 /* timerTests */ = {
 			isa = PBXGroup;
 			children = (
+				F38B693524F7E42800B3AC80 /* Helper */,
+				F38B693624F7E43C00B3AC80 /* ResourceTests.swift */,
 				F36B26E123D6D23B008CABBA /* RealmTests.swift */,
 				F307166323CF6DD0001AEC96 /* ArrayExtensionTests.swift */,
-				F307165F23CEEE0E001AEC96 /* Collector.swift */,
 				F3921CBF23ACCDDC0050533A /* RevisionValueTests.swift */,
 				F3E1FC152387C88F008FB3AB /* VersionTests.swift */,
 				F31684242382838600EF1510 /* timerTests.swift */,
@@ -900,6 +925,14 @@
 				F37CA0B623A8F3C600A8990F /* TimeSetSaveViewBuilder.swift */,
 			);
 			path = TimeSetSave;
+			sourceTree = "<group>";
+		};
+		F38B693524F7E42800B3AC80 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				F307165F23CEEE0E001AEC96 /* Collector.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		F39BFF832354D31C0057816B /* HistoryDetail */ = {
@@ -1246,6 +1279,16 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		F3DEAE2A24F698E000D788C2 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1F792225CB6C2006DC162 /* App.xcassets */,
+				F3DEAE2824F698DD00D788C2 /* Color.xcassets */,
+				F3DEAE2B24F698ED00D788C2 /* Icon.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 		F3DF50A4234CDC5D0000AD60 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -1320,6 +1363,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F31684292382838600EF1510 /* Build configuration list for PBXNativeTarget "timerTests" */;
 			buildPhases = (
+				8D5E1C86B7DBAEF4B12D93CF /* [CP] Check Pods Manifest.lock */,
 				F316841E2382838600EF1510 /* Sources */,
 				F316841F2382838600EF1510 /* Frameworks */,
 				F31684202382838600EF1510 /* Resources */,
@@ -1330,9 +1374,6 @@
 				F31684282382838600EF1510 /* PBXTargetDependency */,
 			);
 			name = timerTests;
-			packageProductDependencies = (
-				F386A3D724EEB230007301C1 /* SPM */,
-			);
 			productName = timerTests;
 			productReference = F31684222382838600EF1510 /* timerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1448,17 +1489,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3451FFF2509063D00B4146C /* NotoSansCJKkr-Bold.otf in Resources */,
+				F3451FF72509061C00B4146C /* NanumSquareEB.ttf in Resources */,
 				F3D1F796225CB6C2006DC162 /* LaunchScreen.storyboard in Resources */,
-				F3A1FACB229308D900CB4814 /* NanumSquareR.ttf in Resources */,
+				F3451FFE2509063B00B4146C /* NotoSansCJKkr-Black.otf in Resources */,
+				F3451FF82509061C00B4146C /* NanumSquareB.ttf in Resources */,
+				F3DEAE2924F698DD00D788C2 /* Color.xcassets in Resources */,
 				F3A12870235FE79F0072FB51 /* GoogleService-Info.plist in Resources */,
-				F3A1FACD229308D900CB4814 /* NanumSquareB.ttf in Resources */,
 				F33C8BF4237D209400EF6B21 /* alarm_default_10x.mp3 in Resources */,
+				F3DEAE2C24F698ED00D788C2 /* Icon.xcassets in Resources */,
 				F33C8BF1237C6ECD00EF6B21 /* alarm_default_1x.mp3 in Resources */,
-				F3A1FACE229308D900CB4814 /* NanumSquareEB.ttf in Resources */,
 				F3F800B1226A0C15003D1D88 /* Localizable.strings in Resources */,
-				F3A1FACC229308D900CB4814 /* NanumSquareL.ttf in Resources */,
 				F33C8BF0237C6ECD00EF6B21 /* alarm_default_3x.mp3 in Resources */,
-				F3D1F793225CB6C2006DC162 /* Assets.xcassets in Resources */,
+				F3451FFD2509063900B4146C /* NotoSansCJKkr-Regular.otf in Resources */,
+				F3451FF62509061C00B4146C /* NanumSquareL.ttf in Resources */,
+				F3D1F793225CB6C2006DC162 /* App.xcassets in Resources */,
+				F3451FF92509061C00B4146C /* NanumSquareR.ttf in Resources */,
 				F30B9CDC23326C2D003496A9 /* OPENSOURCE.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1505,6 +1551,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-timer/Pods-timer-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8D5E1C86B7DBAEF4B12D93CF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-timerTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		F3A12871235FEA690072FB51 /* Firebase crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1549,6 +1617,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F307166023CEEE0E001AEC96 /* Collector.swift in Sources */,
+				F38B693724F7E43C00B3AC80 /* ResourceTests.swift in Sources */,
 				F3E1FC162387C88F008FB3AB /* VersionTests.swift in Sources */,
 				F31684252382838600EF1510 /* timerTests.swift in Sources */,
 				F36B26E223D6D23B008CABBA /* RealmTests.swift in Sources */,
@@ -1635,6 +1704,7 @@
 				F31CD7B922F7479F0038A2DE /* TimerInputView.swift in Sources */,
 				F3D1F7C6225CC3D7006DC162 /* Functions.swift in Sources */,
 				F303F277225CCBA600A11FAF /* SettingView.swift in Sources */,
+				F3DEAE2724F6972D00D788C2 /* Resource.swift in Sources */,
 				F32DFA4223569A61006FDA0F /* NetworkService.swift in Sources */,
 				F396856423E7107400C695FD /* HistoryService.swift in Sources */,
 				F3C1874E226204DF00B2C644 /* TeamInfoViewController.swift in Sources */,
@@ -1818,6 +1888,7 @@
 /* Begin XCBuildConfiguration section */
 		F316842A2382838600EF1510 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E345CA78F0650942EBFF434F /* Pods-timerTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -1839,6 +1910,7 @@
 		};
 		F316842B2382838600EF1510 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CBD9D3B8AD4C93EEE4C9CA75 /* Pods-timerTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -2112,10 +2184,6 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		F37AC9D524EEB63900438BCB /* SPM */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SPM;
-		};
-		F386A3D724EEB230007301C1 /* SPM */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SPM;
 		};

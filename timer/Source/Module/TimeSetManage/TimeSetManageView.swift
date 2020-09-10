@@ -23,7 +23,7 @@ class TimeSetManageView: UIView {
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 40.adjust(), right: 0)
         
         let view = JSReorderableCollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
         view.isAxisFixed = true
         
@@ -39,7 +39,7 @@ class TimeSetManageView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         addAutolayoutSubviews([timeSetCollectionView, headerView])
         timeSetCollectionView.snp.makeConstraints { make in

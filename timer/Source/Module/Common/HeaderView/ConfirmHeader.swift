@@ -15,16 +15,16 @@ class ConfirmHeader: Header {
     let cancelButton: UIButton = {
         let view = UIButton()
         view.setTitle("header_button_cancel".localized, for: .normal)
-        view.setTitleColor(Constants.Color.codGray, for: .normal)
-        view.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
+        view.setTitleColor(R.Color.codGray, for: .normal)
+        view.titleLabel?.font = R.Font.regular.withSize(15.adjust())
         return view
     }()
     
     let confirmButton: UIButton = {
         let view = UIButton()
         view.setTitle("header_button_confirm".localized, for: .normal)
-        view.setTitleColor(Constants.Color.codGray, for: .normal)
-        view.titleLabel?.font = Constants.Font.Regular.withSize(15.adjust())
+        view.setTitleColor(R.Color.codGray, for: .normal)
+        view.titleLabel?.font = R.Font.regular.withSize(15.adjust())
         return view
     }()
     
@@ -36,7 +36,7 @@ class ConfirmHeader: Header {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([cancelButton, titleLabel, confirmButton])

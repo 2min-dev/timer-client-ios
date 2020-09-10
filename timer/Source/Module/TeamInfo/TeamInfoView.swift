@@ -20,8 +20,8 @@ class TeamInfoView: UIView {
     
     private let infoLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.codGray
         view.numberOfLines = 0
         
         // Create paragraph style
@@ -36,8 +36,8 @@ class TeamInfoView: UIView {
     
     let emailLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Regular.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.regular.withSize(15.adjust())
+        view.textColor = R.Color.codGray
         view.text = "team_info_contact_email".localized
         return view
     }()
@@ -45,8 +45,8 @@ class TeamInfoView: UIView {
     let copyButton: UIButton = {
         let view = UIButton()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.titleLabel?.font = Constants.Font.Regular.withSize(12.adjust())
-        view.titleLabel?.textColor = Constants.Color.codGray
+        view.titleLabel?.font = R.Font.regular.withSize(12.adjust())
+        view.titleLabel?.textColor = R.Color.codGray
         view.setAttributedTitle(NSAttributedString(string: "team_info_email_copy_title".localized, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue]), for: .normal)
         return view
     }()
@@ -55,10 +55,10 @@ class TeamInfoView: UIView {
         let view = UIView()
         
         let topDivider = UIView()
-        topDivider.backgroundColor = Constants.Color.silver
+        topDivider.backgroundColor = R.Color.silver
         
         let bottomDivider = UIView()
-        bottomDivider.backgroundColor = Constants.Color.silver
+        bottomDivider.backgroundColor = R.Color.silver
         
         // Set constraint of subviews
         view.addAutolayoutSubviews([topDivider, emailLabel, copyButton, bottomDivider])
@@ -131,7 +131,7 @@ class TeamInfoView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([scrollView, headerView])

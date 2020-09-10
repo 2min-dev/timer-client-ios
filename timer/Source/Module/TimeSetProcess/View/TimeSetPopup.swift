@@ -13,35 +13,35 @@ class TimeSetPopup: UIView {
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.setContentHuggingPriority(.required, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.bold.withSize(15.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
     private let timerIconImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .center
-        view.image = UIImage(named: "icon_timer")
+        view.image = R.Icon.icTimer
         return view
     }()
     
     private let subtitleLabel: UILabel = {
         let view = UILabel()
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        view.font = Constants.Font.Bold.withSize(10.adjust())
-        view.textColor = Constants.Color.doveGray
+        view.font = R.Font.bold.withSize(10.adjust())
+        view.textColor = R.Color.doveGray
         return view
     }()
     
     let confirmButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_confirm"), for: .normal)
+        view.setImage(R.Icon.icBtnConfirm, for: .normal)
         return view
     }()
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.gallery
+        view.backgroundColor = R.Color.gallery
         view.layer.cornerRadius = 6.adjust()
         view.layer.shadow(alpha: 0.04, offset: CGSize(width: 0, height: 3.adjust()), blur: 6)
     

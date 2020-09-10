@@ -26,7 +26,7 @@ class PresetView: UIView {
         layout.minimumInteritemSpacing = 5.adjust()
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
         
         // Register supplimentary view
@@ -45,7 +45,7 @@ class PresetView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set contraints of subviews
         addAutolayoutSubviews([timeSetCollectionView, headerView, loadingView])

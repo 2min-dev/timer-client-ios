@@ -12,14 +12,14 @@ import SnapKit
 class IntroView: UIView {
     // MARK: - view propeties
     let splashIconImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "icon_app"))
+        let view = UIImageView(image: R.Icon.icApp)
         return view
     }()
     
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         addAutolayoutSubview(splashIconImageView)
         

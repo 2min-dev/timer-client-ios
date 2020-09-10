@@ -140,7 +140,7 @@ class TimeSetMemoViewController: BaseHeaderViewController, ViewControllable, Vie
         if isExceeded {
             // Highlight length text
             let range = NSString(string: lengthString).range(of: String(length))
-            attributedString.addAttribute(.foregroundColor, value: Constants.Color.carnation, range: range)
+            attributedString.addAttribute(.foregroundColor, value: R.Color.carnation, range: range)
         }
         
         return attributedString

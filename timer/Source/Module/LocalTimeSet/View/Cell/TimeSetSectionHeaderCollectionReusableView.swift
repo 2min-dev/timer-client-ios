@@ -14,8 +14,8 @@ class TimeSetSectionHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - view properties
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Constants.Font.Bold.withSize(15.adjust())
-        view.textColor = Constants.Color.codGray
+        view.font = R.Font.bold.withSize(15.adjust())
+        view.textColor = R.Color.codGray
         return view
     }()
     
@@ -25,8 +25,8 @@ class TimeSetSectionHeaderCollectionReusableView: UICollectionReusableView {
         view.isHidden = true // Default `hidden`
          
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Bold.withSize(12.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .font: R.Font.bold.withSize(12.adjust()),
+            .foregroundColor: R.Color.codGray,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .kern: -0.36
         ]

@@ -26,7 +26,7 @@ class BubbleAlert: UIView {
     
     fileprivate let cancelButton: UIButton = {
         let view = UIButton()
-        view.setImage(UIImage(named: "btn_clear"), for: .normal)
+        view.setImage(R.Icon.icBtnClear, for: .normal)
         return view
     }()
     
@@ -53,8 +53,8 @@ class BubbleAlert: UIView {
     
     private let confirmLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.carnation.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.fillColor = R.Color.carnation.cgColor
+        layer.strokeColor = R.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
     }()
@@ -63,14 +63,14 @@ class BubbleAlert: UIView {
         let view = UIButton()
         view.layer.insertSublayer(confirmLayer, below: view.imageView?.layer)
         
-        view.setImage(UIImage(named: "btn_confirm_white"), for: .normal)
+        view.setImage(R.Icon.icBtnConfirmWhite, for: .normal)
         return view
     }()
     
     private let containerLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.fillColor = Constants.Color.white.cgColor
-        layer.strokeColor = Constants.Color.codGray.cgColor
+        layer.fillColor = R.Color.white.cgColor
+        layer.strokeColor = R.Color.codGray.cgColor
         layer.lineWidth = 1
         return layer
     }()
@@ -150,8 +150,8 @@ class BubbleAlert: UIView {
         
         // Create attributes
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Bold.withSize(12.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .font: R.Font.bold.withSize(12.adjust()),
+            .foregroundColor: R.Color.codGray,
             .kern: -0.36,
             .paragraphStyle: paragraphStyle
         ]

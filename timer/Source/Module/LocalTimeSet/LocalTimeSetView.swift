@@ -24,7 +24,7 @@ class LocalTimeSetView: UIView {
         layout.sectionInset = UIEdgeInsets(top: 10.adjust(), left: 0, bottom: 10.adjust(), right: 0)
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
         
         // Register supplimentary view
@@ -42,7 +42,7 @@ class LocalTimeSetView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set contraints of subviews
         addAutolayoutSubviews([timeSetCollectionView, headerView])

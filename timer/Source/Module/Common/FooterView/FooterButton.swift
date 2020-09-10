@@ -17,13 +17,13 @@ class FooterButton: UIButton {
         var textColor: UIColor {
             switch self {
             case .normal:
-                return Constants.Color.codGray
+                return R.Color.codGray
                 
             case .sub:
-                return Constants.Color.carnation
+                return R.Color.carnation
                 
             case .highlight:
-                return Constants.Color.white
+                return R.Color.white
             }
         }
         
@@ -32,12 +32,12 @@ class FooterButton: UIButton {
             case .normal,
                  .sub:
                 let backgroundLayer = CALayer()
-                backgroundLayer.backgroundColor = Constants.Color.gallery.cgColor
+                backgroundLayer.backgroundColor = R.Color.gallery.cgColor
                 return backgroundLayer
                 
             case .highlight:
                 let gradientLayer = CAGradientLayer()
-                gradientLayer.colors = [Constants.Color.carnation.cgColor, Constants.Color.darkBlue.cgColor]
+                gradientLayer.colors = [R.Color.carnation.cgColor, R.Color.darkBlue.cgColor]
                 return gradientLayer
             }
         }
@@ -109,10 +109,10 @@ class FooterButton: UIButton {
     
     // MARK: - private method
     private func setTitle(_ title: String?) {
-        titleLabel?.font = Constants.Font.ExtraBold.withSize(15.adjust())
+        titleLabel?.font = R.Font.extraBold.withSize(15.adjust())
         
         setTitleColor(type.textColor, for: .normal)
-        setTitleColor(Constants.Color.silver, for: .disabled)
+        setTitleColor(R.Color.silver, for: .disabled)
         
         setTitle(title, for: .normal)
     }

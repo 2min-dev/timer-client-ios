@@ -25,7 +25,7 @@ class HistoryListView: UIView {
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.alwaysBounceVertical = true
-        view.backgroundColor = Constants.Color.clear
+        view.backgroundColor = R.Color.clear
         view.contentInset = UIEdgeInsets(top: 0, left: 20.adjust(), bottom: 0, right: 20.adjust())
         
         // Register cell
@@ -46,8 +46,8 @@ class HistoryListView: UIView {
         paragraphStyle.lineSpacing = 10.adjust()
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.codGray,
+            .font: R.Font.regular.withSize(15.adjust()),
+            .foregroundColor: R.Color.codGray,
             .paragraphStyle: paragraphStyle,
             .kern: -0.45
         ]
@@ -64,8 +64,8 @@ class HistoryListView: UIView {
         let string = "history_make_time_set_title".localized
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: Constants.Font.Regular.withSize(15.adjust()),
-            .foregroundColor: Constants.Color.carnation,
+            .font: R.Font.regular.withSize(15.adjust()),
+            .foregroundColor: R.Color.carnation,
             .kern: -0.45
         ]
         // Set attributed string
@@ -76,7 +76,7 @@ class HistoryListView: UIView {
     
     private let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.Color.carnation
+        view.backgroundColor = R.Color.carnation
         return view
     }()
     
@@ -108,7 +108,7 @@ class HistoryListView: UIView {
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.Color.alabaster
+        backgroundColor = R.Color.alabaster
         
         // Set constraint of subviews
         addAutolayoutSubviews([headerView, historyCollectionView, historyListEmptyView])
